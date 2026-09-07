@@ -1,0 +1,29 @@
+[
+  {
+    "url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+    "downloaded_at": "2026-09-05T16:14:03.571932+00:00",
+    "raw_path": "C:\\Hakatons\\RT\\data\\raw\\rfc9110.txt",
+    "document_path": "C:\\Hakatons\\RT\\data\\documents\\rfc9110.txt",
+    "raw_sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
+    "document_sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+    "edition_note": "Snapshot of specified source URL"
+  },
+  {
+    "url": "https://www.postgresql.org/docs/16/high-availability.html",
+    "downloaded_at": "2026-09-05T16:14:04.509011+00:00",
+    "raw_path": "C:\\Hakatons\\RT\\data\\raw\\postgresql16-ha.html",
+    "document_path": "C:\\Hakatons\\RT\\data\\documents\\postgresql16-ha.md",
+    "raw_sha256": "04828c7c36eb8a704413964540eb5e5c0f3b3bb33ab656b2421b3c17d11e2407",
+    "document_sha256": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+    "edition_note": "Snapshot of specified source URL"
+  },
+  {
+    "url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+    "downloaded_at": "2026-09-05T16:14:05.483535+00:00",
+    "raw_path": "C:\\Hakatons\\RT\\data\\raw\\nist-800-63b.html",
+    "document_path": "C:\\Hakatons\\RT\\data\\documents\\nist-800-63b.md",
+    "raw_sha256": "6b94db0d637cc1cfda58b7e915abaaca4ef7e4dc29dd90230a3e2e380585508c",
+    "document_sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+    "edition_note": "User-selected historical 800-63-3 edition, superseded by 800-63-4"
+  }
+]

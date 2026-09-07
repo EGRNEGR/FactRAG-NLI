@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-rag-platform"
+version = "0.1.0"
+description = "On-premise hybrid RAG pipeline for Russian technical documentation"
+requires-python = ">=3.11"
+dependencies = [
+    "rich>=13",
+    "fastapi>=0.110",
+    "pydantic==2.12.5",
+    "pydantic-settings==2.12.0",
+    "uvicorn[standard]>=0.27",
+]
+
+[project.optional-dependencies]
+release = ["reportlab==5.0.1"]
+web = ["streamlit==1.55.0", "python-docx==1.2.0"]
+documents = ["PyMuPDF==1.27.1", "python-docx==1.2.0"]
+retrieval = ["qdrant-client==1.16.2", "rank-bm25==0.2.2", "sentence-transformers==5.2.2", "numpy==2.3.5"]
+audit = ["psutil==7.2.2", "safetensors==0.7.0", "gguf==0.17.1"]
+generation = ["llama-cpp-python>=0.2", "transformers>=4.40", "torch>=2.2", "httpx==0.28.1"]
+evaluation = ["ragas>=0.2", "datasets>=2.18"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.6", "mypy>=1.10"]
+
+[tool.setuptools]
+py-modules = ["settings", "model_runtime", "document_parser", "document_processor", "hybrid_retriever", "generator_verifier", "pipeline", "summarization", "baseline_rag", "benchmark", "evaluate_quality", "app", "api", "web_bridge", "benchmark_ragas", "demo"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["numpy", "numpy.*", "torch", "torch.*", "transformers", "transformers.*", "sentence_transformers", "sentence_transformers.*", "llama_cpp", "llama_cpp.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
+
+[tool.ruff]
+extend-exclude = [".artifacts", "models", "tools"]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

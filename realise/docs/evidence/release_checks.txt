@@ -1,0 +1,6 @@
+Мы проверили релиз 2026-09-07.
+pytest tests/ -v: 200 passed in 21.02s
+mypy --strict: Success: no issues found in 43 source files
+ruff check .: All checks passed!
+Мы проверили все 8 отрисованных страниц PDF: переполнений и повреждений кириллицы нет.
+Мы не выполняли повторную GPU-оценку качества при упаковке.
