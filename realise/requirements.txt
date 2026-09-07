@@ -1,0 +1,3 @@
+# We install CUDA-compatible PyTorch separately; see docs/RELEASE_GUIDE.md.
+-e .[web,documents,retrieval,audit,dev,release]
+httpx==0.28.1

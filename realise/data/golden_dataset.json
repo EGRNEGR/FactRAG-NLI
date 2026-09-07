@@ -1,0 +1,314 @@
+{
+  "version": 1,
+  "description": "Source-bound QA drafts; human review required unless marked reviewed",
+  "corpus_root": "documents",
+  "documents": [
+    {
+      "path": "rfc9110.txt",
+      "sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "document_id": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.txt"
+    },
+    {
+      "path": "postgresql16-ha.md",
+      "sha256": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+      "document_id": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+      "url": "https://www.postgresql.org/docs/16/high-availability.html"
+    },
+    {
+      "path": "nist-800-63b.md",
+      "sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "url": "https://pages.nist.gov/800-63-3/sp800-63b.html"
+    }
+  ],
+  "examples": [
+    {
+      "id": "rfc-01",
+      "question": "Что означает код HTTP 204 No Content согласно RFC 9110?",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+      "document_sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "ground_truth_answer": "Запрос успешно выполнен, дополнительного содержимого для тела ответа нет.",
+      "relevant_fragment_quote": "No Content) status code",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+          "chunk_id": "183eefa549e12028",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "rfc-02",
+      "question": "Что означает HTTP 403 Forbidden согласно RFC 9110?",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+      "document_sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "ground_truth_answer": "Сервер понял запрос, но отказывается его выполнять.",
+      "relevant_fragment_quote": "understood the request but refuses",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+          "chunk_id": "bfb20694dad5cc50",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "rfc-03",
+      "question": "Означает ли HTTP 404 Not Found по RFC 9110, что отсутствие ресурса обязательно постоянно?",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+      "document_sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "ground_truth_answer": "Нет. Сервер не нашёл текущее представление либо не желает раскрывать его существование; 404 не определяет постоянство отсутствия.",
+      "relevant_fragment_quote": "current representation for the target",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+          "chunk_id": "9cd7a059023b7852",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "rfc-04",
+      "question": "Чем различаются safe methods и idempotent methods в RFC 9110?",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+      "document_sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "ground_truth_answer": "Безопасность означает отсутствие запрошенного изменения состояния; идемпотентность — одинаковый предполагаемый эффект одного и нескольких одинаковых запросов. Безопасные методы идемпотентны.",
+      "relevant_fragment_quote": "essentially read-only\n\nserver of multiple identical requests",
+      "created_by": "ai_pregenerated",
+      "kind": "synthesis",
+      "relevant": [
+        {
+          "document_id": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+          "chunk_id": "32e54fd96dfc0cf7",
+          "grade": 1
+        },
+        {
+          "document_id": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+          "chunk_id": "ea84919117a32335",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "rfc-05",
+      "question": "Какое числовое значение минимального congestion window QUIC устанавливает RFC 9110?",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+      "document_sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "ground_truth_answer": "",
+      "relevant_fragment_quote": "",
+      "created_by": "ai_pregenerated",
+      "kind": "negative",
+      "relevant": [],
+      "is_negative": true,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "pg-01",
+      "question": "Какие запросы принимает hot standby согласно обзору High Availability PostgreSQL 16?",
+      "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+      "document_sha256": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+      "ground_truth_answer": "Hot standby принимает подключения и обслуживает запросы только для чтения.",
+      "relevant_fragment_quote": "serves read-only queries",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+          "chunk_id": "823285c4373d8233",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "pg-02",
+      "question": "Можно ли подключаться к warm standby PostgreSQL до его повышения до primary?",
+      "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+      "document_sha256": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+      "ground_truth_answer": "Нет, warm standby недоступен для подключений до повышения до primary.",
+      "relevant_fragment_quote": "called a warm standby server",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+          "chunk_id": "823285c4373d8233",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "pg-03",
+      "question": "Когда изменяющая данные транзакция считается committed в описанных синхронных решениях PostgreSQL 16?",
+      "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+      "document_sha256": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+      "ground_truth_answer": "После фиксации транзакции всеми серверами.",
+      "relevant_fragment_quote": "until all servers have committed",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+          "chunk_id": "823285c4373d8233",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "pg-04",
+      "question": "Как обзор PostgreSQL 16 связывает синхронность репликации, медленную сеть и риск потери транзакций при переключении?",
+      "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+      "document_sha256": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+      "ground_truth_answer": "Полная синхронность на медленной сети может снизить производительность более чем вдвое. Асинхронность уменьшает влияние на производительность, но допускает потерю некоторых транзакций при переключении.",
+      "relevant_fragment_quote": "might be lost\n\ncut performance by more than half",
+      "created_by": "ai_pregenerated",
+      "kind": "synthesis",
+      "relevant": [
+        {
+          "document_id": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+          "chunk_id": "823285c4373d8233",
+          "grade": 1
+        },
+        {
+          "document_id": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+          "chunk_id": "35deb2a0b9fb8f52",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "pg-05",
+      "question": "Какой точный размер shared_buffers в гигабайтах рекомендует скачанный обзор PostgreSQL 16 для сервера с 47 ГБ RAM?",
+      "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+      "document_sha256": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+      "ground_truth_answer": "",
+      "relevant_fragment_quote": "",
+      "created_by": "ai_pregenerated",
+      "kind": "negative",
+      "relevant": [],
+      "is_negative": true,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "nist-01",
+      "question": "Какова минимальная длина memorized secret, выбранного пользователем, в редакции NIST SP 800-63B из серии 800-63-3?",
+      "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+      "document_sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "ground_truth_answer": "Не менее 8 символов.",
+      "relevant_fragment_quote": "Memorized secrets SHALL be at least 8 characters",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+          "chunk_id": "647a9d2077abf488",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "nist-02",
+      "question": "Какую длину пользовательского memorized secret SHOULD разрешать verifier по NIST SP 800-63B серии 800-63-3?",
+      "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+      "document_sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "ground_truth_answer": "Следует разрешать секреты длиной не менее 64 символов.",
+      "relevant_fragment_quote": "Verifiers SHOULD permit subscriber-chosen memorized secrets at least 64 characters",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+          "chunk_id": "ddb2ee299569ca30",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "nist-03",
+      "question": "Какова минимальная длина соли для хранения memorized secrets по NIST SP 800-63B серии 800-63-3?",
+      "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+      "document_sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "ground_truth_answer": "Не менее 32 бит.",
+      "relevant_fragment_quote": "The salt SHALL be at least 32 bits in length",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+          "chunk_id": "cfc44c0b5752c7fa",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "nist-04",
+      "question": "Какие меры при выборе и последующем использовании memorized secret предписывает NIST SP 800-63B серии 800-63-3: проверка скомпрометированных значений и смена пароля?",
+      "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+      "document_sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "ground_truth_answer": "При выборе секрет сверяют со списком распространённых или скомпрометированных значений и отклоняют совпадения. Произвольную периодическую смену не следует требовать, но при признаках компрометации смена обязательна.",
+      "relevant_fragment_quote": "compare the prospective secrets against a list\n\nVerifiers SHOULD NOT require memorized secrets to be changed arbitrarily",
+      "created_by": "ai_pregenerated",
+      "kind": "synthesis",
+      "relevant": [
+        {
+          "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+          "chunk_id": "dfd4b68636ded9c9",
+          "grade": 1
+        },
+        {
+          "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+          "chunk_id": "c1dd6f179ede502c",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "nist-05",
+      "question": "Какое значение VLAN ID для management-сети коммутаторов предписывает NIST SP 800-63B?",
+      "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+      "document_sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "ground_truth_answer": "",
+      "relevant_fragment_quote": "",
+      "created_by": "ai_pregenerated",
+      "kind": "negative",
+      "relevant": [],
+      "is_negative": true,
+      "review_status": "ai_draft"
+    }
+  ],
+  "parser_settings": {
+    "chunk_target_tokens": 320,
+    "chunk_max_tokens": 384,
+    "chunk_overlap_tokens": 50
+  }
+}

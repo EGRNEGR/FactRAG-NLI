@@ -1,0 +1,169 @@
+[
+  {
+    "id": "rfc-01",
+    "source": "rfc9110.txt",
+    "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+    "question": "Что означает код HTTP 204 No Content согласно RFC 9110?",
+    "ground_truth_answer": "Запрос успешно выполнен, дополнительного содержимого для тела ответа нет.",
+    "quotes": [
+      "No Content) status code"
+    ],
+    "kind": "fact",
+    "section_contains": "15.3.5"
+  },
+  {
+    "id": "rfc-02",
+    "source": "rfc9110.txt",
+    "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+    "question": "Что означает HTTP 403 Forbidden согласно RFC 9110?",
+    "ground_truth_answer": "Сервер понял запрос, но отказывается его выполнять.",
+    "quotes": [
+      "understood the request but refuses"
+    ],
+    "kind": "fact"
+  },
+  {
+    "id": "rfc-03",
+    "source": "rfc9110.txt",
+    "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+    "question": "Означает ли HTTP 404 Not Found по RFC 9110, что отсутствие ресурса обязательно постоянно?",
+    "ground_truth_answer": "Нет. Сервер не нашёл текущее представление либо не желает раскрывать его существование; 404 не определяет постоянство отсутствия.",
+    "quotes": [
+      "current representation for the target"
+    ],
+    "kind": "fact",
+    "section_contains": "15.5.5"
+  },
+  {
+    "id": "rfc-04",
+    "source": "rfc9110.txt",
+    "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+    "question": "Чем различаются safe methods и idempotent methods в RFC 9110?",
+    "ground_truth_answer": "Безопасность означает отсутствие запрошенного изменения состояния; идемпотентность — одинаковый предполагаемый эффект одного и нескольких одинаковых запросов. Безопасные методы идемпотентны.",
+    "quotes": [
+      "essentially read-only",
+      "server of multiple identical requests"
+    ],
+    "kind": "synthesis"
+  },
+  {
+    "id": "rfc-05",
+    "source": "rfc9110.txt",
+    "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+    "question": "Какое числовое значение минимального congestion window QUIC устанавливает RFC 9110?",
+    "ground_truth_answer": "",
+    "quotes": [],
+    "kind": "negative",
+    "is_negative": true
+  },
+  {
+    "id": "pg-01",
+    "source": "postgresql16-ha.md",
+    "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+    "question": "Какие запросы принимает hot standby согласно обзору High Availability PostgreSQL 16?",
+    "ground_truth_answer": "Hot standby принимает подключения и обслуживает запросы только для чтения.",
+    "quotes": [
+      "serves read-only queries"
+    ],
+    "kind": "fact"
+  },
+  {
+    "id": "pg-02",
+    "source": "postgresql16-ha.md",
+    "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+    "question": "Можно ли подключаться к warm standby PostgreSQL до его повышения до primary?",
+    "ground_truth_answer": "Нет, warm standby недоступен для подключений до повышения до primary.",
+    "quotes": [
+      "called a warm standby server"
+    ],
+    "kind": "fact"
+  },
+  {
+    "id": "pg-03",
+    "source": "postgresql16-ha.md",
+    "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+    "question": "Когда изменяющая данные транзакция считается committed в описанных синхронных решениях PostgreSQL 16?",
+    "ground_truth_answer": "После фиксации транзакции всеми серверами.",
+    "quotes": [
+      "until all servers have committed"
+    ],
+    "kind": "fact"
+  },
+  {
+    "id": "pg-04",
+    "source": "postgresql16-ha.md",
+    "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+    "question": "Как обзор PostgreSQL 16 связывает синхронность репликации, медленную сеть и риск потери транзакций при переключении?",
+    "ground_truth_answer": "Полная синхронность на медленной сети может снизить производительность более чем вдвое. Асинхронность уменьшает влияние на производительность, но допускает потерю некоторых транзакций при переключении.",
+    "quotes": [
+      "might be lost",
+      "cut performance by more than half"
+    ],
+    "kind": "synthesis"
+  },
+  {
+    "id": "pg-05",
+    "source": "postgresql16-ha.md",
+    "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+    "question": "Какой точный размер shared_buffers в гигабайтах рекомендует скачанный обзор PostgreSQL 16 для сервера с 47 ГБ RAM?",
+    "ground_truth_answer": "",
+    "quotes": [],
+    "kind": "negative",
+    "is_negative": true
+  },
+  {
+    "id": "nist-01",
+    "source": "nist-800-63b.md",
+    "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+    "question": "Какова минимальная длина memorized secret, выбранного пользователем, в редакции NIST SP 800-63B из серии 800-63-3?",
+    "ground_truth_answer": "Не менее 8 символов.",
+    "quotes": [
+      "Memorized secrets SHALL be at least 8 characters"
+    ],
+    "kind": "fact"
+  },
+  {
+    "id": "nist-02",
+    "source": "nist-800-63b.md",
+    "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+    "question": "Какую длину пользовательского memorized secret SHOULD разрешать verifier по NIST SP 800-63B серии 800-63-3?",
+    "ground_truth_answer": "Следует разрешать секреты длиной не менее 64 символов.",
+    "quotes": [
+      "Verifiers SHOULD permit subscriber-chosen memorized secrets at least 64 characters"
+    ],
+    "kind": "fact"
+  },
+  {
+    "id": "nist-03",
+    "source": "nist-800-63b.md",
+    "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+    "question": "Какова минимальная длина соли для хранения memorized secrets по NIST SP 800-63B серии 800-63-3?",
+    "ground_truth_answer": "Не менее 32 бит.",
+    "quotes": [
+      "The salt SHALL be at least 32 bits in length"
+    ],
+    "kind": "fact"
+  },
+  {
+    "id": "nist-04",
+    "source": "nist-800-63b.md",
+    "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+    "question": "Какие меры при выборе и последующем использовании memorized secret предписывает NIST SP 800-63B серии 800-63-3: проверка скомпрометированных значений и смена пароля?",
+    "ground_truth_answer": "При выборе секрет сверяют со списком распространённых или скомпрометированных значений и отклоняют совпадения. Произвольную периодическую смену не следует требовать, но при признаках компрометации смена обязательна.",
+    "quotes": [
+      "compare the prospective secrets against a list",
+      "Verifiers SHOULD NOT require memorized secrets to be changed arbitrarily"
+    ],
+    "kind": "synthesis"
+  },
+  {
+    "id": "nist-05",
+    "source": "nist-800-63b.md",
+    "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+    "question": "Какое значение VLAN ID для management-сети коммутаторов предписывает NIST SP 800-63B?",
+    "ground_truth_answer": "",
+    "quotes": [],
+    "kind": "negative",
+    "is_negative": true
+  }
+]

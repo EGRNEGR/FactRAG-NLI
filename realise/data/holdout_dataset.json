@@ -1,0 +1,224 @@
+{
+  "version": 1,
+  "description": "Spark QA on unseen facts from frozen documents. Lead audited annotation correctness before inference, after freezing code. AI draft, not expert validated.",
+  "corpus_root": "documents",
+  "documents": [
+    {
+      "path": "rfc9110.txt",
+      "sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "document_id": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.txt"
+    },
+    {
+      "path": "postgresql16-ha.md",
+      "sha256": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+      "document_id": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+      "url": "https://www.postgresql.org/docs/16/high-availability.html"
+    },
+    {
+      "path": "nist-800-63b.md",
+      "sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "url": "https://pages.nist.gov/800-63-3/sp800-63b.html"
+    }
+  ],
+  "examples": [
+    {
+      "id": "holdout-fact-01",
+      "question": "Какое минимальное значение энтропии требуется для случайного аутентификационного секрета в OOB-процессе и при каком пороге (<) нужно вводить ограничение неудачных попыток?",
+      "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+      "document_sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "ground_truth_answer": "The verifier SHALL generate random authentication secrets with at least 20 bits of entropy, and if the authentication secret has less than 64 bits of entropy, the verifier SHALL implement a rate-limiting mechanism limiting failed authentication attempts on the subscriber account.",
+      "relevant_fragment_quote": "Документ: 1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6\nРаздел: 11 References > 5 Authenticator and Verifier Requirements > 5.1 Requirements by Authenticator Type > 5.1.3.2 Out-of-Band Verifiers\nTransfer of secret to secondary channel: The verifier SHALL display a random authentication secret to the claimant via the primary channel. It SHALL then wait for the secret to be returned on the secondary channel from the claimant’s out-of-band authenticator.\nVerification of secrets by claimant: The verifier SHALL display a random authentication secret to the claimant via the primary channel, and SHALL send the same secret to the out-of-band authenticator via the secondary channel for presentation to the claimant. It SHALL then wait for an approval (or disapproval) message via the secondary channel.\nIn all cases, the authentication SHALL be considered invalid if not completed within 10 minutes. In order to provide replay resistance as described in Section 5.2.8, verifiers SHALL accept a given authentication secret only once during the validity period.\nThe verifier SHALL generate random authentication secrets with at least 20 bits of entropy using an approved random bit generator [SP 800-90Ar1]. If the authentication secret has less than 64 bits of entropy, the verifier SHALL implement a rate-limiting mechanism that effectively limits the number of failed authentication attempts that can be made on the subscriber’s account as described in Section 5.2.2.",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+          "chunk_id": "106809a434085cc9",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "holdout-fact-02",
+      "question": "Какие решения репликации PostgreSQL различаются по степени гранулярности синхронизации данных?",
+      "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+      "document_sha256": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+      "ground_truth_answer": "В PostgreSQL решениях синхронизации существует различие по гранулярности: одни решения умеют синхронизировать только целиком серверную базу, а другие позволяют управлять синхронизацией на уровне отдельных баз данных или даже таблиц.",
+      "relevant_fragment_quote": "Документ: d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974\nРаздел: 27.4 Hot Standby > 27.4.5 Caveats\nSome solutions deal with synchronization by allowing only one server to modify the data. Servers that can modify data are called read/write, master or primary servers. Servers that track changes in the primary are called standby or secondary servers. A standby server that cannot be connected to until it is promoted to a primary server is called a warm standby server, and one that can accept connections and serves read-only queries is called a hot standby server.\nSome solutions are synchronous, meaning that a data-modifying transaction is not considered committed until all servers have committed the transaction. This guarantees that a failover will not lose any data and that all load-balanced servers will return consistent results no matter which server is queried. In contrast, asynchronous solutions allow some delay between the time of a commit and its propagation to the other servers, opening the possibility that some transactions might be lost in the switch to a backup server, and that load balanced servers might return slightly stale results. Asynchronous communication is used when synchronous would be too slow.\nSolutions can also be categorized by their granularity. Some solutions can deal only with an entire database server, while others allow control at the per-table or per-database level.",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+          "chunk_id": "823285c4373d8233",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "holdout-fact-03",
+      "question": "При каких условиях ответ на PUT может включать валидаторы ETag/Last-Modified?",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+      "document_sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "ground_truth_answer": "After a successful PUT, a server can send an ETag or Last-Modified field if the representation data was saved without transformation (the new stored representation is identical to the request payload) and the validator value reflects that new representation; this lets a user agent reuse the sent representation and use returned validators in future conditional requests.",
+      "relevant_fragment_quote": "Документ: 7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20\nРаздел: 9 Methods > 9.3 Method Definitions > 9.3.4 PUT\nas an ETag or Last-Modified field, in a successful response to PUT\nunless the request's representation data was saved without any\ntransformation applied to the content (i.e., the resource's new\nrepresentation data is identical to the content received in the PUT\nrequest) and the validator field value reflects the new\nrepresentation.  This requirement allows a user agent to know when\nthe representation it sent (and retains in memory) is the result of\nthe PUT, and thus it doesn't need to be retrieved again from the\norigin server.  The new validator(s) received in the response can be\nused for future conditional requests in order to prevent accidental\noverwrites (Section 13.1).\nThe fundamental difference between the POST and PUT methods is\nhighlighted by the different intent for the enclosed representation.\nThe target resource in a POST request is intended to handle the\nenclosed representation according to the resource's own semantics,\nwhereas the enclosed representation in a PUT request is defined as\nreplacing the state of the target resource.  Hence, the intent of PUT\nis idempotent and visible to intermediaries, even though the exact",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+          "chunk_id": "eeb4916e9bce56d3",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "holdout-fact-04",
+      "question": "Как Retry-After интерпретируется для 503 и 3xx ответов и как задаётся его значение?",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+      "document_sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "ground_truth_answer": "When sent with a 503 (Service Unavailable) response, Retry-After indicates how long the service is expected to be unavailable to the client. When sent with any 3xx redirection response, it indicates the minimum time the client should wait before issuing the redirected request. The value is either an HTTP-date or a delay-seconds number (non-negative decimal integer, in seconds).",
+      "relevant_fragment_quote": "Документ: 7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20\nРаздел: 100 (Continue) response. > 10.2 Response Context Fields > 10.2.3 Retry-After\nRetry-After\nServers send the \"Retry-After\" header field to indicate how long the\nuser agent ought to wait before making a follow-up request.  When\nsent with a 503 (Service Unavailable) response, Retry-After indicates\nhow long the service is expected to be unavailable to the client.\nWhen sent with any 3xx (Redirection) response, Retry-After indicates\nthe minimum time that the user agent is asked to wait before issuing\nthe redirected request.\nThe Retry-After field value can be either an HTTP-date or a number of\nseconds to delay after receiving the response.\nRetry-After = HTTP-date / delay-seconds\nA delay-seconds value is a non-negative decimal integer, representing\ntime in seconds.\ndelay-seconds  = 1*DIGIT\nTwo examples of its use are\nRetry-After: Fri, 31 Dec 1999 23:59:59 GMT\nRetry-After: 120\nIn the latter example, the delay is 2 minutes.",
+      "created_by": "ai_pregenerated",
+      "kind": "fact",
+      "relevant": [
+        {
+          "document_id": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+          "chunk_id": "ca8a5d4d92cddfae",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "holdout-synthesis-01",
+      "question": "Какие конкретные правила по повторной отправке запросов должны соблюдаться клиентом и прокси при сетевом сбое?",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+      "document_sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "ground_truth_answer": "For retry behavior, idempotent methods can be retried because repeating them preserves the same intended server effect, though servers may still perform non-idempotent side effects (like separate logging). A client SHOULD NOT automatically retry a non-idempotent request unless it has some means to know request semantics are actually idempotent, or some means to detect that the original request was never applied. A user agent may repeat a non-idempotent request automatically if design or configuration shows that request is safe for that resource, and some clients recover from partial failures by checking target revision state before retrying. Some clients take a riskier approach and attempt to guess when automatic retry is possible, such as retrying after transport close before any response is received. A proxy MUST NOT automatically retry non-idempotent requests, and a client SHOULD NOT automatically retry a failed automatic retry.",
+      "relevant_fragment_quote": "Документ: 7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20\nРаздел: 9 Methods > 9.2 Common Method Properties > 9.2.2 Idempotent Methods\nIdempotent Methods\nA request method is considered \"idempotent\" if the intended effect on\nthe server of multiple identical requests with that method is the\nsame as the effect for a single such request.  Of the request methods\ndefined by this specification, PUT, DELETE, and safe request methods\nare idempotent.\nLike the definition of safe, the idempotent property only applies to\nwhat has been requested by the user; a server is free to log each\nrequest separately, retain a revision control history, or implement\nother non-idempotent side effects for each idempotent request.\nIdempotent methods are distinguished because the request can be\nrepeated automatically if a communication failure occurs before the\nclient is able to read the server's response.  For example, if a\nclient sends a PUT request and the underlying connection is closed\nbefore any response is received, then the client can establish a new\nconnection and retry the idempotent request.  It knows that repeating\nthe request will have the same intended effect, even if the original\nrequest succeeded, though the response might differ.\nA client SHOULD NOT automatically retry a request with a non-\nidempotent method unless it has some means to know that the request\nsemantics are actually idempotent, regardless of the method, or some\n\nДокумент: 7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20\nРаздел: 9 Methods > 9.2 Common Method Properties > 9.2.2 Idempotent Methods\nmeans to detect that the original request was never applied.\nFor example, a user agent can repeat a POST request automatically if\nit knows (through design or configuration) that the request is safe\nfor that resource.  Likewise, a user agent designed specifically to\noperate on a version control repository might be able to recover from\npartial failure conditions by checking the target resource\nrevision(s) after a failed connection, reverting or fixing any\nchanges that were partially applied, and then automatically retrying\nthe requests that failed.\nSome clients take a riskier approach and attempt to guess when an\nautomatic retry is possible.  For example, a client might\nautomatically retry a POST request if the underlying transport\nconnection closed before any part of a response is received,\nparticularly if an idle persistent connection was used.\nA proxy MUST NOT automatically retry non-idempotent requests.  A\nclient SHOULD NOT automatically retry a failed automatic retry.",
+      "created_by": "ai_pregenerated",
+      "kind": "synthesis",
+      "relevant": [
+        {
+          "document_id": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+          "chunk_id": "ea84919117a32335",
+          "grade": 1
+        },
+        {
+          "document_id": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+          "chunk_id": "74075e5d80ce0448",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "holdout-synthesis-02",
+      "question": "В чём отличие требований AAL2 и AAL3 к аутентификаторам, ключевым факторам и криптографическим/аппаратным ограничениям?",
+      "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+      "document_sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "ground_truth_answer": "AAL2 requires proof of possession and control of two distinct authentication factors through secure authentication protocols, with approved cryptography required at AAL2 and above. AAL3 requires proof of possession of a key through a cryptographic protocol, SHALL use a hardware-based authenticator and provide verifier impersonation resistance, and requires two distinct factors. At AAL3, at least one cryptographic authenticator MUST be verifier impersonation resistant and replay resistant; multi-factor cryptographic authenticators must be FIPS 140 Level 2+ with at least Level 3 physical security, and single-factor cryptographic devices at AAL3 must be FIPS 140 Level 1+ with at least Level 3 physical security.",
+      "relevant_fragment_quote": "Документ: 1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6\nРаздел: 11 References > 4 Authenticator Assurance Levels > 4.2 Authenticator Assurance Level 2\n4.2 Authenticator Assurance Level 2\nThis section is normative.\nAAL2 provides high confidence that the claimant controls authenticator(s) bound to the subscriber’s account. Proof of possession and control of two distinct authentication factors is required through secure authentication protocol(s). Approved cryptographic techniques are required at AAL2 and above.\n\nДокумент: 1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6\nРаздел: 11 References > 4 Authenticator Assurance Levels > 4.3 Authenticator Assurance Level 3\n4.3 Authenticator Assurance Level 3\nThis section is normative.\nAAL3 provides very high confidence that the claimant controls authenticator(s) bound to the subscriber’s account. Authentication at AAL3 is based on proof of possession of a key through a cryptographic protocol. AAL3 authentication SHALL use a hardware-based authenticator and an authenticator that provides verifier impersonation resistance — the same device MAY fulfill both these requirements. In order to authenticate at AAL3, claimants SHALL prove possession and control of two distinct authentication factors through secure authentication protocol(s). Approved cryptographic techniques are required.\n\nДокумент: 1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6\nРаздел: 11 References > 4 Authenticator Assurance Levels > 4.3 Authenticator Assurance Level 3 > 4.3.2 Authenticator and Verifier Requirements\n4.3.2 Authenticator and Verifier Requirements\nCommunication between the claimant and verifier SHALL be via an authenticated protected channel to provide confidentiality of the authenticator output and resistance to MitM attacks. At least one cryptographic authenticator used at AAL3 SHALL be verifier impersonation resistant as described in Section 5.2.5 and SHALL be replay resistant as described in Section 5.2.8. All authentication and reauthentication processes at AAL3 SHALL demonstrate authentication intent from at least one authenticator as described in Section 5.2.9.\nMulti-factor authenticators used at AAL3 SHALL be hardware cryptographic modules validated at FIPS 140 Level 2 or higher overall with at least FIPS 140 Level 3 physical security. Single-factor cryptographic devices used at AAL3 SHALL be validated at FIPS 140 Level 1 or higher overall with at least FIPS 140 Level 3 physical security.\nVerifiers at AAL3 SHALL be validated at FIPS 140 Level 1 or higher.\nVerifiers at AAL3 SHALL be verifier compromise resistant as described in Section 5.2.7 with respect to at least one authentication factor.",
+      "created_by": "ai_pregenerated",
+      "kind": "synthesis",
+      "relevant": [
+        {
+          "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+          "chunk_id": "868ee56fe5ad9b19",
+          "grade": 1
+        },
+        {
+          "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+          "chunk_id": "81c8e55799bcf2a3",
+          "grade": 1
+        },
+        {
+          "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+          "chunk_id": "29ecc15a30e3faae",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "holdout-synthesis-03",
+      "question": "Как AAL2 обращается с идентификатором подписчика и графиком повторной аутентификации с точки зрения сроков и завершения сессии?",
+      "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+      "document_sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "ground_truth_answer": "To satisfy a given AAL, a successful authentication result is an identifier that SHALL be used each time the subscriber authenticates to the RP; the identifier MAY be pseudonymous and SHOULD NOT be reused for a different subject, though it SHOULD be reused when a previously enrolled subject is re-enrolled by the CSP. At AAL2, periodic reauthentication SHALL be repeated at least once per 12 hours regardless of activity and after any inactivity period of 30 minutes or longer; the session SHALL be terminated (logged out) when either limit is reached.",
+      "relevant_fragment_quote": "Документ: 1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6\nРаздел: 11 References > 4 Authenticator Assurance Levels\n4 Authenticator Assurance Levels\nThis section contains both normative and informative material.\nTo satisfy the requirements of a given AAL, a claimant SHALL be authenticated with at least a given level of strength to be recognized as a subscriber. The result of an authentication process is an identifier that SHALL be used each time that subscriber authenticates to that RP. The identifier MAY be pseudonymous. Subscriber identifiers SHOULD NOT be reused for a different subject but SHOULD be reused when a previously-enrolled subject is re-enrolled by the CSP. Other attributes that identify the subscriber as a unique subject MAY also be provided.\nDetailed normative requirements for authenticators and verifiers at each AAL are provided in Section 5.\nSee SP 800-63 Section 6.2 for details on how to choose the most appropriate AAL.\nFIPS 140 requirements are satisfied by FIPS 140-2 or newer revisions.\nAt IAL1, it is possible that attributes are collected and made available by the digital identity service. Any PII or other personal information — whether self-asserted or validated — requires multi-factor authentication. Therefore, agencies SHALL select a minimum of AAL2 when self-asserted PII or other personal information is made available online.\n\nДокумент: 1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6\nРаздел: 11 References > 4 Authenticator Assurance Levels > 4.2 Authenticator Assurance Level 2 > 4.2.3 Reauthentication\n4.2.3 Reauthentication\nPeriodic reauthentication of subscriber sessions SHALL be performed as described in Section 7.2. At AAL2, authentication of the subscriber SHALL be repeated at least once per 12 hours during an extended usage session, regardless of user activity. Reauthentication of the subscriber SHALL be repeated following any period of inactivity lasting 30 minutes or longer. The session SHALL be terminated (i.e., logged out) when either of these time limits is reached.\nReauthentication of a session that has not yet reached its time limit MAY require only a memorized secret or a biometric in conjunction with the still-valid session secret. The verifier MAY prompt the user to cause activity just before the inactivity timeout.",
+      "created_by": "ai_pregenerated",
+      "kind": "synthesis",
+      "relevant": [
+        {
+          "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+          "chunk_id": "9be24b71c1943d58",
+          "grade": 1
+        },
+        {
+          "document_id": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+          "chunk_id": "1315ee66d0bd298b",
+          "grade": 1
+        }
+      ],
+      "is_negative": false,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "holdout-negative-01",
+      "question": "Какой внутренний IP-адрес в вашей текущей деплоймент-среде должен использоваться для подключения к мастеру базы данных?",
+      "source_url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+      "document_sha256": "7e1f3859e798142829bc84ee73b1e93231d3ae41fd5358661e2098f909400f20",
+      "ground_truth_answer": "",
+      "relevant_fragment_quote": "",
+      "created_by": "ai_pregenerated",
+      "kind": "negative",
+      "relevant": [],
+      "is_negative": true,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "holdout-negative-02",
+      "question": "Какую стоимость подписки вы платите поставщику IdP для вашей организации по последнему контракту?",
+      "source_url": "https://pages.nist.gov/800-63-3/sp800-63b.html",
+      "document_sha256": "1cead445da014fbad9dd62acd1c7f0d670964f1e2da2a9f080c3d7b7588d9de6",
+      "ground_truth_answer": "",
+      "relevant_fragment_quote": "",
+      "created_by": "ai_pregenerated",
+      "kind": "negative",
+      "relevant": [],
+      "is_negative": true,
+      "review_status": "ai_draft"
+    },
+    {
+      "id": "holdout-negative-03",
+      "question": "Какая точная vendor-specific конфигурация (CPU/RAM/SSD) выбрана для production-кластера в вашем окружении?",
+      "source_url": "https://www.postgresql.org/docs/16/high-availability.html",
+      "document_sha256": "d3badbff69a56930da9098e17e7055d455bafd927896f5ccc988319df4f85974",
+      "ground_truth_answer": "",
+      "relevant_fragment_quote": "",
+      "created_by": "ai_pregenerated",
+      "kind": "negative",
+      "relevant": [],
+      "is_negative": true,
+      "review_status": "ai_draft"
+    }
+  ],
+  "parser_settings": {
+    "chunk_target_tokens": 320,
+    "chunk_max_tokens": 384,
+    "chunk_overlap_tokens": 50
+  }
+}

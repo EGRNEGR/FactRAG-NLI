@@ -1,0 +1,27 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.9, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Hakatons\RT
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 200 items
+
+tests\test_benchmark.py .........                                        [  4%]
+tests\test_calibration.py ..........                                     [  9%]
+tests\test_demo.py ......                                                [ 12%]
+tests\test_document_parser.py ...........                                [ 18%]
+tests\test_document_processor.py .............                           [ 24%]
+tests\test_evaluate_quality.py ........                                  [ 28%]
+tests\test_generator_verifier.py .............................           [ 43%]
+tests\test_hybrid_retriever.py ...........................               [ 56%]
+tests\test_llm_http.py ..........                                        [ 61%]
+tests\test_pipeline.py ....................                              [ 71%]
+tests\test_rag.py ....                                                   [ 73%]
+tests\test_release.py ....                                               [ 75%]
+tests\test_settings.py ...............                                   [ 83%]
+tests\test_start_rag.py ....                                             [ 85%]
+tests\test_streamlit.py ......                                           [ 88%]
+tests\test_summarization.py ...........                                  [ 93%]
+tests\test_verify_environment.py ........                                [ 97%]
+tests\test_web_bridge.py .....                                           [100%]
+
+============================ 200 passed in 21.02s =============================
