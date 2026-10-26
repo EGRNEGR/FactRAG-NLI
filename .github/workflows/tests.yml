@@ -22,7 +22,7 @@ jobs:
       - name: Install CPU PyTorch
         run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: Install project
-        run: python -m pip install -e ".[web,documents,retrieval,audit,dev]" httpx==0.28.1 "transformers>=4.40"
+        run: python -m pip install -e ".[web,documents,retrieval,audit,release,dev]" httpx==0.28.1 "transformers>=4.40"
       - name: Unit tests
         run: python -m pytest
       - name: Lint
