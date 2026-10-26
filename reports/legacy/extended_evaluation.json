@@ -1,0 +1,4487 @@
+{
+  "kind": "real_ab_evaluation",
+  "dataset": "data/extended_dataset_v2.json",
+  "dataset_sha256": "16aa09ced891263f12eeca10f8b1c584a89bf08eb5419abdada9a390513d239b",
+  "profiles": {
+    "baseline": {
+      "premise_guard": false,
+      "nli_strong_entailment_enabled": false,
+      "max_tokens": 1024
+    },
+    "improved": {
+      "premise_guard": true,
+      "nli_strong_entailment_enabled": true,
+      "nli_strong_entailment_threshold": 0.7,
+      "max_tokens": 512
+    }
+  },
+  "llama_server_flags": "-ngl 35 -c 4096 -b 128 -ub 64 -np 1",
+  "baseline": {
+    "stats": {
+      "positive_answered": 23,
+      "negative_refused": 9,
+      "adversarial_correct": 13,
+      "errors": 0,
+      "refusals_by_reason": {
+        "nli_verification_failed": 15,
+        "llm_refusal": 5,
+        "relevance_threshold_not_met": 1
+      },
+      "claims_total": 74,
+      "claims_verified": 43
+    },
+    "results": [
+      {
+        "test_id": "POS-001",
+        "question_type": "Positive",
+        "question": "Which request methods does RFC 9110 define as idempotent?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "fe4f76bebc13e2b9",
+            "rerank_score": 0.9964063763618469
+          },
+          {
+            "chunk_id": "092274057b4e89dc",
+            "rerank_score": 0.28378137946128845
+          },
+          {
+            "chunk_id": "29ebaf2555b63020",
+            "rerank_score": 0.07369627058506012
+          }
+        ],
+        "claims": [
+          {
+            "claim": "RFC 9110 определяет методы PUT, DELETE и безопасные методы как идемпотентные [S1].",
+            "status": "contradiction",
+            "confidence": 0.4501359760761261
+          }
+        ],
+        "correct": false,
+        "wall_ms": 20987.78239999956
+      },
+      {
+        "test_id": "POS-002",
+        "question_type": "Positive",
+        "question": "What does the 408 (Request Timeout) status code indicate in RFC 9110?",
+        "expected_behavior": "answer",
+        "answer": "The 408 (Request Timeout) status code indicates that the server did not receive a complete request message within the time it was prepared to wait. [S1]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "04c1911982d4d83e",
+            "rerank_score": 0.9994966983795166
+          },
+          {
+            "chunk_id": "315e4a07746ff94e",
+            "rerank_score": 0.8289388418197632
+          },
+          {
+            "chunk_id": "e23ed9c205c88aec",
+            "rerank_score": 0.12852513790130615
+          },
+          {
+            "chunk_id": "507ad70ad84d59f2",
+            "rerank_score": 0.08269733935594559
+          }
+        ],
+        "claims": [
+          {
+            "claim": "The 408 (Request Timeout) status code indicates that the server did not receive a complete request message within the time it was prepared to wait. [S1]",
+            "status": "verified",
+            "confidence": 0.46446898579597473
+          }
+        ],
+        "correct": true,
+        "wall_ms": 14099.910599994473
+      },
+      {
+        "test_id": "POS-003",
+        "question_type": "Positive",
+        "question": "What does the 203 (Non-Authoritative Information) status code indicate?",
+        "expected_behavior": "answer",
+        "answer": "Код состояния 203 (Non-Authoritative Information) указывает, что запрос был успешным, но включённый контент был изменён от оригинального ответа сервера 200 (OK) прокси-сервером, выполняющим трансформацию [S1].\nЭтот статус код позволяет прокси-серверу уведомить получателей о применении трансформации, так как это может повлиять на будущие решения относительно содержимого [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "9e3588086abc4606",
+            "rerank_score": 0.999929666519165
+          },
+          {
+            "chunk_id": "e9de076887aed65c",
+            "rerank_score": 0.9755768775939941
+          },
+          {
+            "chunk_id": "7bd58d333f96da3b",
+            "rerank_score": 0.7057850360870361
+          },
+          {
+            "chunk_id": "491ecae50abb34eb",
+            "rerank_score": 0.7520125508308411
+          },
+          {
+            "chunk_id": "51e6d4bd354dccf2",
+            "rerank_score": 0.516839325428009
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Код состояния 203 (Non-Authoritative Information) указывает, что запрос был успешным, но включённый контент был изменён от оригинального ответа сервера 200 (OK) прокси-сервером, выполняющим трансформацию [S1].",
+            "status": "verified",
+            "confidence": 0.4078318178653717
+          },
+          {
+            "claim": "Этот статус код позволяет прокси-серверу уведомить получателей о применении трансформации, так как это может повлиять на будущие решения относительно содержимого [S1].",
+            "status": "verified",
+            "confidence": 0.9062074422836304
+          }
+        ],
+        "correct": true,
+        "wall_ms": 24187.49740000203
+      },
+      {
+        "test_id": "POS-004",
+        "question_type": "Positive",
+        "question": "Как завершается HTTP-ответ 204 No Content и может ли он содержать контент по RFC 9110?",
+        "expected_behavior": "answer",
+        "answer": "Он не может содержать контент или трейлеры [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.5,
+        "sources": [
+          {
+            "chunk_id": "5af5f06f925f8fa1",
+            "rerank_score": 0.9648551344871521
+          },
+          {
+            "chunk_id": "6b4a58f420ca2739",
+            "rerank_score": 0.7853085398674011
+          },
+          {
+            "chunk_id": "7bf2a77631ce3bff",
+            "rerank_score": 0.3720487952232361
+          },
+          {
+            "chunk_id": "4d1ab27822cc82b5",
+            "rerank_score": 0.28696784377098083
+          },
+          {
+            "chunk_id": "2d79a23f61bb158d",
+            "rerank_score": 0.1037486344575882
+          }
+        ],
+        "claims": [
+          {
+            "claim": "HTTP-ответ 204 No Content завершается в конце раздела заголовков [S1].",
+            "status": "contradiction",
+            "confidence": 0.2988678216934204
+          },
+          {
+            "claim": "Он не может содержать контент или трейлеры [S1].",
+            "status": "verified",
+            "confidence": 0.8908957242965698
+          }
+        ],
+        "correct": true,
+        "wall_ms": 17871.706800004176
+      },
+      {
+        "test_id": "POS-005",
+        "question_type": "Positive",
+        "question": "Какие методы RFC 9110 определяет как безопасные (safe)?",
+        "expected_behavior": "answer",
+        "answer": "Методы GET, HEAD, OPTIONS и TRACE определяются как безопасные (safe) [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "0f8407fb9756e0a6",
+            "rerank_score": 0.9773707389831543
+          },
+          {
+            "chunk_id": "b74bdff0d8837206",
+            "rerank_score": 0.05749328061938286
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Методы GET, HEAD, OPTIONS и TRACE определяются как безопасные (safe) [S1].",
+            "status": "verified",
+            "confidence": 0.9975106716156006
+          }
+        ],
+        "correct": true,
+        "wall_ms": 10307.709700005944
+      },
+      {
+        "test_id": "POS-006",
+        "question_type": "Positive",
+        "question": "What limit does RFC 9000 impose on a server sending data prior to client address validation?",
+        "expected_behavior": "answer",
+        "answer": "Серверы не должны отправлять более трех раз больше байтов, чем те, которые они получили, до проверки адреса клиента [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "74815bb5f1e6df5d",
+            "rerank_score": 0.8080672025680542
+          },
+          {
+            "chunk_id": "0edfc9a5efab5c0c",
+            "rerank_score": 0.6220002174377441
+          },
+          {
+            "chunk_id": "9b88a33fad974256",
+            "rerank_score": 0.5893619060516357
+          },
+          {
+            "chunk_id": "3958419e97a1a348",
+            "rerank_score": 0.3665897250175476
+          },
+          {
+            "chunk_id": "ccf49e8c677be62e",
+            "rerank_score": 0.2751297354698181
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Серверы не должны отправлять более трех раз больше байтов, чем те, которые они получили, до проверки адреса клиента [S1].",
+            "status": "verified",
+            "confidence": 0.4763486385345459
+          }
+        ],
+        "correct": true,
+        "wall_ms": 17742.674600005557
+      },
+      {
+        "test_id": "POS-007",
+        "question_type": "Positive",
+        "question": "What does RFC 9000 say about 0-RTT data and replay attacks?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "f53bde18a7575dd6",
+            "rerank_score": 0.8418256044387817
+          },
+          {
+            "chunk_id": "04c591e0dd7fc4b5",
+            "rerank_score": 0.31153160333633423
+          },
+          {
+            "chunk_id": "9b40e60987c02c32",
+            "rerank_score": 0.06754669547080994
+          },
+          {
+            "chunk_id": "1a8fbde023e2400d",
+            "rerank_score": 0.08035746961832047
+          },
+          {
+            "chunk_id": "3d529066a724c230",
+            "rerank_score": 0.053403329104185104
+          }
+        ],
+        "claims": [
+          {
+            "claim": "0-RTT allows application data to be sent by a client before receiving a response from the server.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "However, 0-RTT provides no protection against replay attacks;",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "see Section 9.2 of [QUIC-TLS]. [S1]",
+            "status": "unverified",
+            "confidence": 0.7848196625709534
+          }
+        ],
+        "correct": false,
+        "wall_ms": 23753.343700002006
+      },
+      {
+        "test_id": "POS-008",
+        "question_type": "Positive",
+        "question": "Какой минимальный максимальный размер дейтаграммы должен поддерживать сетевой тракт, чтобы можно было использовать QUIC?",
+        "expected_behavior": "answer",
+        "answer": "Минимальный максимальный размер дейтаграммы, который должен поддерживать сетевой тракт для использования QUIC, составляет 1200 байт [S1], [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "839ed2b860c7a09f",
+            "rerank_score": 0.9970190525054932
+          },
+          {
+            "chunk_id": "e33ece21fbc1d74b",
+            "rerank_score": 0.9820137619972229
+          },
+          {
+            "chunk_id": "627869970f4558bd",
+            "rerank_score": 0.907312273979187
+          },
+          {
+            "chunk_id": "1c3fef7141701df9",
+            "rerank_score": 0.8688268065452576
+          },
+          {
+            "chunk_id": "76302f9ea6f9b5fe",
+            "rerank_score": 0.6601723432540894
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Минимальный максимальный размер дейтаграммы, который должен поддерживать сетевой тракт для использования QUIC, составляет 1200 байт [S1], [S2].",
+            "status": "verified",
+            "confidence": 0.8804747462272644
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21083.01329999813
+      },
+      {
+        "test_id": "POS-009",
+        "question_type": "Positive",
+        "question": "How does QUIC support connection migration to a new network path?",
+        "expected_behavior": "answer",
+        "answer": "QUIC supports connection migration to a new network path using connection identifiers, allowing connections to transfer to a new network path after the handshake is confirmed [S1].\nAn endpoint must not initiate migration before the handshake is confirmed [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.6666666666666666,
+        "sources": [
+          {
+            "chunk_id": "a3596e2285285165",
+            "rerank_score": 0.9489172697067261
+          },
+          {
+            "chunk_id": "6936b0795100cef8",
+            "rerank_score": 0.4692769944667816
+          },
+          {
+            "chunk_id": "344fe822d9b7c15d",
+            "rerank_score": 0.4971771836280823
+          },
+          {
+            "chunk_id": "a45627654f1d7f5a",
+            "rerank_score": 0.5636181831359863
+          },
+          {
+            "chunk_id": "878df30f875c4191",
+            "rerank_score": 0.8902942538261414
+          }
+        ],
+        "claims": [
+          {
+            "claim": "QUIC supports connection migration to a new network path using connection identifiers, allowing connections to transfer to a new network path after the handshake is confirmed [S1].",
+            "status": "verified",
+            "confidence": 0.9976486563682556
+          },
+          {
+            "claim": "An endpoint must not initiate migration before the handshake is confirmed [S1].",
+            "status": "verified",
+            "confidence": 0.9283412098884583
+          },
+          {
+            "claim": "If the peer sent the disable_active_migration transport parameter, an endpoint must not send packets from a different local address unless it has acted on a preferred_address transport parameter from the peer [S1].",
+            "status": "unverified",
+            "confidence": 0.9471566081047058
+          }
+        ],
+        "correct": true,
+        "wall_ms": 24773.38779999991
+      },
+      {
+        "test_id": "POS-010",
+        "question_type": "Positive",
+        "question": "Which media types are defined for JSON and XML problem details in RFC 9457?",
+        "expected_behavior": "answer",
+        "answer": "For JSON problem details, the media type is \"application/problem+json\" [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.5,
+        "sources": [
+          {
+            "chunk_id": "d68970adcf3cbba8",
+            "rerank_score": 0.8092759251594543
+          },
+          {
+            "chunk_id": "0a1dc5739fb1ed42",
+            "rerank_score": 0.4979706406593323
+          },
+          {
+            "chunk_id": "8ec528ccf6a392e3",
+            "rerank_score": 0.169956237077713
+          },
+          {
+            "chunk_id": "b597075ff9aabda1",
+            "rerank_score": 0.07585817575454712
+          },
+          {
+            "chunk_id": "b0af88d62dd1fbe7",
+            "rerank_score": 0.05184546485543251
+          }
+        ],
+        "claims": [
+          {
+            "claim": "For JSON problem details, the media type is \"application/problem+json\" [S1].",
+            "status": "verified",
+            "confidence": 0.9644258618354797
+          },
+          {
+            "claim": "For XML problem details, the media type is \"application/problem+xml\" [S1].",
+            "status": "contradiction",
+            "confidence": 0.3528139591217041
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21025.260399997933
+      },
+      {
+        "test_id": "POS-011",
+        "question_type": "Positive",
+        "question": "What must generators do regarding the 'status' member and the actual HTTP response status code in RFC 9457?",
+        "expected_behavior": "answer",
+        "answer": "Генераторы обязаны использовать тот же статус-код в фактической HTTP-ответе, чтобы обеспечить правильное поведение универсального HTTP-софта, который не понимает этот формат [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "f7ba08385f1b148f",
+            "rerank_score": 0.9981324076652527
+          },
+          {
+            "chunk_id": "1d440e95f8e4242f",
+            "rerank_score": 0.9449946880340576
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Генераторы обязаны использовать тот же статус-код в фактической HTTP-ответе, чтобы обеспечить правильное поведение универсального HTTP-софта, который не понимает этот формат [S1].",
+            "status": "verified",
+            "confidence": 0.7902608513832092
+          }
+        ],
+        "correct": true,
+        "wall_ms": 12843.562300004123
+      },
+      {
+        "test_id": "POS-012",
+        "question_type": "Positive",
+        "question": "How must clients consuming problem details treat extensions they don't recognize?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "a6781d450e942b09",
+            "rerank_score": 0.9979493021965027
+          },
+          {
+            "chunk_id": "0bca288616183b4a",
+            "rerank_score": 0.7000752091407776
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Клиенты, использующие детали проблемы, должны игнорировать любые такие расширения, которые они не распознают [S1].",
+            "status": "unverified",
+            "confidence": 0.8926663398742676
+          }
+        ],
+        "correct": false,
+        "wall_ms": 9752.362700004596
+      },
+      {
+        "test_id": "POS-013",
+        "question_type": "Positive",
+        "question": "What is the size of the UUID format according to RFC 9562?",
+        "expected_behavior": "answer",
+        "answer": "UUID format is 16 octets (128 bits) in size [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "b235a831716fcdf6",
+            "rerank_score": 0.9935117363929749
+          },
+          {
+            "chunk_id": "583cbf2719835c00",
+            "rerank_score": 0.9511421918869019
+          },
+          {
+            "chunk_id": "841111f2c69d633f",
+            "rerank_score": 0.8300437331199646
+          },
+          {
+            "chunk_id": "86bc896f68773596",
+            "rerank_score": 0.22135066986083984
+          },
+          {
+            "chunk_id": "090844297ec68607",
+            "rerank_score": 0.08509904146194458
+          }
+        ],
+        "claims": [
+          {
+            "claim": "UUID format is 16 octets (128 bits) in size [S1].",
+            "status": "verified",
+            "confidence": 0.8062662482261658
+          }
+        ],
+        "correct": true,
+        "wall_ms": 17980.11480000423
+      },
+      {
+        "test_id": "POS-014",
+        "question_type": "Positive",
+        "question": "What is the Nil UUID and how is it specified?",
+        "expected_behavior": "answer",
+        "answer": "Nil UUID — это специальная форма UUID, в которой все 128 бит установлены в ноль: 00000000-0000-0000-0000-000000000000 [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "8b3d8f09e8563396",
+            "rerank_score": 0.9970190525054932
+          },
+          {
+            "chunk_id": "c97012f363e40754",
+            "rerank_score": 0.9059898257255554
+          },
+          {
+            "chunk_id": "841111f2c69d633f",
+            "rerank_score": 0.07477004081010818
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Nil UUID — это специальная форма UUID, в которой все 128 бит установлены в ноль: 00000000-0000-0000-0000-000000000000 [S2].",
+            "status": "verified",
+            "confidence": 0.5921905636787415
+          }
+        ],
+        "correct": true,
+        "wall_ms": 15583.065999999235
+      },
+      {
+        "test_id": "POS-015",
+        "question_type": "Positive",
+        "question": "Сколько бит занимает поле unix_ts_ms в UUIDv7 и что оно содержит?",
+        "expected_behavior": "answer",
+        "answer": "Поле unix_ts_ms в UUIDv7 занимает 48 бит [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.5,
+        "sources": [
+          {
+            "chunk_id": "6729582690f7ec5b",
+            "rerank_score": 0.9744347929954529
+          },
+          {
+            "chunk_id": "63f8a303e58810df",
+            "rerank_score": 0.9763104915618896
+          },
+          {
+            "chunk_id": "d6ec1247b8c87d22",
+            "rerank_score": 0.6680145263671875
+          },
+          {
+            "chunk_id": "6f5500f5372f90f7",
+            "rerank_score": 0.4196479320526123
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Поле unix_ts_ms в UUIDv7 занимает 48 бит [S1].",
+            "status": "verified",
+            "confidence": 0.9162369966506958
+          },
+          {
+            "claim": "Оно содержит число миллисекунд с начала эпохи Unix (с 1 января 1970 года, UTC, без учёта високосных секунд) [S2].",
+            "status": "unverified",
+            "confidence": 0.9546855688095093
+          }
+        ],
+        "correct": true,
+        "wall_ms": 22659.347900000284
+      },
+      {
+        "test_id": "POS-016",
+        "question_type": "Positive",
+        "question": "Как RFC 9562 рекомендует хранить UUID в базах данных?",
+        "expected_behavior": "answer",
+        "answer": "Поэтому, где это возможно, UUID ДОЛЖНЫ храниться в базовых 128-битных двоичных значениях [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.5,
+        "sources": [
+          {
+            "chunk_id": "583cbf2719835c00",
+            "rerank_score": 0.6884684562683105
+          },
+          {
+            "chunk_id": "433ca724d9732184",
+            "rerank_score": 0.8233283758163452
+          },
+          {
+            "chunk_id": "ded9ced84594074e",
+            "rerank_score": 0.154057577252388
+          },
+          {
+            "chunk_id": "07a84a96e5abe3fe",
+            "rerank_score": 0.11124119907617569
+          },
+          {
+            "chunk_id": "feb717606751c505",
+            "rerank_score": 0.06560483574867249
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Для многих приложений, таких как базы данных, хранение UUID в виде текста неоправданно громоздко, требуя 288 бит для представления 128-битных UUID-значений.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "Поэтому, где это возможно, UUID ДОЛЖНЫ храниться в базовых 128-битных двоичных значениях [S2].",
+            "status": "verified",
+            "confidence": 0.9613141417503357
+          }
+        ],
+        "correct": true,
+        "wall_ms": 26059.611299999233
+      },
+      {
+        "test_id": "POS-017",
+        "question_type": "Positive",
+        "question": "What minimum password length does SP 800-63B require when the password is the single authentication factor?",
+        "expected_behavior": "answer",
+        "answer": "Пароли, используемые как единственный фактор аутентификации, должны быть не менее 15 символов в длину. [S1]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "e0e393ad8a7dd28c",
+            "rerank_score": 0.9184802770614624
+          },
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.8991213440895081
+          },
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.5370413661003113
+          },
+          {
+            "chunk_id": "dc4f1954c7de294c",
+            "rerank_score": 0.10087862610816956
+          },
+          {
+            "chunk_id": "e7f207f5dd08ffa8",
+            "rerank_score": 0.3886180520057678
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Пароли, используемые как единственный фактор аутентификации, должны быть не менее 15 символов в длину. [S1]",
+            "status": "verified",
+            "confidence": 0.9949942231178284
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21693.895800002792
+      },
+      {
+        "test_id": "POS-018",
+        "question_type": "Positive",
+        "question": "After how many consecutive failed authentication attempts with a specific authenticator must it be disabled, per SP 800-63B?",
+        "expected_behavior": "answer",
+        "answer": "После 100 последовательных неудачных попыток аутентификации с использованием конкретного аутентификатора он должен быть отключен. [S2]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "fabe73f8c5c9b7df",
+            "rerank_score": 0.9928786158561707
+          },
+          {
+            "chunk_id": "7c0e877f2b2a7b4e",
+            "rerank_score": 0.9883127808570862
+          },
+          {
+            "chunk_id": "e18b38474955d569",
+            "rerank_score": 0.894789457321167
+          },
+          {
+            "chunk_id": "82b2abbb55a9df6e",
+            "rerank_score": 0.8887587189674377
+          },
+          {
+            "chunk_id": "53c892a2644c24fa",
+            "rerank_score": 0.7918210625648499
+          }
+        ],
+        "claims": [
+          {
+            "claim": "После 100 последовательных неудачных попыток аутентификации с использованием конкретного аутентификатора он должен быть отключен. [S2]",
+            "status": "verified",
+            "confidence": 0.956347644329071
+          }
+        ],
+        "correct": true,
+        "wall_ms": 23789.789800001017
+      },
+      {
+        "test_id": "POS-019",
+        "question_type": "Positive",
+        "question": "What false match rate (FMR) must a biometric system operate with per SP 800-63B?",
+        "expected_behavior": "answer",
+        "answer": "The biometric system SHALL operate with an FMR of one in 10000 or better for all demographic groups [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "3cd333fd7b16b771",
+            "rerank_score": 0.8624675869941711
+          },
+          {
+            "chunk_id": "c0ea2a373f959ff3",
+            "rerank_score": 0.5573635101318359
+          },
+          {
+            "chunk_id": "f0ebffe1a4e69804",
+            "rerank_score": 0.4452883005142212
+          },
+          {
+            "chunk_id": "ff5724b9d70878a3",
+            "rerank_score": 0.6469064354896545
+          },
+          {
+            "chunk_id": "e7f207f5dd08ffa8",
+            "rerank_score": 0.09807931631803513
+          }
+        ],
+        "claims": [
+          {
+            "claim": "The biometric system SHALL operate with an FMR of one in 10000 or better for all demographic groups [S1].",
+            "status": "verified",
+            "confidence": 0.8768287301063538
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21676.109399995767
+      },
+      {
+        "test_id": "POS-020",
+        "question_type": "Positive",
+        "question": "Какие таймауты реаутентификации установлены для AAL2 в SP 800-63B?",
+        "expected_behavior": "answer",
+        "answer": "Для AAL2 устанавливается определённый таймаут реаутентификации, который должен составлять не более 24 часов [S1].\nВремя неактивности должно составлять не более 1 часа [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "32db5def577f7028",
+            "rerank_score": 0.9688562154769897
+          },
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.38676342368125916
+          },
+          {
+            "chunk_id": "704606879123816f",
+            "rerank_score": 0.8322367072105408
+          },
+          {
+            "chunk_id": "ac65ebf56433712a",
+            "rerank_score": 0.35667070746421814
+          },
+          {
+            "chunk_id": "cb7f61371e3ae1c9",
+            "rerank_score": 0.2885690927505493
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Для AAL2 устанавливается определённый таймаут реаутентификации, который должен составлять не более 24 часов [S1].",
+            "status": "verified",
+            "confidence": 0.9973739385604858
+          },
+          {
+            "claim": "Время неактивности должно составлять не более 1 часа [S1].",
+            "status": "verified",
+            "confidence": 0.9776516556739807
+          }
+        ],
+        "correct": true,
+        "wall_ms": 23755.983600000036
+      },
+      {
+        "test_id": "POS-021",
+        "question_type": "Positive",
+        "question": "Разрешено ли в SP 800-63B биометрическое сравнение по голосу?",
+        "expected_behavior": "answer",
+        "answer": "Биометрическое сравнение по голосу не разрешено [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.16559311747550964
+          },
+          {
+            "chunk_id": "3a882a3ede14f160",
+            "rerank_score": 0.3821414113044739
+          },
+          {
+            "chunk_id": "e7f207f5dd08ffa8",
+            "rerank_score": 0.18126320838928223
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Биометрическое сравнение по голосу не разрешено [S2].",
+            "status": "verified",
+            "confidence": 0.998145580291748
+          }
+        ],
+        "correct": true,
+        "wall_ms": 14080.727799999295
+      },
+      {
+        "test_id": "POS-022",
+        "question_type": "Positive",
+        "question": "What is the default ON COMMIT behavior for PostgreSQL temporary tables?",
+        "expected_behavior": "answer",
+        "answer": "По умолчанию для временных таблиц в PostgreSQL поведение ON COMMIT установлено как ON COMMIT PRESERVE ROWS [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "7a7165bfce3990dd",
+            "rerank_score": 0.9978843331336975
+          },
+          {
+            "chunk_id": "015bc8f36a12e492",
+            "rerank_score": 0.9867772459983826
+          },
+          {
+            "chunk_id": "f1a367b500893582",
+            "rerank_score": 0.08509904146194458
+          },
+          {
+            "chunk_id": "581748eb07765559",
+            "rerank_score": 0.449634313583374
+          },
+          {
+            "chunk_id": "72690e505b9aaf55",
+            "rerank_score": 0.06278920918703079
+          }
+        ],
+        "claims": [
+          {
+            "claim": "По умолчанию для временных таблиц в PostgreSQL поведение ON COMMIT установлено как ON COMMIT PRESERVE ROWS [S1].",
+            "status": "verified",
+            "confidence": 0.8665930032730103
+          }
+        ],
+        "correct": true,
+        "wall_ms": 19687.124199997925
+      },
+      {
+        "test_id": "POS-023",
+        "question_type": "Positive",
+        "question": "Can the autovacuum daemon vacuum or analyze temporary tables in PostgreSQL?",
+        "expected_behavior": "answer",
+        "answer": "The autovacuum daemon cannot vacuum or analyze temporary tables in PostgreSQL [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "fa35f2984fb8c7d4",
+            "rerank_score": 0.9991704225540161
+          },
+          {
+            "chunk_id": "9498422be89951e9",
+            "rerank_score": 0.9863631129264832
+          },
+          {
+            "chunk_id": "e555abfbf497e626",
+            "rerank_score": 0.09009299427270889
+          }
+        ],
+        "claims": [
+          {
+            "claim": "The autovacuum daemon cannot vacuum or analyze temporary tables in PostgreSQL [S1].",
+            "status": "verified",
+            "confidence": 0.9965555667877197
+          }
+        ],
+        "correct": true,
+        "wall_ms": 12522.310400003335
+      },
+      {
+        "test_id": "POS-024",
+        "question_type": "Positive",
+        "question": "Сколько колонок может включать ключ партиционирования при range/hash-партиционировании в PostgreSQL и какое ограничение действует для list?",
+        "expected_behavior": "answer",
+        "answer": "При range и hash-партиционировании ключ партиционирования может включать до 32 колонок или выражений [S1].\nДля list-партиционирования ключ партиционирования должен состоять из одной колонки или выражения [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "0db3a215102c2c9f",
+            "rerank_score": 0.9924227595329285
+          },
+          {
+            "chunk_id": "74904d85b81c96e3",
+            "rerank_score": 0.6442251205444336
+          },
+          {
+            "chunk_id": "d1419e9ec5bf2a3f",
+            "rerank_score": 0.10087862610816956
+          },
+          {
+            "chunk_id": "0b6263e5db99c25e",
+            "rerank_score": 0.05834583938121796
+          },
+          {
+            "chunk_id": "17769b1925bba7b2",
+            "rerank_score": 0.188323974609375
+          }
+        ],
+        "claims": [
+          {
+            "claim": "При range и hash-партиционировании ключ партиционирования может включать до 32 колонок или выражений [S1].",
+            "status": "verified",
+            "confidence": 0.989319384098053
+          },
+          {
+            "claim": "Для list-партиционирования ключ партиционирования должен состоять из одной колонки или выражения [S1].",
+            "status": "verified",
+            "confidence": 0.9767827391624451
+          }
+        ],
+        "correct": true,
+        "wall_ms": 23988.051899999846
+      },
+      {
+        "test_id": "POS-025",
+        "question_type": "Positive",
+        "question": "What trade-off does the PostgreSQL indexes chapter describe about using indexes?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "4b544560b990b2ec",
+            "rerank_score": 0.06278920918703079
+          }
+        ],
+        "claims": [],
+        "correct": false,
+        "wall_ms": 7863.382200004708
+      },
+      {
+        "test_id": "POS-026",
+        "question_type": "Positive",
+        "question": "What build configuration does PEP 703 propose to add to CPython?",
+        "expected_behavior": "answer",
+        "answer": "PEP 703 предполагает добавить конфигурацию сборки (--disable-gil) к CPython для возможности выполнения Python-кода без глобального блокировочного интерпретатора (GIL) и с необходимыми изменениями для обеспечения потокобезопасности интерпретатора [S3].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.9977481961250305
+          },
+          {
+            "chunk_id": "5784c98bd23e7654",
+            "rerank_score": 0.7969253659248352
+          },
+          {
+            "chunk_id": "525c8d05b3d4abb3",
+            "rerank_score": 0.7287483215332031
+          },
+          {
+            "chunk_id": "dfb0350b26632b7d",
+            "rerank_score": 0.9976032376289368
+          },
+          {
+            "chunk_id": "48658a35b4ee7010",
+            "rerank_score": 0.9664104580879211
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PEP 703 предполагает добавить конфигурацию сборки (--disable-gil) к CPython для возможности выполнения Python-кода без глобального блокировочного интерпретатора (GIL) и с необходимыми изменениями для обеспечения потокобезопасности интерпретатора [S3].",
+            "status": "verified",
+            "confidence": 0.4185501039028168
+          }
+        ],
+        "correct": true,
+        "wall_ms": 26359.52130000078
+      },
+      {
+        "test_id": "POS-027",
+        "question_type": "Positive",
+        "question": "What single-threaded and multi-threaded execution overhead does PEP 703 report for --disable-gil builds?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "e1e11ad67edfdbb1",
+            "rerank_score": 0.957912266254425
+          },
+          {
+            "chunk_id": "6a4a388d9c807b8b",
+            "rerank_score": 0.8766343593597412
+          },
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.9626730680465698
+          },
+          {
+            "chunk_id": "b16735ec4563269f",
+            "rerank_score": 0.672331690788269
+          },
+          {
+            "chunk_id": "ddb1ee56b7864183",
+            "rerank_score": 0.6315943002700806
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PEP 703 отмечает, что для сборок с параметром --disable-gil увеличится выполнение однопоточной программы по сравнению с Python-построениями с GIL. [S1]",
+            "status": "contradiction",
+            "confidence": 0.5504928231239319
+          },
+          {
+            "claim": "Для многопоточных программ увеличение выполнения будет больше по сравнению с однопоточными программами. [S4]",
+            "status": "contradiction",
+            "confidence": 0.8656192421913147
+          }
+        ],
+        "correct": false,
+        "wall_ms": 27252.62759999896
+      },
+      {
+        "test_id": "POS-028",
+        "question_type": "Positive",
+        "question": "What does PEP 703's build mode roadmap say happens with CPython 3.13 in 2024?",
+        "expected_behavior": "answer",
+        "answer": "In 2024, CPython 3.13 is released with support for a new build mode (--disable-gil) that is not ABI compatible with the standard build mode. [S1]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "525c8d05b3d4abb3",
+            "rerank_score": 0.963230550289154
+          },
+          {
+            "chunk_id": "5784c98bd23e7654",
+            "rerank_score": 0.10669060051441193
+          },
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.06954174488782883
+          },
+          {
+            "chunk_id": "e1e11ad67edfdbb1",
+            "rerank_score": 0.054198723286390305
+          },
+          {
+            "chunk_id": "06b89129be81b3c8",
+            "rerank_score": 0.05665242671966553
+          }
+        ],
+        "claims": [
+          {
+            "claim": "In 2024, CPython 3.13 is released with support for a new build mode (--disable-gil) that is not ABI compatible with the standard build mode. [S1]",
+            "status": "verified",
+            "confidence": 0.4623480439186096
+          }
+        ],
+        "correct": true,
+        "wall_ms": 22065.924900001846
+      },
+      {
+        "test_id": "POS-029",
+        "question_type": "Positive",
+        "question": "What does the CM-6 CONFIGURATION SETTINGS control require in SP 800-53 Rev. 5?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "11c5f72f5fe0cb8d",
+            "rerank_score": 0.5024566650390625
+          },
+          {
+            "chunk_id": "e1d9c194e572b677",
+            "rerank_score": 0.9449946880340576
+          },
+          {
+            "chunk_id": "7a226d5f3c2fbd44",
+            "rerank_score": 0.5549529194831848
+          },
+          {
+            "chunk_id": "d99f4f71fe6684af",
+            "rerank_score": 0.4809662401676178
+          },
+          {
+            "chunk_id": "3f713b9d4ffeb37a",
+            "rerank_score": 0.26435837149620056
+          }
+        ],
+        "claims": [
+          {
+            "claim": "CM-6 CONFIGURATION SETTINGS control in SP 800-53 Rev.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "5 requires establishing and documenting configuration settings for components employed within the system [S2].",
+            "status": "contradiction",
+            "confidence": 0.9620475172996521
+          }
+        ],
+        "correct": false,
+        "wall_ms": 20237.59180000343
+      },
+      {
+        "test_id": "POS-030",
+        "question_type": "Positive",
+        "question": "What does the PS-3 PERSONNEL SCREENING control require?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.2,
+        "sources": [
+          {
+            "chunk_id": "85db94783ee91f64",
+            "rerank_score": 0.9559813141822815
+          },
+          {
+            "chunk_id": "b50719a7ace58c12",
+            "rerank_score": 0.8233283758163452
+          },
+          {
+            "chunk_id": "f9d857fd7870da5c",
+            "rerank_score": 0.4615021347999573
+          },
+          {
+            "chunk_id": "5e75c582e2b5e824",
+            "rerank_score": 0.2628418207168579
+          },
+          {
+            "chunk_id": "e1b4828c6302af73",
+            "rerank_score": 0.3711366057395935
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PS-3 PERSONNEL SCREENING control requires:",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "a.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "Screening individuals prior to authorizing access to the system [S1].",
+            "status": "verified",
+            "confidence": 0.811998724937439
+          },
+          {
+            "claim": "b.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "Rescreening individuals in accordance with organization-defined conditions requiring rescreening and, where rescreening is so indicated, the frequency of rescreening [S1].",
+            "status": "contradiction",
+            "confidence": 0.9884646534919739
+          }
+        ],
+        "correct": false,
+        "wall_ms": 25147.17880000535
+      },
+      {
+        "test_id": "NEG-001",
+        "question_type": "Negative",
+        "question": "Определяет ли RFC 9110 код статуса 511 Network Authentication Required?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "relevance_threshold_not_met",
+        "faithfulness": 0.0,
+        "sources": [],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 861.929799997597
+      },
+      {
+        "test_id": "NEG-002",
+        "question_type": "Negative",
+        "question": "Does RFC 9000 support multipath, i.e., simultaneous transmission of one connection's data over multiple network paths?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "49c7c6e6ca7875bd",
+            "rerank_score": 0.5590493679046631
+          },
+          {
+            "chunk_id": "ec18d16e489cf17b",
+            "rerank_score": 0.20946967601776123
+          },
+          {
+            "chunk_id": "11b935024ebbbd06",
+            "rerank_score": 0.3372035324573517
+          },
+          {
+            "chunk_id": "05651a35a8008d1d",
+            "rerank_score": 0.14128141105175018
+          },
+          {
+            "chunk_id": "878df30f875c4191",
+            "rerank_score": 0.39606815576553345
+          }
+        ],
+        "claims": [
+          {
+            "claim": "RFC 9000 supports simultaneous probing of multiple paths but does not support simultaneous transmission of one connection's data over multiple network paths. [S1], [S2], [S3], [S4].",
+            "status": "contradiction",
+            "confidence": 0.5107642412185669
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21177.757099998416
+      },
+      {
+        "test_id": "NEG-003",
+        "question_type": "Negative",
+        "question": "Does the RFC 9457 problem details JSON object define a \"timestamp\" member?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "0bca288616183b4a",
+            "rerank_score": 0.08756384253501892
+          }
+        ],
+        "claims": [
+          {
+            "claim": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос. [S1]",
+            "status": "contradiction",
+            "confidence": 0.8420460224151611
+          }
+        ],
+        "correct": true,
+        "wall_ms": 7195.1925000030315
+      },
+      {
+        "test_id": "NEG-004",
+        "question_type": "Negative",
+        "question": "Определяет ли RFC 9562 формат UUIDv9?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "583cbf2719835c00",
+            "rerank_score": 0.6791787147521973
+          },
+          {
+            "chunk_id": "841111f2c69d633f",
+            "rerank_score": 0.1127954050898552
+          }
+        ],
+        "claims": [
+          {
+            "claim": "RFC 9562 не определяет формат UUIDv9. [S1], [S2]",
+            "status": "contradiction",
+            "confidence": 0.2976968288421631
+          }
+        ],
+        "correct": true,
+        "wall_ms": 10583.828599999833
+      },
+      {
+        "test_id": "NEG-005",
+        "question_type": "Negative",
+        "question": "Требует ли SP 800-63B использовать алгоритм Argon2 для хеширования паролей?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.7549149990081787
+          },
+          {
+            "chunk_id": "72629b8d9151d60d",
+            "rerank_score": 0.46830427646636963
+          },
+          {
+            "chunk_id": "e7f207f5dd08ffa8",
+            "rerank_score": 0.5114116072654724
+          },
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.3711366057395935
+          },
+          {
+            "chunk_id": "4865b29331b14187",
+            "rerank_score": 0.13386748731136322
+          }
+        ],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 20293.675399996573
+      },
+      {
+        "test_id": "NEG-006",
+        "question_type": "Negative",
+        "question": "Does this edition of SP 800-63B define IAL4 (Identity Assurance Level 4)?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.8080672025680542
+          },
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.24798744916915894
+          },
+          {
+            "chunk_id": "1f5806fc9b6e0e98",
+            "rerank_score": 0.3199707269668579
+          },
+          {
+            "chunk_id": "83f68de586ed95b3",
+            "rerank_score": 0.060086652636528015
+          },
+          {
+            "chunk_id": "e7f207f5dd08ffa8",
+            "rerank_score": 0.10970578342676163
+          }
+        ],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 20923.266099998727
+      },
+      {
+        "test_id": "NEG-007",
+        "question_type": "Negative",
+        "question": "Поддерживает ли CREATE TABLE в PostgreSQL опцию ON COMMIT ROLLBACK для временных таблиц?",
+        "expected_behavior": "refusal",
+        "answer": "Доступны значения PRESERVE ROWS, DELETE ROWS и DROP. [S5]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.5,
+        "sources": [
+          {
+            "chunk_id": "f1a367b500893582",
+            "rerank_score": 0.7839884757995605
+          },
+          {
+            "chunk_id": "7a7165bfce3990dd",
+            "rerank_score": 0.18713268637657166
+          },
+          {
+            "chunk_id": "73ae93d461451a63",
+            "rerank_score": 0.06371499598026276
+          },
+          {
+            "chunk_id": "fc5bed00ed253124",
+            "rerank_score": 0.08151976019144058
+          },
+          {
+            "chunk_id": "015bc8f36a12e492",
+            "rerank_score": 0.12852513790130615
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PostgreSQL поддерживает опцию ON COMMIT для временных таблиц, но не поддерживает значение ROLLBACK.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "Доступны значения PRESERVE ROWS, DELETE ROWS и DROP. [S5]",
+            "status": "verified",
+            "confidence": 0.9362841844558716
+          }
+        ],
+        "correct": false,
+        "wall_ms": 21942.091800003254
+      },
+      {
+        "test_id": "NEG-008",
+        "question_type": "Negative",
+        "question": "Does the PostgreSQL indexes chapter recommend a maximum number of indexes per table?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "17769b1925bba7b2",
+            "rerank_score": 0.09534945338964462
+          }
+        ],
+        "claims": [
+          {
+            "claim": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос. [S1]",
+            "status": "contradiction",
+            "confidence": 0.77908855676651
+          }
+        ],
+        "correct": true,
+        "wall_ms": 8254.189600003883
+      },
+      {
+        "test_id": "NEG-009",
+        "question_type": "Negative",
+        "question": "Does PEP 703 require C extensions to be rewritten in Rust to work without the GIL?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "06b89129be81b3c8",
+            "rerank_score": 0.7162185907363892
+          },
+          {
+            "chunk_id": "5a06e439764f5636",
+            "rerank_score": 0.5770187377929688
+          },
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.13753245770931244
+          },
+          {
+            "chunk_id": "b16735ec4563269f",
+            "rerank_score": 0.09807931631803513
+          },
+          {
+            "chunk_id": "64161941c2aaa73a",
+            "rerank_score": 0.05108273774385452
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PEP 703 не требует переписывания C-расширений на Rust для работы без GIL. [S1]",
+            "status": "contradiction",
+            "confidence": 0.8811726570129395
+          }
+        ],
+        "correct": true,
+        "wall_ms": 20328.65760000277
+      },
+      {
+        "test_id": "NEG-010",
+        "question_type": "Negative",
+        "question": "Does SP 800-53 Rev. 5 define a control or control family with the identifier XY (e.g., XY-1)?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "d70a019dc013d523",
+            "rerank_score": 0.8267117738723755
+          },
+          {
+            "chunk_id": "d29e2b6cb130090b",
+            "rerank_score": 0.20434190332889557
+          },
+          {
+            "chunk_id": "11f6406bc54808f2",
+            "rerank_score": 0.3090237081050873
+          },
+          {
+            "chunk_id": "e81eec86ce2e7588",
+            "rerank_score": 0.10087862610816956
+          }
+        ],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 17919.20179999579
+      },
+      {
+        "test_id": "ADV-001",
+        "question_type": "Adversarial",
+        "question": "RFC 9110 says that a 400 (Bad Request) response indicates the server understood the request but refuses to process it, correct?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "The 400 (Bad Request) status code indicates that the server cannot or will not process the request due to something that is perceived to be a client error [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "1dc8166bab84640b",
+            "rerank_score": 0.9970190525054932
+          },
+          {
+            "chunk_id": "fc2a5aeac9c308ca",
+            "rerank_score": 0.9950946569442749
+          },
+          {
+            "chunk_id": "0b81464d75d06548",
+            "rerank_score": 0.055005285888910294
+          },
+          {
+            "chunk_id": "c446d8c601faba4b",
+            "rerank_score": 0.5576044321060181
+          },
+          {
+            "chunk_id": "2e8c132a48b43d2f",
+            "rerank_score": 0.4287116527557373
+          }
+        ],
+        "claims": [
+          {
+            "claim": "The 400 (Bad Request) status code indicates that the server cannot or will not process the request due to something that is perceived to be a client error [S1].",
+            "status": "verified",
+            "confidence": 0.8968692421913147
+          }
+        ],
+        "correct": true,
+        "wall_ms": 17807.016200000362
+      },
+      {
+        "test_id": "ADV-002",
+        "question_type": "Adversarial",
+        "question": "RFC 9000 утверждает, что 0-RTT-данные защищены от replay-атак, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "0-RTT-данные не защищены от replay-атак; [S1]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "f53bde18a7575dd6",
+            "rerank_score": 0.8322367072105408
+          },
+          {
+            "chunk_id": "04c591e0dd7fc4b5",
+            "rerank_score": 0.0792103186249733
+          },
+          {
+            "chunk_id": "1a8fbde023e2400d",
+            "rerank_score": 0.05033063143491745
+          },
+          {
+            "chunk_id": "9b40e60987c02c32",
+            "rerank_score": 0.09009299427270889
+          }
+        ],
+        "claims": [
+          {
+            "claim": "0-RTT-данные не защищены от replay-атак; [S1]",
+            "status": "verified",
+            "confidence": 0.9544087648391724
+          }
+        ],
+        "correct": true,
+        "wall_ms": 17264.598800000385
+      },
+      {
+        "test_id": "ADV-003",
+        "question_type": "Adversarial",
+        "question": "SP 800-63B classifies passwords as phishing-resistant because they are salted and hashed, correct?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "SP 800-63B требует хранить пароли в защищённом от оффлайн-атак виде, используя соль и хеширование, но не классифицирует пароли как устойчивые к фишингу только из-за этого [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "72629b8d9151d60d",
+            "rerank_score": 0.957277774810791
+          },
+          {
+            "chunk_id": "678c48fec3c12670",
+            "rerank_score": 0.11920291930437088
+          },
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.43398144841194153
+          },
+          {
+            "chunk_id": "cede7ba5e87acb00",
+            "rerank_score": 0.23651622235774994
+          },
+          {
+            "chunk_id": "daefe7314dfa84d5",
+            "rerank_score": 0.07159119844436646
+          }
+        ],
+        "claims": [
+          {
+            "claim": "SP 800-63B требует хранить пароли в защищённом от оффлайн-атак виде, используя соль и хеширование, но не классифицирует пароли как устойчивые к фишингу только из-за этого [S2].",
+            "status": "verified",
+            "confidence": 0.6068829298019409
+          }
+        ],
+        "correct": true,
+        "wall_ms": 26195.638099998177
+      },
+      {
+        "test_id": "ADV-004",
+        "question_type": "Adversarial",
+        "question": "Почему RFC 9110 относит метод DELETE к безопасным (safe) методам наряду с GET и HEAD?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "0f8407fb9756e0a6",
+            "rerank_score": 0.9263036847114563
+          },
+          {
+            "chunk_id": "363b98b135dc664c",
+            "rerank_score": 0.23231014609336853
+          },
+          {
+            "chunk_id": "fe0f42f81e5b05e5",
+            "rerank_score": 0.053403329104185104
+          },
+          {
+            "chunk_id": "83e9e1f572bdbf65",
+            "rerank_score": 0.2727987766265869
+          },
+          {
+            "chunk_id": "fe4f76bebc13e2b9",
+            "rerank_score": 0.08632347732782364
+          }
+        ],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 20534.582399995998
+      },
+      {
+        "test_id": "ADV-005",
+        "question_type": "Adversarial",
+        "question": "In SP 800-63B, the verifier is the entity whose identity is confirmed by the claimant during authentication, correct?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "Заявщик подтверждает свою личность перед верификатором, а не наоборот [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.5,
+        "sources": [
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.9914224743843079
+          },
+          {
+            "chunk_id": "4b42a0bf1de082d1",
+            "rerank_score": 0.9489172697067261
+          },
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.740174412727356
+          },
+          {
+            "chunk_id": "af74f17b06557288",
+            "rerank_score": 0.3048688769340515
+          },
+          {
+            "chunk_id": "72629b8d9151d60d",
+            "rerank_score": 0.5817784070968628
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Верификатор — это сущность, которая подтверждает личность заявщика, проверяя его владение и контроль над одним или несколькими аутентификаторами с помощью аутентификационного протокола [S1].",
+            "status": "unverified",
+            "confidence": 0.9879634380340576
+          },
+          {
+            "claim": "Заявщик подтверждает свою личность перед верификатором, а не наоборот [S2].",
+            "status": "verified",
+            "confidence": 0.9723867177963257
+          }
+        ],
+        "correct": false,
+        "wall_ms": 26648.625800000445
+      },
+      {
+        "test_id": "ADV-006",
+        "question_type": "Adversarial",
+        "question": "Which header field must a server send in a 403 (Forbidden) response to challenge the client to re-authenticate, per RFC 9110?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "80b176d7dd783af5",
+            "rerank_score": 0.954647421836853
+          },
+          {
+            "chunk_id": "0b81464d75d06548",
+            "rerank_score": 0.7676898241043091
+          },
+          {
+            "chunk_id": "e1aa738acd71a605",
+            "rerank_score": 0.36206647753715515
+          },
+          {
+            "chunk_id": "925f615dce42463e",
+            "rerank_score": 0.19682618975639343
+          },
+          {
+            "chunk_id": "c2d797c59cba6b0d",
+            "rerank_score": 0.23934932053089142
+          }
+        ],
+        "claims": [
+          {
+            "claim": "A server must send a WWW-Authenticate header field in a 403 (Forbidden) response to challenge the client to re-authenticate. [S1]",
+            "status": "contradiction",
+            "confidence": 0.5010173320770264
+          }
+        ],
+        "correct": true,
+        "wall_ms": 19047.20699999598
+      },
+      {
+        "test_id": "ADV-007",
+        "question_type": "Adversarial",
+        "question": "Поле unix_ts_ms в UUIDv7 — это 32-битный big-endian номер, не так ли?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "Поле unix_ts_ms в UUIDv7 — это 48-битный big-endian номер, а не 32-битный [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "6729582690f7ec5b",
+            "rerank_score": 0.30985841155052185
+          },
+          {
+            "chunk_id": "63f8a303e58810df",
+            "rerank_score": 0.31658050417900085
+          },
+          {
+            "chunk_id": "d6ec1247b8c87d22",
+            "rerank_score": 0.052618950605392456
+          },
+          {
+            "chunk_id": "5980225e61c5c783",
+            "rerank_score": 0.12940272688865662
+          },
+          {
+            "chunk_id": "6f5500f5372f90f7",
+            "rerank_score": 0.08151976019144058
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Поле unix_ts_ms в UUIDv7 — это 48-битный big-endian номер, а не 32-битный [S1].",
+            "status": "verified",
+            "confidence": 0.9765150547027588
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21334.467400003632
+      },
+      {
+        "test_id": "ADV-008",
+        "question_type": "Adversarial",
+        "question": "Ключ партиционирования при range/hash-партиционировании в PostgreSQL может включать до 64 колонок, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "Ключ партиционирования при range или hash-партиционировании может включать до 32 колонок или выражений [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "0db3a215102c2c9f",
+            "rerank_score": 0.9867772459983826
+          },
+          {
+            "chunk_id": "71255e3a4e692c04",
+            "rerank_score": 0.10087862610816956
+          },
+          {
+            "chunk_id": "a3365a4e5f31985a",
+            "rerank_score": 0.05749328061938286
+          },
+          {
+            "chunk_id": "1b2280a7c36866da",
+            "rerank_score": 0.09401018172502518
+          },
+          {
+            "chunk_id": "d3c0ecf9a3fc25c5",
+            "rerank_score": 0.09401018172502518
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Ключ партиционирования при range или hash-партиционировании может включать до 32 колонок или выражений [S1].",
+            "status": "verified",
+            "confidence": 0.9981364011764526
+          }
+        ],
+        "correct": true,
+        "wall_ms": 15276.100999995833
+      },
+      {
+        "test_id": "ADV-009",
+        "question_type": "Adversarial",
+        "question": "Before validating the client's address, a QUIC server must not send more than twice as many bytes as it has received, right?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "Сервер не должен отправлять более трёх раз больше байтов, чем он получил, до проверки адреса клиента [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "74815bb5f1e6df5d",
+            "rerank_score": 0.9987550973892212
+          },
+          {
+            "chunk_id": "0edfc9a5efab5c0c",
+            "rerank_score": 0.9086179733276367
+          },
+          {
+            "chunk_id": "ccf49e8c677be62e",
+            "rerank_score": 0.8872045874595642
+          },
+          {
+            "chunk_id": "46ba5e767e915a5d",
+            "rerank_score": 0.5832033753395081
+          },
+          {
+            "chunk_id": "71c0847b9acbe807",
+            "rerank_score": 0.30985841155052185
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Сервер не должен отправлять более трёх раз больше байтов, чем он получил, до проверки адреса клиента [S1].",
+            "status": "verified",
+            "confidence": 0.5929380059242249
+          }
+        ],
+        "correct": true,
+        "wall_ms": 17438.711000002513
+      },
+      {
+        "test_id": "ADV-010",
+        "question_type": "Adversarial",
+        "question": "RFC 9562 requires that UUIDs always be stored as the underlying 128-bit binary value in every system, right?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "UUIDs SHOULD be stored within database applications as the underlying 128-bit binary value where feasible [S1].\nFor other systems, UUIDs MAY be stored in binary form or as text, as appropriate [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "433ca724d9732184",
+            "rerank_score": 0.970687747001648
+          },
+          {
+            "chunk_id": "583cbf2719835c00",
+            "rerank_score": 0.7786493301391602
+          },
+          {
+            "chunk_id": "b235a831716fcdf6",
+            "rerank_score": 0.35398629307746887
+          },
+          {
+            "chunk_id": "841111f2c69d633f",
+            "rerank_score": 0.1919327825307846
+          },
+          {
+            "chunk_id": "07a84a96e5abe3fe",
+            "rerank_score": 0.13117322325706482
+          }
+        ],
+        "claims": [
+          {
+            "claim": "UUIDs SHOULD be stored within database applications as the underlying 128-bit binary value where feasible [S1].",
+            "status": "verified",
+            "confidence": 0.9136780500411987
+          },
+          {
+            "claim": "For other systems, UUIDs MAY be stored in binary form or as text, as appropriate [S1].",
+            "status": "verified",
+            "confidence": 0.5646473169326782
+          }
+        ],
+        "correct": true,
+        "wall_ms": 22237.90320000262
+      },
+      {
+        "test_id": "ADV-011",
+        "question_type": "Adversarial",
+        "question": "SP 800-63B обязывает периодически менять пароли — например, каждые 90 дней, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.6800292134284973
+          },
+          {
+            "chunk_id": "72629b8d9151d60d",
+            "rerank_score": 0.13477590680122375
+          },
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.188323974609375
+          },
+          {
+            "chunk_id": "cb6236c4da3eb61f",
+            "rerank_score": 0.15921740233898163
+          }
+        ],
+        "claims": [
+          {
+            "claim": "SP 800-63B не обязывает периодически менять пароли каждые 90 дней. [S4]",
+            "status": "unverified",
+            "confidence": 0.9961087107658386
+          }
+        ],
+        "correct": true,
+        "wall_ms": 18007.8158000033
+      },
+      {
+        "test_id": "ADV-012",
+        "question_type": "Adversarial",
+        "question": "PEP 703 требует полностью удалить GIL из всех сборок CPython начиная с версии 3.13, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "Вместо этого он предлагает добавить конфигурацию сборки (--disable-gil), которая позволяет запускать Python без GIL [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.5,
+        "sources": [
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.5926666259765625
+          },
+          {
+            "chunk_id": "525c8d05b3d4abb3",
+            "rerank_score": 0.7745833992958069
+          },
+          {
+            "chunk_id": "a5352bdb22a94e85",
+            "rerank_score": 0.4812100827693939
+          },
+          {
+            "chunk_id": "06b89129be81b3c8",
+            "rerank_score": 0.3345894515514374
+          },
+          {
+            "chunk_id": "dfb0350b26632b7d",
+            "rerank_score": 0.23370636999607086
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PEP 703 не требует полностью удалить GIL из всех сборок CPython начиная с версии 3.13.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "Вместо этого он предлагает добавить конфигурацию сборки (--disable-gil), которая позволяет запускать Python без GIL [S2].",
+            "status": "verified",
+            "confidence": 0.9906814694404602
+          }
+        ],
+        "correct": false,
+        "wall_ms": 25624.18500000058
+      },
+      {
+        "test_id": "ADV-013",
+        "question_type": "Adversarial",
+        "question": "PEP 703 меняет около 15 000 строк CPython и добавляет mimalloc — значит, отключение GIL происходит без накладных расходов на производительность, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "PEP 703 меняет около 15 000 строк кода в CPython и добавляет mimalloc, который также составляет около 15 000 строк кода [S1].\nБольшинство изменений не связаны с производительностью и могут быть включены как в конфигурацию с отключенным GIL, так и в стандартные сборки [S1].\nОднако, автор не ожидает, что отключение GIL приведет к значительному улучшению производительности однопоточных программ [S1].\nОтключение GIL не гарантирует отсутствие накладных расходов на производительность [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "91b6679a6279a015",
+            "rerank_score": 0.9799765348434448
+          },
+          {
+            "chunk_id": "b8c14c603c6f0131",
+            "rerank_score": 0.9184802770614624
+          },
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.13117322325706482
+          },
+          {
+            "chunk_id": "dfb0350b26632b7d",
+            "rerank_score": 0.2240554392337799
+          },
+          {
+            "chunk_id": "6a4a388d9c807b8b",
+            "rerank_score": 0.2901756167411804
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PEP 703 меняет около 15 000 строк кода в CPython и добавляет mimalloc, который также составляет около 15 000 строк кода [S1].",
+            "status": "verified",
+            "confidence": 0.7427762746810913
+          },
+          {
+            "claim": "Большинство изменений не связаны с производительностью и могут быть включены как в конфигурацию с отключенным GIL, так и в стандартные сборки [S1].",
+            "status": "verified",
+            "confidence": 0.9959595799446106
+          },
+          {
+            "claim": "Однако, автор не ожидает, что отключение GIL приведет к значительному улучшению производительности однопоточных программ [S1].",
+            "status": "verified",
+            "confidence": 0.9650189876556396
+          },
+          {
+            "claim": "Отключение GIL не гарантирует отсутствие накладных расходов на производительность [S1].",
+            "status": "verified",
+            "confidence": 0.8484984636306763
+          }
+        ],
+        "correct": true,
+        "wall_ms": 34606.24749999988
+      },
+      {
+        "test_id": "ADV-014",
+        "question_type": "Adversarial",
+        "question": "Раз SP 800-53 Rev. 5 определяет семью Configuration Management, значит, в публикации перечислено 21 семейство контролей, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "d70a019dc013d523",
+            "rerank_score": 0.5874698758125305
+          },
+          {
+            "chunk_id": "85c00bd4220205a1",
+            "rerank_score": 0.22541658580303192
+          },
+          {
+            "chunk_id": "3f713b9d4ffeb37a",
+            "rerank_score": 0.10970578342676163
+          },
+          {
+            "chunk_id": "2d23fbda2f4af52f",
+            "rerank_score": 0.05921025574207306
+          },
+          {
+            "chunk_id": "860fd7bbfd9caea2",
+            "rerank_score": 0.3584653437137604
+          }
+        ],
+        "claims": [
+          {
+            "claim": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос. [S1]",
+            "status": "contradiction",
+            "confidence": 0.9781369566917419
+          }
+        ],
+        "correct": true,
+        "wall_ms": 20721.050000000105
+      },
+      {
+        "test_id": "ADV-015",
+        "question_type": "Adversarial",
+        "question": "Problem details можно использовать с любым HTTP-кодом статуса, а поле status в объекте всегда авторитетно и переопределяет реальный код ответа — верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "d68970adcf3cbba8",
+            "rerank_score": 0.9830850958824158
+          },
+          {
+            "chunk_id": "c0588fec00cab5cc",
+            "rerank_score": 0.7969253659248352
+          },
+          {
+            "chunk_id": "6eb779e87ae570d2",
+            "rerank_score": 0.545285701751709
+          },
+          {
+            "chunk_id": "6f88e28258047925",
+            "rerank_score": 0.4054487347602844
+          },
+          {
+            "chunk_id": "2d0c367f27e71167",
+            "rerank_score": 0.35667070746421814
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Problem details можно использовать с любым HTTP-кодом статуса [S1].",
+            "status": "unverified",
+            "confidence": 0.9977096319198608
+          },
+          {
+            "claim": "Поле status в объекте не всегда авторитетно и не переопределяет реальный код ответа [S1].",
+            "status": "unverified",
+            "confidence": 0.9919160008430481
+          }
+        ],
+        "correct": true,
+        "wall_ms": 20581.511199998204
+      }
+    ],
+    "indexed_chunks": 5020
+  },
+  "improved": {
+    "stats": {
+      "positive_answered": 22,
+      "negative_refused": 8,
+      "adversarial_correct": 13,
+      "errors": 0,
+      "refusals_by_reason": {
+        "nli_verification_failed": 13,
+        "llm_refusal": 8,
+        "relevance_threshold_not_met": 1
+      },
+      "claims_total": 68,
+      "claims_verified": 40
+    },
+    "results": [
+      {
+        "test_id": "POS-001",
+        "question_type": "Positive",
+        "question": "Which request methods does RFC 9110 define as idempotent?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "fe4f76bebc13e2b9",
+            "rerank_score": 0.9964063763618469
+          },
+          {
+            "chunk_id": "092274057b4e89dc",
+            "rerank_score": 0.28378137946128845
+          },
+          {
+            "chunk_id": "29ebaf2555b63020",
+            "rerank_score": 0.07369627058506012
+          }
+        ],
+        "claims": [
+          {
+            "claim": "RFC 9110 определяет методы PUT, DELETE и безопасные методы как идемпотентные [S1].",
+            "status": "contradiction",
+            "confidence": 0.4501359760761261
+          }
+        ],
+        "correct": false,
+        "wall_ms": 19657.19790000003
+      },
+      {
+        "test_id": "POS-002",
+        "question_type": "Positive",
+        "question": "What does the 408 (Request Timeout) status code indicate in RFC 9110?",
+        "expected_behavior": "answer",
+        "answer": "The 408 (Request Timeout) status code indicates that the server did not receive a complete request message within the time it was prepared to wait. [S1]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "04c1911982d4d83e",
+            "rerank_score": 0.9994966983795166
+          },
+          {
+            "chunk_id": "315e4a07746ff94e",
+            "rerank_score": 0.8289388418197632
+          },
+          {
+            "chunk_id": "e23ed9c205c88aec",
+            "rerank_score": 0.12852513790130615
+          },
+          {
+            "chunk_id": "507ad70ad84d59f2",
+            "rerank_score": 0.08269733935594559
+          }
+        ],
+        "claims": [
+          {
+            "claim": "The 408 (Request Timeout) status code indicates that the server did not receive a complete request message within the time it was prepared to wait. [S1]",
+            "status": "verified",
+            "confidence": 0.46446898579597473
+          }
+        ],
+        "correct": true,
+        "wall_ms": 13761.189600001671
+      },
+      {
+        "test_id": "POS-003",
+        "question_type": "Positive",
+        "question": "What does the 203 (Non-Authoritative Information) status code indicate?",
+        "expected_behavior": "answer",
+        "answer": "Этот статус-код позволяет прокси-серверу уведомить получателей о применении трансформации, так как это может повлиять на будущие решения относительно содержимого [S1].\nЕсли метод запроса GET и статус-код ответа 203, содержимое представляет собой потенциально изменённую или улучшенную версию целевого ресурса, предоставленную промежуточным агентом [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.6666666666666666,
+        "sources": [
+          {
+            "chunk_id": "9e3588086abc4606",
+            "rerank_score": 0.999929666519165
+          },
+          {
+            "chunk_id": "e9de076887aed65c",
+            "rerank_score": 0.9755768775939941
+          },
+          {
+            "chunk_id": "7bd58d333f96da3b",
+            "rerank_score": 0.7057850360870361
+          },
+          {
+            "chunk_id": "491ecae50abb34eb",
+            "rerank_score": 0.7520125508308411
+          },
+          {
+            "chunk_id": "51e6d4bd354dccf2",
+            "rerank_score": 0.516839325428009
+          }
+        ],
+        "claims": [
+          {
+            "claim": "203 (Non-Authoritative Information) статус-код указывает, что запрос был успешным, но включённый контент был изменён от оригинального ответа сервера 200 (OK) прокси-сервером, выполняющим трансформацию [S1].",
+            "status": "contradiction",
+            "confidence": 0.27155110239982605
+          },
+          {
+            "claim": "Этот статус-код позволяет прокси-серверу уведомить получателей о применении трансформации, так как это может повлиять на будущие решения относительно содержимого [S1].",
+            "status": "verified",
+            "confidence": 0.8513992428779602
+          },
+          {
+            "claim": "Если метод запроса GET и статус-код ответа 203, содержимое представляет собой потенциально изменённую или улучшенную версию целевого ресурса, предоставленную промежуточным агентом [S2].",
+            "status": "verified",
+            "confidence": 0.9902504682540894
+          }
+        ],
+        "correct": true,
+        "wall_ms": 29917.01589999866
+      },
+      {
+        "test_id": "POS-004",
+        "question_type": "Positive",
+        "question": "Как завершается HTTP-ответ 204 No Content и может ли он содержать контент по RFC 9110?",
+        "expected_behavior": "answer",
+        "answer": "он не может содержать контент или трейлеры [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.5,
+        "sources": [
+          {
+            "chunk_id": "5af5f06f925f8fa1",
+            "rerank_score": 0.9648551344871521
+          },
+          {
+            "chunk_id": "6b4a58f420ca2739",
+            "rerank_score": 0.7853085398674011
+          },
+          {
+            "chunk_id": "7bf2a77631ce3bff",
+            "rerank_score": 0.3720487952232361
+          },
+          {
+            "chunk_id": "4d1ab27822cc82b5",
+            "rerank_score": 0.28696784377098083
+          },
+          {
+            "chunk_id": "2d79a23f61bb158d",
+            "rerank_score": 0.1037486344575882
+          }
+        ],
+        "claims": [
+          {
+            "claim": "HTTP-ответ 204 No Content завершается в конце раздела заголовков;",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "он не может содержать контент или трейлеры [S1].",
+            "status": "verified",
+            "confidence": 0.8667130470275879
+          }
+        ],
+        "correct": true,
+        "wall_ms": 17795.79019999801
+      },
+      {
+        "test_id": "POS-005",
+        "question_type": "Positive",
+        "question": "Какие методы RFC 9110 определяет как безопасные (safe)?",
+        "expected_behavior": "answer",
+        "answer": "Методы GET, HEAD, OPTIONS и TRACE определяются как безопасные (safe) [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "0f8407fb9756e0a6",
+            "rerank_score": 0.9773707389831543
+          },
+          {
+            "chunk_id": "b74bdff0d8837206",
+            "rerank_score": 0.05749328061938286
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Методы GET, HEAD, OPTIONS и TRACE определяются как безопасные (safe) [S1].",
+            "status": "verified",
+            "confidence": 0.9975106716156006
+          }
+        ],
+        "correct": true,
+        "wall_ms": 10482.324899996456
+      },
+      {
+        "test_id": "POS-006",
+        "question_type": "Positive",
+        "question": "What limit does RFC 9000 impose on a server sending data prior to client address validation?",
+        "expected_behavior": "answer",
+        "answer": "Серверы не должны отправлять более трех раз больше байтов, чем те, которые они получили, до проверки адреса клиента [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "74815bb5f1e6df5d",
+            "rerank_score": 0.8080672025680542
+          },
+          {
+            "chunk_id": "0edfc9a5efab5c0c",
+            "rerank_score": 0.6220002174377441
+          },
+          {
+            "chunk_id": "9b88a33fad974256",
+            "rerank_score": 0.5893619060516357
+          },
+          {
+            "chunk_id": "3958419e97a1a348",
+            "rerank_score": 0.3665897250175476
+          },
+          {
+            "chunk_id": "ccf49e8c677be62e",
+            "rerank_score": 0.2751297354698181
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Серверы не должны отправлять более трех раз больше байтов, чем те, которые они получили, до проверки адреса клиента [S1].",
+            "status": "verified",
+            "confidence": 0.4763486385345459
+          }
+        ],
+        "correct": true,
+        "wall_ms": 17686.074199998984
+      },
+      {
+        "test_id": "POS-007",
+        "question_type": "Positive",
+        "question": "What does RFC 9000 say about 0-RTT data and replay attacks?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "f53bde18a7575dd6",
+            "rerank_score": 0.8418256044387817
+          },
+          {
+            "chunk_id": "04c591e0dd7fc4b5",
+            "rerank_score": 0.31153160333633423
+          },
+          {
+            "chunk_id": "9b40e60987c02c32",
+            "rerank_score": 0.06754669547080994
+          },
+          {
+            "chunk_id": "1a8fbde023e2400d",
+            "rerank_score": 0.08035746961832047
+          },
+          {
+            "chunk_id": "3d529066a724c230",
+            "rerank_score": 0.053403329104185104
+          }
+        ],
+        "claims": [
+          {
+            "claim": "0-RTT allows application data to be sent by a client before receiving a response from the server.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "However, 0-RTT provides no protection against replay attacks;",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "see Section 9.2 of [QUIC-TLS]. [S1]",
+            "status": "unverified",
+            "confidence": 0.7848196625709534
+          }
+        ],
+        "correct": false,
+        "wall_ms": 24211.46380000573
+      },
+      {
+        "test_id": "POS-008",
+        "question_type": "Positive",
+        "question": "Какой минимальный максимальный размер дейтаграммы должен поддерживать сетевой тракт, чтобы можно было использовать QUIC?",
+        "expected_behavior": "answer",
+        "answer": "Минимальный максимальный размер дейтаграммы, который должен поддерживать сетевой тракт для использования QUIC, составляет 1200 байт [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "839ed2b860c7a09f",
+            "rerank_score": 0.9970190525054932
+          },
+          {
+            "chunk_id": "e33ece21fbc1d74b",
+            "rerank_score": 0.9820137619972229
+          },
+          {
+            "chunk_id": "627869970f4558bd",
+            "rerank_score": 0.907312273979187
+          },
+          {
+            "chunk_id": "1c3fef7141701df9",
+            "rerank_score": 0.8688268065452576
+          },
+          {
+            "chunk_id": "76302f9ea6f9b5fe",
+            "rerank_score": 0.6601723432540894
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Минимальный максимальный размер дейтаграммы, который должен поддерживать сетевой тракт для использования QUIC, составляет 1200 байт [S1].",
+            "status": "verified",
+            "confidence": 0.994976282119751
+          }
+        ],
+        "correct": true,
+        "wall_ms": 20937.838500001817
+      },
+      {
+        "test_id": "POS-009",
+        "question_type": "Positive",
+        "question": "How does QUIC support connection migration to a new network path?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.3333333333333333,
+        "sources": [
+          {
+            "chunk_id": "a3596e2285285165",
+            "rerank_score": 0.9489172697067261
+          },
+          {
+            "chunk_id": "6936b0795100cef8",
+            "rerank_score": 0.4692769944667816
+          },
+          {
+            "chunk_id": "344fe822d9b7c15d",
+            "rerank_score": 0.4971771836280823
+          },
+          {
+            "chunk_id": "a45627654f1d7f5a",
+            "rerank_score": 0.5636181831359863
+          },
+          {
+            "chunk_id": "878df30f875c4191",
+            "rerank_score": 0.8902942538261414
+          }
+        ],
+        "claims": [
+          {
+            "claim": "QUIC supports connection migration to a new network path by using connection identifiers, allowing connections to transfer to a new network path.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "Only clients are able to migrate in this version of QUIC [S2].",
+            "status": "verified",
+            "confidence": 0.969741940498352
+          },
+          {
+            "claim": "An endpoint can migrate a connection to a new local address by sending packets containing non-probing frames from that address [S3].",
+            "status": "contradiction",
+            "confidence": 0.3779430091381073
+          }
+        ],
+        "correct": false,
+        "wall_ms": 23691.94399999833
+      },
+      {
+        "test_id": "POS-010",
+        "question_type": "Positive",
+        "question": "Which media types are defined for JSON and XML problem details in RFC 9457?",
+        "expected_behavior": "answer",
+        "answer": "For JSON problem details, the media type is \"application/problem+json\" [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.5,
+        "sources": [
+          {
+            "chunk_id": "d68970adcf3cbba8",
+            "rerank_score": 0.8092759251594543
+          },
+          {
+            "chunk_id": "0a1dc5739fb1ed42",
+            "rerank_score": 0.4979706406593323
+          },
+          {
+            "chunk_id": "8ec528ccf6a392e3",
+            "rerank_score": 0.169956237077713
+          },
+          {
+            "chunk_id": "b597075ff9aabda1",
+            "rerank_score": 0.07585817575454712
+          },
+          {
+            "chunk_id": "b0af88d62dd1fbe7",
+            "rerank_score": 0.05184546485543251
+          }
+        ],
+        "claims": [
+          {
+            "claim": "For JSON problem details, the media type is \"application/problem+json\" [S1].",
+            "status": "verified",
+            "confidence": 0.9644258618354797
+          },
+          {
+            "claim": "For XML problem details, the media type is \"application/problem+xml\" [S1].",
+            "status": "contradiction",
+            "confidence": 0.3528139591217041
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21581.30649999657
+      },
+      {
+        "test_id": "POS-011",
+        "question_type": "Positive",
+        "question": "What must generators do regarding the 'status' member and the actual HTTP response status code in RFC 9457?",
+        "expected_behavior": "answer",
+        "answer": "Генераторы обязаны использовать тот же статус-код в фактической HTTP-ответе, чтобы обеспечить правильное поведение универсального HTTP-программного обеспечения, которое не понимает этот формат. [S1]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "f7ba08385f1b148f",
+            "rerank_score": 0.9981324076652527
+          },
+          {
+            "chunk_id": "1d440e95f8e4242f",
+            "rerank_score": 0.9449946880340576
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Генераторы обязаны использовать тот же статус-код в фактической HTTP-ответе, чтобы обеспечить правильное поведение универсального HTTP-программного обеспечения, которое не понимает этот формат. [S1]",
+            "status": "verified",
+            "confidence": 0.7089459300041199
+          }
+        ],
+        "correct": true,
+        "wall_ms": 13743.050899996888
+      },
+      {
+        "test_id": "POS-012",
+        "question_type": "Positive",
+        "question": "How must clients consuming problem details treat extensions they don't recognize?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "a6781d450e942b09",
+            "rerank_score": 0.9979493021965027
+          },
+          {
+            "chunk_id": "0bca288616183b4a",
+            "rerank_score": 0.7000752091407776
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Клиенты, использующие детали проблемы, должны игнорировать любые такие расширения, которые они не распознают [S1].",
+            "status": "unverified",
+            "confidence": 0.8926663398742676
+          }
+        ],
+        "correct": false,
+        "wall_ms": 9968.512100000225
+      },
+      {
+        "test_id": "POS-013",
+        "question_type": "Positive",
+        "question": "What is the size of the UUID format according to RFC 9562?",
+        "expected_behavior": "answer",
+        "answer": "UUID format is 16 octets (128 bits) in size [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "b235a831716fcdf6",
+            "rerank_score": 0.9935117363929749
+          },
+          {
+            "chunk_id": "583cbf2719835c00",
+            "rerank_score": 0.9511421918869019
+          },
+          {
+            "chunk_id": "841111f2c69d633f",
+            "rerank_score": 0.8300437331199646
+          },
+          {
+            "chunk_id": "86bc896f68773596",
+            "rerank_score": 0.22135066986083984
+          },
+          {
+            "chunk_id": "090844297ec68607",
+            "rerank_score": 0.08509904146194458
+          }
+        ],
+        "claims": [
+          {
+            "claim": "UUID format is 16 octets (128 bits) in size [S1].",
+            "status": "verified",
+            "confidence": 0.8062662482261658
+          }
+        ],
+        "correct": true,
+        "wall_ms": 18237.03559999558
+      },
+      {
+        "test_id": "POS-014",
+        "question_type": "Positive",
+        "question": "What is the Nil UUID and how is it specified?",
+        "expected_behavior": "answer",
+        "answer": "Nil UUID is a special form of UUID specified to have all 128 bits set to zero, represented as 00000000-0000-0000-0000-000000000000 [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "8b3d8f09e8563396",
+            "rerank_score": 0.9970190525054932
+          },
+          {
+            "chunk_id": "c97012f363e40754",
+            "rerank_score": 0.9059898257255554
+          },
+          {
+            "chunk_id": "841111f2c69d633f",
+            "rerank_score": 0.07477004081010818
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Nil UUID is a special form of UUID specified to have all 128 bits set to zero, represented as 00000000-0000-0000-0000-000000000000 [S2].",
+            "status": "verified",
+            "confidence": 0.9748730659484863
+          }
+        ],
+        "correct": true,
+        "wall_ms": 14883.4033000021
+      },
+      {
+        "test_id": "POS-015",
+        "question_type": "Positive",
+        "question": "Сколько бит занимает поле unix_ts_ms в UUIDv7 и что оно содержит?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "6729582690f7ec5b",
+            "rerank_score": 0.9744347929954529
+          },
+          {
+            "chunk_id": "63f8a303e58810df",
+            "rerank_score": 0.9763104915618896
+          },
+          {
+            "chunk_id": "d6ec1247b8c87d22",
+            "rerank_score": 0.6680145263671875
+          },
+          {
+            "chunk_id": "6f5500f5372f90f7",
+            "rerank_score": 0.4196479320526123
+          },
+          {
+            "chunk_id": "94624261bd1fcba6",
+            "rerank_score": 0.4205995798110962
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Поле unix_ts_ms в UUIDv7 занимает 48 бит.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "Оно содержит число миллисекунд с начала эпохи Unix (с 1 января 1970 года) без учёта високосных секунд [S1], [S2].",
+            "status": "contradiction",
+            "confidence": 0.5445811152458191
+          }
+        ],
+        "correct": false,
+        "wall_ms": 26073.60210000479
+      },
+      {
+        "test_id": "POS-016",
+        "question_type": "Positive",
+        "question": "Как RFC 9562 рекомендует хранить UUID в базах данных?",
+        "expected_behavior": "answer",
+        "answer": "Для многих приложений, таких как базы данных, UUIDs должны храниться в виде 128-битного двоичного значения, если это технически возможно [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "583cbf2719835c00",
+            "rerank_score": 0.6884684562683105
+          },
+          {
+            "chunk_id": "433ca724d9732184",
+            "rerank_score": 0.8233283758163452
+          },
+          {
+            "chunk_id": "ded9ced84594074e",
+            "rerank_score": 0.154057577252388
+          },
+          {
+            "chunk_id": "07a84a96e5abe3fe",
+            "rerank_score": 0.11124119907617569
+          },
+          {
+            "chunk_id": "feb717606751c505",
+            "rerank_score": 0.06560483574867249
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Для многих приложений, таких как базы данных, UUIDs должны храниться в виде 128-битного двоичного значения, если это технически возможно [S2].",
+            "status": "verified",
+            "confidence": 0.8755797147750854
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21606.121600001643
+      },
+      {
+        "test_id": "POS-017",
+        "question_type": "Positive",
+        "question": "What minimum password length does SP 800-63B require when the password is the single authentication factor?",
+        "expected_behavior": "answer",
+        "answer": "Verifiers and CSPs SHALL require passwords that are used as a single-factor authentication mechanism to be a minimum of 15 characters in length. [S1]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "e0e393ad8a7dd28c",
+            "rerank_score": 0.9184802770614624
+          },
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.8991213440895081
+          },
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.5370413661003113
+          },
+          {
+            "chunk_id": "dc4f1954c7de294c",
+            "rerank_score": 0.10087862610816956
+          },
+          {
+            "chunk_id": "e7f207f5dd08ffa8",
+            "rerank_score": 0.3886180520057678
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Verifiers and CSPs SHALL require passwords that are used as a single-factor authentication mechanism to be a minimum of 15 characters in length. [S1]",
+            "status": "verified",
+            "confidence": 0.9004483819007874
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21620.89100000594
+      },
+      {
+        "test_id": "POS-018",
+        "question_type": "Positive",
+        "question": "After how many consecutive failed authentication attempts with a specific authenticator must it be disabled, per SP 800-63B?",
+        "expected_behavior": "answer",
+        "answer": "После 100 последовательных неудачных попыток аутентификации с использованием конкретного аутентификатора он должен быть отключен. [S2]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "fabe73f8c5c9b7df",
+            "rerank_score": 0.9928786158561707
+          },
+          {
+            "chunk_id": "7c0e877f2b2a7b4e",
+            "rerank_score": 0.9883127808570862
+          },
+          {
+            "chunk_id": "e18b38474955d569",
+            "rerank_score": 0.894789457321167
+          },
+          {
+            "chunk_id": "82b2abbb55a9df6e",
+            "rerank_score": 0.8887587189674377
+          },
+          {
+            "chunk_id": "53c892a2644c24fa",
+            "rerank_score": 0.7918210625648499
+          }
+        ],
+        "claims": [
+          {
+            "claim": "После 100 последовательных неудачных попыток аутентификации с использованием конкретного аутентификатора он должен быть отключен. [S2]",
+            "status": "verified",
+            "confidence": 0.956347644329071
+          }
+        ],
+        "correct": true,
+        "wall_ms": 23332.520300005854
+      },
+      {
+        "test_id": "POS-019",
+        "question_type": "Positive",
+        "question": "What false match rate (FMR) must a biometric system operate with per SP 800-63B?",
+        "expected_behavior": "answer",
+        "answer": "The biometric system SHALL operate with an FMR of one in 10000 or better for all demographic groups [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "3cd333fd7b16b771",
+            "rerank_score": 0.8624675869941711
+          },
+          {
+            "chunk_id": "c0ea2a373f959ff3",
+            "rerank_score": 0.5573635101318359
+          },
+          {
+            "chunk_id": "f0ebffe1a4e69804",
+            "rerank_score": 0.4452883005142212
+          },
+          {
+            "chunk_id": "ff5724b9d70878a3",
+            "rerank_score": 0.6469064354896545
+          },
+          {
+            "chunk_id": "e7f207f5dd08ffa8",
+            "rerank_score": 0.09807931631803513
+          }
+        ],
+        "claims": [
+          {
+            "claim": "The biometric system SHALL operate with an FMR of one in 10000 or better for all demographic groups [S1].",
+            "status": "verified",
+            "confidence": 0.8768287301063538
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21892.702799996187
+      },
+      {
+        "test_id": "POS-020",
+        "question_type": "Positive",
+        "question": "Какие таймауты реаутентификации установлены для AAL2 в SP 800-63B?",
+        "expected_behavior": "answer",
+        "answer": "Для AAL2 устанавливается общий таймаут реаутентификации, который должен быть не более 24 часов [S1].\nТаймаут бездействия должен быть не более 1 часа [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "32db5def577f7028",
+            "rerank_score": 0.9688562154769897
+          },
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.38676342368125916
+          },
+          {
+            "chunk_id": "704606879123816f",
+            "rerank_score": 0.8322367072105408
+          },
+          {
+            "chunk_id": "ac65ebf56433712a",
+            "rerank_score": 0.35667070746421814
+          },
+          {
+            "chunk_id": "cb7f61371e3ae1c9",
+            "rerank_score": 0.2885690927505493
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Для AAL2 устанавливается общий таймаут реаутентификации, который должен быть не более 24 часов [S1].",
+            "status": "verified",
+            "confidence": 0.9969038367271423
+          },
+          {
+            "claim": "Таймаут бездействия должен быть не более 1 часа [S1].",
+            "status": "verified",
+            "confidence": 0.9906544089317322
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21867.52709999564
+      },
+      {
+        "test_id": "POS-021",
+        "question_type": "Positive",
+        "question": "Разрешено ли в SP 800-63B биометрическое сравнение по голосу?",
+        "expected_behavior": "answer",
+        "answer": "Биометрическое сравнение по голосу не разрешено [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.16559311747550964
+          },
+          {
+            "chunk_id": "3a882a3ede14f160",
+            "rerank_score": 0.3821414113044739
+          },
+          {
+            "chunk_id": "e7f207f5dd08ffa8",
+            "rerank_score": 0.18126320838928223
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Биометрическое сравнение по голосу не разрешено [S2].",
+            "status": "verified",
+            "confidence": 0.998145580291748
+          }
+        ],
+        "correct": true,
+        "wall_ms": 14294.463400001405
+      },
+      {
+        "test_id": "POS-022",
+        "question_type": "Positive",
+        "question": "What is the default ON COMMIT behavior for PostgreSQL temporary tables?",
+        "expected_behavior": "answer",
+        "answer": "По умолчанию для временных таблиц в PostgreSQL поведение ON COMMIT установлено как ON COMMIT PRESERVE ROWS [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "7a7165bfce3990dd",
+            "rerank_score": 0.9978843331336975
+          },
+          {
+            "chunk_id": "015bc8f36a12e492",
+            "rerank_score": 0.9867772459983826
+          },
+          {
+            "chunk_id": "f1a367b500893582",
+            "rerank_score": 0.08509904146194458
+          },
+          {
+            "chunk_id": "581748eb07765559",
+            "rerank_score": 0.449634313583374
+          },
+          {
+            "chunk_id": "72690e505b9aaf55",
+            "rerank_score": 0.06278920918703079
+          }
+        ],
+        "claims": [
+          {
+            "claim": "По умолчанию для временных таблиц в PostgreSQL поведение ON COMMIT установлено как ON COMMIT PRESERVE ROWS [S1].",
+            "status": "verified",
+            "confidence": 0.8665930032730103
+          }
+        ],
+        "correct": true,
+        "wall_ms": 19836.90999999817
+      },
+      {
+        "test_id": "POS-023",
+        "question_type": "Positive",
+        "question": "Can the autovacuum daemon vacuum or analyze temporary tables in PostgreSQL?",
+        "expected_behavior": "answer",
+        "answer": "The autovacuum daemon cannot vacuum or analyze temporary tables. [S1]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "fa35f2984fb8c7d4",
+            "rerank_score": 0.9991704225540161
+          },
+          {
+            "chunk_id": "9498422be89951e9",
+            "rerank_score": 0.9863631129264832
+          },
+          {
+            "chunk_id": "e555abfbf497e626",
+            "rerank_score": 0.09009299427270889
+          }
+        ],
+        "claims": [
+          {
+            "claim": "The autovacuum daemon cannot vacuum or analyze temporary tables. [S1]",
+            "status": "verified",
+            "confidence": 0.9928887486457825
+          }
+        ],
+        "correct": true,
+        "wall_ms": 12790.358999998716
+      },
+      {
+        "test_id": "POS-024",
+        "question_type": "Positive",
+        "question": "Сколько колонок может включать ключ партиционирования при range/hash-партиционировании в PostgreSQL и какое ограничение действует для list?",
+        "expected_behavior": "answer",
+        "answer": "Ключ партиционирования для range и hash-партиционирования может включать до 32 колонок или выражений [S1].\nДля list-партиционирования ключ партиционирования должен состоять из одной колонки или выражения [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "0db3a215102c2c9f",
+            "rerank_score": 0.9924227595329285
+          },
+          {
+            "chunk_id": "74904d85b81c96e3",
+            "rerank_score": 0.6442251205444336
+          },
+          {
+            "chunk_id": "d1419e9ec5bf2a3f",
+            "rerank_score": 0.10087862610816956
+          },
+          {
+            "chunk_id": "0b6263e5db99c25e",
+            "rerank_score": 0.05834583938121796
+          },
+          {
+            "chunk_id": "17769b1925bba7b2",
+            "rerank_score": 0.188323974609375
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Ключ партиционирования для range и hash-партиционирования может включать до 32 колонок или выражений [S1].",
+            "status": "verified",
+            "confidence": 0.9915555119514465
+          },
+          {
+            "claim": "Для list-партиционирования ключ партиционирования должен состоять из одной колонки или выражения [S1].",
+            "status": "verified",
+            "confidence": 0.9767827391624451
+          }
+        ],
+        "correct": true,
+        "wall_ms": 23776.868200002355
+      },
+      {
+        "test_id": "POS-025",
+        "question_type": "Positive",
+        "question": "What trade-off does the PostgreSQL indexes chapter describe about using indexes?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "4b544560b990b2ec",
+            "rerank_score": 0.06278920918703079
+          }
+        ],
+        "claims": [],
+        "correct": false,
+        "wall_ms": 7742.436000000453
+      },
+      {
+        "test_id": "POS-026",
+        "question_type": "Positive",
+        "question": "What build configuration does PEP 703 propose to add to CPython?",
+        "expected_behavior": "answer",
+        "answer": "PEP 703 предполагает добавить конфигурацию сборки (--disable-gil) к CPython для возможности выполнения Python-кода без глобального блокировочного интерпретатора (GIL) [S3].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.9977481961250305
+          },
+          {
+            "chunk_id": "5784c98bd23e7654",
+            "rerank_score": 0.7969253659248352
+          },
+          {
+            "chunk_id": "525c8d05b3d4abb3",
+            "rerank_score": 0.7287483215332031
+          },
+          {
+            "chunk_id": "dfb0350b26632b7d",
+            "rerank_score": 0.9976032376289368
+          },
+          {
+            "chunk_id": "48658a35b4ee7010",
+            "rerank_score": 0.9664104580879211
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PEP 703 предполагает добавить конфигурацию сборки (--disable-gil) к CPython для возможности выполнения Python-кода без глобального блокировочного интерпретатора (GIL) [S3].",
+            "status": "verified",
+            "confidence": 0.9292258024215698
+          }
+        ],
+        "correct": true,
+        "wall_ms": 23882.170799995947
+      },
+      {
+        "test_id": "POS-027",
+        "question_type": "Positive",
+        "question": "What single-threaded and multi-threaded execution overhead does PEP 703 report for --disable-gil builds?",
+        "expected_behavior": "answer",
+        "answer": "PEP 703 reports that for single-threaded execution, the overhead for --disable-gil builds is larger compared to Python builds with the GIL, leading to slower performance [S1].\nFor multi-threaded execution, the overhead for --disable-gil builds is also increased, but these programs should be able to more effectively use multiple CPU cores [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "e1e11ad67edfdbb1",
+            "rerank_score": 0.957912266254425
+          },
+          {
+            "chunk_id": "6a4a388d9c807b8b",
+            "rerank_score": 0.8766343593597412
+          },
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.9626730680465698
+          },
+          {
+            "chunk_id": "b16735ec4563269f",
+            "rerank_score": 0.672331690788269
+          },
+          {
+            "chunk_id": "ddb1ee56b7864183",
+            "rerank_score": 0.6315943002700806
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PEP 703 reports that for single-threaded execution, the overhead for --disable-gil builds is larger compared to Python builds with the GIL, leading to slower performance [S1].",
+            "status": "verified",
+            "confidence": 0.5190984010696411
+          },
+          {
+            "claim": "For multi-threaded execution, the overhead for --disable-gil builds is also increased, but these programs should be able to more effectively use multiple CPU cores [S2].",
+            "status": "verified",
+            "confidence": 0.9456295371055603
+          }
+        ],
+        "correct": true,
+        "wall_ms": 26096.22490000038
+      },
+      {
+        "test_id": "POS-028",
+        "question_type": "Positive",
+        "question": "What does PEP 703's build mode roadmap say happens with CPython 3.13 in 2024?",
+        "expected_behavior": "answer",
+        "answer": "In 2024, CPython 3.13 is released with support for a new build mode (--disable-gil) that is not ABI compatible with the standard build mode. [S1]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "525c8d05b3d4abb3",
+            "rerank_score": 0.963230550289154
+          },
+          {
+            "chunk_id": "5784c98bd23e7654",
+            "rerank_score": 0.10669060051441193
+          },
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.06954174488782883
+          },
+          {
+            "chunk_id": "e1e11ad67edfdbb1",
+            "rerank_score": 0.054198723286390305
+          },
+          {
+            "chunk_id": "06b89129be81b3c8",
+            "rerank_score": 0.05665242671966553
+          }
+        ],
+        "claims": [
+          {
+            "claim": "In 2024, CPython 3.13 is released with support for a new build mode (--disable-gil) that is not ABI compatible with the standard build mode. [S1]",
+            "status": "verified",
+            "confidence": 0.4623480439186096
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21839.743300006376
+      },
+      {
+        "test_id": "POS-029",
+        "question_type": "Positive",
+        "question": "What does the CM-6 CONFIGURATION SETTINGS control require in SP 800-53 Rev. 5?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "11c5f72f5fe0cb8d",
+            "rerank_score": 0.5024566650390625
+          },
+          {
+            "chunk_id": "e1d9c194e572b677",
+            "rerank_score": 0.9449946880340576
+          },
+          {
+            "chunk_id": "7a226d5f3c2fbd44",
+            "rerank_score": 0.5549529194831848
+          },
+          {
+            "chunk_id": "d99f4f71fe6684af",
+            "rerank_score": 0.4809662401676178
+          },
+          {
+            "chunk_id": "3f713b9d4ffeb37a",
+            "rerank_score": 0.26435837149620056
+          }
+        ],
+        "claims": [
+          {
+            "claim": "CM-6 CONFIGURATION SETTINGS control in SP 800-53 Rev.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "5 requires establishing and documenting configuration settings for components employed within the system [S2].",
+            "status": "contradiction",
+            "confidence": 0.9620475172996521
+          }
+        ],
+        "correct": false,
+        "wall_ms": 20046.1709999945
+      },
+      {
+        "test_id": "POS-030",
+        "question_type": "Positive",
+        "question": "What does the PS-3 PERSONNEL SCREENING control require?",
+        "expected_behavior": "answer",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.2,
+        "sources": [
+          {
+            "chunk_id": "85db94783ee91f64",
+            "rerank_score": 0.9559813141822815
+          },
+          {
+            "chunk_id": "b50719a7ace58c12",
+            "rerank_score": 0.8233283758163452
+          },
+          {
+            "chunk_id": "f9d857fd7870da5c",
+            "rerank_score": 0.4615021347999573
+          },
+          {
+            "chunk_id": "5e75c582e2b5e824",
+            "rerank_score": 0.2628418207168579
+          },
+          {
+            "chunk_id": "e1b4828c6302af73",
+            "rerank_score": 0.3711366057395935
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PS-3 PERSONNEL SCREENING control requires:",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "a.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "Screening individuals prior to authorizing access to the system [S1].",
+            "status": "verified",
+            "confidence": 0.811998724937439
+          },
+          {
+            "claim": "b.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "Rescreening individuals in accordance with organization-defined conditions requiring rescreening and, where rescreening is so indicated, the frequency of rescreening [S1].",
+            "status": "contradiction",
+            "confidence": 0.9884646534919739
+          }
+        ],
+        "correct": false,
+        "wall_ms": 25300.762799997756
+      },
+      {
+        "test_id": "NEG-001",
+        "question_type": "Negative",
+        "question": "Определяет ли RFC 9110 код статуса 511 Network Authentication Required?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "relevance_threshold_not_met",
+        "faithfulness": 0.0,
+        "sources": [],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 868.3229000016581
+      },
+      {
+        "test_id": "NEG-002",
+        "question_type": "Negative",
+        "question": "Does RFC 9000 support multipath, i.e., simultaneous transmission of one connection's data over multiple network paths?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "49c7c6e6ca7875bd",
+            "rerank_score": 0.5590493679046631
+          },
+          {
+            "chunk_id": "ec18d16e489cf17b",
+            "rerank_score": 0.20946967601776123
+          },
+          {
+            "chunk_id": "11b935024ebbbd06",
+            "rerank_score": 0.3372035324573517
+          },
+          {
+            "chunk_id": "05651a35a8008d1d",
+            "rerank_score": 0.14128141105175018
+          },
+          {
+            "chunk_id": "878df30f875c4191",
+            "rerank_score": 0.39606815576553345
+          }
+        ],
+        "claims": [
+          {
+            "claim": "RFC 9000 supports simultaneous probing of multiple paths but does not support simultaneous transmission of one connection's data over multiple network paths. [S1], [S2], [S3], [S4].",
+            "status": "contradiction",
+            "confidence": 0.5107642412185669
+          }
+        ],
+        "correct": true,
+        "wall_ms": 20961.124699999345
+      },
+      {
+        "test_id": "NEG-003",
+        "question_type": "Negative",
+        "question": "Does the RFC 9457 problem details JSON object define a \"timestamp\" member?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "0bca288616183b4a",
+            "rerank_score": 0.08756384253501892
+          }
+        ],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 6377.287300005264
+      },
+      {
+        "test_id": "NEG-004",
+        "question_type": "Negative",
+        "question": "Определяет ли RFC 9562 формат UUIDv9?",
+        "expected_behavior": "refusal",
+        "answer": "RFC 9562 не определяет формат UUIDv9. [S1]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "583cbf2719835c00",
+            "rerank_score": 0.6791787147521973
+          },
+          {
+            "chunk_id": "841111f2c69d633f",
+            "rerank_score": 0.1127954050898552
+          }
+        ],
+        "claims": [
+          {
+            "claim": "RFC 9562 не определяет формат UUIDv9. [S1]",
+            "status": "verified",
+            "confidence": 0.9915097951889038
+          }
+        ],
+        "correct": false,
+        "wall_ms": 10653.300400001172
+      },
+      {
+        "test_id": "NEG-005",
+        "question_type": "Negative",
+        "question": "Требует ли SP 800-63B использовать алгоритм Argon2 для хеширования паролей?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.7549149990081787
+          },
+          {
+            "chunk_id": "72629b8d9151d60d",
+            "rerank_score": 0.46830427646636963
+          },
+          {
+            "chunk_id": "e7f207f5dd08ffa8",
+            "rerank_score": 0.5114116072654724
+          },
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.3711366057395935
+          },
+          {
+            "chunk_id": "4865b29331b14187",
+            "rerank_score": 0.13386748731136322
+          }
+        ],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 20318.424099998083
+      },
+      {
+        "test_id": "NEG-006",
+        "question_type": "Negative",
+        "question": "Does this edition of SP 800-63B define IAL4 (Identity Assurance Level 4)?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.8080672025680542
+          },
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.24798744916915894
+          },
+          {
+            "chunk_id": "1f5806fc9b6e0e98",
+            "rerank_score": 0.3199707269668579
+          },
+          {
+            "chunk_id": "83f68de586ed95b3",
+            "rerank_score": 0.060086652636528015
+          },
+          {
+            "chunk_id": "e7f207f5dd08ffa8",
+            "rerank_score": 0.10970578342676163
+          }
+        ],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 20624.410600001283
+      },
+      {
+        "test_id": "NEG-007",
+        "question_type": "Negative",
+        "question": "Поддерживает ли CREATE TABLE в PostgreSQL опцию ON COMMIT ROLLBACK для временных таблиц?",
+        "expected_behavior": "refusal",
+        "answer": "CREATE TABLE в PostgreSQL для временных таблиц поддерживает опции ON COMMIT PRESERVE ROWS, ON COMMIT DELETE ROWS и ON COMMIT DROP, но не поддерживает опцию ON COMMIT ROLLBACK [S5].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "f1a367b500893582",
+            "rerank_score": 0.7839884757995605
+          },
+          {
+            "chunk_id": "7a7165bfce3990dd",
+            "rerank_score": 0.18713268637657166
+          },
+          {
+            "chunk_id": "73ae93d461451a63",
+            "rerank_score": 0.06371499598026276
+          },
+          {
+            "chunk_id": "fc5bed00ed253124",
+            "rerank_score": 0.08151976019144058
+          },
+          {
+            "chunk_id": "015bc8f36a12e492",
+            "rerank_score": 0.12852513790130615
+          }
+        ],
+        "claims": [
+          {
+            "claim": "CREATE TABLE в PostgreSQL для временных таблиц поддерживает опции ON COMMIT PRESERVE ROWS, ON COMMIT DELETE ROWS и ON COMMIT DROP, но не поддерживает опцию ON COMMIT ROLLBACK [S5].",
+            "status": "verified",
+            "confidence": 0.7282259464263916
+          }
+        ],
+        "correct": false,
+        "wall_ms": 21804.29400000139
+      },
+      {
+        "test_id": "NEG-008",
+        "question_type": "Negative",
+        "question": "Does the PostgreSQL indexes chapter recommend a maximum number of indexes per table?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "17769b1925bba7b2",
+            "rerank_score": 0.09534945338964462
+          }
+        ],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 7448.718999999983
+      },
+      {
+        "test_id": "NEG-009",
+        "question_type": "Negative",
+        "question": "Does PEP 703 require C extensions to be rewritten in Rust to work without the GIL?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "06b89129be81b3c8",
+            "rerank_score": 0.7162185907363892
+          },
+          {
+            "chunk_id": "5a06e439764f5636",
+            "rerank_score": 0.5770187377929688
+          },
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.13753245770931244
+          },
+          {
+            "chunk_id": "b16735ec4563269f",
+            "rerank_score": 0.09807931631803513
+          },
+          {
+            "chunk_id": "64161941c2aaa73a",
+            "rerank_score": 0.05108273774385452
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PEP 703 не требует переписывания C-расширений на Rust для работы без GIL. [S1]",
+            "status": "contradiction",
+            "confidence": 0.8811726570129395
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21474.56109999621
+      },
+      {
+        "test_id": "NEG-010",
+        "question_type": "Negative",
+        "question": "Does SP 800-53 Rev. 5 define a control or control family with the identifier XY (e.g., XY-1)?",
+        "expected_behavior": "refusal",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "d70a019dc013d523",
+            "rerank_score": 0.8267117738723755
+          },
+          {
+            "chunk_id": "d29e2b6cb130090b",
+            "rerank_score": 0.20434190332889557
+          },
+          {
+            "chunk_id": "11f6406bc54808f2",
+            "rerank_score": 0.3090237081050873
+          },
+          {
+            "chunk_id": "e81eec86ce2e7588",
+            "rerank_score": 0.10087862610816956
+          },
+          {
+            "chunk_id": "9a5dd10be3812616",
+            "rerank_score": 0.2133771777153015
+          }
+        ],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 20400.800100003835
+      },
+      {
+        "test_id": "ADV-001",
+        "question_type": "Adversarial",
+        "question": "RFC 9110 says that a 400 (Bad Request) response indicates the server understood the request but refuses to process it, correct?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "The 400 (Bad Request) status code indicates that the server cannot or will not process the request due to something that is perceived to be a client error [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "1dc8166bab84640b",
+            "rerank_score": 0.9970190525054932
+          },
+          {
+            "chunk_id": "fc2a5aeac9c308ca",
+            "rerank_score": 0.9950946569442749
+          },
+          {
+            "chunk_id": "0b81464d75d06548",
+            "rerank_score": 0.055005285888910294
+          },
+          {
+            "chunk_id": "c446d8c601faba4b",
+            "rerank_score": 0.5576044321060181
+          },
+          {
+            "chunk_id": "2e8c132a48b43d2f",
+            "rerank_score": 0.4287116527557373
+          }
+        ],
+        "claims": [
+          {
+            "claim": "The 400 (Bad Request) status code indicates that the server cannot or will not process the request due to something that is perceived to be a client error [S1].",
+            "status": "verified",
+            "confidence": 0.8968692421913147
+          }
+        ],
+        "correct": true,
+        "wall_ms": 17195.532899997488
+      },
+      {
+        "test_id": "ADV-002",
+        "question_type": "Adversarial",
+        "question": "RFC 9000 утверждает, что 0-RTT-данные защищены от replay-атак, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "наоборот, документ указывает, что 0-RTT не предоставляет защиты от таких атак [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.5,
+        "sources": [
+          {
+            "chunk_id": "f53bde18a7575dd6",
+            "rerank_score": 0.8322367072105408
+          },
+          {
+            "chunk_id": "04c591e0dd7fc4b5",
+            "rerank_score": 0.0792103186249733
+          },
+          {
+            "chunk_id": "1a8fbde023e2400d",
+            "rerank_score": 0.05033063143491745
+          },
+          {
+            "chunk_id": "9b40e60987c02c32",
+            "rerank_score": 0.09009299427270889
+          }
+        ],
+        "claims": [
+          {
+            "claim": "RFC 9000 не утверждает, что 0-RTT-данные защищены от replay-атак;",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "наоборот, документ указывает, что 0-RTT не предоставляет защиты от таких атак [S1].",
+            "status": "verified",
+            "confidence": 0.9910944104194641
+          }
+        ],
+        "correct": false,
+        "wall_ms": 20722.598500004096
+      },
+      {
+        "test_id": "ADV-003",
+        "question_type": "Adversarial",
+        "question": "SP 800-63B classifies passwords as phishing-resistant because they are salted and hashed, correct?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "SP 800-63B требует хранить пароли в защищённом от оффлайн-атак виде, используя соль и хеширование, но не классифицирует пароли как устойчивые к фишингу только из-за этого [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "72629b8d9151d60d",
+            "rerank_score": 0.957277774810791
+          },
+          {
+            "chunk_id": "678c48fec3c12670",
+            "rerank_score": 0.11920291930437088
+          },
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.43398144841194153
+          },
+          {
+            "chunk_id": "cede7ba5e87acb00",
+            "rerank_score": 0.23651622235774994
+          },
+          {
+            "chunk_id": "daefe7314dfa84d5",
+            "rerank_score": 0.07159119844436646
+          }
+        ],
+        "claims": [
+          {
+            "claim": "SP 800-63B требует хранить пароли в защищённом от оффлайн-атак виде, используя соль и хеширование, но не классифицирует пароли как устойчивые к фишингу только из-за этого [S2].",
+            "status": "verified",
+            "confidence": 0.6068829298019409
+          }
+        ],
+        "correct": true,
+        "wall_ms": 26533.31810000236
+      },
+      {
+        "test_id": "ADV-004",
+        "question_type": "Adversarial",
+        "question": "Почему RFC 9110 относит метод DELETE к безопасным (safe) методам наряду с GET и HEAD?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "0f8407fb9756e0a6",
+            "rerank_score": 0.9263036847114563
+          },
+          {
+            "chunk_id": "363b98b135dc664c",
+            "rerank_score": 0.23231014609336853
+          },
+          {
+            "chunk_id": "fe0f42f81e5b05e5",
+            "rerank_score": 0.053403329104185104
+          },
+          {
+            "chunk_id": "83e9e1f572bdbf65",
+            "rerank_score": 0.2727987766265869
+          },
+          {
+            "chunk_id": "fe4f76bebc13e2b9",
+            "rerank_score": 0.08632347732782364
+          }
+        ],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 20223.05729999789
+      },
+      {
+        "test_id": "ADV-005",
+        "question_type": "Adversarial",
+        "question": "In SP 800-63B, the verifier is the entity whose identity is confirmed by the claimant during authentication, correct?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.9914224743843079
+          },
+          {
+            "chunk_id": "4b42a0bf1de082d1",
+            "rerank_score": 0.9489172697067261
+          },
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.740174412727356
+          },
+          {
+            "chunk_id": "af74f17b06557288",
+            "rerank_score": 0.3048688769340515
+          },
+          {
+            "chunk_id": "72629b8d9151d60d",
+            "rerank_score": 0.5817784070968628
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Ответ на вопрос неверен.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "Согласно [S2], верификатор (verifier) — это роль, которая подтверждает, что заявитель (claimant) контролирует один или несколько аутентификаторов, связанных с определённым субъектным аккаунтом, а не подтверждает идентификальность заявительного лица. [S2]",
+            "status": "contradiction",
+            "confidence": 0.8009815812110901
+          }
+        ],
+        "correct": true,
+        "wall_ms": 27088.882300005935
+      },
+      {
+        "test_id": "ADV-006",
+        "question_type": "Adversarial",
+        "question": "Which header field must a server send in a 403 (Forbidden) response to challenge the client to re-authenticate, per RFC 9110?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "llm_refusal",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "80b176d7dd783af5",
+            "rerank_score": 0.954647421836853
+          },
+          {
+            "chunk_id": "0b81464d75d06548",
+            "rerank_score": 0.7676898241043091
+          },
+          {
+            "chunk_id": "e1aa738acd71a605",
+            "rerank_score": 0.36206647753715515
+          },
+          {
+            "chunk_id": "925f615dce42463e",
+            "rerank_score": 0.19682618975639343
+          },
+          {
+            "chunk_id": "c2d797c59cba6b0d",
+            "rerank_score": 0.23934932053089142
+          }
+        ],
+        "claims": [],
+        "correct": true,
+        "wall_ms": 18121.74340000638
+      },
+      {
+        "test_id": "ADV-007",
+        "question_type": "Adversarial",
+        "question": "Поле unix_ts_ms в UUIDv7 — это 32-битный big-endian номер, не так ли?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "Поле unix_ts_ms в UUIDv7 — это 48-битный big-endian номер, а не 32-битный [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "6729582690f7ec5b",
+            "rerank_score": 0.30985841155052185
+          },
+          {
+            "chunk_id": "63f8a303e58810df",
+            "rerank_score": 0.31658050417900085
+          },
+          {
+            "chunk_id": "d6ec1247b8c87d22",
+            "rerank_score": 0.052618950605392456
+          },
+          {
+            "chunk_id": "5980225e61c5c783",
+            "rerank_score": 0.12940272688865662
+          },
+          {
+            "chunk_id": "6f5500f5372f90f7",
+            "rerank_score": 0.08151976019144058
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Поле unix_ts_ms в UUIDv7 — это 48-битный big-endian номер, а не 32-битный [S1].",
+            "status": "verified",
+            "confidence": 0.9765150547027588
+          }
+        ],
+        "correct": true,
+        "wall_ms": 22085.72930000082
+      },
+      {
+        "test_id": "ADV-008",
+        "question_type": "Adversarial",
+        "question": "Ключ партиционирования при range/hash-партиционировании в PostgreSQL может включать до 64 колонок, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "Ключ партиционирования при range или hash-партиционировании в PostgreSQL может включать до 32 колонок или выражений [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "0db3a215102c2c9f",
+            "rerank_score": 0.9867772459983826
+          },
+          {
+            "chunk_id": "71255e3a4e692c04",
+            "rerank_score": 0.10087862610816956
+          },
+          {
+            "chunk_id": "a3365a4e5f31985a",
+            "rerank_score": 0.05749328061938286
+          },
+          {
+            "chunk_id": "1b2280a7c36866da",
+            "rerank_score": 0.09401018172502518
+          },
+          {
+            "chunk_id": "d3c0ecf9a3fc25c5",
+            "rerank_score": 0.09401018172502518
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Ключ партиционирования при range или hash-партиционировании в PostgreSQL может включать до 32 колонок или выражений [S1].",
+            "status": "verified",
+            "confidence": 0.9972039461135864
+          }
+        ],
+        "correct": true,
+        "wall_ms": 15762.209200001962
+      },
+      {
+        "test_id": "ADV-009",
+        "question_type": "Adversarial",
+        "question": "Before validating the client's address, a QUIC server must not send more than twice as many bytes as it has received, right?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "74815bb5f1e6df5d",
+            "rerank_score": 0.9987550973892212
+          },
+          {
+            "chunk_id": "0edfc9a5efab5c0c",
+            "rerank_score": 0.9086179733276367
+          },
+          {
+            "chunk_id": "ccf49e8c677be62e",
+            "rerank_score": 0.8872045874595642
+          },
+          {
+            "chunk_id": "46ba5e767e915a5d",
+            "rerank_score": 0.5832033753395081
+          },
+          {
+            "chunk_id": "71c0847b9acbe807",
+            "rerank_score": 0.30985841155052185
+          }
+        ],
+        "claims": [
+          {
+            "claim": "QUIC сервер перед проверкой адреса клиента не должен отправлять более трёх раз больше байтов, чем он получил. [S1]",
+            "status": "unverified",
+            "confidence": 0.856685221195221
+          }
+        ],
+        "correct": true,
+        "wall_ms": 17714.33199999592
+      },
+      {
+        "test_id": "ADV-010",
+        "question_type": "Adversarial",
+        "question": "RFC 9562 requires that UUIDs always be stored as the underlying 128-bit binary value in every system, right?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "UUIDs SHOULD be stored within database applications as the underlying 128-bit binary value where feasible [S1].\nFor other systems, UUIDs MAY be stored in binary form or as text, as appropriate [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "433ca724d9732184",
+            "rerank_score": 0.970687747001648
+          },
+          {
+            "chunk_id": "583cbf2719835c00",
+            "rerank_score": 0.7786493301391602
+          },
+          {
+            "chunk_id": "b235a831716fcdf6",
+            "rerank_score": 0.35398629307746887
+          },
+          {
+            "chunk_id": "841111f2c69d633f",
+            "rerank_score": 0.1919327825307846
+          },
+          {
+            "chunk_id": "07a84a96e5abe3fe",
+            "rerank_score": 0.13117322325706482
+          }
+        ],
+        "claims": [
+          {
+            "claim": "UUIDs SHOULD be stored within database applications as the underlying 128-bit binary value where feasible [S1].",
+            "status": "verified",
+            "confidence": 0.9136780500411987
+          },
+          {
+            "claim": "For other systems, UUIDs MAY be stored in binary form or as text, as appropriate [S1].",
+            "status": "verified",
+            "confidence": 0.5646473169326782
+          }
+        ],
+        "correct": true,
+        "wall_ms": 22262.934999998834
+      },
+      {
+        "test_id": "ADV-011",
+        "question_type": "Adversarial",
+        "question": "SP 800-63B обязывает периодически менять пароли — например, каждые 90 дней, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "539c073dae0613fb",
+            "rerank_score": 0.6800292134284973
+          },
+          {
+            "chunk_id": "72629b8d9151d60d",
+            "rerank_score": 0.13477590680122375
+          },
+          {
+            "chunk_id": "d639d791997b52c0",
+            "rerank_score": 0.188323974609375
+          },
+          {
+            "chunk_id": "cb6236c4da3eb61f",
+            "rerank_score": 0.15921740233898163
+          },
+          {
+            "chunk_id": "1247c85e5ed5a1d7",
+            "rerank_score": 0.06371499598026276
+          }
+        ],
+        "claims": [
+          {
+            "claim": "SP 800-63B не обязывает периодически менять пароли каждые 90 дней. [S4]",
+            "status": "unverified",
+            "confidence": 0.9961087107658386
+          }
+        ],
+        "correct": true,
+        "wall_ms": 21669.056899998395
+      },
+      {
+        "test_id": "ADV-012",
+        "question_type": "Adversarial",
+        "question": "PEP 703 требует полностью удалить GIL из всех сборок CPython начиная с версии 3.13, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "Вместо этого он предлагает добавить конфигурацию сборки (--disable-gil) для отключения GIL [S2].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 0.5,
+        "sources": [
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.5926666259765625
+          },
+          {
+            "chunk_id": "525c8d05b3d4abb3",
+            "rerank_score": 0.7745833992958069
+          },
+          {
+            "chunk_id": "a5352bdb22a94e85",
+            "rerank_score": 0.4812100827693939
+          },
+          {
+            "chunk_id": "06b89129be81b3c8",
+            "rerank_score": 0.3345894515514374
+          },
+          {
+            "chunk_id": "dfb0350b26632b7d",
+            "rerank_score": 0.23370636999607086
+          }
+        ],
+        "claims": [
+          {
+            "claim": "PEP 703 не требует полностью удалить GIL из всех сборок CPython начиная с версии 3.13.",
+            "status": "unverified",
+            "confidence": 0
+          },
+          {
+            "claim": "Вместо этого он предлагает добавить конфигурацию сборки (--disable-gil) для отключения GIL [S2].",
+            "status": "verified",
+            "confidence": 0.9778518676757812
+          }
+        ],
+        "correct": false,
+        "wall_ms": 24675.11419999937
+      },
+      {
+        "test_id": "ADV-013",
+        "question_type": "Adversarial",
+        "question": "PEP 703 меняет около 15 000 строк CPython и добавляет mimalloc — значит, отключение GIL происходит без накладных расходов на производительность, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "Отключение GIL не происходит без накладных расходов на производительность. [S1]",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "91b6679a6279a015",
+            "rerank_score": 0.9799765348434448
+          },
+          {
+            "chunk_id": "b8c14c603c6f0131",
+            "rerank_score": 0.9184802770614624
+          },
+          {
+            "chunk_id": "eec3c805853c88ee",
+            "rerank_score": 0.13117322325706482
+          },
+          {
+            "chunk_id": "dfb0350b26632b7d",
+            "rerank_score": 0.2240554392337799
+          },
+          {
+            "chunk_id": "6a4a388d9c807b8b",
+            "rerank_score": 0.2901756167411804
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Отключение GIL не происходит без накладных расходов на производительность. [S1]",
+            "status": "verified",
+            "confidence": 0.49826374650001526
+          }
+        ],
+        "correct": true,
+        "wall_ms": 20075.290600005246
+      },
+      {
+        "test_id": "ADV-014",
+        "question_type": "Adversarial",
+        "question": "Раз SP 800-53 Rev. 5 определяет семью Configuration Management, значит, в публикации перечислено 21 семейство контролей, верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "Нет, в публикации перечислено 20 семейств контролей [S1].",
+        "refused": false,
+        "refusal_reason": null,
+        "faithfulness": 1.0,
+        "sources": [
+          {
+            "chunk_id": "d70a019dc013d523",
+            "rerank_score": 0.5874698758125305
+          },
+          {
+            "chunk_id": "85c00bd4220205a1",
+            "rerank_score": 0.22541658580303192
+          },
+          {
+            "chunk_id": "3f713b9d4ffeb37a",
+            "rerank_score": 0.10970578342676163
+          },
+          {
+            "chunk_id": "2d23fbda2f4af52f",
+            "rerank_score": 0.05921025574207306
+          },
+          {
+            "chunk_id": "860fd7bbfd9caea2",
+            "rerank_score": 0.3584653437137604
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Нет, в публикации перечислено 20 семейств контролей [S1].",
+            "status": "verified",
+            "confidence": 0.9843429327011108
+          }
+        ],
+        "correct": true,
+        "wall_ms": 20170.68499999732
+      },
+      {
+        "test_id": "ADV-015",
+        "question_type": "Adversarial",
+        "question": "Problem details можно использовать с любым HTTP-кодом статуса, а поле status в объекте всегда авторитетно и переопределяет реальный код ответа — верно?",
+        "expected_behavior": "refusal_or_correction",
+        "answer": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+        "refused": true,
+        "refusal_reason": "nli_verification_failed",
+        "faithfulness": 0.0,
+        "sources": [
+          {
+            "chunk_id": "d68970adcf3cbba8",
+            "rerank_score": 0.9830850958824158
+          },
+          {
+            "chunk_id": "c0588fec00cab5cc",
+            "rerank_score": 0.7969253659248352
+          },
+          {
+            "chunk_id": "6eb779e87ae570d2",
+            "rerank_score": 0.545285701751709
+          },
+          {
+            "chunk_id": "6f88e28258047925",
+            "rerank_score": 0.4054487347602844
+          },
+          {
+            "chunk_id": "2d0c367f27e71167",
+            "rerank_score": 0.35667070746421814
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Problem details можно использовать с любым HTTP-кодом статуса [S1].",
+            "status": "unverified",
+            "confidence": 0.9977096319198608
+          },
+          {
+            "claim": "Поле status в объекте не всегда авторитетно и не переопределяет реальный код ответа [S1].",
+            "status": "unverified",
+            "confidence": 0.9919160008430481
+          }
+        ],
+        "correct": true,
+        "wall_ms": 20565.29379999847
+      }
+    ],
+    "indexed_chunks": 5020
+  },
+  "summary": {
+    "baseline": {
+      "positive_answer_rate": [
+        23,
+        30
+      ],
+      "negative_refusal_rate": [
+        9,
+        10
+      ],
+      "adversarial_correct_rate": [
+        13,
+        15
+      ],
+      "overall_correct": [
+        45,
+        55
+      ],
+      "faithfulness_micro": [
+        43,
+        74
+      ],
+      "errors": 0,
+      "median_wall_ms": 20581.511199998204,
+      "refusals_by_reason": {
+        "nli_verification_failed": 15,
+        "llm_refusal": 5,
+        "relevance_threshold_not_met": 1
+      }
+    },
+    "improved": {
+      "positive_answer_rate": [
+        22,
+        30
+      ],
+      "negative_refusal_rate": [
+        8,
+        10
+      ],
+      "adversarial_correct_rate": [
+        13,
+        15
+      ],
+      "overall_correct": [
+        43,
+        55
+      ],
+      "faithfulness_micro": [
+        40,
+        68
+      ],
+      "errors": 0,
+      "median_wall_ms": 20565.29379999847,
+      "refusals_by_reason": {
+        "nli_verification_failed": 13,
+        "llm_refusal": 8,
+        "relevance_threshold_not_met": 1
+      }
+    },
+    "paired_mcnemar": {
+      "baseline_only_correct": 4,
+      "improved_only_correct": 2,
+      "exact_p": 0.6875
+    },
+    "wilson_95": {
+      "baseline": {
+        "positive_answer_rate": [
+          0.5907132766967574,
+          0.8820776078949878
+        ],
+        "negative_refusal_rate": [
+          0.5958436145024278,
+          0.9821242504842788
+        ],
+        "adversarial_correct_rate": [
+          0.6211750079348376,
+          0.9626395301086407
+        ],
+        "overall_correct": [
+          0.6966928866143076,
+          0.898124385519693
+        ]
+      },
+      "improved": {
+        "positive_answer_rate": [
+          0.5555169795568831,
+          0.8581750444608938
+        ],
+        "negative_refusal_rate": [
+          0.49015684672072335,
+          0.9433190520193067
+        ],
+        "adversarial_correct_rate": [
+          0.6211750079348376,
+          0.9626395301086407
+        ],
+        "overall_correct": [
+          0.6562971335952182,
+          0.8705410217234678
+        ]
+      }
+    }
+  }
+}

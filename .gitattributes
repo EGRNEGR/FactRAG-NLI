@@ -1,0 +1,7 @@
+# Корпус проверяется по SHA-256 (data/*_dataset*.json): байты не должны меняться при checkout.
+data/documents/** -text
+data/raw/** -text
+data/test_docs/** -text
+*.pdf binary
+*.docx binary
+*.zip binary
