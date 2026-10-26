@@ -1,0 +1,86 @@
+{
+ "description": "llama-server throughput in the real end-to-end pattern (3 consecutive pipeline queries: rerank -> generate -> NLI) with the evaluation process holding BGE-M3, bge-reranker-large and mDeBERTa on the same 8 GB GPU. Flags: -c 4096 -b 128 -ub 64 -np 1 --cache-ram 0. Parsed from llama-server logs.",
+ "llama_cpp_build": "10819 (6a1a922d2)",
+ "pytorch_process_reserved_mib": 2748,
+ "runs": [
+  {
+   "ngl": 35,
+   "llama_only_vram_mib": 6658,
+   "llama_vram_after_mib": 4844,
+   "startup_fit_warning": true,
+   "requests": [
+    {
+     "prompt_tokens": 3106,
+     "prompt_tok_s": 212.7,
+     "gen_tokens": 29,
+     "gen_tok_s": 14.46
+    },
+    {
+     "prompt_tokens": 2602,
+     "prompt_tok_s": 53.5,
+     "gen_tokens": 94,
+     "gen_tok_s": 4.5
+    },
+    {
+     "prompt_tokens": 2629,
+     "prompt_tok_s": 54.3,
+     "gen_tokens": 29,
+     "gen_tok_s": 4.48
+    }
+   ]
+  },
+  {
+   "ngl": 27,
+   "llama_only_vram_mib": 5292,
+   "llama_vram_after_mib": 4940,
+   "startup_fit_warning": false,
+   "requests": [
+    {
+     "prompt_tokens": 3109,
+     "prompt_tok_s": 153.4,
+     "gen_tokens": 29,
+     "gen_tok_s": 11.15
+    },
+    {
+     "prompt_tokens": 2602,
+     "prompt_tok_s": 153.4,
+     "gen_tokens": 94,
+     "gen_tok_s": 11.04
+    },
+    {
+     "prompt_tokens": 2629,
+     "prompt_tok_s": 152.8,
+     "gen_tokens": 29,
+     "gen_tok_s": 11.18
+    }
+   ]
+  },
+  {
+   "ngl": 25,
+   "llama_only_vram_mib": 4946,
+   "llama_vram_after_mib": 4980,
+   "startup_fit_warning": false,
+   "requests": [
+    {
+     "prompt_tokens": 3109,
+     "prompt_tok_s": 135.1,
+     "gen_tokens": 29,
+     "gen_tok_s": 10.69
+    },
+    {
+     "prompt_tokens": 2602,
+     "prompt_tok_s": 134.9,
+     "gen_tokens": 94,
+     "gen_tok_s": 10.39
+    },
+    {
+     "prompt_tokens": 2629,
+     "prompt_tok_s": 136.4,
+     "gen_tokens": 29,
+     "gen_tok_s": 10.44
+    }
+   ]
+  }
+ ],
+ "selected_ngl": 25
+}

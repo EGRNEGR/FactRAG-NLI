@@ -21,8 +21,11 @@ from evaluate_suite import (
     latency_stats,
     mcnemar_exact,
     rerank_order,
+    resummarize_e2e,
     score_answer,
     single_source_status,
+    stage_values,
+    summarize_e2e,
     summarize_variant,
     threshold_sweep,
     wilson,
@@ -256,3 +259,76 @@ def test_retriever_exposes_single_signal_rankings(tmp_path: Path) -> None:
     assert set(lists["sparse"]) == {"a", "c"}
     assert set(lists["dense"]) <= {"a", "b", "c"}
     assert set(hybrid) <= set(lists["dense"]) | set(lists["sparse"])
+
+
+def e2e_row(
+    case_id: str, expected: str, vanilla_ok: bool, factrag_ok: bool, **extra: Any
+) -> dict[str, Any]:
+    def verdict(correct: bool) -> dict[str, Any]:
+        defined = expected != "answer"
+        return {
+            "correct": correct,
+            "hallucination": (not correct) if defined else None,
+            "refused": False,
+            "facts_ok": correct,
+            "abstained": False,
+        }
+
+    row: dict[str, Any] = {
+        "id": case_id,
+        "ok": True,
+        "category": "single_hop" if expected == "answer" else "unanswerable",
+        "language": "en",
+        "expected_behavior": expected,
+        "refused": False,
+        "refusal_reason": None,
+        "claims": [{"claim": "A [S1].", "status": "verified", "probabilities": [], "chunks": []}],
+        "gold_in_sources": None,
+        "execution_stats": {"search_ms": 5.0, "generation_ms": 100.0, "total_ms": 120.0},
+        "vanilla": verdict(vanilla_ok),
+        "factrag": verdict(factrag_ok),
+    }
+    row.update(extra)
+    return row
+
+
+def test_summarize_e2e_attributes_losses_and_skips_unmeasured_ttft() -> None:
+    rows = [
+        e2e_row("A", "answer", True, False, refused=True, refusal_reason="nli_verification_failed"),
+        e2e_row("B", "answer", True, False),
+        e2e_row("C", "refusal", True, False),
+        e2e_row("D", "refusal", False, True),
+    ]
+    summary = summarize_e2e(rows, {})
+    paired = summary["paired_correctness"]
+    assert paired["vanilla_only_correct"] == 3 and paired["factrag_only_correct"] == 1
+    assert paired["vanilla_only_correct_by_cause"] == {
+        "nli_verification_failed": 1,
+        "filtered_answer": 2,
+    }
+    assert summary["hallucination_ids"] == {
+        "vanilla_only": ["D"],
+        "factrag_only": ["C"],
+        "both": [],
+    }
+    latency = summary["latency_ms"]["generated_queries"]
+    assert latency["llm_ttft_ms"]["n"] == 0 and latency["total_ms"]["n"] == 4
+    assert stage_values([{"llm_ttft_ms": 7.0}, {}], "llm_ttft_ms") == [7.0]
+    assert stage_values([{"nli_ms": 3.0}, {}], "nli_ms") == [3.0, 0.0]
+
+
+def test_resummarize_backfills_claim_reasons_and_keeps_resources(tmp_path: Path) -> None:
+    out = tmp_path / "e2e_guard_on"
+    out.mkdir()
+    row = e2e_row("A", "answer", True, True)
+    (out / "cases.jsonl").write_text(json.dumps(row) + "\n", encoding="utf-8")
+    (out / "summary.json").write_text(json.dumps({"resources": {"samples": 3}}), encoding="utf-8")
+    full = {"id": "A", "response": {"claims": [{"reason": "missing_citation"}]}}
+    (tmp_path / "full").mkdir()
+    (tmp_path / "full" / "e2e_guard_on.jsonl").write_text(json.dumps(full) + "\n", encoding="utf-8")
+    dataset = load_dataset(ROOT / "data" / "eval_dataset_v3.json")
+    summary = resummarize_e2e(dataset, tmp_path, "guard_on")
+    assert summary["resources"] == {"samples": 3}
+    assert summary["claims"]["by_status_reason"] == {"verified:missing_citation": 1}
+    logged = json.loads((out / "cases.jsonl").read_text(encoding="utf-8"))
+    assert logged["claims"][0]["reason"] == "missing_citation"

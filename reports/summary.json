@@ -1,0 +1,127 @@
+{
+ "run": "reports/runs/20261026T1410Z_v3",
+ "commit": "d32a40bb8de817a1b2d6ad5b6fe576930e6d025c",
+ "retrieval_recall@5": {
+  "dense": 0.7674418604651163,
+  "sparse": 0.6453488372093024,
+  "hybrid_rrf": 0.6947674418604651,
+  "hybrid_rerank_unfiltered": 0.7906976744186046,
+  "hybrid_rerank": 0.7994186046511628
+ },
+ "retrieval_mrr@10": {
+  "dense": 0.6442483388704319,
+  "sparse": 0.5350821336286452,
+  "hybrid_rrf": 0.6183970099667774,
+  "hybrid_rerank_unfiltered": 0.7098260428202289,
+  "hybrid_rerank": 0.7233665559246955
+ },
+ "nli": {
+  "pairs": 440,
+  "catch_rate": 0.8817204301075269,
+  "false_rejection_rate": 0.25196850393700787,
+  "macro_f1": 0.7159014767935895,
+  "latency_ms_p50": 14.869000035105273
+ },
+ "e2e_guard_on": {
+  "vanilla": {
+   "hallucination": 0.021505376344086023,
+   "false_refusal_on_answerable": 0.11811023622047244,
+   "key_fact_accuracy_on_answerable": 0.6929133858267716,
+   "correct": 0.8136363636363636,
+   "hallucination_k": 2,
+   "hallucination_n": 93
+  },
+  "factrag": {
+   "hallucination": 0.03225806451612903,
+   "false_refusal_on_answerable": 0.47244094488188976,
+   "key_fact_accuracy_on_answerable": 0.2755905511811024,
+   "correct": 0.5681818181818182,
+   "hallucination_k": 3,
+   "hallucination_n": 93
+  },
+  "hallucination_relative_reduction": -0.49999999999999983,
+  "mcnemar_p": 1.582067810090848e-15,
+  "paired_correctness": {
+   "vanilla_only_correct": 55,
+   "factrag_only_correct": 1,
+   "mcnemar_exact_p": 1.582067810090848e-15,
+   "vanilla_only_correct_by_cause": {
+    "nli_verification_failed": 33,
+    "filtered_answer": 22
+   }
+  },
+  "claims_by_status_reason": {
+   "unverified:missing_citation": 52,
+   "contradiction:cited_support_not_established": 68,
+   "unverified:cited_support_not_established": 36,
+   "verified:none": 118
+  },
+  "latency_p50_ms": {
+   "search_ms": 58.11490002088249,
+   "rerank_ms": 740.138900000602,
+   "generation_ms": 19198.772899981122,
+   "nli_ms": 18.108499993104488,
+   "total_ms": 19972.129899950232,
+   "llm_ttft_ms": null
+  },
+  "latency_p95_ms": {
+   "search_ms": 72.04080001101829,
+   "rerank_ms": 812.1293199947104,
+   "generation_ms": 26658.684109995364,
+   "nli_ms": 66.92180001409722,
+   "total_ms": 27443.63376001128,
+   "llm_ttft_ms": null
+  }
+ },
+ "e2e_guard_off": {
+  "vanilla": {
+   "hallucination": 0.053763440860215055,
+   "false_refusal_on_answerable": 0.10236220472440945,
+   "key_fact_accuracy_on_answerable": 0.7165354330708661,
+   "correct": 0.8136363636363636,
+   "hallucination_k": 5,
+   "hallucination_n": 93
+  },
+  "factrag": {
+   "hallucination": 0.043010752688172046,
+   "false_refusal_on_answerable": 0.44881889763779526,
+   "key_fact_accuracy_on_answerable": 0.2992125984251969,
+   "correct": 0.5772727272727273,
+   "hallucination_k": 4,
+   "hallucination_n": 93
+  },
+  "hallucination_relative_reduction": 0.19999999999999996,
+  "mcnemar_p": 4.4325654258159375e-14,
+  "paired_correctness": {
+   "vanilla_only_correct": 54,
+   "factrag_only_correct": 2,
+   "mcnemar_exact_p": 4.4325654258159375e-14,
+   "vanilla_only_correct_by_cause": {
+    "nli_verification_failed": 34,
+    "filtered_answer": 20
+   }
+  },
+  "claims_by_status_reason": {
+   "verified:none": 127,
+   "unverified:cited_support_not_established": 32,
+   "unverified:missing_citation": 47,
+   "contradiction:cited_support_not_established": 73
+  },
+  "latency_p50_ms": {
+   "search_ms": 57.66099994070828,
+   "rerank_ms": 731.9995000143535,
+   "generation_ms": 19165.58669996448,
+   "nli_ms": 18.800999969244003,
+   "total_ms": 19985.89680000441,
+   "llm_ttft_ms": null
+  },
+  "latency_p95_ms": {
+   "search_ms": 69.2604899930302,
+   "rerank_ms": 802.8191099932883,
+   "generation_ms": 26189.571179996703,
+   "nli_ms": 62.41057000006545,
+   "total_ms": 27025.09558998863,
+   "llm_ttft_ms": null
+  }
+ }
+}
