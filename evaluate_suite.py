@@ -899,6 +899,7 @@ def run_e2e(
                             for e in c.evidence
                         ],
                         "chunks": [e.chunk_id for e in c.evidence],
+                        "reasons": [e.reason for e in c.evidence],
                     }
                     for c in response.claims
                 ]
@@ -957,7 +958,8 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
     claims = [claim for r in ok for claim in r["claims"]]
     statuses = Counter(claim["status"] for claim in claims)
     stats = [r["execution_stats"] for r in ok]
-    warm = [s for s in stats if not s.get("model_init_ms")]
+    # Lazy model loading happens on the first generated query; later ones report ~0 ms.
+    warm = [s for s in stats if s.get("model_init_ms", 0.0) < 50.0]
     stages = ("search_ms", "rerank_ms", "generation_ms", "nli_ms", "total_ms", "llm_ttft_ms")
     generated = [s for s in warm if s.get("generation_ms")]
     return {
@@ -974,6 +976,11 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
         "claims": {
             "total": len(claims),
             "by_status": dict(statuses),
+            "pairs_exceeding_nli_context": sum(
+                reason == "pair_exceeds_nli_context"
+                for claim in claims
+                for reason in claim.get("reasons", [])
+            ),
             "faithfulness_micro": statuses.get("verified", 0) / len(claims) if claims else None,
         },
         "refusal_reasons": dict(Counter(r["refusal_reason"] or "none" for r in ok if r["refused"])),
@@ -984,7 +991,9 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
             "generated_queries": {
                 stage: latency_stats([s.get(stage, 0.0) for s in generated]) for stage in stages
             },
-            "model_init_ms": [s["model_init_ms"] for s in stats if s.get("model_init_ms")],
+            "model_init_ms": [
+                s["model_init_ms"] for s in stats if s.get("model_init_ms", 0.0) >= 50.0
+            ],
         },
         "gold_in_sources": rate(
             [bool(r["gold_in_sources"]) for r in ok if r["gold_in_sources"] is not None]
