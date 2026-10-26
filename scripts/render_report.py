@@ -280,7 +280,9 @@ def section_method(run: Run, dataset: EvalDatasetV3) -> str:
                 ["Пакеты", ", ".join(f"{k} {v}" for k, v in cfg.get("packages", {}).items())],
                 [
                     "LLM",
-                    f"`{Path(llm.get('path', '')).name}` ({ms((llm.get('bytes') or 0) / 2**20)} МиБ), llama-server, -ngl 35 -c 4096 -b 128 -ub 64 -np 1",
+                    f"`{Path(llm.get('path', '')).name}` ({ms((llm.get('bytes') or 0) / 2**20)} МиБ), `"
+                    + " ".join((cfg.get("llama_server") or {}).get("cmdline") or ["llama-server"])
+                    + "`",
                 ],
                 [
                     "Эмбеддинги / реранкер / NLI",
@@ -1042,9 +1044,68 @@ def section_latency(run: Run) -> str:
             ]
         )
     init = run.e2e[run.profiles[0]]["latency_ms"]["model_init_ms"]
+    sweep = read_json(run.dir / "llama_ngl_sweep.json")
+    sweep_part: list[str] = []
+    if sweep:
+        sweep_rows = [
+            [
+                f"{r['ngl']}" + (" (выбрано)" if r["ngl"] == sweep["selected_ngl"] else ""),
+                ms(r["llama_only_vram_mib"]),
+                ms(r["llama_vram_after_mib"]),
+                " → ".join(f"{q['prompt_tok_s']:.0f}" for q in r["requests"]),
+                " → ".join(f"{q['gen_tok_s']:.1f}" for q in r["requests"]),
+                "да" if r["startup_fit_warning"] else "нет",
+            ]
+            for r in sweep["runs"]
+        ]
+        write_csv(
+            "llama_ngl_sweep.csv",
+            ["ngl", "request", "prompt_tokens", "prompt_tok_s", "gen_tokens", "gen_tok_s"],
+            [
+                [
+                    r["ngl"],
+                    i + 1,
+                    q["prompt_tokens"],
+                    q["prompt_tok_s"],
+                    q["gen_tokens"],
+                    q["gen_tok_s"],
+                ]
+                for r in sweep["runs"]
+                for i, q in enumerate(r["requests"])
+            ],
+        )
+        sweep_part = [
+            "### Выбор числа GPU-слоёв LLM",
+            "",
+            f"Три последовательных запроса конвейера (реранкинг → генерация → NLI) при процессе "
+            f"PyTorch с моделями на той же карте ({ms(sweep['pytorch_process_reserved_mib'])} МиБ "
+            f"reserved); llama.cpp сборки {sweep['llama_cpp_build']}, флаги "
+            "`-c 4096 -b 128 -ub 64 -np 1 --cache-ram 0`. Скорости из журнала llama-server, ток/с по "
+            "запросам:",
+            "",
+            table(
+                [
+                    "-ngl",
+                    "VRAM llama, МиБ",
+                    "После прогона, МиБ",
+                    "Промпт, ток/с",
+                    "Генерация, ток/с",
+                    "Предупреждение «failed to fit»",
+                ],
+                sweep_rows,
+                "lrrllr",
+            ),
+            "",
+            "Уменьшение VRAM llama-server после прогона означает, что драйвер вытеснил её буферы в "
+            "общую память: со второго запроса скорость падает. Сквозной прогон выполнен с "
+            f"`-ngl {sweep['selected_ngl']}`.",
+            "",
+        ]
     return "\n".join(
         [
             "## 5. Задержки и ресурсы",
+            "",
+            *sweep_part,
             "",
             "Запросы, дошедшие до генерации (без первого запроса с ленивой загрузкой моделей); мс:",
             "",
@@ -1101,7 +1162,7 @@ def section_repro(run: Run) -> str:
             "",
             "```powershell",
             "python scripts/build_eval_dataset_v3.py            # пересобрать и проверить датасет",
-            ".\\tools\\llama\\llama-server.exe -m .\\models\\llm\\Qwen2.5-14B-Instruct-Q4_K_M.gguf -ngl 35 -c 4096 -b 128 -ub 64 -np 1 --port 8080 --host 127.0.0.1",
+            ".\\tools\\llama\\llama-server.exe -m .\\models\\llm\\Qwen2.5-14B-Instruct-Q4_K_M.gguf -ngl 25 -c 4096 -b 128 -ub 64 -np 1 --cache-ram 0 --port 8080 --host 127.0.0.1",
             f"python evaluate_suite.py --run-dir {run.rel} retrieval",
             f"python evaluate_suite.py --run-dir {run.rel} nli",
             f"python evaluate_suite.py --run-dir {run.rel} e2e --profile guard_on",
@@ -1158,6 +1219,74 @@ def headline(run: Run) -> dict[str, Any]:
     return out
 
 
+def readme_block(run: Run) -> str:
+    """Compact results table injected into README.md between the results markers."""
+    lines = []
+    prod = run.e2e.get("guard_on")
+    if prod:
+        v, f = prod["vanilla"], prod["factrag"]
+        rows = [
+            [
+                "Галлюцинации на вопросах с известной истиной ↓",
+                rate_cell(v["hallucination"]),
+                rate_cell(f["hallucination"]),
+            ],
+            [
+                "Отказы на отвечаемых вопросах ↓",
+                rate_cell(v["false_refusal_on_answerable"]),
+                rate_cell(f["false_refusal_on_answerable"]),
+            ],
+            [
+                "Ключевые факты верны (отвечаемые) ↑",
+                rate_cell(v["key_fact_accuracy_on_answerable"]),
+                rate_cell(f["key_fact_accuracy_on_answerable"]),
+            ],
+            ["Корректный исход, все вопросы ↑", rate_cell(v["correct"]), rate_cell(f["correct"])],
+        ]
+        lat = prod["latency_ms"]["generated_queries"]
+        lines += [
+            table(
+                ["Метрика (сквозной прогон)", "Standard RAG (без NLI)", "FactRAG-NLI"], rows, "lrr"
+            ),
+            "",
+            f"Относительное снижение доли галлюцинаций: **{pct(prod['hallucination_relative_reduction'])}**; "
+            "точный тест Мак-Немара по корректности: p = "
+            f"{num(prod['paired_correctness']['mcnemar_exact_p'], 4)}. NLI-верификация: p50 "
+            f"{ms(lat['nli_ms']['p50'])} мс на запрос при полном времени p50 {ms(lat['total_ms']['p50'])} мс "
+            f"(генерация LLM p50 {ms(lat['generation_ms']['p50'])} мс).",
+            "",
+        ]
+    if run.nli:
+        d = run.nli["overall"]["decision_rule"]
+        lines.append(
+            f"NLI-модуль на {run.nli['overall']['pairs']} контрольных парах EN/RU: перехват "
+            f"{pct(d['hallucination_catch_rate'])}, ложная отбраковка {pct(d['false_rejection_rate'])}, "
+            f"macro-F1 {num(run.nli['overall']['argmax']['macro_f1'])}."
+        )
+        lines.append("")
+    if run.retrieval:
+        o = run.retrieval["overall"]
+        lines.append(
+            f"Поиск, Recall@5: dense {num(o['dense']['recall@5'])}, BM25 {num(o['sparse']['recall@5'])}, "
+            f"RRF {num(o['hybrid_rrf']['recall@5'])}, RRF + реранкинг {num(o['hybrid_rerank']['recall@5'])}."
+        )
+    return "\n".join(lines)
+
+
+def update_readme(block: str) -> bool:
+    path = ROOT / "README.md"
+    if not path.exists():
+        return False
+    text = path.read_text(encoding="utf-8")
+    start, end = "<!-- results:start -->", "<!-- results:end -->"
+    if start not in text or end not in text:
+        return False
+    head, rest = text.split(start, 1)
+    _, tail = rest.split(end, 1)
+    path.write_text(f"{head}{start}\n{block}\n{end}{tail}", encoding="utf-8", newline="\n")
+    return True
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("run_dir", type=Path)
@@ -1191,8 +1320,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     (REPORTS / "summary.json").write_text(
         json.dumps(head, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n"
     )
+    readme = update_readme(readme_block(run))
     print(
         f"Wrote reports/EVALUATION_REPORT.md, reports/summary.json, {len(list(TABLES.glob('*.csv')))} tables, {len(list(FIGURES.glob('*.svg')))} figures"
+        + ("; README results block updated" if readme else "")
     )
     return 0
 

@@ -26,7 +26,7 @@ python -c "import torch; print(torch.__version__, torch.cuda.get_device_capabili
 |---|---|
 | models/bge-m3 | [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3) |
 | models/bge-reranker-large | [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |
-| models/mdeberta-v3-nli | [mDeBERTa MNLI/XNLI](https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-mnli-xnli) |
+| models/mdeberta-nli (`RAG_NLI_MODEL_PATH`) | [mDeBERTa-v3-base-xnli-multilingual-nli-2mil7](https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7) (сверено по карточке модели: MNLI, XNLI, ANLI, multilingual-NLI-26lang-2mil7) |
 | models/llm/Qwen2.5-14B-Instruct-Q4_K_M.gguf | [Qwen GGUF](https://huggingface.co/Qwen/Qwen2.5-14B-Instruct-GGUF) |
 
 Мы выбираем вариант Q4_K_M. Если источник поставляет GGUF частями, мы объединяем их утилитой llama-gguf-split --merge из нашего комплекта llama.cpp и задаём итоговое имя, указанное выше. Мы сохраняем лицензии моделей и исходных документов вместе с ними; мы не предоставляем собственную лицензию на сторонние материалы.
@@ -45,10 +45,12 @@ RAG_LLM_API_BASE=http://127.0.0.1:8080/v1
 RAG_LLM_MODEL_PATH=models/llm/Qwen2.5-14B-Instruct-Q4_K_M.gguf
 RAG_EMBEDDING_MODEL_PATH=models/bge-m3
 RAG_RERANKER_MODEL_PATH=models/bge-reranker-large
-RAG_NLI_MODEL_PATH=models/mdeberta-v3-nli
+RAG_NLI_MODEL_PATH=models/mdeberta-nli
 RAG_DOCUMENT_ROOT=data/documents
 RAG_QDRANT_STORAGE_PATH=data/qdrant
 ```
+
+Полный проверенный профиль (пороги, нарезка, батчи) хранится в `.env.example`; мы копируем его в `.env` и задаём `RAG_API_TOKENS`.
 
 Мы сверяем актуальные параметры с settings.py и выполняем аудит:
 
