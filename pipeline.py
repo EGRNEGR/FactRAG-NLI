@@ -91,6 +91,8 @@ class RAGResponse(_Result):
     is_reliable: bool
     hybrid_candidate_ids: list[str] = Field(default_factory=list)
     reranked_candidate_ids: list[str] = Field(default_factory=list)
+    dense_candidate_ids: list[str] = Field(default_factory=list)
+    sparse_candidate_ids: list[str] = Field(default_factory=list)
     generation_metadata: GenerationMetadata | None = None
     raw_answer: str | None = None
     refusal_reason: str | None = None
@@ -240,6 +242,8 @@ class RAGPipeline:
             retriever = self.retriever
             stats["model_init_ms"] += (time.perf_counter() - init) * 1000
             results, timing, hybrid_ids, diagnostics = retriever.search_trace(question, top_k=top_k)
+            lists: dict[str, list[str]] = getattr(retriever, "candidate_lists", dict)()
+            dense_ids, sparse_ids = lists.get("dense", []), lists.get("sparse", [])
             stats.update(timing)
             results = [
                 hit
@@ -261,6 +265,8 @@ class RAGPipeline:
                     hybrid_candidate_ids=hybrid_ids,
                     refusal_reason="relevance_threshold_not_met",
                     retrieval_diagnostics=diagnostics,
+                    dense_candidate_ids=dense_ids,
+                    sparse_candidate_ids=sparse_ids,
                 )
             attempts: list[dict[str, Any]] = []
             if self._legacy_verifier is not None:
@@ -351,6 +357,8 @@ class RAGPipeline:
                 is_reliable=verified.is_reliable,
                 hybrid_candidate_ids=hybrid_ids,
                 reranked_candidate_ids=[hit.chunk.chunk_id for hit in results],
+                dense_candidate_ids=dense_ids,
+                sparse_candidate_ids=sparse_ids,
                 generation_metadata=verified.generation_metadata,
                 raw_answer=verified.raw_text,
                 retrieval_diagnostics=diagnostics,
