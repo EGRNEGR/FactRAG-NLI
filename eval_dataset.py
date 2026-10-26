@@ -83,6 +83,9 @@ class DraftCase(_Strict):
             raise ValueError(f"{self.id}: multi_hop needs at least two evidence quotes")
         for term in self.absence_terms:
             re.compile(term)
+        for fact in self.answer_must_contain:
+            if fact.startswith("re:"):
+                re.compile(fact[3:])
         return self
 
 
@@ -168,6 +171,12 @@ def load_dataset(path: Path) -> EvalDatasetV3:
 
 
 def contains_fact(answer: str, alternatives: str) -> bool:
-    """``alternatives`` is ``"a|b|c"``; any normalized alternative must occur in the answer."""
+    """``alternatives`` is ``"a|b|c"``; any normalized alternative must occur in the answer.
+
+    A single ``re:<pattern>`` entry is matched as a regular expression on the normalized
+    answer (needed for Russian negation traps such as "четн" inside "нечетн").
+    """
     text = normalize(answer)
+    if alternatives.startswith("re:"):
+        return re.search(alternatives[3:], text) is not None
     return any(normalize(option) in text for option in alternatives.split("|") if option.strip())
