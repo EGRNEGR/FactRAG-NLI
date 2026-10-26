@@ -1,0 +1,2520 @@
+[
+  {
+    "test_id": "POS-001",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Positive",
+    "question": "What transport protocol does QUIC use?",
+    "expected_output": "QUIC runs over UDP.",
+    "actual_output": "QUIC использует UDP вместо TCP. [S2]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "QUIC использует UDP вместо TCP. [S2]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.029877369007803793,
+        0.02821869488536155,
+        0.027809742999616416,
+        0.027313266443701224
+      ],
+      "reranker": [
+        0.8489722013473511,
+        0.0011335690505802631,
+        0.0009399438858963549,
+        0.00036829791497439146,
+        0.000191104321856983
+      ]
+    },
+    "execution_time": 19.508127699999022,
+    "execution_stats": {
+      "search_ms": 31.777099997270852,
+      "rerank_ms": 1513.250899999548,
+      "generation_ms": 17492.866699998558,
+      "nli_ms": 467.2437999979593,
+      "model_init_ms": 0.0015999976312741637,
+      "total_ms": 19505.349100003514
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-002",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+    "actual_output": "HTTP 404 Not Found указывает, что исходный сервер не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 404 Not Found указывает, что исходный сервер не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03128054740957967,
+        0.029957522915269395,
+        0.029411764705882353,
+        0.028205128205128206,
+        0.02758751902587519,
+        0.027650648360030512
+      ],
+      "reranker": [
+        0.9984512329101562,
+        0.907312273979187,
+        0.9489172697067261,
+        7.9673009167891e-05,
+        0.00033535013790242374,
+        0.025565214455127716,
+        0.0029810327105224133
+      ]
+    },
+    "execution_time": 20.508879199998773,
+    "execution_stats": {
+      "search_ms": 43.36519999924349,
+      "rerank_ms": 975.7635000023583,
+      "generation_ms": 19048.920900000667,
+      "nli_ms": 438.1616999999096,
+      "model_init_ms": 0.0017000020307023078,
+      "total_ms": 20506.477099999756
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-003",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What assurance levels are defined for authenticators in NIST SP 800-63B?",
+    "expected_output": "Authenticator Assurance Levels 1, 2, and 3.",
+    "actual_output": "NIST SP 800-63B defines three authentication assurance levels (AALs) for authenticators. [S2]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "NIST SP 800-63B defines three authentication assurance levels (AALs) for authenticators. [S2]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03125763125763126,
+        0.027972027972027972,
+        0.024624624624624628,
+        0.031054405392392875,
+        0.031024531024531024
+      ],
+      "reranker": [
+        0.9937100410461426,
+        0.971563994884491,
+        0.8539127111434937,
+        0.917302668094635,
+        0.0017546144081279635,
+        0.00020342698553577065
+      ]
+    },
+    "execution_time": 18.064028299999336,
+    "execution_stats": {
+      "search_ms": 32.0415000023786,
+      "rerank_ms": 779.7319999990577,
+      "generation_ms": 16822.23260000319,
+      "nli_ms": 427.4817000004987,
+      "model_init_ms": 0.0027000023692380637,
+      "total_ms": 18061.705599997367
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-004",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is AAL1 intended to provide?",
+    "expected_output": "Some confidence that the claimant controls an authenticator bound to the subscriber account.",
+    "actual_output": "AAL1 provides basic confidence that the claimant controls an authenticator bound to the subscriber account being authenticated [S1].\nAAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies [S2].\nSuccessful authentication requires the claimant to prove possession and control of the authenticator through a secure authentication protocol [S2].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "AAL1 provides basic confidence that the claimant controls an authenticator bound to the subscriber account being authenticated [S1].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "AAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "Successful authentication requires the claimant to prove possession and control of the authenticator through a secure authentication protocol [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03021353930031804,
+        0.02728937728937729,
+        0.028484848484848488,
+        0.031009615384615385,
+        0.025503573749187783
+      ],
+      "reranker": [
+        0.8386797308921814,
+        0.9814534187316895,
+        0.8449215292930603,
+        0.6557770371437073,
+        0.2568320035934448,
+        0.02931223064661026
+      ]
+    },
+    "execution_time": 21.471993799998017,
+    "execution_stats": {
+      "search_ms": 32.08770000128425,
+      "rerank_ms": 862.9155999988143,
+      "generation_ms": 20150.648700000602,
+      "nli_ms": 423.8222999993013,
+      "model_init_ms": 0.0016000012692529708,
+      "total_ms": 21469.693999999436
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-005",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is phishing resistance?",
+    "expected_output": "The ability of an authentication protocol to prevent disclosure of authentication secrets to an impostor verifier.",
+    "actual_output": "Phishing resistance is the ability of the authentication protocol to prevent the disclosure of authentication secrets and valid authenticator outputs to an impostor verifier without relying on the vigilance of the claimant [S2].\nIt requires single- or multi-factor cryptographic authentication [S1].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "Phishing resistance is the ability of the authentication protocol to prevent the disclosure of authentication secrets and valid authenticator outputs to an impostor verifier without relying on the vigilance of the claimant [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "It requires single- or multi-factor cryptographic authentication [S1].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.03057889822595705,
+        0.03252247488101534,
+        0.031009615384615385,
+        0.030303030303030304
+      ],
+      "reranker": [
+        0.804405927658081,
+        0.5640984773635864,
+        0.12852513790130615,
+        0.06560483574867249,
+        0.04146226868033409
+      ]
+    },
+    "execution_time": 20.016870800001925,
+    "execution_stats": {
+      "search_ms": 26.14260000336799,
+      "rerank_ms": 1119.0637999970932,
+      "generation_ms": 18447.804300001735,
+      "nli_ms": 421.35119999875315,
+      "model_init_ms": 0.0021000014385208488,
+      "total_ms": 20014.589200000046
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-006",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is verifier impersonation resistance?",
+    "expected_output": "The verifier is strongly prevented from impersonating another verifier to the claimant.",
+    "actual_output": "It requires establishing an authenticated protected channel and binding a channel identifier to the authenticator output in a way that cannot be replayed by an impostor [S1].\nApproved cryptographic algorithms must be used to establish this resistance, and keys must provide at least 112 bits of security strength [S3].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "It requires establishing an authenticated protected channel and binding a channel identifier to the authenticator output in a way that cannot be replayed by an impostor [S1].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "Approved cryptographic algorithms must be used to establish this resistance, and keys must provide at least 112 bits of security strength [S3].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 0.6666666666666666,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.030309988518943745,
+        0.03252247488101534,
+        0.029437229437229435,
+        0.03149801587301587,
+        0.03149801587301587
+      ],
+      "reranker": [
+        0.9944451451301575,
+        0.894789457321167,
+        0.2950267493724823,
+        0.6043989062309265,
+        0.169956237077713,
+        0.08151976019144058
+      ]
+    },
+    "execution_time": 22.231659900000523,
+    "execution_stats": {
+      "search_ms": 32.24170000248705,
+      "rerank_ms": 730.3957999974955,
+      "generation_ms": 21040.758600000117,
+      "nli_ms": 425.5851000016264,
+      "model_init_ms": 0.0020000006770715117,
+      "total_ms": 22229.229600001418
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-007",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+    "actual_output": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03128054740957967,
+        0.029957522915269395,
+        0.029411764705882353,
+        0.028205128205128206,
+        0.02758751902587519,
+        0.027650648360030512
+      ],
+      "reranker": [
+        0.9984512329101562,
+        0.907312273979187,
+        0.9489172697067261,
+        7.9673009167891e-05,
+        0.00033535013790242374,
+        0.025565214455127716,
+        0.0029810327105224133
+      ]
+    },
+    "execution_time": 6.135788400002639,
+    "execution_stats": {
+      "search_ms": 36.40280000036,
+      "rerank_ms": 954.1089000013017,
+      "generation_ms": 4719.7417999996105,
+      "nli_ms": 422.9589999995369,
+      "model_init_ms": 0.0024000000848900527,
+      "total_ms": 6133.433900002274
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-008",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Positive",
+    "question": "What transport protocol does QUIC use?",
+    "expected_output": "QUIC runs over UDP.",
+    "actual_output": "QUIC использует UDP вместо TCP. [S2]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "QUIC использует UDP вместо TCP. [S2]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.029877369007803793,
+        0.02821869488536155,
+        0.027809742999616416,
+        0.027313266443701224
+      ],
+      "reranker": [
+        0.8489722013473511,
+        0.0011335690505802631,
+        0.0009399438858963549,
+        0.00036829791497439146,
+        0.000191104321856983
+      ]
+    },
+    "execution_time": 3.8941736000015226,
+    "execution_stats": {
+      "search_ms": 37.14929999841843,
+      "rerank_ms": 1541.5217000008852,
+      "generation_ms": 1924.9452999974892,
+      "nli_ms": 388.224899998022,
+      "model_init_ms": 0.0016000012692529708,
+      "total_ms": 3892.038300000422
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-009",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+    "actual_output": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03128054740957967,
+        0.029957522915269395,
+        0.029411764705882353,
+        0.028205128205128206,
+        0.02758751902587519,
+        0.027650648360030512
+      ],
+      "reranker": [
+        0.9984512329101562,
+        0.907312273979187,
+        0.9489172697067261,
+        7.9673009167891e-05,
+        0.00033535013790242374,
+        0.025565214455127716,
+        0.0029810327105224133
+      ]
+    },
+    "execution_time": 6.2278095000001485,
+    "execution_stats": {
+      "search_ms": 27.426400003605522,
+      "rerank_ms": 958.2522999990033,
+      "generation_ms": 4822.870600000897,
+      "nli_ms": 415.9805999988748,
+      "model_init_ms": 0.0013999997463542968,
+      "total_ms": 6225.003100000322
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-010",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What assurance levels are defined for authenticators in NIST SP 800-63B?",
+    "expected_output": "Authenticator Assurance Levels 1, 2, and 3.",
+    "actual_output": "NIST SP 800-63B defines three authentication assurance levels (AALs) for authenticators. [S2]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "NIST SP 800-63B defines three authentication assurance levels (AALs) for authenticators. [S2]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03125763125763126,
+        0.027972027972027972,
+        0.024624624624624628,
+        0.031054405392392875,
+        0.031024531024531024
+      ],
+      "reranker": [
+        0.9937100410461426,
+        0.971563994884491,
+        0.8539127111434937,
+        0.917302668094635,
+        0.0017546144081279635,
+        0.00020342698553577065
+      ]
+    },
+    "execution_time": 4.445410600001196,
+    "execution_stats": {
+      "search_ms": 26.8536999974458,
+      "rerank_ms": 795.1169000007212,
+      "generation_ms": 3216.174000001047,
+      "nli_ms": 404.7869999994873,
+      "model_init_ms": 0.0016999983927235007,
+      "total_ms": 4443.1492000003345
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-011",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is AAL1 intended to provide?",
+    "expected_output": "Some confidence that the claimant controls an authenticator bound to the subscriber account.",
+    "actual_output": "AAL1 provides basic confidence that the claimant controls an authenticator bound to the subscriber account being authenticated [S1].\nAAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies [S2].\nSuccessful authentication requires the claimant to prove possession and control of the authenticator through a secure authentication protocol [S2].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "AAL1 provides basic confidence that the claimant controls an authenticator bound to the subscriber account being authenticated [S1].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "AAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "Successful authentication requires the claimant to prove possession and control of the authenticator through a secure authentication protocol [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03021353930031804,
+        0.02728937728937729,
+        0.028484848484848488,
+        0.031009615384615385,
+        0.025503573749187783
+      ],
+      "reranker": [
+        0.8386797308921814,
+        0.9814534187316895,
+        0.8449215292930603,
+        0.6557770371437073,
+        0.2568320035934448,
+        0.02931223064661026
+      ]
+    },
+    "execution_time": 7.7887640000008105,
+    "execution_stats": {
+      "search_ms": 25.911400000040885,
+      "rerank_ms": 874.5103000001109,
+      "generation_ms": 6456.4390999985335,
+      "nli_ms": 429.26689999876544,
+      "model_init_ms": 0.0021000014385208488,
+      "total_ms": 7786.344399999507
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-012",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is phishing resistance?",
+    "expected_output": "The ability of an authentication protocol to prevent disclosure of authentication secrets to an impostor verifier.",
+    "actual_output": "Phishing resistance is the ability of the authentication protocol to prevent the disclosure of authentication secrets and valid authenticator outputs to an impostor verifier without relying on the vigilance of the claimant [S2].\nIt requires single- or multi-factor cryptographic authentication [S1].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "Phishing resistance is the ability of the authentication protocol to prevent the disclosure of authentication secrets and valid authenticator outputs to an impostor verifier without relying on the vigilance of the claimant [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "It requires single- or multi-factor cryptographic authentication [S1].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.03057889822595705,
+        0.03252247488101534,
+        0.031009615384615385,
+        0.030303030303030304
+      ],
+      "reranker": [
+        0.804405927658081,
+        0.5640984773635864,
+        0.12852513790130615,
+        0.06560483574867249,
+        0.04146226868033409
+      ]
+    },
+    "execution_time": 6.412994999998773,
+    "execution_stats": {
+      "search_ms": 23.74680000139051,
+      "rerank_ms": 1118.0118000011134,
+      "generation_ms": 4859.345299999404,
+      "nli_ms": 409.3228000019735,
+      "model_init_ms": 0.0012999989849049598,
+      "total_ms": 6410.614100001112
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-013",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is verifier impersonation resistance?",
+    "expected_output": "The verifier is strongly prevented from impersonating another verifier to the claimant.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "The verifier must validate the signature or other information used to prove verifier impersonation resistance. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 0.3333333333333333,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.030309988518943745,
+        0.03252247488101534,
+        0.029437229437229435,
+        0.03149801587301587,
+        0.03149801587301587
+      ],
+      "reranker": [
+        0.9944451451301575,
+        0.894789457321167,
+        0.2950267493724823,
+        0.6043989062309265,
+        0.169956237077713,
+        0.08151976019144058
+      ]
+    },
+    "execution_time": 9.958936300001369,
+    "execution_stats": {
+      "search_ms": 25.856000000203494,
+      "rerank_ms": 739.321299999574,
+      "generation_ms": 8787.579600000754,
+      "nli_ms": 403.70289999918896,
+      "model_init_ms": 0.0017999991541728377,
+      "total_ms": 9956.68300000034
+    },
+    "is_success": false
+  },
+  {
+    "test_id": "POS-014",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+    "actual_output": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03128054740957967,
+        0.029957522915269395,
+        0.029411764705882353,
+        0.028205128205128206,
+        0.02758751902587519,
+        0.027650648360030512
+      ],
+      "reranker": [
+        0.9984512329101562,
+        0.907312273979187,
+        0.9489172697067261,
+        7.9673009167891e-05,
+        0.00033535013790242374,
+        0.025565214455127716,
+        0.0029810327105224133
+      ]
+    },
+    "execution_time": 5.683696600000985,
+    "execution_stats": {
+      "search_ms": 26.839900001505157,
+      "rerank_ms": 976.8418999992718,
+      "generation_ms": 4293.496900001628,
+      "nli_ms": 384.0219999983674,
+      "model_init_ms": 0.0015000005078036338,
+      "total_ms": 5681.40250000215
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-015",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Positive",
+    "question": "What transport protocol does QUIC use?",
+    "expected_output": "QUIC runs over UDP.",
+    "actual_output": "QUIC использует UDP вместо TCP. [S2]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "QUIC использует UDP вместо TCP. [S2]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.029877369007803793,
+        0.02821869488536155,
+        0.027809742999616416,
+        0.027313266443701224
+      ],
+      "reranker": [
+        0.8489722013473511,
+        0.0011335690505802631,
+        0.0009399438858963549,
+        0.00036829791497439146,
+        0.000191104321856983
+      ]
+    },
+    "execution_time": 3.862755099999049,
+    "execution_stats": {
+      "search_ms": 25.84289999867906,
+      "rerank_ms": 1554.1427999996813,
+      "generation_ms": 1870.1051999996707,
+      "nli_ms": 410.329800000909,
+      "model_init_ms": 0.0016000012692529708,
+      "total_ms": 3860.620600000402
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-016",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+    "actual_output": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03128054740957967,
+        0.029957522915269395,
+        0.029411764705882353,
+        0.028205128205128206,
+        0.02758751902587519,
+        0.027650648360030512
+      ],
+      "reranker": [
+        0.9984512329101562,
+        0.907312273979187,
+        0.9489172697067261,
+        7.9673009167891e-05,
+        0.00033535013790242374,
+        0.025565214455127716,
+        0.0029810327105224133
+      ]
+    },
+    "execution_time": 5.672311199999967,
+    "execution_stats": {
+      "search_ms": 26.68179999818676,
+      "rerank_ms": 953.6588000009942,
+      "generation_ms": 4276.023099999293,
+      "nli_ms": 413.4626000013668,
+      "model_init_ms": 0.0013999997463542968,
+      "total_ms": 5670.036100000289
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-017",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What assurance levels are defined for authenticators in NIST SP 800-63B?",
+    "expected_output": "Authenticator Assurance Levels 1, 2, and 3.",
+    "actual_output": "NIST SP 800-63B defines three authentication assurance levels (AALs) for authenticators. [S2]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "NIST SP 800-63B defines three authentication assurance levels (AALs) for authenticators. [S2]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03125763125763126,
+        0.027972027972027972,
+        0.024624624624624628,
+        0.031054405392392875,
+        0.031024531024531024
+      ],
+      "reranker": [
+        0.9937100410461426,
+        0.971563994884491,
+        0.8539127111434937,
+        0.917302668094635,
+        0.0017546144081279635,
+        0.00020342698553577065
+      ]
+    },
+    "execution_time": 4.099995900000067,
+    "execution_stats": {
+      "search_ms": 32.19890000036685,
+      "rerank_ms": 787.3639999997977,
+      "generation_ms": 2881.735999999364,
+      "nli_ms": 396.22220000092057,
+      "model_init_ms": 0.0029000002541579306,
+      "total_ms": 4097.728400000051
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-018",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is AAL1 intended to provide?",
+    "expected_output": "Some confidence that the claimant controls an authenticator bound to the subscriber account.",
+    "actual_output": "AAL1 provides basic confidence that the claimant controls an authenticator bound to the subscriber account being authenticated [S1].\nAAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies [S2].\nSuccessful authentication requires the claimant to prove possession and control of the authenticator through a secure authentication protocol [S2].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "AAL1 provides basic confidence that the claimant controls an authenticator bound to the subscriber account being authenticated [S1].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "AAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "Successful authentication requires the claimant to prove possession and control of the authenticator through a secure authentication protocol [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03021353930031804,
+        0.02728937728937729,
+        0.028484848484848488,
+        0.031009615384615385,
+        0.025503573749187783
+      ],
+      "reranker": [
+        0.8386797308921814,
+        0.9814534187316895,
+        0.8449215292930603,
+        0.6557770371437073,
+        0.2568320035934448,
+        0.02931223064661026
+      ]
+    },
+    "execution_time": 7.668538099998841,
+    "execution_stats": {
+      "search_ms": 26.898199997958727,
+      "rerank_ms": 854.5908000014606,
+      "generation_ms": 6334.410400002525,
+      "nli_ms": 450.2193000007537,
+      "model_init_ms": 0.0015000005078036338,
+      "total_ms": 7666.324800000439
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-019",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is phishing resistance?",
+    "expected_output": "The ability of an authentication protocol to prevent disclosure of authentication secrets to an impostor verifier.",
+    "actual_output": "Phishing resistance is the ability of the authentication protocol to prevent the disclosure of authentication secrets and valid authenticator outputs to an impostor verifier without relying on the vigilance of the claimant [S2].\nIt requires single- or multi-factor cryptographic authentication [S1].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "Phishing resistance is the ability of the authentication protocol to prevent the disclosure of authentication secrets and valid authenticator outputs to an impostor verifier without relying on the vigilance of the claimant [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "It requires single- or multi-factor cryptographic authentication [S1].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.03057889822595705,
+        0.03252247488101534,
+        0.031009615384615385,
+        0.030303030303030304
+      ],
+      "reranker": [
+        0.804405927658081,
+        0.5640984773635864,
+        0.12852513790130615,
+        0.06560483574867249,
+        0.04146226868033409
+      ]
+    },
+    "execution_time": 6.445009899998695,
+    "execution_stats": {
+      "search_ms": 24.714000002859393,
+      "rerank_ms": 1128.0210000004445,
+      "generation_ms": 4860.000700002274,
+      "nli_ms": 429.80030000035185,
+      "model_init_ms": 0.0015000005078036338,
+      "total_ms": 6442.7284999983385
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-020",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is verifier impersonation resistance?",
+    "expected_output": "The verifier is strongly prevented from impersonating another verifier to the claimant.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "The verifier must validate the signature or other information used to prove verifier impersonation resistance. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 0.3333333333333333,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.030309988518943745,
+        0.03252247488101534,
+        0.029437229437229435,
+        0.03149801587301587,
+        0.03149801587301587
+      ],
+      "reranker": [
+        0.9944451451301575,
+        0.894789457321167,
+        0.2950267493724823,
+        0.6043989062309265,
+        0.169956237077713,
+        0.08151976019144058
+      ]
+    },
+    "execution_time": 8.77307859999928,
+    "execution_stats": {
+      "search_ms": 26.02080000360729,
+      "rerank_ms": 730.2915999971447,
+      "generation_ms": 7595.664399999805,
+      "nli_ms": 418.6621999979252,
+      "model_init_ms": 0.001300006260862574,
+      "total_ms": 8770.844300001045
+    },
+    "is_success": false
+  },
+  {
+    "test_id": "POS-021",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+    "actual_output": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03128054740957967,
+        0.029957522915269395,
+        0.029411764705882353,
+        0.028205128205128206,
+        0.02758751902587519,
+        0.027650648360030512
+      ],
+      "reranker": [
+        0.9984512329101562,
+        0.907312273979187,
+        0.9489172697067261,
+        7.9673009167891e-05,
+        0.00033535013790242374,
+        0.025565214455127716,
+        0.0029810327105224133
+      ]
+    },
+    "execution_time": 5.672341100002086,
+    "execution_stats": {
+      "search_ms": 25.800399998843204,
+      "rerank_ms": 950.6426000007195,
+      "generation_ms": 4285.885500001314,
+      "nli_ms": 407.123999997566,
+      "model_init_ms": 0.0012999989849049598,
+      "total_ms": 5669.678800000838
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-022",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Positive",
+    "question": "What transport protocol does QUIC use?",
+    "expected_output": "QUIC runs over UDP.",
+    "actual_output": "QUIC использует UDP вместо TCP. [S2]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "QUIC использует UDP вместо TCP. [S2]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.029877369007803793,
+        0.02821869488536155,
+        0.027809742999616416,
+        0.027313266443701224
+      ],
+      "reranker": [
+        0.8489722013473511,
+        0.0011335690505802631,
+        0.0009399438858963549,
+        0.00036829791497439146,
+        0.000191104321856983
+      ]
+    },
+    "execution_time": 3.7108668999971997,
+    "execution_stats": {
+      "search_ms": 27.45639999920968,
+      "rerank_ms": 1515.6931999990775,
+      "generation_ms": 1790.0211999985913,
+      "nli_ms": 375.2007000002777,
+      "model_init_ms": 0.0016000012692529708,
+      "total_ms": 3708.5573000003933
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-023",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+    "actual_output": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03128054740957967,
+        0.029957522915269395,
+        0.029411764705882353,
+        0.028205128205128206,
+        0.02758751902587519,
+        0.027650648360030512
+      ],
+      "reranker": [
+        0.9984512329101562,
+        0.907312273979187,
+        0.9489172697067261,
+        7.9673009167891e-05,
+        0.00033535013790242374,
+        0.025565214455127716,
+        0.0029810327105224133
+      ]
+    },
+    "execution_time": 5.667425500003446,
+    "execution_stats": {
+      "search_ms": 25.381200000992976,
+      "rerank_ms": 957.8173000008974,
+      "generation_ms": 4282.62999999788,
+      "nli_ms": 399.22610000212444,
+      "model_init_ms": 0.0013000026228837669,
+      "total_ms": 5665.25140000158
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-024",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What assurance levels are defined for authenticators in NIST SP 800-63B?",
+    "expected_output": "Authenticator Assurance Levels 1, 2, and 3.",
+    "actual_output": "NIST SP 800-63B defines three authentication assurance levels (AALs) for authenticators. [S2]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "NIST SP 800-63B defines three authentication assurance levels (AALs) for authenticators. [S2]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03125763125763126,
+        0.027972027972027972,
+        0.024624624624624628,
+        0.031054405392392875,
+        0.031024531024531024
+      ],
+      "reranker": [
+        0.9937100410461426,
+        0.971563994884491,
+        0.8539127111434937,
+        0.917302668094635,
+        0.0017546144081279635,
+        0.00020342698553577065
+      ]
+    },
+    "execution_time": 4.125758000001952,
+    "execution_stats": {
+      "search_ms": 28.009199999360135,
+      "rerank_ms": 774.0534000004118,
+      "generation_ms": 2934.8368999999366,
+      "nli_ms": 386.4051999989897,
+      "model_init_ms": 0.0026000016077887267,
+      "total_ms": 4123.515499999485
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-025",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is AAL1 intended to provide?",
+    "expected_output": "Some confidence that the claimant controls an authenticator bound to the subscriber account.",
+    "actual_output": "AAL1 provides basic confidence that the claimant controls an authenticator bound to the subscriber account being authenticated [S1].\nAAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies [S2].\nSuccessful authentication requires the claimant to prove possession and control of the authenticator through a secure authentication protocol [S2].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "AAL1 provides basic confidence that the claimant controls an authenticator bound to the subscriber account being authenticated [S1].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "AAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "Successful authentication requires the claimant to prove possession and control of the authenticator through a secure authentication protocol [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03021353930031804,
+        0.02728937728937729,
+        0.028484848484848488,
+        0.031009615384615385,
+        0.025503573749187783
+      ],
+      "reranker": [
+        0.8386797308921814,
+        0.9814534187316895,
+        0.8449215292930603,
+        0.6557770371437073,
+        0.2568320035934448,
+        0.02931223064661026
+      ]
+    },
+    "execution_time": 7.592926000001171,
+    "execution_stats": {
+      "search_ms": 24.70270000412711,
+      "rerank_ms": 871.5904999990016,
+      "generation_ms": 6277.843799998664,
+      "nli_ms": 415.96380000191857,
+      "model_init_ms": 0.0018000027921516448,
+      "total_ms": 7590.299600000435
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-026",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is phishing resistance?",
+    "expected_output": "The ability of an authentication protocol to prevent disclosure of authentication secrets to an impostor verifier.",
+    "actual_output": "Phishing resistance is the ability of the authentication protocol to prevent the disclosure of authentication secrets and valid authenticator outputs to an impostor verifier without relying on the vigilance of the claimant [S2].\nIt requires single- or multi-factor cryptographic authentication [S1].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "Phishing resistance is the ability of the authentication protocol to prevent the disclosure of authentication secrets and valid authenticator outputs to an impostor verifier without relying on the vigilance of the claimant [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "It requires single- or multi-factor cryptographic authentication [S1].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.03057889822595705,
+        0.03252247488101534,
+        0.031009615384615385,
+        0.030303030303030304
+      ],
+      "reranker": [
+        0.804405927658081,
+        0.5640984773635864,
+        0.12852513790130615,
+        0.06560483574867249,
+        0.04146226868033409
+      ]
+    },
+    "execution_time": 6.46113780000087,
+    "execution_stats": {
+      "search_ms": 24.437100004433887,
+      "rerank_ms": 1104.7088999985135,
+      "generation_ms": 4925.982099997782,
+      "nli_ms": 403.3937000021979,
+      "model_init_ms": 0.0013999997463542968,
+      "total_ms": 6458.707800000411
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-027",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is verifier impersonation resistance?",
+    "expected_output": "The verifier is strongly prevented from impersonating another verifier to the claimant.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "The verifier must validate the signature or other information used to prove verifier impersonation resistance. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 0.3333333333333333,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.030309988518943745,
+        0.03252247488101534,
+        0.029437229437229435,
+        0.03149801587301587,
+        0.03149801587301587
+      ],
+      "reranker": [
+        0.9944451451301575,
+        0.894789457321167,
+        0.2950267493724823,
+        0.6043989062309265,
+        0.169956237077713,
+        0.08151976019144058
+      ]
+    },
+    "execution_time": 8.785676600000443,
+    "execution_stats": {
+      "search_ms": 26.13299999939045,
+      "rerank_ms": 739.532200001122,
+      "generation_ms": 7621.427699999913,
+      "nli_ms": 396.143400001165,
+      "model_init_ms": 0.0031000017770566046,
+      "total_ms": 8783.458399997471
+    },
+    "is_success": false
+  },
+  {
+    "test_id": "POS-028",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+    "actual_output": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03128054740957967,
+        0.029957522915269395,
+        0.029411764705882353,
+        0.028205128205128206,
+        0.02758751902587519,
+        0.027650648360030512
+      ],
+      "reranker": [
+        0.9984512329101562,
+        0.907312273979187,
+        0.9489172697067261,
+        7.9673009167891e-05,
+        0.00033535013790242374,
+        0.025565214455127716,
+        0.0029810327105224133
+      ]
+    },
+    "execution_time": 5.684807300000102,
+    "execution_stats": {
+      "search_ms": 29.63159999853815,
+      "rerank_ms": 955.7060000006459,
+      "generation_ms": 4307.824999999866,
+      "nli_ms": 389.2104000005929,
+      "model_init_ms": 0.0012999989849049598,
+      "total_ms": 5682.581299999583
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-029",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Positive",
+    "question": "What transport protocol does QUIC use?",
+    "expected_output": "QUIC runs over UDP.",
+    "actual_output": "QUIC использует UDP вместо TCP. [S2]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "QUIC использует UDP вместо TCP. [S2]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.029877369007803793,
+        0.02821869488536155,
+        0.027809742999616416,
+        0.027313266443701224
+      ],
+      "reranker": [
+        0.8489722013473511,
+        0.0011335690505802631,
+        0.0009399438858963549,
+        0.00036829791497439146,
+        0.000191104321856983
+      ]
+    },
+    "execution_time": 3.8201810999998997,
+    "execution_stats": {
+      "search_ms": 26.070900003105635,
+      "rerank_ms": 1488.2198999985121,
+      "generation_ms": 1792.6073000016913,
+      "nli_ms": 510.85279999824706,
+      "model_init_ms": 0.0026999987312592566,
+      "total_ms": 3817.959799998789
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-030",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+    "actual_output": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03128054740957967,
+        0.029957522915269395,
+        0.029411764705882353,
+        0.028205128205128206,
+        0.02758751902587519,
+        0.027650648360030512
+      ],
+      "reranker": [
+        0.9984512329101562,
+        0.907312273979187,
+        0.9489172697067261,
+        7.9673009167891e-05,
+        0.00033535013790242374,
+        0.025565214455127716,
+        0.0029810327105224133
+      ]
+    },
+    "execution_time": 5.891921000002185,
+    "execution_stats": {
+      "search_ms": 26.485399997909553,
+      "rerank_ms": 964.4021999993129,
+      "generation_ms": 4460.242299999663,
+      "nli_ms": 438.1210999999894,
+      "model_init_ms": 0.0013000026228837669,
+      "total_ms": 5889.454300002399
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-031",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What assurance levels are defined for authenticators in NIST SP 800-63B?",
+    "expected_output": "Authenticator Assurance Levels 1, 2, and 3.",
+    "actual_output": "NIST SP 800-63B defines three authentication assurance levels (AALs) for authenticators. [S2]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "NIST SP 800-63B defines three authentication assurance levels (AALs) for authenticators. [S2]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03125763125763126,
+        0.027972027972027972,
+        0.024624624624624628,
+        0.031054405392392875,
+        0.031024531024531024
+      ],
+      "reranker": [
+        0.9937100410461426,
+        0.971563994884491,
+        0.8539127111434937,
+        0.917302668094635,
+        0.0017546144081279635,
+        0.00020342698553577065
+      ]
+    },
+    "execution_time": 4.185064099998272,
+    "execution_stats": {
+      "search_ms": 25.74109999841312,
+      "rerank_ms": 784.9009000019578,
+      "generation_ms": 2987.0709999995597,
+      "nli_ms": 384.23969999712426,
+      "model_init_ms": 0.0016000012692529708,
+      "total_ms": 4182.154199999786
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-032",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is AAL1 intended to provide?",
+    "expected_output": "Some confidence that the claimant controls an authenticator bound to the subscriber account.",
+    "actual_output": "AAL1 provides basic confidence that the claimant controls an authenticator bound to the subscriber account being authenticated [S1].\nAAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies [S2].\nSuccessful authentication requires the claimant to prove possession and control of the authenticator through a secure authentication protocol [S2].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "AAL1 provides basic confidence that the claimant controls an authenticator bound to the subscriber account being authenticated [S1].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "AAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "Successful authentication requires the claimant to prove possession and control of the authenticator through a secure authentication protocol [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03021353930031804,
+        0.02728937728937729,
+        0.028484848484848488,
+        0.031009615384615385,
+        0.025503573749187783
+      ],
+      "reranker": [
+        0.8386797308921814,
+        0.9814534187316895,
+        0.8449215292930603,
+        0.6557770371437073,
+        0.2568320035934448,
+        0.02931223064661026
+      ]
+    },
+    "execution_time": 7.594565899998997,
+    "execution_stats": {
+      "search_ms": 24.334300000191433,
+      "rerank_ms": 874.8918999990565,
+      "generation_ms": 6263.045299998339,
+      "nli_ms": 429.5942999997351,
+      "model_init_ms": 0.0017000020307023078,
+      "total_ms": 7592.082500003016
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-033",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is phishing resistance?",
+    "expected_output": "The ability of an authentication protocol to prevent disclosure of authentication secrets to an impostor verifier.",
+    "actual_output": "Phishing resistance is the ability of the authentication protocol to prevent the disclosure of authentication secrets and valid authenticator outputs to an impostor verifier without relying on the vigilance of the claimant [S2].\nIt requires single- or multi-factor cryptographic authentication [S1].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "Phishing resistance is the ability of the authentication protocol to prevent the disclosure of authentication secrets and valid authenticator outputs to an impostor verifier without relying on the vigilance of the claimant [S2].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        },
+        {
+          "claim": "It requires single- or multi-factor cryptographic authentication [S1].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.03057889822595705,
+        0.03252247488101534,
+        0.031009615384615385,
+        0.030303030303030304
+      ],
+      "reranker": [
+        0.804405927658081,
+        0.5640984773635864,
+        0.12852513790130615,
+        0.06560483574867249,
+        0.04146226868033409
+      ]
+    },
+    "execution_time": 6.381223099997442,
+    "execution_stats": {
+      "search_ms": 25.839000001724344,
+      "rerank_ms": 1109.8310999987007,
+      "generation_ms": 4841.465800000151,
+      "nli_ms": 401.71749999717576,
+      "model_init_ms": 0.0015000005078036338,
+      "total_ms": 6379.039700001158
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "POS-034",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is verifier impersonation resistance?",
+    "expected_output": "The verifier is strongly prevented from impersonating another verifier to the claimant.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "The verifier must validate the signature or other information used to prove verifier impersonation resistance. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 0.3333333333333333,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.030309988518943745,
+        0.03252247488101534,
+        0.029437229437229435,
+        0.03149801587301587,
+        0.03149801587301587
+      ],
+      "reranker": [
+        0.9944451451301575,
+        0.894789457321167,
+        0.2950267493724823,
+        0.6043989062309265,
+        0.169956237077713,
+        0.08151976019144058
+      ]
+    },
+    "execution_time": 8.658074599999964,
+    "execution_stats": {
+      "search_ms": 28.596200001629768,
+      "rerank_ms": 726.3746999997238,
+      "generation_ms": 7522.995499999524,
+      "nli_ms": 377.6335999973526,
+      "model_init_ms": 0.0022000021999701858,
+      "total_ms": 8655.839700000797
+    },
+    "is_success": false
+  },
+  {
+    "test_id": "POS-035",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+    "actual_output": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 404 Not Found указывает, что сервер-источник не нашёл текущее представление для целевого ресурса или не готов сообщить о его существовании. [S1]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03128054740957967,
+        0.029957522915269395,
+        0.029411764705882353,
+        0.028205128205128206,
+        0.02758751902587519,
+        0.027650648360030512
+      ],
+      "reranker": [
+        0.9984512329101562,
+        0.907312273979187,
+        0.9489172697067261,
+        7.9673009167891e-05,
+        0.00033535013790242374,
+        0.025565214455127716,
+        0.0029810327105224133
+      ]
+    },
+    "execution_time": 5.62013830000069,
+    "execution_stats": {
+      "search_ms": 27.129199999762932,
+      "rerank_ms": 948.5437000003003,
+      "generation_ms": 4267.370800000208,
+      "nli_ms": 374.6250999975018,
+      "model_init_ms": 0.0022999993234407157,
+      "total_ms": 5617.906300001778
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "NEG-001",
+    "document_name": "rfc9457_problem_details.txt",
+    "question_type": "Negative",
+    "question": "Does RFC 9457 mandate XML as the only problem detail format?",
+    "expected_output": "No such requirement is stated; the document defines JSON and extensible representations.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.030798389007344232,
+        0.030090497737556562,
+        0.029709507042253523,
+        0.024540757749712976,
+        0.023839931885908897
+      ],
+      "reranker": [
+        0.00010229986219201237,
+        7.9673009167891e-05,
+        0.00013982206291984767,
+        7.9673009167891e-05,
+        0.00010889690747717395
+      ]
+    },
+    "execution_time": 16.877553099999204,
+    "execution_stats": {
+      "search_ms": 28.29159999600961,
+      "rerank_ms": 1626.2534000015876,
+      "generation_ms": 15220.637599999463,
+      "nli_ms": 0.0018000027921516448,
+      "model_init_ms": 0.0013999997463542968,
+      "total_ms": 16875.429700001405
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "NEG-002",
+    "document_name": "rfc9562_uuid.txt",
+    "question_type": "Negative",
+    "question": "Does RFC 9562 define UUIDs with 256 bits?",
+    "expected_output": "No; UUIDs are 128 bits.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.02813852813852814,
+        0.02803921568627451,
+        0.02782608695652174,
+        0.027820121951219513
+      ],
+      "reranker": [
+        0.00021654405281879008,
+        0.000626334105618298,
+        0.0012843081494793296,
+        9.028038039105013e-05
+      ]
+    },
+    "execution_time": 15.062829200000124,
+    "execution_stats": {
+      "search_ms": 403.8018999999622,
+      "rerank_ms": 1026.100499999302,
+      "generation_ms": 13630.56190000134,
+      "nli_ms": 0.0013999997463542968,
+      "model_init_ms": 0.0017000020307023078,
+      "total_ms": 15060.64680000054
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "NEG-003",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Negative",
+    "question": "Does QUIC require TCP as its underlying transport?",
+    "expected_output": "No; QUIC uses UDP.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "QUIC предоставляет независимость для одновременных сообщений, используя UDP вместо TCP. [S1]",
+          "status": "contradiction",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.02946912242686891,
+        0.029211087420042643,
+        0.028665028665028666,
+        0.02819138376017471
+      ],
+      "reranker": [
+        0.8056321740150452,
+        0.0009399438858963549,
+        0.00041731575038284063,
+        0.008061991073191166,
+        0.004905405919998884
+      ]
+    },
+    "execution_time": 18.602920799999993,
+    "execution_stats": {
+      "search_ms": 405.0132999982452,
+      "rerank_ms": 1514.0713000000687,
+      "generation_ms": 16296.421999999438,
+      "nli_ms": 384.90770000134944,
+      "model_init_ms": 0.0015999976312741637,
+      "total_ms": 18600.614299997687
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "NEG-004",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Negative",
+    "question": "Does HTTP 404 guarantee that a resource is permanently absent?",
+    "expected_output": "No; 404 does not establish permanence.",
+    "actual_output": "HTTP 404 не гарантирует, что ресурс отсутствует навсегда. [S2]",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 404 не гарантирует, что ресурс отсутствует навсегда. [S2]",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 1.0,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03225806451612903,
+        0.03076923076923077,
+        0.029418126757516764,
+        0.02919863597612958,
+        0.025151515151515154
+      ],
+      "reranker": [
+        0.8807970285415649,
+        0.8267117738723755,
+        0.00033535013790242374,
+        0.0010005044750869274,
+        0.0005193048855289817,
+        0.026759283617138863
+      ]
+    },
+    "execution_time": 16.98468110000249,
+    "execution_stats": {
+      "search_ms": 27.64759999627131,
+      "rerank_ms": 1006.0074000029999,
+      "generation_ms": 15535.936100000981,
+      "nli_ms": 412.84730000188574,
+      "model_init_ms": 0.0013999997463542968,
+      "total_ms": 16982.627599998523
+    },
+    "is_success": false
+  },
+  {
+    "test_id": "NEG-005",
+    "document_name": "nist_sp800_53r5.pdf",
+    "question_type": "Negative",
+    "question": "Does SP 800-53 define a control family named ZZ?",
+    "expected_output": "No such control family is defined.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03149801587301587,
+        0.0315136476426799,
+        0.03278688524590164,
+        0.030536130536130537,
+        0.03055037313432836,
+        0.029631255487269532
+      ],
+      "reranker": [
+        0.6132366061210632,
+        0.1980641782283783,
+        0.00628990214318037,
+        0.19072403013706207,
+        0.16026602685451508,
+        0.0008040859247557819
+      ]
+    },
+    "execution_time": 14.353372400000808,
+    "execution_stats": {
+      "search_ms": 28.144899999460904,
+      "rerank_ms": 878.9560000004712,
+      "generation_ms": 13443.91320000068,
+      "nli_ms": 0.0017999991541728377,
+      "model_init_ms": 0.0017000020307023078,
+      "total_ms": 14351.231600001483
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "NEG-006",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Negative",
+    "question": "Does AAL4 exist in SP 800-63B?",
+    "expected_output": "No; the document defines AAL1 through AAL3.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.03225806451612903,
+        0.027912386121341344,
+        0.029206349206349208,
+        0.0266900790166813,
+        0.026200135226504394
+      ],
+      "reranker": [
+        0.8068526387214661,
+        0.06656918674707413,
+        0.5573635101318359,
+        0.00015843621804378927,
+        0.0004728544445242733,
+        0.000626334105618298
+      ]
+    },
+    "execution_time": 16.055714400001307,
+    "execution_stats": {
+      "search_ms": 396.1721999985457,
+      "rerank_ms": 881.9751000010001,
+      "generation_ms": 14775.154300001304,
+      "nli_ms": 0.0020000006770715117,
+      "model_init_ms": 0.0016000012692529708,
+      "total_ms": 16053.547200001049
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "NEG-007",
+    "document_name": "postgresql_create_table.html",
+    "question_type": "Negative",
+    "question": "Does CREATE TABLE automatically encrypt every column?",
+    "expected_output": "No such behavior is specified.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.028991596638655463,
+        0.025124843945068663,
+        0.025035205758097326,
+        0.02395833333333333,
+        0.013333333333333334
+      ],
+      "reranker": [
+        0.0012843081494793296,
+        0.000191104321856983,
+        0.0017007222631946206,
+        0.0006667023408226669,
+        0.7082125544548035
+      ]
+    },
+    "execution_time": 16.380135299998074,
+    "execution_stats": {
+      "search_ms": 390.67460000296705,
+      "rerank_ms": 829.0643000000273,
+      "generation_ms": 15157.994000001054,
+      "nli_ms": 0.0017000020307023078,
+      "model_init_ms": 0.0015999976312741637,
+      "total_ms": 16377.929300000687
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "NEG-008",
+    "document_name": "postgresql_indexes.html",
+    "question_type": "Negative",
+    "question": "Does every PostgreSQL query always use an index?",
+    "expected_output": "No; the planner may choose a sequential scan.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.031009615384615385,
+        0.03057889822595705,
+        0.02797339593114241,
+        0.026742581090407176
+      ],
+      "reranker": [
+        0.42155182361602783,
+        0.00024536947603337467,
+        0.00015843621804378927,
+        7.484622619813308e-05,
+        0.0013250223128125072
+      ]
+    },
+    "execution_time": 17.561318399999436,
+    "execution_stats": {
+      "search_ms": 404.95020000162185,
+      "rerank_ms": 1539.3159999985073,
+      "generation_ms": 15614.690100002917,
+      "nli_ms": 0.0016000012692529708,
+      "model_init_ms": 0.0015999976312741637,
+      "total_ms": 17559.162699999433
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "NEG-009",
+    "document_name": "pep703_gil.txt",
+    "question_type": "Negative",
+    "question": "Does PEP 703 require Python to remove garbage collection?",
+    "expected_output": "No; PEP 703 concerns making the GIL optional.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.028577260665441927,
+        0.027252906976744186,
+        0.026190476190476188,
+        0.02532051282051282,
+        0.023839931885908897,
+        0.022917757988475642
+      ],
+      "reranker": [
+        7.9673009167891e-05,
+        7.9673009167891e-05,
+        7.484622619813308e-05,
+        7.484622619813308e-05,
+        7.9673009167891e-05,
+        7.484622619813308e-05
+      ]
+    },
+    "execution_time": 16.161180200000672,
+    "execution_stats": {
+      "search_ms": 401.93580000050133,
+      "rerank_ms": 1308.3514999998442,
+      "generation_ms": 14448.459600000206,
+      "nli_ms": 0.0015000005078036338,
+      "model_init_ms": 0.0013999997463542968,
+      "total_ms": 16158.97600000244
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "NEG-010",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Negative",
+    "question": "Does HTTP 204 include a mandatory response body?",
+    "expected_output": "No; 204 indicates no content in the response payload.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "HTTP 204 не включает обязательное тело ответа [S1].",
+          "status": "contradiction",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03128054740957967,
+        0.03200204813108039,
+        0.030309988518943745,
+        0.029513888888888888,
+        0.026494565217391304
+      ],
+      "reranker": [
+        0.11596072465181351,
+        0.012431650422513485,
+        0.034100424498319626,
+        0.0011695103021338582,
+        0.015424552373588085
+      ]
+    },
+    "execution_time": 14.575649200000043,
+    "execution_stats": {
+      "search_ms": 406.32990000085556,
+      "rerank_ms": 1005.6761000014376,
+      "generation_ms": 12781.259400002455,
+      "nli_ms": 379.83209999947576,
+      "model_init_ms": 0.0016999983927235007,
+      "total_ms": 14573.29799999934
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "ADV-001",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Adversarial",
+    "question": "QUIC uses TCP and therefore cannot migrate connections between network paths, correct?",
+    "expected_output": "Incorrect premise: QUIC uses UDP and supports connection migration.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "QUIC использует UDP, а не TCP, и поэтому может мигрировать соединения между сетевыми маршрутами. [S5]",
+          "status": "unverified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03149801587301587,
+        0.028991596638655463,
+        0.027984344422700584,
+        0.027692895339954164,
+        0.027271052146674038
+      ],
+      "reranker": [
+        0.09138210862874985,
+        0.002115703420713544,
+        0.00010229986219201237,
+        0.003172682598233223,
+        0.0019267346942797303
+      ]
+    },
+    "execution_time": 16.662604799999826,
+    "execution_stats": {
+      "search_ms": 27.755299994169036,
+      "rerank_ms": 1545.8539000028395,
+      "generation_ms": 14697.51610000094,
+      "nli_ms": 388.976599999296,
+      "model_init_ms": 0.0017000020307023078,
+      "total_ms": 16660.28269999879
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "ADV-002",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Adversarial",
+    "question": "RFC 9110 says 403 means the server did not understand the request, correct?",
+    "expected_output": "Incorrect premise: 403 means the server understood but refuses the request.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "403 (Forbidden) статус-код указывает, что сервер понял запрос, но отказывается его выполнить [S1].",
+          "status": "contradiction",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03278688524590164,
+        0.02832415420928403,
+        0.026862026862026864,
+        0.02628900949796472,
+        0.02625418060200669,
+        0.02523465148484382
+      ],
+      "reranker": [
+        0.7431679368019104,
+        0.0002611903182696551,
+        0.0002611903182696551,
+        0.0023967307060956955,
+        0.0004044814850203693,
+        0.0008040859247557819
+      ]
+    },
+    "execution_time": 17.054622700001346,
+    "execution_stats": {
+      "search_ms": 28.294499999901745,
+      "rerank_ms": 1031.9644999981392,
+      "generation_ms": 15602.144199998293,
+      "nli_ms": 389.3290000014531,
+      "model_init_ms": 0.0017999991541728377,
+      "total_ms": 17051.924999999756
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "ADV-003",
+    "document_name": "rfc9562_uuid.txt",
+    "question_type": "Adversarial",
+    "question": "A UUID is a 64-bit identifier according to RFC 9562, correct?",
+    "expected_output": "Incorrect premise: a UUID contains 128 bits.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.031746031746031744,
+        0.029709507042253523,
+        0.02797339593114241,
+        0.02738970588235294
+      ],
+      "reranker": [
+        0.0016484829830005765,
+        0.00034599160426296294,
+        0.00023050670279189944,
+        0.00034599160426296294
+      ]
+    },
+    "execution_time": 14.221543799998472,
+    "execution_stats": {
+      "search_ms": 34.01560000202153,
+      "rerank_ms": 867.2197999985656,
+      "generation_ms": 13318.03679999939,
+      "nli_ms": 0.0022999993234407157,
+      "model_init_ms": 0.0016000012692529708,
+      "total_ms": 14219.453800000338
+    },
+    "is_success": true
+  },
+  {
+    "test_id": "ADV-004",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Adversarial",
+    "question": "Phishing resistance means passwords are stored with a stronger hash, correct?",
+    "expected_output": "Incorrect premise: it concerns preventing disclosure of authentication secrets to an impostor verifier.",
+    "actual_output": "Passwords SHALL be salted and hashed using a suitable password hashing scheme to resist offline attacks [S3].",
+    "nli_status": {
+      "claims": [
+        {
+          "claim": "Passwords SHALL be salted and hashed using a suitable password hashing scheme to resist offline attacks [S3].",
+          "status": "verified",
+          "entailment": null,
+          "neutral": null,
+          "contradiction": null
+        }
+      ],
+      "faithfulness_score": 0.5,
+      "refused": false
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.031099324975891997,
+        0.03128054740957967,
+        0.031746031746031744,
+        0.03125,
+        0.029236022193768675
+      ],
+      "reranker": [
+        0.20055769383907318,
+        0.1225232183933258,
+        0.05921025574207306,
+        0.037892427295446396,
+        0.0120537793263793
+      ]
+    },
+    "execution_time": 16.66087460000199,
+    "execution_stats": {
+      "search_ms": 419.54830000031507,
+      "rerank_ms": 776.8593000000692,
+      "generation_ms": 15022.929400001885,
+      "nli_ms": 438.97560000186786,
+      "model_init_ms": 0.001700005668681115,
+      "total_ms": 16658.50820000196
+    },
+    "is_success": false
+  },
+  {
+    "test_id": "ADV-005",
+    "document_name": "postgresql_indexes.html",
+    "question_type": "Adversarial",
+    "question": "An index changes the logical rows stored in a PostgreSQL table, correct?",
+    "expected_output": "Incorrect premise: an index is an access method and does not change table contents.",
+    "actual_output": "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос.",
+    "nli_status": {
+      "claims": [],
+      "faithfulness_score": 0.0,
+      "refused": true
+    },
+    "retrieval": {
+      "hit_at_5": true,
+      "rrf": [
+        0.03252247488101534,
+        0.03007688828584351,
+        0.028283227848101264,
+        0.02728937728937729,
+        0.02715098147128967,
+        0.023809523809523808
+      ],
+      "reranker": [
+        0.05108273774385452,
+        0.0004044814850203693,
+        7.9673009167891e-05,
+        0.00041731575038284063,
+        0.0005193048855289817,
+        0.00010229986219201237
+      ]
+    },
+    "execution_time": 16.347100999999384,
+    "execution_stats": {
+      "search_ms": 25.39759999854141,
+      "rerank_ms": 1349.1044000002148,
+      "generation_ms": 14969.998500000656,
+      "nli_ms": 0.0013999997463542968,
+      "model_init_ms": 0.0013999997463542968,
+      "total_ms": 16344.723800000793
+    },
+    "is_success": true
+  }
+]

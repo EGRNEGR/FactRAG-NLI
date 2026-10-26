@@ -172,3 +172,13 @@ def test_source_language_keeps_refusal_and_citation_contract() -> None:
     assert "Отвечай по-русски" not in prompt
     assert "не переводи" in prompt
     assert REFUSAL in prompt and "[S1]" in prompt
+
+
+def test_premise_guard_forbids_adjacent_fallback_answer() -> None:
+    """U1: the prompt must reject fact-adjacent answers to distorted premises."""
+    from generator_verifier import REFUSAL, SYSTEM_PROMPT
+
+    assert "смежным" in SYSTEM_PROMPT
+    assert "предпосылка вопроса" in SYSTEM_PROMPT
+    assert "отклонись от предпосылки" in SYSTEM_PROMPT
+    assert REFUSAL in SYSTEM_PROMPT

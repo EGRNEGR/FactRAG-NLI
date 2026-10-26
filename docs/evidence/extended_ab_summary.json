@@ -1,0 +1,180 @@
+{
+  "kind": "extended_real_ab_evaluation",
+  "dataset": "data/extended_dataset_v2.json",
+  "dataset_sha256": "16aa09ced891263f12eeca10f8b1c584a89bf08eb5419abdada9a390513d239b",
+  "dataset_composition": {
+    "cases_total": 55,
+    "positives": 30,
+    "negatives": 10,
+    "adversarial_by_type": {
+      "premise_distortion": 3,
+      "term_substitution": 3,
+      "numeric_distortion": 3,
+      "modality_scope": 3,
+      "mixed": 3
+    },
+    "russian_questions": 21,
+    "grounding_verified": 45,
+    "absence_verified": 10,
+    "duplicates_checked_against": [
+      "golden_dataset.json",
+      "holdout_dataset.json",
+      "extended_questions.json",
+      "qa_drafts.json"
+    ],
+    "adversarial": 15
+  },
+  "profiles": {
+    "baseline": {
+      "premise_guard": false,
+      "nli_strong_entailment_enabled": false,
+      "max_tokens": 1024
+    },
+    "improved": {
+      "premise_guard": true,
+      "nli_strong_entailment_enabled": true,
+      "nli_strong_entailment_threshold": 0.7,
+      "max_tokens": 512
+    }
+  },
+  "llama_server_flags": "-ngl 35 -c 4096 -b 128 -ub 64 -np 1",
+  "summary": {
+    "baseline": {
+      "positive_answer_rate": [
+        23,
+        30
+      ],
+      "negative_refusal_rate": [
+        9,
+        10
+      ],
+      "adversarial_correct_rate": [
+        13,
+        15
+      ],
+      "overall_correct": [
+        45,
+        55
+      ],
+      "faithfulness_micro": [
+        43,
+        74
+      ],
+      "errors": 0,
+      "median_wall_ms": 20581.511199998204,
+      "refusals_by_reason": {
+        "nli_verification_failed": 15,
+        "llm_refusal": 5,
+        "relevance_threshold_not_met": 1
+      }
+    },
+    "improved": {
+      "positive_answer_rate": [
+        22,
+        30
+      ],
+      "negative_refusal_rate": [
+        8,
+        10
+      ],
+      "adversarial_correct_rate": [
+        13,
+        15
+      ],
+      "overall_correct": [
+        43,
+        55
+      ],
+      "faithfulness_micro": [
+        40,
+        68
+      ],
+      "errors": 0,
+      "median_wall_ms": 20565.29379999847,
+      "refusals_by_reason": {
+        "nli_verification_failed": 13,
+        "llm_refusal": 8,
+        "relevance_threshold_not_met": 1
+      }
+    },
+    "paired_mcnemar": {
+      "baseline_only_correct": 4,
+      "improved_only_correct": 2,
+      "exact_p": 0.6875
+    },
+    "wilson_95": {
+      "baseline": {
+        "positive_answer_rate": [
+          0.5907132766967574,
+          0.8820776078949878
+        ],
+        "negative_refusal_rate": [
+          0.5958436145024278,
+          0.9821242504842788
+        ],
+        "adversarial_correct_rate": [
+          0.6211750079348376,
+          0.9626395301086407
+        ],
+        "overall_correct": [
+          0.6966928866143076,
+          0.898124385519693
+        ]
+      },
+      "improved": {
+        "positive_answer_rate": [
+          0.5555169795568831,
+          0.8581750444608938
+        ],
+        "negative_refusal_rate": [
+          0.49015684672072335,
+          0.9433190520193067
+        ],
+        "adversarial_correct_rate": [
+          0.6211750079348376,
+          0.9626395301086407
+        ],
+        "overall_correct": [
+          0.6562971335952182,
+          0.8705410217234678
+        ]
+      }
+    }
+  },
+  "stats": {
+    "baseline": {
+      "positive_answered": 23,
+      "negative_refused": 9,
+      "adversarial_correct": 13,
+      "errors": 0,
+      "refusals_by_reason": {
+        "nli_verification_failed": 15,
+        "llm_refusal": 5,
+        "relevance_threshold_not_met": 1
+      },
+      "claims_total": 74,
+      "claims_verified": 43
+    },
+    "improved": {
+      "positive_answered": 22,
+      "negative_refused": 8,
+      "adversarial_correct": 13,
+      "errors": 0,
+      "refusals_by_reason": {
+        "nli_verification_failed": 13,
+        "llm_refusal": 8,
+        "relevance_threshold_not_met": 1
+      },
+      "claims_total": 68,
+      "claims_verified": 40
+    }
+  },
+  "median_wall_ms": {
+    "baseline": 20581.511199998204,
+    "improved": 20565.29379999847
+  },
+  "indexed_chunks": {
+    "baseline": 5020,
+    "improved": 5020
+  }
+}

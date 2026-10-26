@@ -111,6 +111,7 @@ class RAGSettings(BaseSettings):
     llm_tokenizer_mode: Literal["bytes", "llama_server"] = "bytes"
     generation_language: Literal["ru", "source"] = "ru"
     generation_repair_attempts: int = Field(default=0, ge=0, le=2)
+    premise_guard: bool = True
     nli_evidence_focus: bool = False
 
     @field_validator("llm_api_base", mode="before")
@@ -191,6 +192,8 @@ class RAGSettings(BaseSettings):
     rerank_window_tokens: int = Field(default=384, ge=32, le=448)
     nli_entailment_threshold: float = Field(default=0.4, ge=0, le=1)
     nli_contradiction_threshold: float = Field(default=0.2, ge=0, le=1)
+    nli_strong_entailment_threshold: float = Field(default=0.7, gt=0, le=1)
+    nli_strong_entailment_enabled: bool = True
     chunk_target_tokens: int = Field(default=420, ge=300, le=600)
     chunk_max_tokens: int = Field(default=600, ge=300, le=600)
     chunk_overlap_tokens: int = Field(default=50, ge=0)
@@ -279,6 +282,14 @@ class RAGSettings(BaseSettings):
             raise ValueError("Require ingestion overlap < target <= maximum chunk tokens")
         if self.llm_max_tokens + 128 >= self.llm_context_window:
             raise ValueError("LLM context must exceed output budget plus 128 template tokens")
+        if not (
+            self.nli_entailment_threshold
+            < self.nli_strong_entailment_threshold
+            <= 1.0
+        ):
+            raise ValueError(
+                "Require entailment threshold < strong entailment threshold <= 1"
+            )
         for path in (self.document_root, self.qdrant_path):
             if path.exists() and not path.is_dir():
                 raise ValueError(f"Expected directory: {path}")

@@ -1,0 +1,37 @@
+# Секреты и локальная конфигурация
+.env
+.codex/
+
+# Окружение и кэши
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Веса моделей и бинарники llama.cpp (скачиваются отдельно, см. README)
+models/
+tools/
+
+# Индексы и рабочие артефакты
+data/qdrant/
+data/documents/uploads/
+.artifacts/
+.backup_indexes/
+evaluation-index-*/
+.chart-data-*/
+.presentation-build/
+.pptx_build/
+output/
+
+# Выходы скриптов по умолчанию (канонические копии лежат в reports/ и docs/evidence/)
+/evaluation_report.json
+/evaluation_report.md
+/holdout_evaluation_report.json
+/holdout_evaluation_report.md
+/extended_evaluation.json
+/extended_evaluation_report.json
+
+# Полные (тяжёлые) трассы прогонов остаются локально; в репозитории лежат облегчённые
+reports/runs/*/full/

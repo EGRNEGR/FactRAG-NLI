@@ -1,0 +1,352 @@
+[
+  {
+    "test_id": "POS-001",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Positive",
+    "question": "What transport protocol does QUIC use?",
+    "expected_output": "QUIC runs over UDP."
+  },
+  {
+    "test_id": "POS-002",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists."
+  },
+  {
+    "test_id": "POS-003",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What assurance levels are defined for authenticators in NIST SP 800-63B?",
+    "expected_output": "Authenticator Assurance Levels 1, 2, and 3."
+  },
+  {
+    "test_id": "POS-004",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is AAL1 intended to provide?",
+    "expected_output": "Some confidence that the claimant controls an authenticator bound to the subscriber account."
+  },
+  {
+    "test_id": "POS-005",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is phishing resistance?",
+    "expected_output": "The ability of an authentication protocol to prevent disclosure of authentication secrets to an impostor verifier."
+  },
+  {
+    "test_id": "POS-006",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is verifier impersonation resistance?",
+    "expected_output": "The verifier is strongly prevented from impersonating another verifier to the claimant."
+  },
+  {
+    "test_id": "POS-007",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists."
+  },
+  {
+    "test_id": "POS-008",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Positive",
+    "question": "What transport protocol does QUIC use?",
+    "expected_output": "QUIC runs over UDP."
+  },
+  {
+    "test_id": "POS-009",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists."
+  },
+  {
+    "test_id": "POS-010",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What assurance levels are defined for authenticators in NIST SP 800-63B?",
+    "expected_output": "Authenticator Assurance Levels 1, 2, and 3."
+  },
+  {
+    "test_id": "POS-011",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is AAL1 intended to provide?",
+    "expected_output": "Some confidence that the claimant controls an authenticator bound to the subscriber account."
+  },
+  {
+    "test_id": "POS-012",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is phishing resistance?",
+    "expected_output": "The ability of an authentication protocol to prevent disclosure of authentication secrets to an impostor verifier."
+  },
+  {
+    "test_id": "POS-013",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is verifier impersonation resistance?",
+    "expected_output": "The verifier is strongly prevented from impersonating another verifier to the claimant."
+  },
+  {
+    "test_id": "POS-014",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists."
+  },
+  {
+    "test_id": "POS-015",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Positive",
+    "question": "What transport protocol does QUIC use?",
+    "expected_output": "QUIC runs over UDP."
+  },
+  {
+    "test_id": "POS-016",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists."
+  },
+  {
+    "test_id": "POS-017",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What assurance levels are defined for authenticators in NIST SP 800-63B?",
+    "expected_output": "Authenticator Assurance Levels 1, 2, and 3."
+  },
+  {
+    "test_id": "POS-018",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is AAL1 intended to provide?",
+    "expected_output": "Some confidence that the claimant controls an authenticator bound to the subscriber account."
+  },
+  {
+    "test_id": "POS-019",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is phishing resistance?",
+    "expected_output": "The ability of an authentication protocol to prevent disclosure of authentication secrets to an impostor verifier."
+  },
+  {
+    "test_id": "POS-020",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is verifier impersonation resistance?",
+    "expected_output": "The verifier is strongly prevented from impersonating another verifier to the claimant."
+  },
+  {
+    "test_id": "POS-021",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists."
+  },
+  {
+    "test_id": "POS-022",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Positive",
+    "question": "What transport protocol does QUIC use?",
+    "expected_output": "QUIC runs over UDP."
+  },
+  {
+    "test_id": "POS-023",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists."
+  },
+  {
+    "test_id": "POS-024",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What assurance levels are defined for authenticators in NIST SP 800-63B?",
+    "expected_output": "Authenticator Assurance Levels 1, 2, and 3."
+  },
+  {
+    "test_id": "POS-025",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is AAL1 intended to provide?",
+    "expected_output": "Some confidence that the claimant controls an authenticator bound to the subscriber account."
+  },
+  {
+    "test_id": "POS-026",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is phishing resistance?",
+    "expected_output": "The ability of an authentication protocol to prevent disclosure of authentication secrets to an impostor verifier."
+  },
+  {
+    "test_id": "POS-027",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is verifier impersonation resistance?",
+    "expected_output": "The verifier is strongly prevented from impersonating another verifier to the claimant."
+  },
+  {
+    "test_id": "POS-028",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists."
+  },
+  {
+    "test_id": "POS-029",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Positive",
+    "question": "What transport protocol does QUIC use?",
+    "expected_output": "QUIC runs over UDP."
+  },
+  {
+    "test_id": "POS-030",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists."
+  },
+  {
+    "test_id": "POS-031",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What assurance levels are defined for authenticators in NIST SP 800-63B?",
+    "expected_output": "Authenticator Assurance Levels 1, 2, and 3."
+  },
+  {
+    "test_id": "POS-032",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is AAL1 intended to provide?",
+    "expected_output": "Some confidence that the claimant controls an authenticator bound to the subscriber account."
+  },
+  {
+    "test_id": "POS-033",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is phishing resistance?",
+    "expected_output": "The ability of an authentication protocol to prevent disclosure of authentication secrets to an impostor verifier."
+  },
+  {
+    "test_id": "POS-034",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Positive",
+    "question": "What is verifier impersonation resistance?",
+    "expected_output": "The verifier is strongly prevented from impersonating another verifier to the claimant."
+  },
+  {
+    "test_id": "POS-035",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Positive",
+    "question": "What does HTTP 404 Not Found indicate?",
+    "expected_output": "The origin server did not find a current representation for the target resource, or is unwilling to disclose that one exists."
+  },
+  {
+    "test_id": "NEG-001",
+    "document_name": "rfc9457_problem_details.txt",
+    "question_type": "Negative",
+    "question": "Does RFC 9457 mandate XML as the only problem detail format?",
+    "expected_output": "No such requirement is stated; the document defines JSON and extensible representations."
+  },
+  {
+    "test_id": "NEG-002",
+    "document_name": "rfc9562_uuid.txt",
+    "question_type": "Negative",
+    "question": "Does RFC 9562 define UUIDs with 256 bits?",
+    "expected_output": "No; UUIDs are 128 bits."
+  },
+  {
+    "test_id": "NEG-003",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Negative",
+    "question": "Does QUIC require TCP as its underlying transport?",
+    "expected_output": "No; QUIC uses UDP."
+  },
+  {
+    "test_id": "NEG-004",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Negative",
+    "question": "Does HTTP 404 guarantee that a resource is permanently absent?",
+    "expected_output": "No; 404 does not establish permanence."
+  },
+  {
+    "test_id": "NEG-005",
+    "document_name": "nist_sp800_53r5.pdf",
+    "question_type": "Negative",
+    "question": "Does SP 800-53 define a control family named ZZ?",
+    "expected_output": "No such control family is defined."
+  },
+  {
+    "test_id": "NEG-006",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Negative",
+    "question": "Does AAL4 exist in SP 800-63B?",
+    "expected_output": "No; the document defines AAL1 through AAL3."
+  },
+  {
+    "test_id": "NEG-007",
+    "document_name": "postgresql_create_table.html",
+    "question_type": "Negative",
+    "question": "Does CREATE TABLE automatically encrypt every column?",
+    "expected_output": "No such behavior is specified."
+  },
+  {
+    "test_id": "NEG-008",
+    "document_name": "postgresql_indexes.html",
+    "question_type": "Negative",
+    "question": "Does every PostgreSQL query always use an index?",
+    "expected_output": "No; the planner may choose a sequential scan."
+  },
+  {
+    "test_id": "NEG-009",
+    "document_name": "pep703_gil.txt",
+    "question_type": "Negative",
+    "question": "Does PEP 703 require Python to remove garbage collection?",
+    "expected_output": "No; PEP 703 concerns making the GIL optional."
+  },
+  {
+    "test_id": "NEG-010",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Negative",
+    "question": "Does HTTP 204 include a mandatory response body?",
+    "expected_output": "No; 204 indicates no content in the response payload."
+  },
+  {
+    "test_id": "ADV-001",
+    "document_name": "rfc9000_quic.txt",
+    "question_type": "Adversarial",
+    "question": "QUIC uses TCP and therefore cannot migrate connections between network paths, correct?",
+    "expected_output": "Incorrect premise: QUIC uses UDP and supports connection migration."
+  },
+  {
+    "test_id": "ADV-002",
+    "document_name": "rfc9110_http_semantics.txt",
+    "question_type": "Adversarial",
+    "question": "RFC 9110 says 403 means the server did not understand the request, correct?",
+    "expected_output": "Incorrect premise: 403 means the server understood but refuses the request."
+  },
+  {
+    "test_id": "ADV-003",
+    "document_name": "rfc9562_uuid.txt",
+    "question_type": "Adversarial",
+    "question": "A UUID is a 64-bit identifier according to RFC 9562, correct?",
+    "expected_output": "Incorrect premise: a UUID contains 128 bits."
+  },
+  {
+    "test_id": "ADV-004",
+    "document_name": "nist_sp800_63b.html",
+    "question_type": "Adversarial",
+    "question": "Phishing resistance means passwords are stored with a stronger hash, correct?",
+    "expected_output": "Incorrect premise: it concerns preventing disclosure of authentication secrets to an impostor verifier."
+  },
+  {
+    "test_id": "ADV-005",
+    "document_name": "postgresql_indexes.html",
+    "question_type": "Adversarial",
+    "question": "An index changes the logical rows stored in a PostgreSQL table, correct?",
+    "expected_output": "Incorrect premise: an index is an access method and does not change table contents."
+  }
+]
