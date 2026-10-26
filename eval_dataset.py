@@ -19,7 +19,12 @@ Category = Literal[
 Behavior = Literal["answer", "refusal", "refusal_or_correction"]
 NLILabel = Literal["entailment", "neutral", "contradiction"]
 CATEGORIES: tuple[str, ...] = (
-    "single_hop", "multi_hop", "tabular_code", "adversarial", "unanswerable", "lexical_trap"
+    "single_hop",
+    "multi_hop",
+    "tabular_code",
+    "adversarial",
+    "unanswerable",
+    "lexical_trap",
 )
 EXPECTED_LABEL: dict[str, str] = {
     "answer": "entailment",

@@ -267,9 +267,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         cases=cases,
         stats=stats,
     )
-    OUTPUT.write_text(
-        dataset.model_dump_json(indent=1) + "\n", encoding="utf-8", newline="\n"
-    )
+    OUTPUT.write_text(dataset.model_dump_json(indent=1) + "\n", encoding="utf-8", newline="\n")
     print(f"Wrote {OUTPUT.relative_to(ROOT)} ({len(cases)} cases)", file=sys.stderr)
     return 0
 

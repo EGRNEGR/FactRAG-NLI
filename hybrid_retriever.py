@@ -373,6 +373,8 @@ class HybridRetriever:
         self._lock = threading.RLock()
         self._closed = False
         self._failed = False
+        self._dense_candidate_ids: list[str] = []
+        self._sparse_candidate_ids: list[str] = []
         self._client: QdrantClient | None = None
         try:
             current = settings or RAGSettings()
@@ -687,6 +689,8 @@ class HybridRetriever:
         with self._lock:
             client = self._ready()
             self._hybrid_candidate_ids: list[str] = []
+            self._dense_candidate_ids = []
+            self._sparse_candidate_ids = []
             self._retrieval_diagnostics: list[dict[str, Any]] = []
             if not self._chunks:
                 return []
@@ -728,6 +732,8 @@ class HybridRetriever:
                     : self.settings.sparse_candidates
                 ]
             )
+            self._dense_candidate_ids = list(dense)
+            self._sparse_candidate_ids = list(sparse)
             fused = reciprocal_rank_fusion(
                 {"dense": list(dense), "sparse": list(sparse)},
                 weights={
@@ -816,6 +822,14 @@ class HybridRetriever:
                 self._hybrid_candidate_ids.copy(),
                 self._retrieval_diagnostics.copy(),
             )
+
+    def candidate_lists(self) -> dict[str, list[str]]:
+        """Ranked single-signal candidates of the last search (for retrieval ablation)."""
+        with self._lock:
+            return {
+                "dense": self._dense_candidate_ids.copy(),
+                "sparse": self._sparse_candidate_ids.copy(),
+            }
 
     def close(self) -> None:
         """Release the embedded storage lock; safe to call repeatedly."""
