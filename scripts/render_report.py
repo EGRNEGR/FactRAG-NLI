@@ -3,7 +3,7 @@
 Every number is read from one run directory produced by evaluate_suite.py; nothing is typed
 by hand. Sections whose mode has not been run are reported as missing.
 
-Usage:  python scripts/render_report.py reports/runs/<run_id>
+Usage:  python scripts/render_report.py reports/runs/<run_id> [--baseline reports/runs/<old_run_id>]
 """
 
 from __future__ import annotations
@@ -54,11 +54,60 @@ CAUSE_NAMES = {
     "relevance_threshold_not_met": "отказ по порогу релевантности",
     "llm_refusal": "отказ LLM",
 }
-REASON_NAMES = {
-    "verified:none": "VERIFIED",
-    "unverified:missing_citation": "UNVERIFIED: нет маркера [S#] после разбиения на предложения, NLI не вызывался",
-    "unverified:cited_support_not_established": "UNVERIFIED: NLI не подтвердил (P(ent) ниже порога, P(con) < 0.2)",
-    "contradiction:cited_support_not_established": "CONTRADICTION: P(con) ≥ 0.2 хотя бы в одном источнике",
+
+
+def reason_names(run: Run | None = None) -> dict[str, str]:
+    """Claim status/reason labels with the thresholds recorded for the run."""
+
+    def value(name: str, default: float) -> Any:
+        recorded = run.setting(name) if run else None
+        return default if recorded is None else recorded
+
+    con = value("nli_contradiction_threshold", 0.2)
+    return {
+        "verified:none": "VERIFIED",
+        "unverified:missing_citation": "UNVERIFIED: нет маркера [S#] (и нечего унаследовать), NLI не вызывался",
+        "unverified:cited_support_not_established": f"UNVERIFIED: ни чанк, ни окно не подтвердили, P(con) < {con}",
+        "contradiction:cited_support_not_established": (
+            f"CONTRADICTION: P(con) ≥ {con} без подтверждающего окна"
+            + (
+                f" или вето P(con) ≥ {value('nli_veto_contradiction_threshold', 0.9)}"
+                if run and run.setting("nli_aggregation") == "support_first"
+                else ""
+            )
+        ),
+        "unverified:anchor_not_in_source": "UNVERIFIED: число, код или идентификатор утверждения отсутствует в источнике",
+        "contradiction:anchor_not_in_source": f"CONTRADICTION: якорь отсутствует в источнике и P(con) ≥ {con}",
+        "unverified:absence_statement": "Оговорка об отсутствии сведений (публикуется, не считается заблокированной)",
+        "unverified:verdict_marker": "Вердикт «Нет.» / «Неверно.» (публикуется вместе со следующим VERIFIED)",
+    }
+
+
+def support_names(run: Run) -> dict[str | None, str]:
+    """How a VERIFIED claim was supported, with the recorded window thresholds."""
+    return {
+        "window": f"окно до {run.setting('nli_window_sentences')} предложений, P(ent) ≥ "
+        f"{run.setting('nli_window_entailment_threshold')} и P(con) < "
+        f"{run.setting('nli_window_contradiction_threshold')}",
+        "anchor_window": "окно со всеми якорями утверждения, P(ent) ≥ "
+        f"{run.setting('nli_anchor_window_entailment_threshold')} и P(con) < "
+        f"{run.setting('nli_anchor_window_contradiction_threshold')}",
+        "code_span": f"дословный фрагмент синтаксиса ≥ {run.setting('nli_code_span_min_chars')} символов",
+        None: "целый чанк (базовое правило)",
+    }
+
+
+STEP_NAMES = {
+    "baseline": "Базовый верификатор (bf16, целый чанк, строгое правило)",
+    "nli_float16": "+ NLI в float16 с пакетной обработкой",
+    "segmentation_v2": "+ сегментация v2 (сокращения, «;»)",
+    "citation_inheritance": "+ наследование ссылки [S#] соседнего предложения",
+    "premise_cleanup": "+ очистка посылки (заголовок, HTML, сущности)",
+    "sentence_windows": "+ оконная проверка (1-2 предложения)",
+    "support_first": "+ правило «поддержка важнее шума» с вето P(con) ≥ 0.9",
+    "anchor_guard": "+ якоря: числа и идентификаторы обязаны быть в источнике",
+    "code_span": "+ дословные фрагменты синтаксиса",
+    "abstention_guard": "+ защита оговорок и исправлений предпосылки",
 }
 # Heuristic: a citation-less claim that is a cut piece of a sentence rather than a whole one.
 FRAGMENT = re.compile(r"(?:\b(?:Rev|No|Sec|Vol|Fig|vs)\.|;)$|^\d")
@@ -174,6 +223,22 @@ class Run:
             for profile in ("guard_on", "guard_off")
         }
         self.profiles = [p for p in ("guard_on", "guard_off") if self.e2e[p]]
+        self.ablation = read_json(run_dir / "replay" / "ablation.json")
+        self.replay = {
+            profile: read_json(run_dir / "replay" / f"e2e_{profile}" / "summary.json")
+            for profile in ("guard_on", "guard_off")
+        }
+        self.pilots = read_json(run_dir / "pilots" / "summary.json")
+
+    def setting(self, name: str) -> Any:
+        """A setting of the run as recorded in config.json (first E2E profile that has it)."""
+        for profile in ("guard_on", "guard_off"):
+            value = (
+                self.config.get("modes", {}).get(f"e2e_{profile}", {}).get("settings") or {}
+            ).get(name)
+            if value is not None:
+                return value
+        return None
 
 
 def premise_lengths(dataset: EvalDatasetV3) -> dict[str, int]:
@@ -187,98 +252,494 @@ def premise_lengths(dataset: EvalDatasetV3) -> dict[str, int]:
     return {cid: n for cid, n in lengths.items() if cid in wanted}
 
 
+# --------------------------------------------------------------------------- changes
+
+
+def signed(before: float | None, after: float | None, scale: float = 100.0) -> str:
+    """Signed difference in percentage points (scale 100) or plain units (scale 1)."""
+    if before is None or after is None:
+        return "н/д"
+    value = (after - before) * scale
+    return f"{value:+.1f}" if scale != 1.0 else f"{value:+.0f}"
+
+
+def comparison_rows(run: Run, baseline: Run) -> list[list[Any]]:
+    rows: list[list[Any]] = []
+    for profile in run.profiles:
+        b, n = baseline.e2e.get(profile), run.e2e[profile]
+        if not b:
+            continue
+        short = PROFILE_SHORT[profile]
+        for title, variant, key in (
+            ("FactRAG-NLI: корректный исход ↑", "factrag", "correct"),
+            ("FactRAG-NLI: отказы на отвечаемых ↓", "factrag", "false_refusal_on_answerable"),
+            ("FactRAG-NLI: галлюцинации ↓", "factrag", "hallucination"),
+            ("Vanilla RAG: корректный исход", "vanilla", "correct"),
+            ("Vanilla RAG: галлюцинации", "vanilla", "hallucination"),
+        ):
+            rows.append(
+                [
+                    f"{title} ({short})",
+                    rate_cell(b[variant][key]),
+                    rate_cell(n[variant][key]),
+                    signed(b[variant][key]["rate"], n[variant][key]["rate"]),
+                ]
+            )
+        before = len(b["hallucination_ids"]["factrag_only"])
+        after = len(n["hallucination_ids"]["factrag_only"])
+        rows.append(
+            [
+                f"Галлюцинации, внесённые фильтром ↓ ({short})",
+                before,
+                after,
+                signed(before, after, 1.0),
+            ]
+        )
+    if run.nli and baseline.nli:
+        bd, nd = baseline.nli["overall"]["decision_rule"], run.nli["overall"]["decision_rule"]
+        for title, key in (
+            ("NLI-пробы: ложная отбраковка верных ↓", "false_rejection_rate"),
+            ("NLI-пробы: перехват искажённых и неподтверждённых ↑", "hallucination_catch_rate"),
+        ):
+            rows.append([title, pct(bd[key]), pct(nd[key]), signed(bd[key], nd[key])])
+        for lang in ("en", "ru"):
+            b_frr = baseline.nli["by_hypothesis_language"][lang]["decision_rule"][
+                "false_rejection_rate"
+            ]
+            n_frr = run.nli["by_hypothesis_language"][lang]["decision_rule"]["false_rejection_rate"]
+            rows.append(
+                [
+                    f"NLI-пробы: ложная отбраковка, {lang.upper()}-гипотезы ↓",
+                    pct(b_frr),
+                    pct(n_frr),
+                    signed(b_frr, n_frr),
+                ]
+            )
+    if run.retrieval and baseline.retrieval:
+        bo, no = baseline.retrieval, run.retrieval
+        slices = [
+            ("Поиск (прод): Recall@5 ↑", bo["overall"], no["overall"], "recall@5"),
+            ("Поиск (прод): MRR@10 ↑", bo["overall"], no["overall"], "mrr@10"),
+            (
+                "Поиск: Recall@5, RU-вопросы ↑",
+                bo["by_language"]["ru"],
+                no["by_language"]["ru"],
+                "recall@5",
+            ),
+        ] + [
+            (f"Поиск: Recall@5, {c} ↑", bo["by_category"][c], no["by_category"][c], "recall@5")
+            for c in ("tabular_code", "multi_hop")
+            if c in bo["by_category"] and c in no["by_category"]
+        ]
+        for title, b_slice, n_slice, key in slices:
+            b_val, n_val = b_slice["hybrid_rerank"][key], n_slice["hybrid_rerank"][key]
+            rows.append([title, num(b_val), num(n_val), f"{n_val - b_val:+.3f}"])
+        for title, key in (
+            ("Порог релевантности: отсечено вопросов без ответа", "rejected_unanswerable"),
+            ("Порог релевантности: отсечено отвечаемых ↓", "rejected_answerable"),
+        ):
+            b_gate, n_gate = bo["relevance_gate"][key], no["relevance_gate"][key]
+            rows.append(
+                [
+                    title,
+                    rate_cell(b_gate),
+                    rate_cell(n_gate),
+                    signed(b_gate["rate"], n_gate["rate"]),
+                ]
+            )
+    return rows
+
+
+def ablation_rows(run: Run) -> tuple[list[list[Any]], list[list[Any]]]:
+    """Report rows and CSV rows of the replay ablation (guard_on drafts of the source run)."""
+    rows: list[list[Any]] = []
+    csv_rows: list[list[Any]] = []
+    previous: int | None = None
+    for step in (run.ablation or {}).get("steps", []):
+        e2e = step["e2e"].get("guard_on") or next(iter(step["e2e"].values()))
+        f = e2e["factrag"]
+        nli = step["nli"]["overall"]
+        correct = f["correct"]["k"]
+        rows.append(
+            [
+                STEP_NAMES.get(step["step"], step["step"]),
+                f"{correct} из {f['correct']['n']}",
+                "" if previous is None else f"{correct - previous:+d}",
+                count(f["false_refusal_on_answerable"]),
+                count(f["hallucination"]),
+                len(e2e["filter_induced_hallucinations"]),
+                pct(nli["false_rejection_rate"]),
+                pct(nli["hallucination_catch_rate"]),
+            ]
+        )
+        csv_rows.append(
+            [
+                step["step"],
+                *(
+                    f[key]["k"]
+                    for key in ("correct", "false_refusal_on_answerable", "hallucination")
+                ),
+                len(e2e["filter_induced_hallucinations"]),
+                nli["false_rejection_rate"],
+                nli["hallucination_catch_rate"],
+                *(
+                    e2e["by_split"].get(split, {}).get("factrag", {}).get("correct", {}).get("k")
+                    for split in ("dev", "test")
+                ),
+            ]
+        )
+        previous = correct
+    return rows, csv_rows
+
+
+def split_rows(run: Run) -> list[list[Any]]:
+    rows: list[list[Any]] = []
+    for split in ("dev", "test"):
+        for profile in run.profiles:
+            block = run.e2e[profile].get("by_split", {}).get(split)
+            if not block:
+                continue
+            f, v = block["factrag"], block["vanilla"]
+            rows.append(
+                [
+                    f"{split}, {PROFILE_SHORT[profile]}",
+                    rate_cell(v["correct"]),
+                    rate_cell(f["correct"]),
+                    rate_cell(f["false_refusal_on_answerable"]),
+                    f"{count(v['hallucination'])} → {count(f['hallucination'])}",
+                ]
+            )
+    return rows
+
+
+def section_changes(run: Run, baseline: Run | None) -> str:
+    out = ["## 2. Что изменено и почему", ""]
+    if baseline:
+        rows = comparison_rows(run, baseline)
+        write_csv(
+            "baseline_comparison.csv",
+            ["metric", "baseline", "current", "delta"],
+            rows,
+        )
+        out += [
+            f"Базовый прогон [`{baseline.rel}`]({baseline.dir.relative_to(REPORTS).as_posix()}) и "
+            f"этот прогон выполнены на одних и тех же {run.e2e[run.profiles[0]]['cases']} вопросах, "
+            "корпусе, моделях и стенде. "
+            "Между ними изменены три вещи: настройки гибридного поиска, системный промпт и "
+            "верификатор; вклад верификатора отдельно измерен ниже повторной проверкой "
+            "сохранённых черновиков базового прогона.",
+            "",
+            table(["Метрика", "Базовый прогон", "Этот прогон", "Δ, п.п."], rows, "lrrr"),
+            "",
+            "Таблица: [`tables/baseline_comparison.csv`](tables/baseline_comparison.csv); "
+            "для поиска Δ дана в абсолютных единицах метрики.",
+            "",
+        ]
+    steps, csv_rows = ablation_rows(run)
+    if steps:
+        write_csv(
+            "replay_ablation.csv",
+            [
+                "step",
+                "factrag_correct",
+                "false_refusals_on_answerable",
+                "factrag_hallucinations",
+                "filter_induced_hallucinations",
+                "nli_false_rejection_rate",
+                "nli_catch_rate",
+                "factrag_correct_dev",
+                "factrag_correct_test",
+            ],
+            csv_rows,
+        )
+        first = run.ablation["steps"][0]["e2e"]
+        profile = "guard_on" if "guard_on" in first else next(iter(first))
+        vanilla = first[profile]["vanilla"]
+        out += [
+            "### 2.1. Абляция верификатора на тех же черновиках",
+            "",
+            f"Режим `evaluate_suite.py replay` заново проверяет каждый сохранённый черновик LLM "
+            f"прогона `{run.ablation['source_run']}` ({PROFILE_NAMES[profile]}) и "
+            f"{run.ablation['steps'][0]['nli']['overall']['n']} NLI-проб, "
+            "включая изменения верификатора по одному (сверху вниз накопительно). LLM и поиск не "
+            "вызываются, поэтому разница между строками - вклад только этого изменения. "
+            f"Черновик (Vanilla RAG) одинаков во всех строках: корректен в "
+            f"{count(vanilla['correct'])}, галлюцинации {count(vanilla['hallucination'])}.",
+            "",
+            table(
+                [
+                    "Шаг",
+                    "FactRAG корректно",
+                    "Δ",
+                    "Отказы на отвечаемых",
+                    "Галлюцинации",
+                    "Внесены фильтром",
+                    "NLI: ложная отбраковка",
+                    "NLI: перехват",
+                ],
+                steps,
+                "lrrrrrrr",
+            ),
+            "",
+            "Первая строка воспроизводит базовый прогон; последняя - текущий профиль. Таблица с "
+            "разбивкой dev/test: [`tables/replay_ablation.csv`](tables/replay_ablation.csv).",
+            "",
+        ]
+    out += [
+        "### 2.2. Инженерные решения",
+        "",
+        "- **Сегментация v2** (`grounding.segment_claims`). Прежнее разбиение резало "
+        "«SP 800-53 Rev. 5», «No. 1», «e.g.» и «LIKE ... INCLUDING» на обрывки и считало «;» "
+        "границей утверждения; обрывок до маркера [S#] оставался без цитаты и блокировался без "
+        "вызова NLI. Теперь сокращения и номера защищены, «;» не делит утверждение, хвост "
+        "ссылок вида «[S1], [S2]» остаётся с предложением.",
+        "- **Наследование ссылки** (`grounding.cited_claims`). Предложение без [S#] получает "
+        "ссылку следующего предложения того же абзаца, затем предыдущего, затем ближайшую в "
+        "ответе; опубликованное унаследованное утверждение получает маркер явно. Неверный "
+        "маркер ([S0], [S 1]) не наследуется: такое утверждение отклоняется, как и раньше.",
+        "- **Очистка посылки и оконная проверка** (`NLIFactVerifier._evidence`). Длинный чанк "
+        "смешивает нужное предложение с соседними строками таблиц и условиями, и mDeBERTa "
+        "выдаёт ложное противоречие на дословно подтверждённом утверждении. Посылка очищается "
+        "от служебного заголовка и HTML, затем одним пакетом оцениваются чанк и все окна из 1-2 "
+        "предложений. Окно поддерживает утверждение при строгих порогах; окно, содержащее все "
+        "числа и идентификаторы утверждения, - при мягких; дословный фрагмент синтаксиса (ABNF, "
+        "флаги) - при отсутствии сильного противоречия.",
+        "- **Якоря** (`grounding.claim_anchors`). Число, код, флаг или идентификатор утверждения "
+        "обязан встречаться в процитированном чанке (с учётом границ числа: «20» не находится в "
+        "«2020»); иначе утверждение не может быть подтверждено никакой вероятностью NLI. "
+        "Обозначения документов («RFC 9110», «SP 800-63B-4») якорями не считаются.",
+        "- **Поддержка важнее шума** (`nli_aggregation=support_first`). Прежнее правило "
+        f"блокировало утверждение, если любой из процитированных источников давал P(con) ≥ "
+        f"{run.setting('nli_contradiction_threshold')}, даже когда другой источник его дословно "
+        "подтверждал. Теперь достаточно одного подтверждающего источника; другой блокирует "
+        f"только явным противоречием (P(con) ≥ {run.setting('nli_veto_contradiction_threshold')}).",
+        "- **Оговорки и исправления предпосылки** (`abstention_guard`). Фраза «документ не "
+        "содержит сведений о ...» не подтверждается NLI по построению; раньше фильтр удалял её и "
+        "публиковал оставшийся смежный факт, внося галлюцинацию. Теперь такие фразы "
+        "публикуются как оговорка и не считаются заблокированными, ответ только из оговорок "
+        "становится каноническим отказом, а исправление предпосылки («Нет, ...») не публикуется "
+        "без подтверждённого обоснования.",
+        "- **NLI в float16 пакетами.** В bf16 вероятности одной и той же пары заметно "
+        "различаются между пакетом с паддингом и одиночным вызовом; float16 совпадает с float32 "
+        "по метрикам при той же памяти, поэтому окна оцениваются пакетами в float16.",
+        f"- **Поиск.** Итоговый балл = alpha · RRF + (1 - alpha) · rerank; при alpha "
+        f"{run.setting('rerank_rrf_alpha')} порядок задаёт кросс-энкодер, RRF (k = "
+        f"{run.setting('rrf_k')}) разводит близкие баллы; реранкер оценивает "
+        f"{run.setting('rerank_candidates')} кандидатов"
+        + (
+            f" вместо {baseline.setting('rerank_candidates')} (alpha "
+            f"{baseline.setting('rerank_rrf_alpha')}, k = {baseline.setting('rrf_k')} в базовом "
+            "прогоне)"
+            if baseline
+            else ""
+        )
+        + ". Вес BM25 умножается на долю терминов запроса, найденных в словаре "
+        "индекса: русский вопрос к англоязычному RFC почти не даёт лексического сигнала и не "
+        "должен вытеснять dense-кандидатов.",
+        "- **Промпт.** Добавлены требования: каждое предложение заканчивается ссылкой, составной "
+        "вопрос - отдельное предложение на каждую часть, числа, коды, идентификаторы и правила "
+        "ABNF переносятся дословно. Дословный перенос делает утверждение проверяемым NLI и "
+        "якорями; цена - больше англоязычных цитат в русском ответе.",
+        "",
+        "Пороги подобраны на dev-половине датасета (`evaluate_suite.dataset_split`: внутри каждой "
+        "категории кейсы упорядочены по SHA-1 идентификатора и чередуются), test-половина "
+        "отчитывается отдельно как проверка на переобучение:",
+        "",
+    ]
+    rows = split_rows(run)
+    if rows:
+        out += [
+            table(
+                [
+                    "Половина, профиль",
+                    "Vanilla корректно",
+                    "FactRAG корректно",
+                    "FactRAG отказы на отвечаемых",
+                    "Галлюцинации Vanilla → FactRAG",
+                ],
+                rows,
+                "lrrrr",
+            ),
+            "",
+        ]
+    if run.nli and run.nli.get("by_split"):
+        out += [
+            "NLI-пробы по половинам: "
+            + "; ".join(
+                f"{split} - ложная отбраковка {pct(m['false_rejection_rate'])}, перехват "
+                f"{pct(m['hallucination_catch_rate'])}"
+                for split, m in run.nli["by_split"].items()
+            )
+            + ".",
+            "",
+        ]
+    if run.pilots:
+        pilot_rows = [
+            [
+                p["name"],
+                count(p["vanilla"]["correct"]),
+                count(p["factrag"]["correct"]),
+                count(p["factrag"]["false_refusal_on_answerable"]),
+                f"{count(p['vanilla']['hallucination'])} → {count(p['factrag']['hallucination'])}",
+                p.get("note", ""),
+            ]
+            for p in run.pilots["variants"]
+        ]
+        out += [
+            "### 2.3. Пилоты на dev-половине",
+            "",
+            run.pilots["description"],
+            "",
+            table(
+                [
+                    "Вариант",
+                    "Vanilla корректно",
+                    "FactRAG корректно",
+                    "Отказы на отвечаемых",
+                    "Галлюцинации Vanilla → FactRAG",
+                    "Примечание",
+                ],
+                pilot_rows,
+                "lrrrrl",
+            ),
+            "",
+        ]
+    out += [
+        "### 2.4. Что не сработало",
+        "",
+        "- Окна из трёх предложений вместо двух не добавили подтверждённых утверждений на dev.",
+        "- Замена обозначений документов в гипотезе («RFC 9110» → «документ») снижала перехват "
+        "искажений: часть проб проверяет именно приписывание факта документу.",
+        "- Проверка утверждения без ссылки против всех источников ответа и изменение доли "
+        "заблокированных утверждений, при которой ответ заменяется отказом (0.5), исход не "
+        "меняли.",
+        "- Правило «отказ, если удалено первое утверждение с отрицанием» увеличивало ложные "
+        "отказы; оставлено только правило для исправления предпосылки без обоснования.",
+        "- Повышение точности NLI (bf16 → float16/float32) само по себе ошибки не исправляет: "
+        "это видно по второй строке абляции.",
+        "",
+    ]
+    return "\n".join(out)
+
+
 # --------------------------------------------------------------------------- sections
 
 
-def section_summary(run: Run, dataset: EvalDatasetV3, headline: dict[str, Any]) -> str:
+def section_summary(
+    run: Run, dataset: EvalDatasetV3, headline: dict[str, Any], baseline: Run | None = None
+) -> str:
     lines = ["## 1. Краткие выводы", ""]
     prod = run.e2e.get("guard_on")
+    base = baseline.e2e.get("guard_on") if baseline else None
     if prod:
         v, f = prod["vanilla"], prod["factrag"]
         pc = prod["paired_correctness"]
         causes = pc.get("vanilla_only_correct_by_cause", {})
+        before = (
+            f" (базовый прогон: {pct(base['factrag']['correct']['rate'])}, отказы на отвечаемых "
+            f"{pct(base['factrag']['false_refusal_on_answerable']['rate'])})"
+            if base
+            else ""
+        )
         lines.append(
-            f"- **Сквозной результат.** На {prod['cases']} вопросах доля корректных исходов у "
-            f"FactRAG-NLI {direction(v['correct']['rate'], f['correct']['rate'])} с "
-            f"{pct(v['correct']['rate'])} (Vanilla RAG: черновик той же LLM до NLI-фильтра) до "
-            f"{pct(f['correct']['rate'])}: фильтр сделал неверными {pc['vanilla_only_correct']} "
-            f"исходов и исправил {pc['factrag_only_correct']} (точный тест Мак-Немара, p = "
-            f"{pval(pc['mcnemar_exact_p'])}). Из потерянных: "
-            + "; ".join(f"{CAUSE_NAMES.get(k, k)} - {n}" for k, n in causes.items())
-            + f". Отказы на отвечаемых вопросах: {pct(v['false_refusal_on_answerable']['rate'])} → "
+            f"- **Сквозной результат.** На {prod['cases']} вопросах FactRAG-NLI даёт корректный "
+            f"исход в {pct(f['correct']['rate'])}{before}; черновик той же LLM до NLI-фильтра "
+            f"(Vanilla RAG) - {pct(v['correct']['rate'])}. Только Vanilla верна в "
+            f"{plural(pc['vanilla_only_correct'], 'кейсе', 'кейсах', 'кейсах')}, только "
+            f"FactRAG-NLI в {pc['factrag_only_correct']} (точный тест Мак-Немара, p = "
+            f"{pval(pc['mcnemar_exact_p'])})"
+            + (
+                ". Причины потерь: "
+                + "; ".join(f"{CAUSE_NAMES.get(k, k)} - {n}" for k, n in causes.items())
+                if causes
+                else ""
+            )
+            + f". Отказы на отвечаемых вопросах: Vanilla "
+            f"{pct(v['false_refusal_on_answerable']['rate'])}, FactRAG-NLI "
             f"{pct(f['false_refusal_on_answerable']['rate'])}."
         )
         guard = [
             f"{PROFILE_SHORT[p]}: Vanilla {count(run.e2e[p]['vanilla']['hallucination'])}, "
             f"FactRAG-NLI {count(run.e2e[p]['factrag']['hallucination'])}"
-            for p in run.profiles
-        ]
-        introduced = len(prod.get("hallucination_ids", {}).get("factrag_only", []))
-        known = [
-            r
-            for r in run.e2e_cases["guard_on"]
-            if r.get("ok") and r["expected_behavior"] != "answer"
-        ]
-        gate = sum(r["refusal_reason"] == "relevance_threshold_not_met" for r in known)
-        llm = sum(r["refusal_reason"] == "llm_refusal" for r in known)
-        lines.append(
-            "- **Галлюцинации.** На вопросах с известной истиной (без ответа, с ложной "
-            "предпосылкой, lexical_trap без ответа) ответов без опоры на корпус: "
-            + "; ".join(guard)
-            + f". Доля мала уже у черновика: из {len(known)} таких вопросов в прод-профиле "
-            f"{gate} отсёк порог релевантности (LLM не вызывается), на {llm} LLM ответила "
-            "отказом по инструкции промпта. "
             + (
-                f"В {introduced} из {f['hallucination']['k']} галлюцинаций FactRAG-NLI в прод-профиле "
-                "черновик был верным: фильтр удалил фразу об отсутствии сведений или исправление "
-                "предпосылки и опубликовал оставшееся подтверждённое утверждение."
-                if introduced
+                f" (базовый прогон: {count(baseline.e2e[p]['factrag']['hallucination'])})"
+                if baseline and baseline.e2e.get(p)
                 else ""
             )
+            for p in run.profiles
+        ]
+        introduced = {
+            p: len(run.e2e[p].get("hallucination_ids", {}).get("factrag_only", []))
+            for p in run.profiles
+        }
+        lines.append(
+            "- **Галлюцинации** (вопросы с известной истиной: без ответа, с ложной предпосылкой, "
+            "lexical_trap без ответа): "
+            + "; ".join(guard)
+            + ". Галлюцинаций, внесённых фильтром (черновик верен, опубликованный ответ нет): "
+            + ", ".join(f"{PROFILE_SHORT[p]} - {n}" for p, n in introduced.items())
+            + (
+                " (базовый прогон: "
+                + ", ".join(
+                    f"{PROFILE_SHORT[p]} - "
+                    f"{len(baseline.e2e[p].get('hallucination_ids', {}).get('factrag_only', []))}"
+                    for p in run.profiles
+                    if baseline.e2e.get(p)
+                )
+                + ")"
+                if baseline
+                else ""
+            )
+            + "."
         )
-        claims = prod["claims"]
-        reasons = claims.get("by_status_reason", {})
-        total = claims["total"] or 1
-        nli_part = ""
         if run.nli:
             d = run.nli["overall"]["decision_rule"]
-            sm = d["status_matrix"]["entailment"]
-            ent_n = sum(sm.values())
-            nli_part = (
-                f" На {run.nli['overall']['pairs']} контрольных парах с эталонной посылкой правило "
-                f"перехватывает {pct(d['hallucination_catch_rate'])} искажённых и неподтверждённых "
-                f"утверждений, но блокирует {pct(d['false_rejection_rate'])} верных; "
-                f"{sm.get('contradiction', 0)} из {ent_n} верных гипотез получают P(con) ≥ 0.2. "
-                "Ложная отбраковка по языку гипотезы: "
+            base_nli = (
+                f" (базовый прогон: {pct(baseline.nli['overall']['decision_rule']['false_rejection_rate'])} и "
+                f"{pct(baseline.nli['overall']['decision_rule']['hallucination_catch_rate'])})"
+                if baseline and baseline.nli
+                else ""
+            )
+            lines.append(
+                f"- **NLI-модуль.** На {run.nli['overall']['pairs']} контрольных парах с эталонной "
+                f"посылкой ложная отбраковка верных утверждений {pct(d['false_rejection_rate'])}, "
+                f"перехват искажённых и неподтверждённых {pct(d['hallucination_catch_rate'])}"
+                + base_nli
+                + ". По языку гипотезы ложная отбраковка: "
                 + ", ".join(
                     f"{lang.upper()} {pct(b['decision_rule']['false_rejection_rate'])}"
                     for lang, b in run.nli["by_hypothesis_language"].items()
                 )
                 + "."
             )
-        lines.append(
-            f"- **Причины на уровне утверждений.** Из {claims['total']} утверждений черновиков "
-            f"{reasons.get('unverified:missing_citation', 0)} "
-            f"({pct(reasons.get('unverified:missing_citation', 0) / total)}) остались без маркера "
-            f"источника после разбиения на предложения и отклонены без вызова NLI; "
-            f"{reasons.get('contradiction:cited_support_not_established', 0)} "
-            f"({pct(reasons.get('contradiction:cited_support_not_established', 0) / total)}) "
-            f"получили CONTRADICTION." + nli_part
-        )
+        if run.ablation:
+            steps = run.ablation["steps"]
+            first, last = steps[0]["e2e"], steps[-1]["e2e"]
+            profile = "guard_on" if "guard_on" in first else next(iter(first))
+            lines.append(
+                f"- **Вклад верификатора отдельно** (повторная проверка тех же черновиков "
+                f"`{run.ablation['source_run']}`, {PROFILE_NAMES[profile]}): корректный исход "
+                f"{count(first[profile]['factrag']['correct'])} → "
+                f"{count(last[profile]['factrag']['correct'])}, отказы на отвечаемых "
+                f"{count(first[profile]['factrag']['false_refusal_on_answerable'])} → "
+                f"{count(last[profile]['factrag']['false_refusal_on_answerable'])}, внесённые "
+                f"фильтром галлюцинации {len(first[profile]['filter_induced_hallucinations'])} → "
+                f"{len(last[profile]['filter_induced_hallucinations'])} (раздел 2.1)."
+            )
     if run.retrieval:
         o = run.retrieval["overall"]
-        rrf, dense = o["hybrid_rrf"]["recall@5"], o["dense"]["recall@5"]
+        b_o = baseline.retrieval["overall"] if baseline and baseline.retrieval else None
         line = (
             f"- **Поиск и задержка.** Гибрид с реранкингом: Recall@5 "
-            f"{num(o['hybrid_rerank']['recall@5'])}, MRR@10 {num(o['hybrid_rerank']['mrr@10'])} "
-            f"против {num(dense)} / {num(o['dense']['mrr@10'])} у dense и "
-            f"{num(o['sparse']['recall@5'])} / {num(o['sparse']['mrr@10'])} у BM25; RRF без "
-            f"реранкинга ({num(rrf)}) "
+            f"{num(o['hybrid_rerank']['recall@5'])}, MRR@10 {num(o['hybrid_rerank']['mrr@10'])}"
             + (
-                "ниже dense, то есть выигрыш гибрида даёт реранкер."
-                if rrf < dense
-                else "не ниже dense."
+                f" (базовый прогон: {num(b_o['hybrid_rerank']['recall@5'])} / "
+                f"{num(b_o['hybrid_rerank']['mrr@10'])})"
+                if b_o
+                else ""
             )
+            + f"; dense {num(o['dense']['recall@5'])} / {num(o['dense']['mrr@10'])}, BM25 "
+            f"{num(o['sparse']['recall@5'])} / {num(o['sparse']['mrr@10'])}."
         )
         if prod:
             lat = prod["latency_ms"]["generated_queries"]
@@ -342,9 +803,9 @@ def section_method(run: Run, dataset: EvalDatasetV3) -> str:
     thresholds = cfg.get("nli_thresholds", {})
     llm = models.get("llm", {})
     out = [
-        "## 2. Методология и датасет",
+        "## 3. Методология и датасет",
         "",
-        "### 2.1. Датасет v3",
+        "### 3.1. Датасет v3",
         "",
         f"`data/eval_dataset_v3.json`: {plural(stats['cases'], 'кейс', 'кейса', 'кейсов')}"
         + (
@@ -372,7 +833,7 @@ def section_method(run: Run, dataset: EvalDatasetV3) -> str:
         "",
         table(["Документ", "Чанков", "Конвертирован из", "Кейсов"], docs, "lrlr"),
         "",
-        "### 2.2. Стенд и воспроизводимость",
+        "### 3.2. Стенд и воспроизводимость",
         "",
         table(
             ["Параметр", "Значение"],
@@ -408,7 +869,7 @@ def section_method(run: Run, dataset: EvalDatasetV3) -> str:
             "ll",
         ),
         "",
-        "### 2.3. Режимы и метрики",
+        "### 3.3. Режимы и метрики",
         "",
         "- **Поиск** (без LLM): для каждого вопроса одним вызовом получены пять ранжирований: "
         "dense (BGE-M3, Qdrant), sparse (BM25), гибрид RRF, RRF с реранкингом до порога и боевой "
@@ -435,7 +896,7 @@ def section_method(run: Run, dataset: EvalDatasetV3) -> str:
 def section_retrieval(run: Run) -> str:
     s = run.retrieval
     if not s:
-        return "### 3.1. Поиск\n\nРежим не запускался.\n"
+        return "### 4.1. Поиск\n\nРежим не запускался.\n"
     o = s["overall"]
     rows = [
         [
@@ -508,7 +969,7 @@ def section_retrieval(run: Run) -> str:
     gate = s["relevance_gate"]
     return "\n".join(
         [
-            "### 3.1. Поиск: абляция режимов",
+            "### 4.1. Поиск: абляция режимов",
             "",
             table(
                 ["Режим", "Recall@1", "Recall@3", "Recall@5", "Recall@10", "nDCG@5", "MRR@10"], rows
@@ -532,7 +993,7 @@ def section_retrieval(run: Run) -> str:
 def section_nli(run: Run) -> str:
     s = run.nli
     if not s:
-        return "### 3.2. NLI-верификация\n\nРежим не запускался.\n"
+        return "### 4.2. NLI-верификация\n\nРежим не запускался.\n"
     blocks = {
         "Все": s["overall"],
         "EN-гипотеза": s["by_hypothesis_language"]["en"],
@@ -627,46 +1088,101 @@ def section_nli(run: Run) -> str:
                 ),
             )
         )
-    sweep = s["threshold_sweep"]
-    write_csv(
-        "nli_threshold_sweep.csv",
-        [
-            "entailment_threshold",
-            "contradiction_threshold",
-            "hallucination_catch_rate",
-            "false_rejection_rate",
-        ],
-        [
-            [
-                r["entailment_threshold"],
-                r["contradiction_threshold"],
-                r["hallucination_catch_rate"],
-                r["false_rejection_rate"],
-            ]
-            for r in sweep
-        ],
-    )
-    chosen = [r for r in sweep if r["entailment_threshold"] == 0.4]
-    sweep_rows = [
-        [
-            f"{r['contradiction_threshold']:.1f}"
-            + (" (прод)" if r["contradiction_threshold"] == 0.2 else ""),
-            pct(r["hallucination_catch_rate"]),
-            pct(r["false_rejection_rate"]),
-        ]
-        for r in chosen
-    ]
     status = s["overall"]["decision_rule"]["status_matrix"]
     status_rows = [
         [LABEL_RU[g], *(status[g].get(st, 0) for st in ("verified", "unverified", "contradiction"))]
         for g in labels
     ]
     lat = s["latency_ms_per_pair"]
+    con = run.setting("nli_contradiction_threshold") or 0.2
+    windows = bool(run.setting("nli_window_scoring"))
+    if windows:
+        rule = (
+            "**Боевое правило.** Утверждение VERIFIED, если его поддерживает окно посылки "
+            "(маршруты ниже) или весь чанк (P(ent) > "
+            f"{run.setting('nli_entailment_threshold')} при P(con) < {con}, либо P(ent) ≥ "
+            f"{run.setting('nli_strong_entailment_threshold')}), и все числа и идентификаторы "
+            f"утверждения есть в источнике; CONTRADICTION, если поддержки нет и P(con) ≥ {con}. "
+            "Вероятности в таблицах ниже - решающего свидетельства: окна, если оно поддержало "
+            "утверждение, иначе чанка."
+        )
+        names = support_names(run)
+        route_rows = [
+            [
+                names.get(route, str(route)),
+                *(
+                    sum(
+                        p["status"] == "verified" and p.get("support") == route and p["label"] == g
+                        for p in run.nli_pairs
+                    )
+                    for g in labels
+                ),
+            ]
+            for route in ("window", "anchor_window", "code_span", None)
+        ]
+        detail = [
+            "Чем подтверждены VERIFIED-вердикты (строка = маршрут, столбец = эталон пробы; "
+            "VERIFIED на Neutral/Contradiction - пропущенные ошибки):",
+            "",
+            table(["Маршрут поддержки", *(LABEL_RU[g] for g in labels)], route_rows),
+            "",
+        ]
+    else:
+        rule = (
+            f"**Боевое правило (P(con) ≥ {con} в любом источнике → CONTRADICTION; иначе "
+            f"VERIFIED при P(ent) > {run.setting('nli_entailment_threshold')} во всех источниках "
+            f"или ≥ {run.setting('nli_strong_entailment_threshold')} в одном):**"
+        )
+        sweep = s["threshold_sweep"]
+        write_csv(
+            "nli_threshold_sweep.csv",
+            [
+                "entailment_threshold",
+                "contradiction_threshold",
+                "hallucination_catch_rate",
+                "false_rejection_rate",
+            ],
+            [
+                [
+                    r["entailment_threshold"],
+                    r["contradiction_threshold"],
+                    r["hallucination_catch_rate"],
+                    r["false_rejection_rate"],
+                ]
+                for r in sweep
+            ],
+        )
+        detail = [
+            "**Чувствительность к порогу противоречия** (порог entailment 0.4, strong 0.7):",
+            "",
+            table(
+                ["Порог contradiction", "Catch rate", "False rejection"],
+                [
+                    [
+                        f"{r['contradiction_threshold']:.1f}"
+                        + (" (прод)" if r["contradiction_threshold"] == con else ""),
+                        pct(r["hallucination_catch_rate"]),
+                        pct(r["false_rejection_rate"]),
+                    ]
+                    for r in sweep
+                    if r["entailment_threshold"] == 0.4
+                ],
+            ),
+            "",
+            "Полная сетка: [`tables/nli_threshold_sweep.csv`](tables/nli_threshold_sweep.csv).",
+            "",
+        ]
+    exceeding = s["overall"]["pairs_exceeding_context"]
     return "\n".join(
         [
-            "### 3.2. NLI-верификация на контрольных парах",
+            "### 4.2. NLI-верификация на контрольных парах",
             "",
-            f"{s['overall']['pairs']} пар (220 проб × EN/RU), ни одна не превысила контекст 512 токенов.",
+            f"{s['overall']['pairs']} пар ({s['overall']['pairs'] // 2} проб × EN/RU); "
+            + (
+                "ни одна не превысила контекст NLI 512 токенов."
+                if not exceeding
+                else f"контекст NLI 512 токенов превысили {exceeding}."
+            ),
             "",
             "**Классификатор (argmax трёх классов), P / R / F1:**",
             "",
@@ -674,8 +1190,7 @@ def section_nli(run: Run) -> str:
             "",
             f"![Матрица ошибок, EN]({figs[0]}) ![Матрица ошибок, RU]({figs[1]})",
             "",
-            "**Боевое правило (P(con) ≥ 0.2 в любом источнике → CONTRADICTION; иначе VERIFIED "
-            "при P(ent) > 0.4 во всех источниках или ≥ 0.7 в одном):**",
+            rule,
             "",
             table(
                 ["Срез", "Пар", "Catch rate", "Contradiction", "Neutral", "False rejection"],
@@ -686,12 +1201,9 @@ def section_nli(run: Run) -> str:
             "",
             table(["Эталон", "VERIFIED", "UNVERIFIED", "CONTRADICTION"], status_rows),
             "",
-            "**Чувствительность к порогу противоречия** (порог entailment 0.4, strong 0.7):",
-            "",
-            table(["Порог contradiction", "Catch rate", "False rejection"], sweep_rows),
-            "",
-            f"Полная сетка: [`tables/nli_threshold_sweep.csv`](tables/nli_threshold_sweep.csv). "
-            f"Время одной пары: p50 {num(lat['p50'], 1)} мс, p95 {num(lat['p95'], 1)} мс.",
+            *detail,
+            f"Время одной пробы{' (чанк и все окна одним пакетом)' if windows else ''}: p50 "
+            f"{num(lat['p50'], 1)} мс, p95 {num(lat['p95'], 1)} мс.",
             "",
         ]
     )
@@ -699,7 +1211,7 @@ def section_nli(run: Run) -> str:
 
 def section_e2e(run: Run) -> str:
     if not run.profiles:
-        return "### 3.3. Сквозной прогон\n\nРежим не запускался.\n"
+        return "### 4.3. Сквозной прогон\n\nРежим не запускался.\n"
     rows, csv_rows = [], []
     for profile in run.profiles:
         s = run.e2e[profile]
@@ -833,13 +1345,13 @@ def section_e2e(run: Run) -> str:
     reasons = ", ".join(
         f"{k}: {v}" for k, v in sorted(s["refusal_reasons"].items(), key=lambda kv: -kv[1])
     )
-    keys = list(REASON_NAMES) + sorted(
+    keys = list(reason_names(run)) + sorted(
         {k for p in run.profiles for k in run.e2e[p]["claims"].get("by_status_reason", {})}
-        - set(REASON_NAMES)
+        - set(reason_names(run))
     )
     reason_rows = [
         [
-            REASON_NAMES.get(k, k),
+            reason_names(run).get(k, k),
             *(
                 f"{run.e2e[p]['claims'].get('by_status_reason', {}).get(k, 0)} "
                 f"({pct(run.e2e[p]['claims'].get('by_status_reason', {}).get(k, 0) / (run.e2e[p]['claims']['total'] or 1))})"
@@ -859,7 +1371,7 @@ def section_e2e(run: Run) -> str:
     )
     return "\n".join(
         [
-            "### 3.3. Сквозной прогон: Vanilla RAG и FactRAG-NLI",
+            "### 4.3. Сквозной прогон: Vanilla RAG и FactRAG-NLI",
             "",
             table(
                 [
@@ -902,7 +1414,7 @@ def section_e2e(run: Run) -> str:
 
 def section_errors(run: Run, dataset: EvalDatasetV3, lengths: dict[str, int]) -> str:
     by_id = {c.id: c for c in dataset.cases}
-    out = ["## 4. Разбор ошибок", ""]
+    out = ["## 5. Разбор ошибок", ""]
     pairs = run.nli_pairs
     if pairs:
         false_con = sorted(
@@ -919,11 +1431,11 @@ def section_errors(run: Run, dataset: EvalDatasetV3, lengths: dict[str, int]) ->
             key=lambda p: -p["p_entailment"],
         )
         out += [
-            "### 4.1. NLI: где mDeBERTa-v3 ошибается",
+            "### 5.1. NLI: где mDeBERTa-v3 ошибается",
             "",
             f"**Ложные противоречия** ({len(false_con)} из "
             f"{sum(p['label'] == 'entailment' for p in pairs)} проб Entailment): верное утверждение "
-            f"получает P(contradiction) ≥ 0.2 и блокируется. По категориям: "
+            f"получает CONTRADICTION и блокируется. По категориям: "
             + ", ".join(
                 f"{k}: {v}" for k, v in Counter(p["category"] for p in false_con).most_common()
             )
@@ -1014,7 +1526,7 @@ def section_errors(run: Run, dataset: EvalDatasetV3, lengths: dict[str, int]) ->
             ),
             "",
             f"**Пограничные Neutral / Entailment** ({len(borderline)}): верное утверждение, где модель "
-            "выбирает Neutral (P(ent) ≤ 0.4 при P(con) < 0.2). По категориям: "
+            "не подтверждена ни окном, ни чанком, но и противоречия нет (UNVERIFIED). По категориям: "
             + ", ".join(
                 f"{k}: {v}" for k, v in Counter(p["category"] for p in borderline).most_common()
             )
@@ -1080,7 +1592,7 @@ def section_errors(run: Run, dataset: EvalDatasetV3, lengths: dict[str, int]) ->
         ]
         fragments = [c for c in uncited if FRAGMENT.search(c.strip())]
         out += [
-            f"### 4.2. Сквозной прогон ({PROFILE_NAMES[profile]})",
+            f"### 5.2. Сквозной прогон ({PROFILE_NAMES[profile]})",
             "",
             f"**Перехваченные галлюцинации** ({len(caught)}): черновик LLM отвечает на вопрос без "
             "ответа или принимает ложную предпосылку, NLI-фильтр заменяет ответ отказом или удаляет "
@@ -1101,9 +1613,18 @@ def section_errors(run: Run, dataset: EvalDatasetV3, lengths: dict[str, int]) ->
             ),
             "",
             f"**Галлюцинации FactRAG-NLI** ({len(missed_e2e)}): опубликован ответ на вопрос без "
-            "ответа или ответ без исправления ложной предпосылки. Если черновик был верным, "
-            "галлюцинацию внёс фильтр: он публикует только VERIFIED-утверждения, а фраза об "
-            "отсутствии сведений или исправление предпосылки опорой в источнике не подтверждается.",
+            "ответа или ответ без исправления ложной предпосылки. "
+            + (
+                "Если черновик тоже ошибочен, NLI подтвердил утверждение, которое верно по "
+                "источнику, но не отвечает на вопрос (смежный факт) или повторяет число из "
+                "вопроса, встречающееся в источнике в другом месте: проверка выводимости не "
+                "оценивает, отвечает ли факт на вопрос. Если черновик был верным, ошибку внёс "
+                "фильтр."
+                if run.setting("abstention_guard")
+                else "Если черновик был верным, галлюцинацию внёс фильтр: он публикует только "
+                "VERIFIED-утверждения, а фраза об отсутствии сведений или исправление "
+                "предпосылки опорой в источнике не подтверждается."
+            ),
             "",
             table(
                 [
@@ -1133,7 +1654,9 @@ def section_errors(run: Run, dataset: EvalDatasetV3, lengths: dict[str, int]) ->
             "не содержит. Исход: "
             + ", ".join(f"{CAUSE_NAMES.get(k, k)} - {v}" for k, v in over_causes.most_common())
             + ". Вердикты утверждений в этих черновиках: "
-            + ", ".join(f"{REASON_NAMES.get(k, k)} - {v}" for k, v in over_reasons.most_common())
+            + ", ".join(
+                f"{reason_names(run).get(k, k)} - {v}" for k, v in over_reasons.most_common()
+            )
             + ".",
             "",
             table(
@@ -1142,23 +1665,55 @@ def section_errors(run: Run, dataset: EvalDatasetV3, lengths: dict[str, int]) ->
                 "lll",
             ),
             "",
-            f"**Разбиение на утверждения.** "
-            f"{plural(len(uncited), 'утверждение', 'утверждения', 'утверждений')} не получили "
-            f"маркер [S#]. Из них {len(fragments)} - обрывки предложений (эвристика: оканчиваются "
-            "на «Rev.», «No.», «;» или начинаются с цифры), например: "
-            + ", ".join(f"«{quote(c, 60)}»" for c in list(dict.fromkeys(fragments))[:3])
-            + ". Защита сокращений в `segment_claims` (`generator_verifier.py`) охватывает только "
-            "русские сокращения (пп., рис., т. е. и др.), поэтому «SP 800-53 Rev. 5» режется после "
-            "«Rev.», и первая часть остаётся без цитаты. Точка с запятой разделяет утверждения по "
-            "правилу, а LLM ставит маркер в конце предложения, поэтому часть до «;» тоже остаётся "
-            f"без цитаты. Остальные {len(uncited) - len(fragments)} - целые предложения, после "
-            "которых LLM не поставила маркер источника.",
+            segmentation_note(run, profile, uncited, fragments, cases),
             "",
         ]
     return "\n".join(out)
 
 
-def section_latency(run: Run) -> str:
+def segmentation_note(
+    run: Run,
+    profile: str,
+    uncited: list[str],
+    fragments: list[str],
+    cases: list[dict[str, Any]],
+) -> str:
+    """Claims left without a source marker, explained for the segmentation the run used."""
+    head = (
+        f"**Разбиение на утверждения.** "
+        f"{plural(len(uncited), 'утверждение', 'утверждения', 'утверждений')} остались без "
+        "маркера [S#]"
+    )
+    if run.setting("claim_segmentation") != "v2":
+        return (
+            head + f". Из них {len(fragments)} - обрывки предложений (эвристика: оканчиваются на "
+            "«Rev.», «No.», «;» или начинаются с цифры), например: "
+            + ", ".join(f"«{quote(c, 60)}»" for c in list(dict.fromkeys(fragments))[:3])
+            + ". Сегментация v1 защищает только русские сокращения, поэтому «SP 800-53 Rev. 5» "
+            "режется после «Rev.», а «;» делит предложение до маркера источника. Остальные "
+            f"{len(uncited) - len(fragments)} - целые предложения без маркера."
+        )
+    inherited = sum(bool(c.get("citation_inherited")) for r in cases for c in r["claims"])
+    verified = sum(
+        bool(c.get("citation_inherited")) and c["status"] == "verified"
+        for r in cases
+        for c in r["claims"]
+    )
+    return (
+        head
+        + " (сегментация v2 защищает сокращения и номера, «;» не делит утверждение); "
+        + (
+            f"обрывков по прежней эвристике: {len(fragments)}. "
+            if fragments
+            else "обрывков по прежней эвристике нет. "
+        )
+        + f"Ещё {plural(inherited, 'утверждение', 'утверждения', 'утверждений')} без "
+        f"собственного маркера унаследовали ссылку соседнего предложения, из них VERIFIED - "
+        f"{verified} ({PROFILE_NAMES[profile]})."
+    )
+
+
+def section_latency(run: Run, baseline: Run | None = None) -> str:
     if not run.profiles:
         return ""
     stages = ("search_ms", "rerank_ms", "generation_ms", "nli_ms")
@@ -1238,6 +1793,9 @@ def section_latency(run: Run) -> str:
         )
     init = run.e2e[run.profiles[0]]["latency_ms"]["model_init_ms"]
     sweep = read_json(run.dir / "llama_ngl_sweep.json")
+    sweep_source = run
+    if sweep is None and baseline is not None:
+        sweep, sweep_source = read_json(baseline.dir / "llama_ngl_sweep.json"), baseline
     sweep_part: list[str] = []
     if sweep:
         sweep_rows = [
@@ -1270,6 +1828,14 @@ def section_latency(run: Run) -> str:
         sweep_part = [
             "### Выбор числа GPU-слоёв LLM",
             "",
+            *(
+                [
+                    f"Замер выполнен перед базовым прогоном `{sweep_source.rel}` на том же стенде.",
+                    "",
+                ]
+                if sweep_source is not run
+                else []
+            ),
             f"Три последовательных запроса конвейера (реранкинг → генерация → NLI) при процессе "
             f"PyTorch с моделями на той же карте ({ms(sweep['pytorch_process_reserved_mib'])} МиБ "
             f"reserved); llama.cpp сборки {sweep['llama_cpp_build']}, флаги "
@@ -1296,7 +1862,7 @@ def section_latency(run: Run) -> str:
         ]
     return "\n".join(
         [
-            "## 5. Задержки и ресурсы",
+            "## 6. Задержки и ресурсы",
             "",
             *sweep_part,
             "",
@@ -1347,11 +1913,11 @@ def section_limits(run: Run) -> str:
             f"{len(drafts)} черновиков написаны преимущественно кириллицей (на английские вопросы: "
             f"{en_q_ru} из {len(en_q)}), поэтому NLI в основном сравнивает русскую гипотезу с "
             "английской посылкой; на контрольных парах доля ложной отбраковки для EN- и "
-            "RU-гипотез приведена в разделе 3.2.",
+            "RU-гипотез приведена в разделе 4.2.",
         ]
     return "\n".join(
         [
-            "## 6. Ограничения",
+            "## 7. Ограничения",
             "",
             "- *Vanilla RAG* в этом отчёте - черновик той же LLM с тем же промптом (включая "
             "premise guard в прод-профиле) и тем же порогом релевантности, а не внешняя базовая "
@@ -1369,15 +1935,32 @@ def section_limits(run: Run) -> str:
             "прогонами не измерялся.",
             "- Корпус открытый (RFC, NIST, PostgreSQL, PEP), вопросы RU/EN; ГОСТ/СП и другие "
             "русскоязычные нормативные документы не измерялись.",
+            *(
+                [
+                    "- Пороги верификатора подобраны на dev-половине (110-111 кейсов); test-половина "
+                    "того же размера даёт оценку переноса, но не заменяет независимый датасет.",
+                    "- NLI проверяет выводимость утверждения из источника, а не то, отвечает ли "
+                    "оно на вопрос: верный по источнику смежный факт проходит фильтр. Утверждение, "
+                    "добавляющее субъект, которого нет в окне («A QUIC client ...», «RFC 9110 "
+                    "specifies ...»), mDeBERTa часто оценивает как Neutral, хотя чанк взят из "
+                    "этого документа; служебный заголовок чанка содержит хэш документа, а не "
+                    "название, поэтому дать модели этот контекст без переиндексации нельзя.",
+                    "- `replay` повторяет только первую попытку генерации и требует локальных "
+                    "логов `full/` исходного прогона (не хранятся в git).",
+                ]
+                if run.setting("nli_window_scoring")
+                else []
+            ),
             "",
         ]
     )
 
 
-def section_repro(run: Run) -> str:
+def section_repro(run: Run, baseline: Run | None = None) -> str:
+    source = (run.ablation or {}).get("source_run") or (baseline.rel if baseline else None)
     return "\n".join(
         [
-            "## 7. Воспроизведение",
+            "## 8. Воспроизведение",
             "",
             "```powershell",
             "python scripts/build_eval_dataset_v3.py            # пересобрать и проверить датасет",
@@ -1386,8 +1969,18 @@ def section_repro(run: Run) -> str:
             f"python evaluate_suite.py --run-dir {run.rel} nli",
             f"python evaluate_suite.py --run-dir {run.rel} e2e --profile guard_on",
             f"python evaluate_suite.py --run-dir {run.rel} e2e --profile guard_off",
-            f"python scripts/render_report.py {run.rel}",
+            *(
+                [f"python evaluate_suite.py --run-dir {run.rel} replay --source {source}"]
+                if source
+                else []
+            ),
+            f"python scripts/render_report.py {run.rel}"
+            + (f" --baseline {baseline.rel}" if baseline else ""),
             "```",
+            "",
+            "`replay` не вызывает LLM и поиск: он заново проверяет сохранённые черновики "
+            "(`full/e2e_<profile>.jsonl`, не хранятся в git) и NLI-пробы и поэтому выполняется за "
+            "минуты; им удобно проверять любое изменение верификатора до полного прогона.",
             "",
             "Режимы выполняются последовательно: встроенный Qdrant допускает одного владельца "
             "индекса. Индекс `.artifacts/eval-v3-index` строится при первом запуске и проверяется "
@@ -1397,17 +1990,35 @@ def section_repro(run: Run) -> str:
     )
 
 
-def headline(run: Run) -> dict[str, Any]:
+def headline(run: Run, baseline: Run | None = None) -> dict[str, Any]:
     out: dict[str, Any] = {"run": run.rel, "commit": run.config.get("git", {}).get("commit")}
     if run.retrieval:
         out["retrieval_recall@5"] = {m: run.retrieval["overall"][m]["recall@5"] for m in MODE_ORDER}
         out["retrieval_mrr@10"] = {m: run.retrieval["overall"][m]["mrr@10"] for m in MODE_ORDER}
+        out["retrieval_recall@5_prod_by_slice"] = {
+            **{c: v["hybrid_rerank"]["recall@5"] for c, v in run.retrieval["by_category"].items()},
+            **{
+                f"lang_{lang}": v["hybrid_rerank"]["recall@5"]
+                for lang, v in run.retrieval["by_language"].items()
+            },
+        }
     if run.nli:
         d = run.nli["overall"]["decision_rule"]
         out["nli"] = {
             "pairs": run.nli["overall"]["pairs"],
             "catch_rate": d["hallucination_catch_rate"],
             "false_rejection_rate": d["false_rejection_rate"],
+            "false_rejection_rate_by_language": {
+                lang: b["decision_rule"]["false_rejection_rate"]
+                for lang, b in run.nli["by_hypothesis_language"].items()
+            },
+            "by_split": {
+                split: {
+                    "catch_rate": m["hallucination_catch_rate"],
+                    "false_rejection_rate": m["false_rejection_rate"],
+                }
+                for split, m in run.nli.get("by_split", {}).items()
+            },
             "macro_f1": run.nli["overall"]["argmax"]["macro_f1"],
             "latency_ms_p50": run.nli["latency_ms_per_pair"]["p50"],
         }
@@ -1424,11 +2035,17 @@ def headline(run: Run) -> dict[str, Any]:
                 )
             }
             | {
+                "correct_k": s[variant]["correct"]["k"],
                 "hallucination_k": s[variant]["hallucination"]["k"],
                 "hallucination_n": s[variant]["hallucination"]["n"],
             }
             for variant in ("vanilla", "factrag")
         } | {
+            "filter_induced_hallucinations": s["hallucination_ids"]["factrag_only"],
+            "by_split": {
+                split: {variant: block[variant]["correct"]["rate"] for variant in block}
+                for split, block in s.get("by_split", {}).items()
+            },
             "hallucination_relative_reduction": s["hallucination_relative_reduction"],
             "mcnemar_p": s["paired_correctness"]["mcnemar_exact_p"],
             "paired_correctness": s["paired_correctness"],
@@ -1440,65 +2057,93 @@ def headline(run: Run) -> dict[str, Any]:
                 k: v["p95"] for k, v in s["latency_ms"]["generated_queries"].items()
             },
         }
+    if run.ablation:
+        out["verifier_replay"] = {
+            "source_run": run.ablation["source_run"],
+            "steps": [
+                {
+                    "step": step["step"],
+                    **{
+                        profile: {
+                            "factrag_correct": e2e["factrag"]["correct"]["k"],
+                            "false_refusals_on_answerable": e2e["factrag"][
+                                "false_refusal_on_answerable"
+                            ]["k"],
+                            "factrag_hallucinations": e2e["factrag"]["hallucination"]["k"],
+                            "filter_induced_hallucinations": len(
+                                e2e["filter_induced_hallucinations"]
+                            ),
+                        }
+                        for profile, e2e in step["e2e"].items()
+                    },
+                    "nli_false_rejection_rate": step["nli"]["overall"]["false_rejection_rate"],
+                    "nli_catch_rate": step["nli"]["overall"]["hallucination_catch_rate"],
+                }
+                for step in run.ablation["steps"]
+            ],
+        }
+    if baseline:
+        out["baseline"] = headline(baseline)
     return out
 
 
-def readme_block(run: Run) -> str:
+def readme_block(run: Run, baseline: Run | None = None) -> str:
     """Compact results table injected into README.md between the results markers."""
     lines = []
     prod = run.e2e.get("guard_on")
+    base = baseline.e2e.get("guard_on") if baseline else None
     if prod:
         v, f = prod["vanilla"], prod["factrag"]
         lat = prod["latency_ms"]["generated_queries"]
+        metrics = (
+            ("Корректный исход, все вопросы ↑", "correct"),
+            ("Ключевые факты верны (отвечаемые) ↑", "key_fact_accuracy_on_answerable"),
+            ("Отказы на отвечаемых вопросах ↓", "false_refusal_on_answerable"),
+            ("Галлюцинации на вопросах с известной истиной ↓", "hallucination"),
+        )
         rows = [
-            ["Корректный исход, все вопросы ↑", rate_cell(v["correct"]), rate_cell(f["correct"])],
-            [
-                "Ключевые факты верны (отвечаемые) ↑",
-                rate_cell(v["key_fact_accuracy_on_answerable"]),
-                rate_cell(f["key_fact_accuracy_on_answerable"]),
-            ],
-            [
-                "Отказы на отвечаемых вопросах ↓",
-                rate_cell(v["false_refusal_on_answerable"]),
-                rate_cell(f["false_refusal_on_answerable"]),
-            ],
-            [
-                "Галлюцинации на вопросах с известной истиной ↓",
-                rate_cell(v["hallucination"]),
-                rate_cell(f["hallucination"]),
-            ],
+            [title, rate_cell(v[key]), rate_cell(f[key])]
+            + ([rate_cell(base["factrag"][key])] if base else [])
+            for title, key in metrics
         ]
+        induced = len(prod["hallucination_ids"]["factrag_only"])
+        rows.append(
+            ["Галлюцинации, внесённые NLI-фильтром ↓", "-", str(induced)]
+            + ([str(len(base["hallucination_ids"]["factrag_only"]))] if base else [])
+        )
         pc = prod["paired_correctness"]
-        claims = prod["claims"]
-        reasons = claims.get("by_status_reason", {})
-        hv, hf = v["hallucination"]["k"], f["hallucination"]["k"]
+        header = ["Метрика", "Standard RAG (без NLI)", "FactRAG-NLI"] + (
+            [f"FactRAG-NLI, базовый прогон `{baseline.rel.rsplit('/', 1)[-1]}`"]
+            if base and baseline
+            else []
+        )
         lines += [
             f"Сквозной прогон на {prod['cases']} вопросах датасета v3, прод-профиль. *Standard RAG* "
             "- черновик той же LLM до NLI-фильтра (тот же поиск, порог релевантности и промпт), "
             "поэтому сравнение парное.",
             "",
-            table(["Метрика", "Standard RAG (без NLI)", "FactRAG-NLI"], rows, "lrr"),
+            table(header, rows, "l" + "r" * (len(header) - 1)),
             "",
-            "В текущей конфигурации NLI-фильтр **"
+            "NLI-фильтр "
             + direction(
-                v["correct"]["rate"], f["correct"]["rate"], ("снизил", "повысил", "не изменил")
+                v["correct"]["rate"],
+                f["correct"]["rate"],
+                ("снижает", "повышает", "не меняет"),
             )
-            + "** долю корректных исходов (только Standard RAG верен в "
-            f"{plural(pc['vanilla_only_correct'], 'кейсе', 'кейсах', 'кейсах')}, "
-            f"только FactRAG-NLI в {pc['factrag_only_correct']}; точный тест Мак-Немара p = "
+            + " долю корректных исходов относительно черновика (только Standard RAG верен в "
+            f"{plural(pc['vanilla_only_correct'], 'кейсе', 'кейсах', 'кейсах')}, только "
+            f"FactRAG-NLI в {pc['factrag_only_correct']}; точный тест Мак-Немара p = "
             f"{pval(pc['mcnemar_exact_p'])}) и "
             + (
-                f"не уменьшил число галлюцинаций ({hv} → {hf} из {f['hallucination']['n']})"
-                if hf >= hv
-                else f"уменьшил число галлюцинаций с {hv} до {hf} из {f['hallucination']['n']}"
+                f"уменьшает число галлюцинаций с {v['hallucination']['k']} до "
+                f"{f['hallucination']['k']} из {f['hallucination']['n']}"
+                if f["hallucination"]["k"] < v["hallucination"]["k"]
+                else f"не уменьшает число галлюцинаций ({v['hallucination']['k']} → "
+                f"{f['hallucination']['k']} из {f['hallucination']['n']})"
             )
-            + f". Из {claims['total']} утверждений черновиков VERIFIED получили "
-            f"{reasons.get('verified:none', 0)}; {reasons.get('unverified:missing_citation', 0)} "
-            "отклонены без вызова NLI, потому что после разбиения на предложения остались без "
-            f"маркера источника; {reasons.get('contradiction:cited_support_not_established', 0)} "
-            "получили CONTRADICTION (P(con) ≥ 0.2); "
-            f"{reasons.get('unverified:cited_support_not_established', 0)} не подтверждены NLI. "
-            "Разбор причин: [раздел 4 отчёта](reports/EVALUATION_REPORT.md#4-разбор-ошибок). "
+            + ". Что изменено по сравнению с базовым прогоном и вклад каждого изменения: "
+            "[раздел 2 отчёта](reports/EVALUATION_REPORT.md#2-что-изменено-и-почему); разбор "
+            "оставшихся ошибок: [раздел 5](reports/EVALUATION_REPORT.md#5-разбор-ошибок). "
             f"NLI-верификация добавляет p50 {ms(lat['nli_ms']['p50'])} мс к запросу; основное время "
             f"занимает генерация LLM (p50 {ms(lat['generation_ms']['p50'])} мс).",
             "",
@@ -1507,15 +2152,27 @@ def readme_block(run: Run) -> str:
         d = run.nli["overall"]["decision_rule"]
         lines.append(
             f"NLI-модуль на {run.nli['overall']['pairs']} контрольных парах EN/RU: перехват "
-            f"{pct(d['hallucination_catch_rate'])}, ложная отбраковка {pct(d['false_rejection_rate'])}, "
-            f"macro-F1 {num(run.nli['overall']['argmax']['macro_f1'])}."
+            f"{pct(d['hallucination_catch_rate'])}, ложная отбраковка {pct(d['false_rejection_rate'])}"
+            + (
+                f" (базовый прогон: {pct(baseline.nli['overall']['decision_rule']['hallucination_catch_rate'])} "
+                f"и {pct(baseline.nli['overall']['decision_rule']['false_rejection_rate'])})"
+                if baseline and baseline.nli
+                else ""
+            )
+            + "."
         )
         lines.append("")
     if run.retrieval:
         o = run.retrieval["overall"]
         lines.append(
             f"Поиск, Recall@5: dense {num(o['dense']['recall@5'])}, BM25 {num(o['sparse']['recall@5'])}, "
-            f"RRF {num(o['hybrid_rrf']['recall@5'])}, RRF + реранкинг {num(o['hybrid_rerank']['recall@5'])}."
+            f"RRF {num(o['hybrid_rrf']['recall@5'])}, RRF + реранкинг {num(o['hybrid_rerank']['recall@5'])}"
+            + (
+                f" (базовый прогон: {num(baseline.retrieval['overall']['hybrid_rerank']['recall@5'])})"
+                if baseline and baseline.retrieval
+                else ""
+            )
+            + "."
         )
     return "\n".join(lines)
 
@@ -1537,11 +2194,18 @@ def update_readme(block: str) -> bool:
 def main(argv: Sequence[str] | None = None) -> int:
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("run_dir", type=Path)
+    cli.add_argument(
+        "--baseline", type=Path, default=None, help="Earlier run directory to compare against"
+    )
     args = cli.parse_args(argv)
     run = Run(args.run_dir.resolve())
+    baseline = Run(args.baseline.resolve()) if args.baseline else None
+    # Every table and figure is regenerated; files of a previous render must not linger.
+    for stale in [*TABLES.glob("*.csv"), *FIGURES.glob("*.svg")]:
+        stale.unlink()
     dataset = load_dataset(ROOT / "data" / "eval_dataset_v3.json")
     lengths = premise_lengths(dataset)
-    head = headline(run)
+    head = headline(run, baseline)
     parts = [
         "# Оценка FactRAG-NLI на датасете v3",
         "",
@@ -1550,17 +2214,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         f"коммит `{(run.config.get('git', {}).get('commit') or 'н/д')[:12]}`. Все числа "
         "сгенерированы `scripts/render_report.py` из сырых логов прогона.",
         "",
-        section_summary(run, dataset, head),
+        section_summary(run, dataset, head, baseline),
+        section_changes(run, baseline),
         section_method(run, dataset),
-        "## 3. Количественные результаты",
+        "## 4. Количественные результаты",
         "",
         section_retrieval(run),
         section_nli(run),
         section_e2e(run),
         section_errors(run, dataset, lengths),
-        section_latency(run),
+        section_latency(run, baseline),
         section_limits(run),
-        section_repro(run),
+        section_repro(run, baseline),
     ]
     REPORTS.mkdir(exist_ok=True)
     text = "\n".join(parts).replace("\n\n\n", "\n\n")
@@ -1568,7 +2233,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     (REPORTS / "summary.json").write_text(
         json.dumps(head, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n"
     )
-    readme = update_readme(readme_block(run))
+    readme = update_readme(readme_block(run, baseline))
     print(
         f"Wrote reports/EVALUATION_REPORT.md, reports/summary.json, {len(list(TABLES.glob('*.csv')))} tables, {len(list(FIGURES.glob('*.svg')))} figures"
         + ("; README results block updated" if readme else "")

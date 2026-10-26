@@ -9,6 +9,9 @@ Modes (run sequentially; the embedded Qdrant index allows one owner process):
   e2e        the full pipeline per question. Vanilla RAG = LLM draft before NLI filtering
              (RAGResponse.raw_answer); FactRAG-NLI = published answer. Both come from the same
              LLM call, so the comparison is paired. Profiles: guard_on (production), guard_off.
+  replay     no LLM, no retrieval: the logged drafts and the NLI probes of an earlier run are
+             re-verified under each verifier ablation step (ablation.json); the last step is
+             the current profile. Isolates verifier changes from generation changes.
 
 Every run writes reports/runs/<run_id>/: config.json, <mode>/cases.jsonl, <mode>/summary.json,
 <mode>/resources.json; heavy traces go to reports/runs/<run_id>/full/ (git-ignored).
@@ -17,11 +20,13 @@ Usage:
   python evaluate_suite.py --run-dir reports/runs/<run_id> retrieval
   python evaluate_suite.py --run-dir reports/runs/<run_id> nli
   python evaluate_suite.py --run-dir reports/runs/<run_id> e2e --profile guard_on
+  python evaluate_suite.py --run-dir reports/runs/<run_id> replay --source reports/runs/<old_run>
 """
 
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import importlib.metadata
 import json
@@ -70,11 +75,40 @@ NO_INFO = re.compile(
 CORE_FILES = (
     "pipeline.py",
     "generator_verifier.py",
+    "grounding.py",
     "hybrid_retriever.py",
     "document_parser.py",
     "settings.py",
     "eval_dataset.py",
     "evaluate_suite.py",
+)
+PARSE_CACHE = ROOT / ".artifacts" / "eval_v3_parse_cache"
+# Verifier switches of the baseline run reports/runs/20261026T1410Z_v3 (bf16 NLI, whole-chunk
+# premises, strict multi-source rule). The replay ablation releases them one step at a time
+# in ABLATION order; the last step is the current profile without any override.
+BASELINE_VERIFIER: dict[str, Any] = {
+    "nli_precision": "bfloat16",
+    "claim_segmentation": "v1",
+    "claim_citation_inheritance": False,
+    "nli_premise_cleanup": False,
+    "nli_window_scoring": False,
+    "nli_aggregation": "strict",
+    "nli_anchor_guard": False,
+    "nli_anchor_windows": False,
+    "nli_code_span_min_chars": 0,
+    "abstention_guard": False,
+}
+ABLATION: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("baseline", ()),
+    ("nli_float16", ("nli_precision",)),
+    ("segmentation_v2", ("claim_segmentation",)),
+    ("citation_inheritance", ("claim_citation_inheritance",)),
+    ("premise_cleanup", ("nli_premise_cleanup",)),
+    ("sentence_windows", ("nli_window_scoring",)),
+    ("support_first", ("nli_aggregation",)),
+    ("anchor_guard", ("nli_anchor_guard", "nli_anchor_windows")),
+    ("code_span", ("nli_code_span_min_chars",)),
+    ("abstention_guard", ("abstention_guard",)),
 )
 
 
@@ -305,6 +339,37 @@ def score_answer(case: EvalCase, text: str | None) -> dict[str, Any]:
 def rate(items: Sequence[bool]) -> dict[str, Any]:
     k, n = sum(bool(x) for x in items), len(items)
     return {"k": k, "n": n, "rate": k / n if n else None, "wilson95": wilson(k, n)}
+
+
+def dataset_split(cases: Iterable[EvalCase]) -> dict[str, str]:
+    """Calibration (dev) and held-out (test) halves of the dataset.
+
+    Within each category the case ids are ordered by SHA-1 and alternate dev/test, so the
+    split is fixed by the ids alone. Verifier thresholds are tuned on dev; test is reported
+    separately as the check against overfitting.
+    """
+    by_category: dict[str, list[str]] = {}
+    for case in cases:
+        by_category.setdefault(case.category, []).append(case.id)
+    split: dict[str, str] = {}
+    for ids in by_category.values():
+        ordered = sorted(ids, key=lambda cid: hashlib.sha1(cid.encode()).hexdigest())
+        split.update({cid: "dev" if i % 2 == 0 else "test" for i, cid in enumerate(ordered)})
+    return split
+
+
+def headline(rows: Sequence[dict[str, Any]], key: str) -> dict[str, Any]:
+    """Correctness, false refusal on answerable questions and hallucination of one variant."""
+    ok = [r for r in rows if r.get("ok")]
+    return {
+        "correct": rate([r[key]["correct"] for r in ok]),
+        "false_refusal_on_answerable": rate(
+            [r[key]["refused"] for r in ok if r["expected_behavior"] == "answer"]
+        ),
+        "hallucination": rate(
+            [r[key]["hallucination"] for r in ok if r[key]["hallucination"] is not None]
+        ),
+    }
 
 
 def summarize_variant(rows: Sequence[dict[str, Any]], key: str) -> dict[str, Any]:
@@ -777,6 +842,41 @@ def summarize_retrieval(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def probe_rows(verifier: Any, case: EvalCase, context: Any) -> list[dict[str, Any]]:
+    """The production claim rule on the gold premise for the EN and RU probe hypotheses.
+
+    Probabilities are those of the deciding evidence: the supporting sentence window when
+    window scoring supports the claim, otherwise the whole premise chunk.
+    """
+    rows = []
+    for lang in ("en", "ru"):
+        hypothesis = getattr(case.nli_probe, f"hypothesis_{lang}")
+        started = time.perf_counter()
+        claim = verifier._claim(f"{hypothesis} [S1]", {"S1": context})
+        elapsed = (time.perf_counter() - started) * 1000
+        evidence = claim.evidence[0] if claim.evidence else None
+        probs = evidence.probabilities if evidence else None
+        rows.append(
+            {
+                "id": f"{case.id}:{lang}",
+                "case_id": case.id,
+                "category": case.category,
+                "subtype": case.subtype,
+                "hypothesis_language": lang,
+                "label": case.nli_probe.label,
+                "hypothesis": hypothesis,
+                "status": claim.status.value,
+                "reason": (evidence.reason if evidence else None) or claim.reason,
+                "support": evidence.support if evidence else None,
+                "p_entailment": probs.p_entailment if probs else None,
+                "p_neutral": probs.p_neutral if probs else None,
+                "p_contradiction": probs.p_contradiction if probs else None,
+                "latency_ms": elapsed,
+            }
+        )
+    return rows
+
+
 def run_nli(
     dataset: EvalDatasetV3, dataset_path: Path, run_dir: Path, limit: int | None
 ) -> dict[str, Any]:
@@ -792,6 +892,8 @@ def run_nli(
             retriever = pipeline.retriever
             verifier = NLIFactVerifier(settings)
             for i, case in enumerate(cases, 1):
+                if {f"{case.id}:en", f"{case.id}:ru"} <= log.done:
+                    continue
                 chunk = retriever.get_chunk(case.nli_probe.premise_chunk_id)
                 if chunk is None:
                     raise RuntimeError(f"Premise chunk missing for {case.id}")
@@ -801,45 +903,24 @@ def run_nli(
                     text=chunk.text,
                     citation="S1",
                 )
-                for lang in ("en", "ru"):
-                    pair_id = f"{case.id}:{lang}"
-                    if pair_id in log.done:
-                        continue
-                    hypothesis = getattr(case.nli_probe, f"hypothesis_{lang}")
-                    started = time.perf_counter()
-                    claim = verifier._claim(f"{hypothesis} [S1]", {"S1": context})
-                    elapsed = (time.perf_counter() - started) * 1000
-                    probs = claim.evidence[0].probabilities if claim.evidence else None
-                    log.append(
-                        {
-                            "id": pair_id,
-                            "case_id": case.id,
-                            "category": case.category,
-                            "subtype": case.subtype,
-                            "hypothesis_language": lang,
-                            "label": case.nli_probe.label,
-                            "hypothesis": hypothesis,
-                            "status": claim.status.value,
-                            "reason": claim.evidence[0].reason if claim.evidence else claim.reason,
-                            "p_entailment": probs.p_entailment if probs else None,
-                            "p_neutral": probs.p_neutral if probs else None,
-                            "p_contradiction": probs.p_contradiction if probs else None,
-                            "latency_ms": elapsed,
-                        }
-                    )
+                for row in probe_rows(verifier, case, context):
+                    if row["id"] not in log.done:
+                        log.append(row)
                 print(f"[nli] {case.id} ({i}/{len(cases)})", file=sys.stderr, flush=True)
             if hasattr(verifier, "close"):
                 verifier.close()
         finally:
             pipeline.close()
-    summary = summarize_nli(log.rows, settings)
+    summary = summarize_nli(log.rows, settings, dataset_split(dataset.cases))
     summary["resources"] = monitor.summary()
     dump_json(out / "summary.json", summary)
     write_config(run_dir, dataset_path, settings, {"nli": {"pairs": len(log.rows)}})
     return summary
 
 
-def summarize_nli(rows: Sequence[dict[str, Any]], settings: Any) -> dict[str, Any]:
+def summarize_nli(
+    rows: Sequence[dict[str, Any]], settings: Any, split: dict[str, str] | None = None
+) -> dict[str, Any]:
     scored = [r for r in rows if r["p_entailment"] is not None]
 
     def argmax(r: dict[str, Any]) -> str:
@@ -869,6 +950,11 @@ def summarize_nli(rows: Sequence[dict[str, Any]], settings: Any) -> dict[str, An
             c: block([r for r in rows if r["category"] == c])
             for c in sorted({r["category"] for r in rows})
         },
+        "by_split": {
+            name: decision_metrics(subset)
+            for name in ("dev", "test")
+            if (subset := [r for r in rows if (split or {}).get(r["case_id"]) == name])
+        },
         "threshold_sweep": threshold_sweep(
             scored,
             [0.2, 0.3, 0.4, 0.5, 0.6, 0.7],
@@ -876,6 +962,72 @@ def summarize_nli(rows: Sequence[dict[str, Any]], settings: Any) -> dict[str, An
             strong,
         ),
         "latency_ms_per_pair": latency_stats([r["latency_ms"] for r in rows]),
+    }
+
+
+def case_row(case: EvalCase) -> dict[str, Any]:
+    return {
+        "id": case.id,
+        "category": case.category,
+        "subtype": case.subtype,
+        "language": case.language,
+        "expected_behavior": case.expected_behavior,
+        "ok": False,
+    }
+
+
+def claim_rows(claims: Sequence[Any]) -> list[dict[str, Any]]:
+    """Light projection of VerifiedClaim objects for the case logs."""
+    return [
+        {
+            "claim": c.claim,
+            "status": c.status.value,
+            "reason": c.reason,
+            "kind": c.kind,
+            "citation_inherited": c.citation_inherited,
+            "probabilities": [
+                e.probabilities.model_dump() if e.probabilities else None for e in c.evidence
+            ],
+            "chunks": [e.chunk_id for e in c.evidence],
+            "reasons": [e.reason for e in c.evidence],
+            "support": [e.support for e in c.evidence],
+        }
+        for c in claims
+    ]
+
+
+def outcome(
+    case: EvalCase,
+    *,
+    answer: str,
+    raw_answer: str | None,
+    refused: bool,
+    refusal_reason: str | None,
+    claims: Sequence[Any],
+    sources: list[str],
+    finish_reason: str | None,
+    attempts: int = 1,
+    final_draft: str | None = None,
+) -> dict[str, Any]:
+    """Scored fields of one answered case; Vanilla is the first draft, FactRAG the published text.
+
+    With repair attempts, `final_draft` is the regenerated draft the published answer came from.
+    """
+    gold = set(case.gold_chunk_ids)
+    return {
+        "ok": True,
+        "answer": answer,
+        "raw_answer": raw_answer,
+        "attempts": attempts,
+        "final_draft": final_draft,
+        "refused": refused,
+        "refusal_reason": refusal_reason,
+        "claims": claim_rows(claims),
+        "sources": sources,
+        "gold_in_sources": bool(gold & set(sources)) if gold else None,
+        "finish_reason": finish_reason,
+        "factrag": score_answer(case, answer if not refused else None),
+        "vanilla": score_answer(case, raw_answer if raw_answer is not None else answer),
     }
 
 
@@ -897,14 +1049,7 @@ def run_e2e(
                     continue
                 print(f"[e2e:{profile}] {case.id} ({i}/{len(cases)})", file=sys.stderr, flush=True)
                 started = time.perf_counter()
-                row: dict[str, Any] = {
-                    "id": case.id,
-                    "category": case.category,
-                    "subtype": case.subtype,
-                    "language": case.language,
-                    "expected_behavior": case.expected_behavior,
-                    "ok": False,
-                }
+                row = case_row(case)
                 try:
                     response = pipeline.query(case.question)
                 except Exception as exc:  # noqa: BLE001 - recorded per case, never fabricated
@@ -912,44 +1057,27 @@ def run_e2e(
                     row["wall_ms"] = (time.perf_counter() - started) * 1000
                     log.append(row)
                     continue
-                draft = response.raw_answer if response.raw_answer is not None else response.answer
-                claims = [
-                    {
-                        "claim": c.claim,
-                        "status": c.status.value,
-                        "reason": c.reason,
-                        "probabilities": [
-                            e.probabilities.model_dump() if e.probabilities else None
-                            for e in c.evidence
-                        ],
-                        "chunks": [e.chunk_id for e in c.evidence],
-                        "reasons": [e.reason for e in c.evidence],
-                    }
-                    for c in response.claims
-                ]
-                gold = set(case.gold_chunk_ids)
+                attempts = response.verification_attempts
+                # Vanilla RAG is the first draft: a repair attempt exists only because the
+                # NLI filter rejected that draft, so it belongs to FactRAG-NLI.
+                first_draft = attempts[0]["raw_text"] if attempts else response.raw_answer
                 row.update(
-                    {
-                        "ok": True,
-                        "answer": response.answer,
-                        "raw_answer": response.raw_answer,
-                        "refused": response.refused,
-                        "refusal_reason": response.refusal_reason,
-                        "claims": claims,
-                        "sources": [s.chunk_id for s in response.sources],
-                        "gold_in_sources": bool(gold & {s.chunk_id for s in response.sources})
-                        if gold
-                        else None,
-                        "execution_stats": response.execution_stats,
-                        "finish_reason": response.generation_metadata.finish_reason
+                    outcome(
+                        case,
+                        answer=response.answer,
+                        raw_answer=first_draft,
+                        final_draft=response.raw_answer if len(attempts) > 1 else None,
+                        attempts=len(attempts),
+                        refused=response.refused,
+                        refusal_reason=response.refusal_reason,
+                        claims=response.claims,
+                        sources=[s.chunk_id for s in response.sources],
+                        finish_reason=response.generation_metadata.finish_reason
                         if response.generation_metadata
                         else None,
-                        "wall_ms": (time.perf_counter() - started) * 1000,
-                        "factrag": score_answer(
-                            case, response.answer if not response.refused else None
-                        ),
-                        "vanilla": score_answer(case, draft),
-                    }
+                    ),
+                    execution_stats=response.execution_stats,
+                    wall_ms=(time.perf_counter() - started) * 1000,
                 )
                 log.append(row)
                 full.append({"id": case.id, "response": response.model_dump(mode="json")})
@@ -1006,6 +1134,248 @@ def resummarize_e2e(dataset: EvalDatasetV3, run_dir: Path, profile: str) -> dict
     return summary
 
 
+class MemoNLI:
+    """NLI backend wrapper that scores each distinct input once per replay.
+
+    Single-pair and batched calls are memoized separately and a batch is re-scored as a
+    whole when any pair is new: padding shifts low-precision probabilities slightly, and
+    every ablation step must see exactly what the production verifier would compute.
+    """
+
+    def __init__(self, backend: Any) -> None:
+        self.backend = backend
+        self.last_premise: str | None = None
+        self._single: dict[tuple[str, str], tuple[Any, str | None]] = {}
+        self._batched: dict[tuple[str, str], Any] = {}
+
+    def predict(self, premise: str, hypothesis: str) -> Any:
+        key = (premise, hypothesis)
+        if key not in self._single:
+            result = self.backend.predict(premise, hypothesis)
+            self._single[key] = (result, getattr(self.backend, "last_premise", premise))
+        result, self.last_premise = self._single[key]
+        return result
+
+    def predict_many(self, pairs: Sequence[tuple[str, str]]) -> list[Any]:
+        pairs = list(pairs)
+        if any(pair not in self._batched for pair in pairs):
+            self._batched.update(zip(pairs, self.backend.predict_many(pairs), strict=True))
+        return [self._batched[pair] for pair in pairs]
+
+
+def ablation_steps() -> list[tuple[str, dict[str, Any]]]:
+    """Cumulative verifier overrides: step k keeps the baseline switches not yet released."""
+    released: set[str] = set()
+    steps = []
+    for name, keys in ABLATION:
+        released.update(keys)
+        steps.append((name, {k: v for k, v in BASELINE_VERIFIER.items() if k not in released}))
+    return steps
+
+
+def chunk_texts() -> dict[str, tuple[str, str]]:
+    """chunk_id -> (document_id, text) from the dataset build cache (same parser output as the index)."""
+    texts: dict[str, tuple[str, str]] = {}
+    for path in sorted(PARSE_CACHE.glob("*.json")):
+        record = json.loads(path.read_text(encoding="utf-8"))
+        for chunk in record["chunks"]:
+            texts[chunk["chunk_id"]] = (record["document_id"], chunk["text"])
+    if not texts:
+        raise FileNotFoundError(
+            f"No parse cache in {PARSE_CACHE}; run scripts/build_eval_dataset_v3.py"
+        )
+    return texts
+
+
+def replay_case(case: EvalCase, response: dict[str, Any], verifier: Any) -> dict[str, Any]:
+    """Re-verify the first stored draft of one logged response with `verifier`."""
+    from generator_verifier import RawGenerationResult
+    from pipeline import refusal_reason
+
+    row = case_row(case)
+    sources = [s["chunk_id"] for s in response["sources"]]
+    attempts = response["verification_attempts"]
+    if not attempts:  # refused by the relevance gate before generation; nothing to verify
+        row.update(
+            outcome(
+                case,
+                answer=response["answer"],
+                raw_answer=response["raw_answer"],
+                refused=response["refused"],
+                refusal_reason=response["refusal_reason"],
+                claims=[],
+                sources=sources,
+                finish_reason=None,
+            )
+        )
+        return row
+    first = attempts[0]
+    verified = verifier.verify(
+        RawGenerationResult.model_validate(
+            {
+                "text": first["raw_text"],
+                "contexts": first["contexts"],
+                "metadata": first["generation_metadata"],
+            }
+        )
+    )
+    row.update(
+        outcome(
+            case,
+            answer=verified.cleaned_text,
+            raw_answer=verified.raw_text,
+            refused=verified.refused,
+            refusal_reason=refusal_reason(verified),
+            claims=verified.claims,
+            sources=sources,
+            finish_reason=verified.generation_metadata.finish_reason,
+        )
+    )
+    return row
+
+
+def replay_step_record(
+    e2e: dict[str, list[dict[str, Any]]],
+    nli: dict[str, Any],
+    by_id: dict[str, EvalCase],
+) -> dict[str, Any]:
+    record: dict[str, Any] = {"e2e": {}, "nli": {}}
+    for profile, rows in e2e.items():
+        summary = summarize_e2e(rows, by_id)
+        record["e2e"][profile] = {
+            "vanilla": headline(rows, "vanilla"),
+            "factrag": headline(rows, "factrag"),
+            "paired_correctness": summary["paired_correctness"],
+            "filter_induced_hallucinations": summary["hallucination_ids"]["factrag_only"],
+            "by_split": summary["by_split"],
+            "claims": {
+                key: summary["claims"][key] for key in ("total", "by_status", "faithfulness_micro")
+            },
+        }
+    rule = {k: v for k, v in nli["overall"]["decision_rule"].items() if k != "status_matrix"}
+    record["nli"] = {
+        "overall": rule,
+        "by_hypothesis_language": {
+            lang: nli["by_hypothesis_language"][lang]["decision_rule"]["false_rejection_rate"]
+            for lang in nli["by_hypothesis_language"]
+        },
+        "by_split": {
+            name: {k: v for k, v in metrics.items() if k != "status_matrix"}
+            for name, metrics in nli["by_split"].items()
+        },
+    }
+    return record
+
+
+def run_replay(
+    dataset: EvalDatasetV3,
+    dataset_path: Path,
+    run_dir: Path,
+    source: Path,
+    final_only: bool,
+) -> dict[str, Any]:
+    """Re-verify the logged drafts and the NLI probes of `source` without LLM or retrieval.
+
+    Every stored first-attempt draft (full/e2e_<profile>.jsonl) and every gold probe is
+    passed through NLIFactVerifier under each ABLATION step, so the effect of each verifier
+    change is measured on identical LLM outputs. Repair attempts are not replayed: they
+    need the LLM. Latency is not reported: memoized scores make it meaningless.
+    """
+    from generator_verifier import NLIFactVerifier, SourceContext
+
+    by_id = {c.id: c for c in dataset.cases}
+    split = dataset_split(dataset.cases)
+    drafts: dict[str, list[dict[str, Any]]] = {}
+    for profile in PROFILES:
+        path = source / "full" / f"e2e_{profile}.jsonl"
+        if path.exists():
+            drafts[profile] = [
+                json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line
+            ]
+    if not drafts:
+        raise FileNotFoundError(f"No full/e2e_<profile>.jsonl logs in {source}")
+    texts = chunk_texts()
+    contexts = {
+        case.id: SourceContext(
+            chunk_id=case.nli_probe.premise_chunk_id,
+            document_id=texts[case.nli_probe.premise_chunk_id][0],
+            text=texts[case.nli_probe.premise_chunk_id][1],
+            citation="S1",
+        )
+        for case in dataset.cases
+    }
+    steps = ablation_steps()[-1:] if final_only else ablation_steps()
+    last_use = {
+        build_settings(dataset, overrides).nli_precision: i
+        for i, (_, overrides) in enumerate(steps)
+    }
+    out = run_dir / "replay"
+    records: list[dict[str, Any]] = []
+    verifiers: dict[str, Any] = {}
+    with ResourceMonitor() as monitor:
+        try:
+            for index, (name, overrides) in enumerate(steps):
+                settings = build_settings(dataset, overrides)
+                base = verifiers.get(settings.nli_precision)
+                if base is None:
+                    base = verifiers[settings.nli_precision] = NLIFactVerifier(settings)
+                    base.backend = MemoNLI(base.backend)
+                # The verifier reads its settings on every call; the shallow copy shares
+                # the loaded classifier and its memo across steps of the same precision.
+                verifier = copy.copy(base)
+                verifier.settings = settings
+                e2e = {
+                    profile: [
+                        replay_case(by_id[row["id"]], row["response"], verifier) for row in logged
+                    ]
+                    for profile, logged in drafts.items()
+                }
+                pairs = [
+                    row
+                    for case in dataset.cases
+                    for row in probe_rows(verifier, case, contexts[case.id])
+                ]
+                nli = summarize_nli(pairs, settings, split)
+                record: dict[str, Any] = {"step": name, "overrides": overrides}
+                record.update(replay_step_record(e2e, nli, by_id))
+                records.append(record)
+                brief = {p: m["factrag"]["correct"]["k"] for p, m in record["e2e"].items()}
+                brief["nli_frr"] = record["nli"]["overall"]["false_rejection_rate"]
+                print(f"[replay] {name}: {brief}", file=sys.stderr, flush=True)
+                if last_use[settings.nli_precision] == index:
+                    verifiers.pop(settings.nli_precision).close()
+        finally:
+            for verifier in verifiers.values():
+                verifier.close()
+    for profile, rows in e2e.items():
+        target = out / f"e2e_{profile}"
+        target.mkdir(parents=True, exist_ok=True)
+        (target / "cases.jsonl").write_text(
+            "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows), encoding="utf-8"
+        )
+        summary = summarize_e2e(rows, by_id)
+        summary.pop("latency_ms")
+        dump_json(target / "summary.json", summary)
+    (out / "nli").mkdir(parents=True, exist_ok=True)
+    (out / "nli" / "pairs.jsonl").write_text(
+        "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in pairs), encoding="utf-8"
+    )
+    nli.pop("latency_ms_per_pair")
+    dump_json(out / "nli" / "summary.json", nli)
+    source_name = (
+        source.relative_to(ROOT).as_posix() if source.is_relative_to(ROOT) else str(source)
+    )
+    ablation = {"source_run": source_name, "steps": records, "resources": monitor.summary()}
+    dump_json(out / "ablation.json", ablation)
+    write_config(
+        run_dir,
+        dataset_path,
+        settings,
+        {"replay": {"source_run": source_name, "steps": [r["step"] for r in records]}},
+    )
+    return ablation
+
+
 def stage_values(stats: Sequence[dict[str, Any]], stage: str) -> list[float]:
     # TTFT is recorded only with streaming (RAG_LLM_API_STREAM); absence is not 0 ms.
     if stage == "llm_ttft_ms":
@@ -1015,15 +1385,17 @@ def stage_values(stats: Sequence[dict[str, Any]], stage: str) -> list[float]:
 
 def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) -> dict[str, Any]:
     ok = [r for r in rows if r.get("ok")]
+    split = dataset_split(by_id.values())
     vanilla, factrag = summarize_variant(rows, "vanilla"), summarize_variant(rows, "factrag")
     lost = [r for r in ok if r["vanilla"]["correct"] and not r["factrag"]["correct"]]
     b = len(lost)
     c = sum(r["factrag"]["correct"] and not r["vanilla"]["correct"] for r in ok)
     hv, hf = vanilla["hallucination"]["rate"], factrag["hallucination"]["rate"]
     claims = [claim for r in ok for claim in r["claims"]]
+    facts = [claim for claim in claims if claim.get("kind", "fact") == "fact"]
     statuses = Counter(claim["status"] for claim in claims)
     reasons = Counter(f"{claim['status']}:{claim.get('reason') or 'none'}" for claim in claims)
-    stats = [r["execution_stats"] for r in ok]
+    stats = [r.get("execution_stats") or {} for r in ok]  # replay rows carry no timings
     # Lazy model loading happens on the first generated query; later ones report ~0 ms.
     warm = [s for s in stats if s.get("model_init_ms", 0.0) < 50.0]
     stages = ("search_ms", "rerank_ms", "generation_ms", "nli_ms", "total_ms", "llm_ttft_ms")
@@ -1043,6 +1415,11 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
             ),
         },
         "hallucination_relative_reduction": (hv - hf) / hv if hv else None,
+        "by_split": {
+            name: {key: headline(subset, key) for key in ("vanilla", "factrag")}
+            for name in ("dev", "test")
+            if (subset := [r for r in ok if split.get(r["id"]) == name])
+        },
         "hallucination_ids": {
             "vanilla_only": [
                 r["id"]
@@ -1069,9 +1446,28 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
                 for claim in claims
                 for reason in claim.get("reasons", [])
             ),
-            "faithfulness_micro": statuses.get("verified", 0) / len(claims) if claims else None,
+            # Share of VERIFIED among factual claims; absence statements and verdict markers
+            # are hedges, not facts, and are counted under their own reasons only.
+            "facts": len(facts),
+            "faithfulness_micro": sum(c["status"] == "verified" for c in facts) / len(facts)
+            if facts
+            else None,
+            "inherited_citations": sum(bool(c.get("citation_inherited")) for c in claims),
+            "verified_by_support": dict(
+                Counter(
+                    str(next((s for s in c.get("support", []) if s), None) or "chunk")
+                    for c in facts
+                    if c["status"] == "verified"
+                )
+            ),
         },
         "refusal_reasons": dict(Counter(r["refusal_reason"] or "none" for r in ok if r["refused"])),
+        "repair": {
+            "attempted": len(repaired := [r for r in ok if r.get("attempts", 1) > 1]),
+            "published": sum(not r["refused"] for r in repaired),
+            "factrag_correct": sum(bool(r["factrag"]["correct"]) for r in repaired),
+            "factrag_hallucinations": sum(bool(r["factrag"]["hallucination"]) for r in repaired),
+        },
         "latency_ms": {
             "all_queries": {stage: latency_stats(stage_values(warm, stage)) for stage in stages},
             "generated_queries": {
@@ -1106,6 +1502,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     e2e.add_argument("--profile", choices=sorted(PROFILES), default="guard_on")
     again = sub.add_parser("resummarize", help="Recompute an E2E summary from existing logs")
     again.add_argument("--profile", choices=sorted(PROFILES), default="guard_on")
+    replay = sub.add_parser(
+        "replay", help="Re-verify logged drafts and NLI probes offline (verifier ablation)"
+    )
+    replay.add_argument(
+        "--source", type=Path, required=True, help="Run directory with full/e2e_<profile>.jsonl"
+    )
+    replay.add_argument(
+        "--final-only", action="store_true", help="Only the current profile, no ablation ladder"
+    )
     args = cli.parse_args(argv)
     dataset_path = args.dataset.resolve()
     dataset = load_dataset(dataset_path)
@@ -1117,6 +1522,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     elif args.mode == "nli":
         summary = run_nli(dataset, dataset_path, run_dir, args.limit)
         print(json.dumps(summary["overall"]["decision_rule"], indent=1))
+    elif args.mode == "replay":
+        source = args.source if args.source.is_absolute() else ROOT / args.source
+        ablation = run_replay(dataset, dataset_path, run_dir, source, args.final_only)
+        print(json.dumps(ablation["steps"][-1]["e2e"], indent=1)[:2000])
     elif args.mode == "resummarize":
         summary = resummarize_e2e(dataset, run_dir, args.profile)
         print(json.dumps(summary["paired_correctness"], indent=1))

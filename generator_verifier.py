@@ -16,11 +16,23 @@ import threading
 import time
 import sys
 from enum import Enum
-from typing import Any, Mapping, Protocol, Sequence, Self
+from typing import Any, Literal, Mapping, Protocol, Sequence, Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from document_parser import DocumentChunk
+from grounding import (
+    anchors_present,
+    cited_claims,
+    claim_anchors,
+    clean_premise,
+    has_negation,
+    is_absence_statement,
+    is_verdict_marker,
+    premise_windows,
+    verbatim_code_span,
+)
+from grounding import segment_claims as segment_claims  # re-export for existing importers
 from hybrid_retriever import SearchResult, Encoder
 from settings import RAGSettings, validate_transformer_directory
 
@@ -28,11 +40,15 @@ LOGGER = logging.getLogger(__name__)
 REFUSAL = "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос."
 SYSTEM_PROMPT = f"""Ты анализируешь нормативно-технические документы. Отвечай по-русски.
 Дай краткий точный ответ на вопрос, без дополнительных фактов и вводных фраз.
+Если вопрос состоит из нескольких частей, ответь на каждую часть отдельным предложением.
 Не конкретизируй общие формулировки источника собственными примерами.
 Если передан revision, исправь отклонённый ответ: сузь утверждения до фактов,
 явно заданных источниками, и сохрани все условия, исключения и отрицания.
 Используй исключительно предоставленные источники. Каждый факт оформляй отдельным
-предложением и указывай его источник: [S1], [S2]. Не придумывай ссылки и сведения.
+предложением и заканчивай каждое предложение ссылкой на его источник: [S1] или [S1][S2].
+Не оставляй предложений без ссылки. Не придумывай ссылки и сведения.
+Числа, коды, идентификаторы, имена полей и параметров, правила ABNF и фрагменты
+синтаксиса переноси из источника дословно, не переводи и не перефразируй их.
 Сохраняй единицы, условия, исключения и отрицания. Не принимай предпосылку вопроса
 за доказанный факт. Если предпосылка вопроса противоречит источникам, не отвечай
 смежным фактом из них: либо отклонись от предпосылки одним предложением с
@@ -144,6 +160,11 @@ class ClaimEvidence(_Result):
     probabilities: NLIProbabilities | None = None
     reason: str | None = None
     premise_text: str | None = None
+    # How this source supports the claim: "window" (a sentence window passes the window
+    # thresholds), "anchor_window" (a window containing every anchor of the claim passes
+    # the lower anchored thresholds), "code_span" (a code span of the claim occurs
+    # verbatim); None means the whole-chunk probabilities decide.
+    support: Literal["window", "anchor_window", "code_span"] | None = None
 
 
 class VerifiedClaim(_Result):
@@ -156,6 +177,10 @@ class VerifiedClaim(_Result):
     citation: str | None = None
     evidence_chunk_id: str | None = None
     confidence: float = Field(default=0, ge=0, le=1)
+    # "absence": a statement that the sources lack information, published as a hedge but
+    # never verified; "verdict": a bare "Нет." that is published only with the next claim.
+    kind: Literal["fact", "absence", "verdict"] = "fact"
+    citation_inherited: bool = False
 
 
 class VerifiedGenerationResult(_Result):
@@ -199,53 +224,6 @@ def _settings(settings: RAGSettings | None) -> RAGSettings:
         return result
     except Exception as exc:
         raise VerificationError(f"Invalid generation configuration: {exc}") from exc
-
-
-def segment_claims(text: str) -> list[str]:
-    """Split sentences, preserving decimals, section numbers and trailing citations.
-
-    Semicolons and newlines separate claims. Abbreviations are conservative rules;
-    compound propositions inside one sentence are not semantic atomization.
-    """
-    text = re.sub(r"^\s*(?:ответ|answer)\s*:\s*", "", text.strip(), flags=re.I)
-    text = re.sub(r"(?m)^\s*(?:[-*•]|\d+[.)])\s+", "", text)
-    text = re.sub(r"(?m)^\s*```[^\n]*$", "", text)
-    protected: set[int] = set()
-    for match in re.finditer(r"\b(?:пп?|рис|табл|стр|см|им|г)\.|\bт\.\s*[ед]\.", text, re.I):
-        protected.update(i for i in range(match.start(), match.end()) if text[i] == ".")
-    pieces: list[str] = []
-    start, cursor = 0, 0
-    while cursor < len(text):
-        char = text[cursor]
-        if char not in ".!?;\n。！？" or cursor in protected:
-            cursor += 1
-            continue
-        if (
-            char == "."
-            and cursor > 0
-            and cursor + 1 < len(text)
-            and text[cursor - 1].isdigit()
-            and text[cursor + 1].isdigit()
-        ):
-            cursor += 1
-            continue
-        end = cursor + 1
-        # Consume a run of punctuation and following citations with the preceding fact.
-        while end < len(text) and text[end] in ".!?。！？":
-            end += 1
-        tail = re.match(r"(?:\s*\[S[^\]\n]*\])+", text[end:])
-        if tail:
-            end += tail.end()
-        if char != "\n" and end < len(text) and not text[end].isspace() and text[end] != "[":
-            cursor += 1
-            continue
-        piece = text[start:end].strip()
-        if piece:
-            pieces.append(piece)
-        start = cursor = end
-    if text[start:].strip():
-        pieces.append(text[start:].strip())
-    return pieces
 
 
 class ChatReply(_Result):
@@ -672,7 +650,10 @@ class TransformersNLI:
         from transformers import AutoModelForSequenceClassification, AutoTokenizer
         from model_runtime import runtime
 
-        device, dtype = runtime(settings)
+        # bfloat16 probabilities of the same pair differ noticeably between padded and
+        # unpadded batches; float16 matches float32 on the v3 control pairs at the same memory.
+        device, dtype = runtime(settings, settings.nli_precision)
+        self.batch_size = settings.nli_batch_size
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             str(settings.nli_model_path), local_files_only=True, trust_remote_code=False
@@ -729,6 +710,44 @@ class TransformersNLI:
             p_contradiction=float(values[self.labels["contradiction"]]),
         )
 
+    def predict_many(self, pairs: Sequence[tuple[str, str]]) -> list[NLIProbabilities | None]:
+        """Batched predict for window scoring; overlong pairs are None, never truncated."""
+        import torch
+
+        normalized = [
+            (
+                " ".join(re.sub(r"^Документ:[^\n]*\nРаздел:[^\n]*\n", "", premise).split()),
+                " ".join(hypothesis.split()),
+            )
+            for premise, hypothesis in pairs
+        ]
+        lengths = [len(self.tokenizer(p, h, truncation=False)["input_ids"]) for p, h in normalized]
+        order = sorted(
+            (i for i, n in enumerate(lengths) if n <= self.max_length), key=lambda i: lengths[i]
+        )
+        results: list[NLIProbabilities | None] = [None] * len(pairs)
+        for start in range(0, len(order), self.batch_size):
+            batch = order[start : start + self.batch_size]
+            encoded = self.tokenizer(
+                [normalized[i][0] for i in batch],
+                [normalized[i][1] for i in batch],
+                truncation=False,
+                padding=True,
+                return_tensors="pt",
+            )
+            with torch.inference_mode():
+                logits = self.model(**encoded.to(self.device)).logits
+                if tuple(logits.shape) != (len(batch), 3):
+                    raise VerificationError("NLI returned an unexpected logits shape")
+                values = torch.softmax(logits.float(), dim=-1).cpu().tolist()
+            for i, row in zip(batch, values, strict=True):
+                results[i] = NLIProbabilities(
+                    p_entailment=float(row[self.labels["entailment"]]),
+                    p_neutral=float(row[self.labels["neutral"]]),
+                    p_contradiction=float(row[self.labels["contradiction"]]),
+                )
+        return results
+
 
 class HeuristicNLI:
     """Conservative explicit development fallback: only literal support is accepted."""
@@ -772,10 +791,120 @@ class NLIFactVerifier:
                 backend = HeuristicNLI()
         self.backend = backend
 
-    def _claim(self, text: str, contexts: Mapping[str, SourceContext]) -> VerifiedClaim:
+    def _predict_many(self, pairs: Sequence[tuple[str, str]]) -> list[NLIProbabilities | None]:
+        many = getattr(self.backend, "predict_many", None)
+        if callable(many):
+            return list(many(pairs))
+        return [self.backend.predict(premise, hypothesis) for premise, hypothesis in pairs]
+
+    def _evidence(self, key: str, context: SourceContext, hypothesis: str) -> ClaimEvidence:
+        """Score the whole chunk and, if enabled, its sentence windows in one batch.
+
+        A long chunk mixes the supporting sentence with neighbouring rows, codes and
+        conditions; the classifier then often reports a contradiction for a sentence the
+        chunk states verbatim. A window that clears the strict window thresholds (or the
+        lower anchored ones while containing every number and identifier of the claim)
+        supports the claim; otherwise the whole-chunk probabilities decide.
+        """
+        s = self.settings
+        premise = clean_premise(context.text) if s.nli_premise_cleanup else context.text
+        windows = premise_windows(premise, s.nli_window_sentences) if s.nli_window_scoring else []
+        raw_scores = (
+            self._predict_many([(premise, hypothesis), *((w, hypothesis) for w in windows)])
+            if windows
+            else [self.backend.predict(premise, hypothesis)]
+        )
+        scores = [
+            None if p is None else NLIProbabilities.model_validate(p.model_dump())
+            for p in raw_scores
+        ]
+        full = scores[0]
+        scored = [(w, p) for w, p in zip(windows, scores[1:], strict=True) if p is not None]
+        anchors = claim_anchors(hypothesis)
+        tiers: list[
+            tuple[Literal["window", "anchor_window"], list[tuple[str, NLIProbabilities]]]
+        ] = [
+            (
+                "window",
+                [
+                    (w, p)
+                    for w, p in scored
+                    if p.p_entailment >= s.nli_window_entailment_threshold
+                    and p.p_contradiction < s.nli_window_contradiction_threshold
+                ],
+            ),
+            (
+                "anchor_window",
+                [
+                    (w, p)
+                    for w, p in scored
+                    if s.nli_anchor_windows
+                    and anchors
+                    and p.p_entailment >= s.nli_anchor_window_entailment_threshold
+                    and p.p_contradiction < s.nli_anchor_window_contradiction_threshold
+                    and anchors_present(anchors, w)
+                ],
+            ),
+        ]
+        for route, candidates in tiers:
+            if candidates:
+                text, best = max(candidates, key=lambda item: item[1].p_entailment)
+                return ClaimEvidence(
+                    source_id=key,
+                    chunk_id=context.chunk_id,
+                    probabilities=best,
+                    premise_text=text,
+                    support=route,
+                )
+        if s.nli_code_span_min_chars and verbatim_code_span(
+            hypothesis, premise, s.nli_code_span_min_chars
+        ):
+            pool = [(premise, full)] if full is not None else []
+            pool += scored
+            if pool:
+                text, best = max(
+                    pool, key=lambda item: item[1].p_entailment - item[1].p_contradiction
+                )
+                if best.p_contradiction < 0.5:
+                    return ClaimEvidence(
+                        source_id=key,
+                        chunk_id=context.chunk_id,
+                        probabilities=best,
+                        premise_text=text,
+                        support="code_span",
+                    )
+        return ClaimEvidence(
+            source_id=key,
+            chunk_id=context.chunk_id,
+            probabilities=full,
+            reason="pair_exceeds_nli_context" if full is None else None,
+            premise_text=premise if windows else getattr(self.backend, "last_premise", premise),
+        )
+
+    def _supports(self, evidence: ClaimEvidence) -> bool:
+        s = self.settings
+        p = evidence.probabilities
+        if evidence.support is not None:
+            return True
+        if p is None or p.p_contradiction >= s.nli_contradiction_threshold:
+            return False
+        return p.p_entailment > s.nli_entailment_threshold or (
+            s.nli_strong_entailment_enabled and p.p_entailment >= s.nli_strong_entailment_threshold
+        )
+
+    def _claim(
+        self,
+        text: str,
+        contexts: Mapping[str, SourceContext],
+        *,
+        inherited: tuple[str, ...] = (),
+    ) -> VerifiedClaim:
         source_ids = tuple(dict.fromkeys(f"S{match[1]}" for match in _CITATION.finditer(text)))
         hypothesis = _ANY_CITATION.sub("", text).strip()
         malformed = any(not _CITATION.fullmatch(marker) for marker in _ANY_CITATION.findall(text))
+        is_inherited = not source_ids and not malformed and bool(inherited)
+        if is_inherited:
+            source_ids = inherited
         reason = (
             "invalid_citation"
             if malformed
@@ -794,56 +923,102 @@ class NLIFactVerifier:
                 source_ids=source_ids,
                 status=ClaimStatus.UNVERIFIED,
                 reason=reason,
+                citation_inherited=is_inherited,
             )
-        evidence = []
-        for key in source_ids:
-            probabilities = self.backend.predict(contexts[key].text, hypothesis)
-            if probabilities is not None:
-                probabilities = NLIProbabilities.model_validate(probabilities.model_dump())
-            evidence.append(
-                ClaimEvidence(
-                    source_id=key,
-                    chunk_id=contexts[key].chunk_id,
-                    probabilities=probabilities,
-                    reason="pair_exceeds_nli_context" if probabilities is None else None,
-                    premise_text=getattr(self.backend, "last_premise", contexts[key].text),
-                )
-            )
+        s = self.settings
+        evidence = [self._evidence(key, contexts[key], hypothesis) for key in source_ids]
         probabilities_list = [
             item.probabilities for item in evidence if item.probabilities is not None
         ]
-        if any(
-            p.p_contradiction >= self.settings.nli_contradiction_threshold
-            for p in probabilities_list
-        ):
+        anchors = claim_anchors(hypothesis)
+        anchored = (
+            not s.nli_anchor_guard
+            or not anchors
+            or anchors_present(
+                anchors,
+                " ".join(clean_premise(contexts[key].text) for key in source_ids),
+            )
+        )
+        contradicted = any(
+            item.support is None
+            and item.probabilities is not None
+            and item.probabilities.p_contradiction >= s.nli_contradiction_threshold
+            for item in evidence
+        )
+        supporters = [item for item in evidence if self._supports(item)] if anchored else []
+        if not anchored:
+            # A number, code or identifier of the claim occurs in none of its cited
+            # sources: no entailment score can establish it.
+            status = ClaimStatus.CONTRADICTION if contradicted else ClaimStatus.UNVERIFIED
+        elif s.nli_aggregation == "support_first":
+            # One confidently supporting source verifies the claim; noise from another
+            # cited source does not, unless that source contradicts it outright.
+            vetoed = any(
+                item not in supporters
+                and item.probabilities is not None
+                and item.probabilities.p_contradiction >= s.nli_veto_contradiction_threshold
+                for item in evidence
+            )
+            status = (
+                ClaimStatus.CONTRADICTION
+                if (supporters and vetoed) or (not supporters and contradicted)
+                else ClaimStatus.VERIFIED
+                if supporters
+                else ClaimStatus.UNVERIFIED
+            )
+        elif contradicted:
             status = ClaimStatus.CONTRADICTION
-            confidence = max(p.p_contradiction for p in probabilities_list)
         else:
             # Two-level rule: consensus support from every cited source, or strong
             # support (>= nli_strong_entailment_threshold) from a single source.
             # Weak lexical-overlap entailment cannot pass alone: a single cited
             # source below the strong bar still blocks the claim.
-            strong = [
-                p
-                for p in probabilities_list
-                if self.settings.nli_strong_entailment_enabled
-                and p.p_entailment >= self.settings.nli_strong_entailment_threshold
-            ]
-            consensus = len(probabilities_list) == len(evidence) and all(
-                p.p_entailment > self.settings.nli_entailment_threshold
-                and p.p_contradiction < self.settings.nli_contradiction_threshold
-                for p in probabilities_list
-            )
-            if (consensus or strong) and probabilities_list:
-                status = ClaimStatus.VERIFIED
-                confidence = (
-                    max(p.p_entailment for p in strong)
-                    if strong
-                    else min(p.p_entailment for p in probabilities_list)
+            strong = any(
+                item.support is not None
+                or (
+                    item.probabilities is not None
+                    and s.nli_strong_entailment_enabled
+                    and item.probabilities.p_entailment >= s.nli_strong_entailment_threshold
                 )
-            else:
-                status = ClaimStatus.UNVERIFIED
-                confidence = max((p.p_neutral for p in probabilities_list), default=0.0)
+                for item in evidence
+            )
+            consensus = all(
+                item.support is not None
+                or (
+                    item.probabilities is not None
+                    and item.probabilities.p_entailment > s.nli_entailment_threshold
+                    and item.probabilities.p_contradiction < s.nli_contradiction_threshold
+                )
+                for item in evidence
+            )
+            status = (
+                ClaimStatus.VERIFIED
+                if (consensus or strong) and (probabilities_list or supporters)
+                else ClaimStatus.UNVERIFIED
+            )
+        if status == ClaimStatus.CONTRADICTION:
+            confidence = max((p.p_contradiction for p in probabilities_list), default=0.0)
+        elif status == ClaimStatus.VERIFIED and s.nli_aggregation == "strict":
+            strong_scores = [
+                p.p_entailment
+                for p in probabilities_list
+                if s.nli_strong_entailment_enabled
+                and p.p_entailment >= s.nli_strong_entailment_threshold
+            ]
+            confidence = (
+                max(strong_scores)
+                if strong_scores
+                else min((p.p_entailment for p in probabilities_list), default=0.0)
+            )
+        elif status == ClaimStatus.VERIFIED:
+            backing = [
+                item.probabilities
+                for item in (supporters or evidence)
+                if item.probabilities is not None
+            ]
+            confidence = max((p.p_entailment for p in backing), default=0.0)
+        else:
+            confidence = max((p.p_neutral for p in probabilities_list), default=0.0)
         return VerifiedClaim(
             claim=text,
             hypothesis=hypothesis,
@@ -851,39 +1026,102 @@ class NLIFactVerifier:
             status=status,
             evidence=tuple(evidence),
             confidence=confidence,
-            reason=None if status == ClaimStatus.VERIFIED else "cited_support_not_established",
+            reason=None
+            if status == ClaimStatus.VERIFIED
+            else "anchor_not_in_source"
+            if not anchored
+            else "cited_support_not_established",
             citation="; ".join(contexts[key].citation for key in source_ids),
             evidence_chunk_id=contexts[source_ids[0]].chunk_id,
+            citation_inherited=is_inherited,
         )
+
+    def _meta(
+        self, text: str, source_ids: tuple[str, ...], kind: Literal["absence", "verdict"]
+    ) -> VerifiedClaim:
+        return VerifiedClaim(
+            claim=text,
+            hypothesis=_ANY_CITATION.sub("", text).strip(),
+            source_ids=source_ids,
+            status=ClaimStatus.UNVERIFIED,
+            reason="absence_statement" if kind == "absence" else "verdict_marker",
+            kind=kind,
+        )
+
+    @staticmethod
+    def _publish(claims: Sequence[VerifiedClaim]) -> str:
+        lines = []
+        for index, claim in enumerate(claims):
+            following = claims[index + 1] if index + 1 < len(claims) else None
+            if claim.kind == "absence":
+                lines.append(claim.claim)
+            elif claim.kind == "verdict":
+                if following is not None and following.status == ClaimStatus.VERIFIED:
+                    lines.append(claim.claim)
+            elif claim.status == ClaimStatus.VERIFIED:
+                marker = "".join(f"[{key}]" for key in claim.source_ids)
+                lines.append(f"{claim.claim} {marker}" if claim.citation_inherited else claim.claim)
+        return "\n".join(lines)
 
     def verify(self, raw: RawGenerationResult) -> VerifiedGenerationResult:
         """Remove unsupported claims; reject the whole answer only above 50% blocked.
 
         Truncated completions are rejected regardless of sentence-level scores.
         is_reliable is conservative: true only for a fully verified neural answer.
+        With abstention_guard, statements that the sources lack information are kept as a
+        hedge (they cannot be entailed and are not counted as blocked), and a leading
+        correction of the question's premise is never published without the claim that
+        justifies it.
         """
         with self._lock:
             if self._closed:
                 raise VerificationError("NLI verifier is closed")
             started = time.perf_counter()
+            s = self.settings
             try:
-                claims = (
-                    tuple(self._claim(text, raw.contexts) for text in segment_claims(raw.text))
+                items = (
+                    cited_claims(
+                        raw.text,
+                        s.claim_segmentation,
+                        inherit=s.claim_citation_inheritance,
+                    )
                     if raw.text.strip() != REFUSAL
-                    else ()
+                    else []
+                )
+                claims = tuple(
+                    self._meta(item.text, item.source_ids, "absence")
+                    if s.abstention_guard and is_absence_statement(item.text)
+                    else self._meta(item.text, item.source_ids, "verdict")
+                    if s.abstention_guard and is_verdict_marker(item.text)
+                    else self._claim(
+                        item.text,
+                        raw.contexts,
+                        inherited=item.source_ids if item.inherited else (),
+                    )
+                    for item in items
                 )
             except Exception as exc:
                 raise VerificationError(f"NLI inference failed: {exc}") from exc
-            accepted = [claim for claim in claims if claim.status == ClaimStatus.VERIFIED]
-            blocked = len(claims) - len(accepted)
-            rate = blocked / len(claims) if claims else 0.0
+            facts = [claim for claim in claims if claim.kind == "fact"]
+            accepted = [claim for claim in facts if claim.status == ClaimStatus.VERIFIED]
+            blocked = len(facts) - len(accepted)
+            rate = blocked / len(facts) if facts else 0.0
             refused = (
                 not accepted
                 or rate > 0.5
                 or raw.metadata.finish_reason not in {"stop", "eos_token"}
             )
+            if (
+                s.abstention_guard
+                and not refused
+                and len(facts) > 1
+                and claims[0] is facts[0]
+                and has_negation(facts[0].claim)
+                and facts[1].status != ClaimStatus.VERIFIED
+            ):
+                refused = True
             return VerifiedGenerationResult(
-                cleaned_text=REFUSAL if refused else "\n".join(c.claim for c in accepted),
+                cleaned_text=REFUSAL if refused else self._publish(claims),
                 claims=claims,
                 hallucination_rate=rate,
                 is_reliable=not refused

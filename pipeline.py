@@ -21,6 +21,7 @@ from generator_verifier import (
     NLIFactVerifier,
     REFUSAL,
     VerifiedClaim,
+    VerifiedGenerationResult,
 )
 from hybrid_retriever import HybridRetriever
 from settings import RAGSettings
@@ -28,6 +29,21 @@ from settings import RAGSettings
 
 class PipelineError(RuntimeError):
     """A component failed; the exception is not converted to a factual refusal."""
+
+
+def refusal_reason(verified: VerifiedGenerationResult) -> str | None:
+    """Why a verified generation is withheld; None when it is published."""
+    if not verified.refused:
+        return None
+    if verified.generation_metadata.finish_reason == "context_budget":
+        return "context_budget_exceeded"
+    if not verified.raw_text.strip():
+        return "empty_generation"
+    if verified.generation_metadata.finish_reason not in {"stop", "eos_token"}:
+        return "generation_incomplete"
+    if verified.raw_text.strip() == REFUSAL:
+        return "llm_refusal"
+    return "nli_verification_failed"
 
 
 class _Result(BaseModel):
@@ -363,19 +379,7 @@ class RAGPipeline:
                 raw_answer=verified.raw_text,
                 retrieval_diagnostics=diagnostics,
                 verification_attempts=attempts,
-                refusal_reason=(
-                    "context_budget_exceeded"
-                    if verified.generation_metadata.finish_reason == "context_budget"
-                    else "empty_generation"
-                    if not verified.raw_text.strip()
-                    else "generation_incomplete"
-                    if verified.generation_metadata.finish_reason not in {"stop", "eos_token"}
-                    else "llm_refusal"
-                    if verified.raw_text.strip() == REFUSAL
-                    else "nli_verification_failed"
-                )
-                if verified.refused
-                else None,
+                refusal_reason=refusal_reason(verified),
             )
 
     def close(self) -> None:

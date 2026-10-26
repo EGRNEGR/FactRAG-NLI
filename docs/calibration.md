@@ -78,7 +78,7 @@
 ## Повторение
 
 Используется запущенный локальный llama-server с `-ngl 35 -c 4096` и `/tokenize`.
-Публичные параметры выбранного профиля для `.env`:
+Публичные параметры выбранного на этом этапе профиля для `.env` (текущий профиль откалиброван позже на датасете v3: `.env.example` и раздел 2 [`reports/EVALUATION_REPORT.md`](../reports/EVALUATION_REPORT.md)):
 
 ```dotenv
 RAG_CHUNK_TARGET_TOKENS=320

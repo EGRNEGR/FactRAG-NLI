@@ -281,6 +281,15 @@ class RetrieverConfig:
     rerank_threshold: float = 0.5
 
 
+def coverage_weight(terms: Sequence[str], vocabulary: set[str], base: float) -> float:
+    """BM25 RRF weight scaled by the share of query terms present in the index.
+
+    BM25 can match only terms the index contains (for a Russian question over English
+    documents: its Latin identifiers); unmatched words should not dilute the fusion.
+    """
+    return base * sum(term in vocabulary for term in terms) / len(terms) if terms else base
+
+
 def reciprocal_rank_fusion(
     rankings: Mapping[str, Sequence[str]],
     *,
@@ -529,6 +538,7 @@ class HybridRetriever:
             cached = None
         self._bm25 = BM25Okapi(corpus) if corpus and any(corpus) else None
         self._token_sets = [set(tokens) for tokens in corpus]
+        self._vocabulary: set[str] = set().union(*self._token_sets)
         if cached != state:
             self._write_cache(state)
 
@@ -734,12 +744,14 @@ class HybridRetriever:
             )
             self._dense_candidate_ids = list(dense)
             self._sparse_candidate_ids = list(sparse)
+            sparse_weight = (
+                coverage_weight(terms, self._vocabulary, self.settings.sparse_weight)
+                if self.settings.sparse_coverage_weighting
+                else self.settings.sparse_weight
+            )
             fused = reciprocal_rank_fusion(
                 {"dense": list(dense), "sparse": list(sparse)},
-                weights={
-                    "dense": self.settings.dense_weight,
-                    "sparse": self.settings.sparse_weight,
-                },
+                weights={"dense": self.settings.dense_weight, "sparse": sparse_weight},
                 k=self.settings.rrf_k,
             )
             candidates = list(fused)[: self.settings.rerank_candidates]
@@ -770,10 +782,7 @@ class HybridRetriever:
                     ),
                     self.settings.rerank_rrf_alpha
                     * fused[key]
-                    / (
-                        (self.settings.dense_weight + self.settings.sparse_weight)
-                        / (self.settings.rrf_k + 1)
-                    )
+                    / ((self.settings.dense_weight + sparse_weight) / (self.settings.rrf_k + 1))
                     + (1 - self.settings.rerank_rrf_alpha) * score,
                 )
                 for key, score in zip(candidates, reranked, strict=True)
