@@ -26,12 +26,20 @@ evaluation = ["ragas>=0.2", "datasets>=2.18"]
 dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.6", "mypy>=1.10"]
 
 [tool.setuptools]
-py-modules = ["settings", "model_runtime", "document_parser", "document_processor", "hybrid_retriever", "generator_verifier", "pipeline", "summarization", "baseline_rag", "benchmark", "evaluate_quality", "app", "api", "web_bridge", "benchmark_ragas", "demo"]
+py-modules = ["settings", "model_runtime", "document_parser", "document_processor", "hybrid_retriever", "generator_verifier", "pipeline", "summarization", "baseline_rag", "benchmark", "evaluate_quality", "eval_dataset", "evaluate_suite", "app", "api", "web_bridge", "benchmark_ragas", "demo"]
 
 [tool.mypy]
 python_version = "3.11"
 strict = true
 ignore_missing_imports = true
+# One-off research scripts of the September 2026 A/B study, kept for provenance only.
+exclude = [
+    "^data/_build_v2\\.py$",
+    "^scripts/run_ab_evaluation\\.py$",
+    "^scripts/run_extended_evaluation\\.py$",
+    "^scripts/run_golden_ab\\.py$",
+    "^scripts/update_conference_report\\.py$",
+]
 
 [[tool.mypy.overrides]]
 module = ["numpy", "numpy.*", "torch", "torch.*", "transformers", "transformers.*", "sentence_transformers", "sentence_transformers.*", "llama_cpp", "llama_cpp.*"]
@@ -39,7 +47,17 @@ follow_imports = "skip"
 follow_imports_for_stubs = true
 
 [tool.ruff]
-extend-exclude = [".artifacts", "models", "tools"]
+extend-exclude = [
+    ".artifacts",
+    "models",
+    "tools",
+    # One-off research scripts of the September 2026 A/B study, kept for provenance only.
+    "data/_build_v2.py",
+    "scripts/run_ab_evaluation.py",
+    "scripts/run_extended_evaluation.py",
+    "scripts/run_golden_ab.py",
+    "scripts/update_conference_report.py",
+]
 line-length = 100
 target-version = "py311"
 
