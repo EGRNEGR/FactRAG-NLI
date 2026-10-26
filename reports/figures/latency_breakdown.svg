@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="viz" width="760" height="162" viewBox="0 0 760 162" role="img" aria-label="Медианы этапов на запрос с генерацией (подпись: сумма медиан)"><title>Медианы этапов на запрос с генерацией (подпись: сумма медиан)</title><style>
+.viz{--surface:#fcfcfb;--text:#0b0b0b;--muted:#52514e;--grid:#e4e3df;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;
+--o1:#86b6ef;--o2:#5598e7;--o3:#2a78d6;--o4:#1c5cab;
+--h0:#f0efec;--h1:#cde2fb;--h2:#86b6ef;--h3:#3987e5;--h4:#1c5cab;--h5:#0d366b;--inkhi:#ffffff}
+@media (prefers-color-scheme: dark){.viz{--surface:#1a1a19;--text:#f0efec;--muted:#c3c2b7;
+--grid:#383835;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;
+--o1:#184f95;--o2:#2a78d6;--o3:#5598e7;--o4:#86b6ef;
+--h0:#262624;--h1:#104281;--h2:#1c5cab;--h3:#2a78d6;--h4:#5598e7;--h5:#9ec5f4;--inkhi:#0b0b0b}}
+text{font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;fill:var(--text)}
+.muted{fill:var(--muted)} .title{font-size:15px;font-weight:600} .lbl{font-size:12px}
+.tick{font-size:11px} .grid{stroke:var(--grid);stroke-width:1}
+</style><rect width="760" height="162" fill="var(--surface)"/><text class="title" x="16" y="22">Медианы этапов на запрос с генерацией (подпись: сумма медиан)</text><rect x="16.0" y="35.0" width="10" height="10" rx="2" fill="var(--s1)"/><text class="lbl" x="30.0" y="44.0">Поиск</text><rect x="76.0" y="35.0" width="10" height="10" rx="2" fill="var(--s2)"/><text class="lbl" x="90.0" y="44.0">Реранкинг</text><rect x="164.8" y="35.0" width="10" height="10" rx="2" fill="var(--s3)"/><text class="lbl" x="178.8" y="44.0">Генерация LLM</text><rect x="282.4" y="35.0" width="10" height="10" rx="2" fill="var(--s4)"/><text class="lbl" x="296.4" y="44.0">NLI-верификация</text><text class="lbl" x="182" y="79" text-anchor="end">p50, premise guard вкл. (прод)</text><rect x="190.0" y="64" width="0.5" height="20" fill="var(--s1)"/><rect x="191.4" y="64" width="15.7" height="20" fill="var(--s2)"/><rect x="209.1" y="64" width="458.4" height="20" fill="var(--s3)"/><path d="M669.6,64.0 H669.6 Q670.1,64.0 670.1,64.5 V83.5 Q670.1,84.0 669.6,84.0 H669.6 Z" fill="var(--s4)"/><text class="tick" x="676.0" y="78">20 015 мс</text><text class="lbl" x="182" y="113" text-anchor="end">p50, premise guard выкл.</text><rect x="190.0" y="98" width="0.5" height="20" fill="var(--s1)"/><rect x="191.4" y="98" width="15.6" height="20" fill="var(--s2)"/><rect x="208.9" y="98" width="457.6" height="20" fill="var(--s3)"/><path d="M668.6,98.0 H668.6 Q669.1,98.0 669.1,98.5 V117.5 Q669.1,118.0 668.6,118.0 H668.6 Z" fill="var(--s4)"/><text class="tick" x="675.0" y="112">19 974 мс</text></svg>

@@ -1,0 +1,9 @@
+profile,status_reason,claims
+guard_on,unverified:missing_citation,52
+guard_on,contradiction:cited_support_not_established,68
+guard_on,unverified:cited_support_not_established,36
+guard_on,verified:none,118
+guard_off,verified:none,127
+guard_off,unverified:cited_support_not_established,32
+guard_off,unverified:missing_citation,47
+guard_off,contradiction:cited_support_not_established,73

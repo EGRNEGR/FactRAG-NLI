@@ -57,7 +57,9 @@ def _bar(x: float, y: float, w: float, h: float, fill: str, vertical: bool) -> s
 def _legend(items: Sequence[tuple[str, str]], x: float, y: float) -> str:
     out, cx = [], x
     for label, var in items:
-        out.append(f'<rect x="{cx:.1f}" y="{y - 9:.1f}" width="10" height="10" rx="2" fill="var({var})"/>')
+        out.append(
+            f'<rect x="{cx:.1f}" y="{y - 9:.1f}" width="10" height="10" rx="2" fill="var({var})"/>'
+        )
         out.append(f'<text class="lbl" x="{cx + 14:.1f}" y="{y:.1f}">{escape(label)}</text>')
         cx += 24 + 7.2 * len(label)
     return "".join(out)
@@ -85,9 +87,13 @@ def grouped_bars(
     for i in range(5):
         v = vmax * i / 4
         y = top + plot_h - plot_h * i / 4
-        body.append(f'<line class="grid" x1="{left}" x2="{left + plot_w}" y1="{y:.1f}" y2="{y:.1f}"/>')
+        body.append(
+            f'<line class="grid" x1="{left}" x2="{left + plot_w}" y1="{y:.1f}" y2="{y:.1f}"/>'
+        )
         tick = f"{v * 100:.0f}%" if percent else f"{v:.0f}"
-        body.append(f'<text class="tick muted" x="{left - 6}" y="{y + 4:.1f}" text-anchor="end">{tick}</text>')
+        body.append(
+            f'<text class="tick muted" x="{left - 6}" y="{y + 4:.1f}" text-anchor="end">{tick}</text>'
+        )
     for g, group in enumerate(groups):
         cluster = len(series) * (bar_w + 2) - 2
         x0 = left + g * band + (band - cluster) / 2
@@ -124,7 +130,9 @@ def stacked_hbars(
     body.append(_legend([(s, CATEGORICAL[i]) for i, s in enumerate(stages)], 16, 44))
     for r, (name, row) in enumerate(zip(rows, values, strict=True)):
         y = top + r * row_h
-        body.append(f'<text class="lbl" x="{left - 8}" y="{y + 15}" text-anchor="end">{escape(name)}</text>')
+        body.append(
+            f'<text class="lbl" x="{left - 8}" y="{y + 15}" text-anchor="end">{escape(name)}</text>'
+        )
         x = float(left)
         for s, value in enumerate(row):
             w = plot_w * value / vmax
@@ -134,21 +142,33 @@ def stacked_hbars(
             if last:
                 body.append(_bar(x, y, max(w - 2, 0.5), 20, CATEGORICAL[s], False))
             else:
-                body.append(f'<rect x="{x:.1f}" y="{y}" width="{max(w - 2, 0.5):.1f}" height="20" fill="var({CATEGORICAL[s]})"/>')
+                body.append(
+                    f'<rect x="{x:.1f}" y="{y}" width="{max(w - 2, 0.5):.1f}" height="20" fill="var({CATEGORICAL[s]})"/>'
+                )
             x += w
-        body.append(f'<text class="tick" x="{x + 6:.1f}" y="{y + 14}">{sum(row):,.0f} {unit}</text>'.replace(",", " "))
+        body.append(
+            f'<text class="tick" x="{x + 6:.1f}" y="{y + 14}">{sum(row):,.0f} {unit}</text>'.replace(
+                ",", " "
+            )
+        )
     return _svg(width, height, "".join(body), title)
 
 
 def heatmap(
-    title: str, rows: Sequence[str], cols: Sequence[str], counts: Sequence[Sequence[int]], width: int = 420
+    title: str,
+    rows: Sequence[str],
+    cols: Sequence[str],
+    counts: Sequence[Sequence[int]],
+    width: int = 420,
 ) -> str:
     """Row-normalised sequential heatmap with counts and row shares in every cell."""
     left, top, cell = 130, 74, 82
     height = top + cell * len(rows) + 16
     width = max(width, left + cell * len(cols) + 16)
     body = [f'<text class="title" x="16" y="22">{escape(title)}</text>']
-    body.append('<text class="tick muted" x="16" y="42">строка = эталон, столбец = прогноз; доля по строке</text>')
+    body.append(
+        '<text class="tick muted" x="16" y="42">строка = эталон, столбец = прогноз; доля по строке</text>'
+    )
     for c, col in enumerate(cols):
         body.append(
             f'<text class="tick muted" x="{left + c * cell + cell / 2:.1f}" y="{top - 8}" '
@@ -157,7 +177,9 @@ def heatmap(
     for r, row in enumerate(rows):
         total = sum(counts[r]) or 1
         y = top + r * cell
-        body.append(f'<text class="lbl" x="{left - 8}" y="{y + cell / 2 + 4:.1f}" text-anchor="end">{escape(row)}</text>')
+        body.append(
+            f'<text class="lbl" x="{left - 8}" y="{y + cell / 2 + 4:.1f}" text-anchor="end">{escape(row)}</text>'
+        )
         for c in range(len(cols)):
             share = counts[r][c] / total
             step = 0 if counts[r][c] == 0 else min(5, 1 + int(share * 5))

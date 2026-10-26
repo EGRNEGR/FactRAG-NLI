@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -47,6 +48,20 @@ CATEGORY_NAMES = {
 }
 LABEL_RU = {"entailment": "Entailment", "neutral": "Neutral", "contradiction": "Contradiction"}
 PROFILE_NAMES = {"guard_on": "premise guard вкл. (прод)", "guard_off": "premise guard выкл."}
+CAUSE_NAMES = {
+    "nli_verification_failed": "ответ заменён отказом по итогам NLI-проверки",
+    "filtered_answer": "ответ опубликован, но фильтр удалил утверждение с ключевым фактом",
+    "relevance_threshold_not_met": "отказ по порогу релевантности",
+    "llm_refusal": "отказ LLM",
+}
+REASON_NAMES = {
+    "verified:none": "VERIFIED",
+    "unverified:missing_citation": "UNVERIFIED: нет маркера [S#] после разбиения на предложения, NLI не вызывался",
+    "unverified:cited_support_not_established": "UNVERIFIED: NLI не подтвердил (P(ent) ниже порога, P(con) < 0.2)",
+    "contradiction:cited_support_not_established": "CONTRADICTION: P(con) ≥ 0.2 хотя бы в одном источнике",
+}
+# Heuristic: a citation-less claim that is a cut piece of a sentence rather than a whole one.
+FRAGMENT = re.compile(r"(?:\b(?:Rev|No|Sec|Vol|Fig|vs)\.|;)$|^\d")
 
 
 # --------------------------------------------------------------------------- formatting
@@ -58,6 +73,34 @@ def pct(value: float | None, digits: int = 1) -> str:
 
 def num(value: float | None, digits: int = 3) -> str:
     return "н/д" if value is None else f"{value:.{digits}f}"
+
+
+def pval(value: float | None) -> str:
+    if value is None:
+        return "н/д"
+    return f"{value:.1e}" if value < 1e-3 else f"{value:.3f}"
+
+
+def direction(
+    before: float | None,
+    after: float | None,
+    forms: tuple[str, str, str] = ("снизилась", "выросла", "не изменилась"),
+) -> str:
+    if before is None or after is None:
+        return "н/д"
+    return forms[0] if after < before else forms[1] if after > before else forms[2]
+
+
+def plural(n: int, one: str, few: str, many: str) -> str:
+    """Russian noun agreement: 1 утверждение, 2 утверждения, 5 утверждений."""
+    tail = n % 100
+    if 11 <= tail <= 14 or tail % 10 == 0 or tail % 10 >= 5:
+        return f"{n} {many}"
+    return f"{n} {one}" if tail % 10 == 1 else f"{n} {few}"
+
+
+def count(r: dict[str, Any] | None) -> str:
+    return "н/д" if not r or not r.get("n") else f"{r['k']} из {r['n']}"
 
 
 def ms(value: float | None) -> str:
@@ -152,48 +195,99 @@ def section_summary(run: Run, dataset: EvalDatasetV3, headline: dict[str, Any]) 
     prod = run.e2e.get("guard_on")
     if prod:
         v, f = prod["vanilla"], prod["factrag"]
-        reduction = prod["hallucination_relative_reduction"]
+        pc = prod["paired_correctness"]
+        causes = pc.get("vanilla_only_correct_by_cause", {})
         lines.append(
-            f"- **Галлюцинации (сквозной прогон, прод-профиль).** На вопросах с заранее известной "
-            f"истиной (unanswerable, adversarial и lexical_trap без ответа; n = "
-            f"{f['hallucination']['n']}) доля ответов без опоры на корпус снизилась с "
-            f"{pct(v['hallucination']['rate'])} у Vanilla RAG до {pct(f['hallucination']['rate'])} у "
-            f"FactRAG-NLI: относительное снижение {pct(reduction)}."
+            f"- **Сквозной результат.** На {prod['cases']} вопросах доля корректных исходов у "
+            f"FactRAG-NLI {direction(v['correct']['rate'], f['correct']['rate'])} с "
+            f"{pct(v['correct']['rate'])} (Vanilla RAG: черновик той же LLM до NLI-фильтра) до "
+            f"{pct(f['correct']['rate'])}: фильтр сделал неверными {pc['vanilla_only_correct']} "
+            f"исходов и исправил {pc['factrag_only_correct']} (точный тест Мак-Немара, p = "
+            f"{pval(pc['mcnemar_exact_p'])}). Из потерянных: "
+            + "; ".join(f"{CAUSE_NAMES.get(k, k)} - {n}" for k, n in causes.items())
+            + f". Отказы на отвечаемых вопросах: {pct(v['false_refusal_on_answerable']['rate'])} → "
+            f"{pct(f['false_refusal_on_answerable']['rate'])}."
         )
+        guard = [
+            f"{PROFILE_SHORT[p]}: Vanilla {count(run.e2e[p]['vanilla']['hallucination'])}, "
+            f"FactRAG-NLI {count(run.e2e[p]['factrag']['hallucination'])}"
+            for p in run.profiles
+        ]
+        introduced = len(prod.get("hallucination_ids", {}).get("factrag_only", []))
+        known = [
+            r
+            for r in run.e2e_cases["guard_on"]
+            if r.get("ok") and r["expected_behavior"] != "answer"
+        ]
+        gate = sum(r["refusal_reason"] == "relevance_threshold_not_met" for r in known)
+        llm = sum(r["refusal_reason"] == "llm_refusal" for r in known)
         lines.append(
-            f"- **Цена верификации.** Отказы на отвечаемых вопросах выросли с "
-            f"{pct(v['false_refusal_on_answerable']['rate'])} до "
-            f"{pct(f['false_refusal_on_answerable']['rate'])}; доля ответов с верными ключевыми фактами "
-            f"изменилась с {pct(v['key_fact_accuracy_on_answerable']['rate'])} до "
-            f"{pct(f['key_fact_accuracy_on_answerable']['rate'])}. Итоговая доля корректных исходов: "
-            f"{pct(v['correct']['rate'])} → {pct(f['correct']['rate'])} (точный тест Мак-Немара, "
-            f"p = {num(prod['paired_correctness']['mcnemar_exact_p'], 4)})."
+            "- **Галлюцинации.** На вопросах с известной истиной (без ответа, с ложной "
+            "предпосылкой, lexical_trap без ответа) ответов без опоры на корпус: "
+            + "; ".join(guard)
+            + f". Доля мала уже у черновика: из {len(known)} таких вопросов в прод-профиле "
+            f"{gate} отсёк порог релевантности (LLM не вызывается), на {llm} LLM ответила "
+            "отказом по инструкции промпта. "
+            + (
+                f"В {introduced} из {f['hallucination']['k']} галлюцинаций FactRAG-NLI в прод-профиле "
+                "черновик был верным: фильтр удалил фразу об отсутствии сведений или исправление "
+                "предпосылки и опубликовал оставшееся подтверждённое утверждение."
+                if introduced
+                else ""
+            )
         )
-        lat = prod["latency_ms"]["generated_queries"]
-        nli_p50, total_p50 = lat["nli_ms"]["p50"], lat["total_ms"]["p50"]
+        claims = prod["claims"]
+        reasons = claims.get("by_status_reason", {})
+        total = claims["total"] or 1
+        nli_part = ""
+        if run.nli:
+            d = run.nli["overall"]["decision_rule"]
+            sm = d["status_matrix"]["entailment"]
+            ent_n = sum(sm.values())
+            nli_part = (
+                f" На {run.nli['overall']['pairs']} контрольных парах с эталонной посылкой правило "
+                f"перехватывает {pct(d['hallucination_catch_rate'])} искажённых и неподтверждённых "
+                f"утверждений, но блокирует {pct(d['false_rejection_rate'])} верных; "
+                f"{sm.get('contradiction', 0)} из {ent_n} верных гипотез получают P(con) ≥ 0.2. "
+                "Ложная отбраковка по языку гипотезы: "
+                + ", ".join(
+                    f"{lang.upper()} {pct(b['decision_rule']['false_rejection_rate'])}"
+                    for lang, b in run.nli["by_hypothesis_language"].items()
+                )
+                + "."
+            )
         lines.append(
-            f"- **Задержка.** NLI-верификация занимает p50 {ms(nli_p50)} мс / p95 "
-            f"{ms(lat['nli_ms']['p95'])} мс на запрос с генерацией, то есть "
-            f"{pct(nli_p50 / total_p50 if nli_p50 and total_p50 else None)} от медианного полного "
-            f"времени {ms(total_p50)} мс; основное время уходит на генерацию LLM (p50 "
-            f"{ms(lat['generation_ms']['p50'])} мс)."
-        )
-    if run.nli:
-        d = run.nli["overall"]["decision_rule"]
-        a = run.nli["overall"]["argmax"]
-        lines.append(
-            f"- **NLI-модуль на контрольных парах** ({run.nli['overall']['pairs']} пар EN/RU): "
-            f"перехват искажённых и неподтверждённых утверждений {pct(d['hallucination_catch_rate'])}, "
-            f"ошибочная отбраковка верных {pct(d['false_rejection_rate'])}; macro-F1 по трём классам "
-            f"{num(a['macro_f1'])}."
+            f"- **Причины на уровне утверждений.** Из {claims['total']} утверждений черновиков "
+            f"{reasons.get('unverified:missing_citation', 0)} "
+            f"({pct(reasons.get('unverified:missing_citation', 0) / total)}) остались без маркера "
+            f"источника после разбиения на предложения и отклонены без вызова NLI; "
+            f"{reasons.get('contradiction:cited_support_not_established', 0)} "
+            f"({pct(reasons.get('contradiction:cited_support_not_established', 0) / total)}) "
+            f"получили CONTRADICTION." + nli_part
         )
     if run.retrieval:
         o = run.retrieval["overall"]
-        lines.append(
-            f"- **Поиск.** Гибрид с реранкингом даёт Recall@5 {num(o['hybrid_rerank']['recall@5'])} "
-            f"против {num(o['dense']['recall@5'])} у dense и {num(o['sparse']['recall@5'])} у BM25; "
-            f"RRF без реранкинга ({num(o['hybrid_rrf']['recall@5'])}) уступает dense."
+        rrf, dense = o["hybrid_rrf"]["recall@5"], o["dense"]["recall@5"]
+        line = (
+            f"- **Поиск и задержка.** Гибрид с реранкингом: Recall@5 "
+            f"{num(o['hybrid_rerank']['recall@5'])}, MRR@10 {num(o['hybrid_rerank']['mrr@10'])} "
+            f"против {num(dense)} / {num(o['dense']['mrr@10'])} у dense и "
+            f"{num(o['sparse']['recall@5'])} / {num(o['sparse']['mrr@10'])} у BM25; RRF без "
+            f"реранкинга ({num(rrf)}) "
+            + (
+                "ниже dense, то есть выигрыш гибрида даёт реранкер."
+                if rrf < dense
+                else "не ниже dense."
+            )
         )
+        if prod:
+            lat = prod["latency_ms"]["generated_queries"]
+            line += (
+                f" NLI-верификация занимает p50 {ms(lat['nli_ms']['p50'])} мс на запрос при "
+                f"полном времени p50 {ms(lat['total_ms']['p50'])} мс, из которых генерация LLM "
+                f"{ms(lat['generation_ms']['p50'])} мс."
+            )
+        lines.append(line)
     lines.append("")
     return "\n".join(lines)
 
@@ -201,6 +295,8 @@ def section_summary(run: Run, dataset: EvalDatasetV3, headline: dict[str, Any]) 
 def section_method(run: Run, dataset: EvalDatasetV3) -> str:
     stats: dict[str, Any] = dict(dataset.stats)
     cats = stats["by_category"]
+    previous = read_json(ROOT / "data" / "extended_dataset_v2.json")
+    v2_cases = len(previous["cases"]) if previous else 0
     behavior = {
         c: Counter(x.expected_behavior for x in dataset.cases if x.category == c) for c in cats
     }
@@ -250,9 +346,16 @@ def section_method(run: Run, dataset: EvalDatasetV3) -> str:
         "",
         "### 2.1. Датасет v3",
         "",
-        f"`data/eval_dataset_v3.json`: {stats['cases']} кейсов (в 4 раза больше набора v2 из 55 "
-        f"кейсов), {stats['evidence_units']} единиц эталонного контекста, "
-        f"{stats['multi_chunk_cases']} кейсов с доказательствами в двух и более чанках.",
+        f"`data/eval_dataset_v3.json`: {plural(stats['cases'], 'кейс', 'кейса', 'кейсов')}"
+        + (
+            f" (в {stats['cases'] / v2_cases:.1f}".rstrip("0").rstrip(".")
+            + f" раза больше набора v2 из {plural(v2_cases, 'кейса', 'кейсов', 'кейсов')})"
+            if v2_cases
+            else ""
+        )
+        + f", {plural(stats['evidence_units'], 'единица', 'единицы', 'единиц')} эталонного "
+        f"контекста, {plural(stats['multi_chunk_cases'], 'кейс', 'кейса', 'кейсов')} с "
+        "доказательствами в двух и более чанках.",
         "",
         table(["Категория", "Кейсов", "RU / EN", "Ожидаемое поведение"], rows, "lrrl"),
         "",
@@ -571,8 +674,8 @@ def section_nli(run: Run) -> str:
             "",
             f"![Матрица ошибок, EN]({figs[0]}) ![Матрица ошибок, RU]({figs[1]})",
             "",
-            "**Боевое правило (контрадикция ≥ 0.2 в любом источнике → CONTRADICTION; иначе "
-            "VERIFIED при entailment > 0.4 или ≥ 0.7):**",
+            "**Боевое правило (P(con) ≥ 0.2 в любом источнике → CONTRADICTION; иначе VERIFIED "
+            "при P(ent) > 0.4 во всех источниках или ≥ 0.7 в одном):**",
             "",
             table(
                 ["Срез", "Пар", "Catch rate", "Contradiction", "Neutral", "False rejection"],
@@ -641,35 +744,37 @@ def section_e2e(run: Run) -> str:
     fig = write_svg(
         "e2e_hallucination.svg",
         grouped_bars(
-            "Доля галлюцинаций и отказов: Vanilla RAG vs FactRAG-NLI",
-            [f"Галлюцинации, {PROFILE_SHORT[p]}" for p in run.profiles]
-            + [f"Отказы, {PROFILE_SHORT[p]}" for p in run.profiles],
-            ["Vanilla RAG", "FactRAG-NLI"],
+            "Vanilla RAG и FactRAG-NLI: корректный исход, галлюцинации, отказы на отвечаемых",
             [
-                [
-                    run.e2e[p]["vanilla"]["hallucination"]["rate"],
-                    run.e2e[p]["factrag"]["hallucination"]["rate"],
-                ]
-                for p in run.profiles
-            ]
-            + [
-                [
-                    run.e2e[p]["vanilla"]["false_refusal_on_answerable"]["rate"],
-                    run.e2e[p]["factrag"]["false_refusal_on_answerable"]["rate"],
-                ]
+                f"{metric}, {PROFILE_SHORT[p]}"
+                for metric in ("Корректно", "Галлюцинации", "Отказы")
                 for p in run.profiles
             ],
-            width=860,
+            ["Vanilla RAG", "FactRAG-NLI"],
+            [
+                [run.e2e[p]["vanilla"][key]["rate"], run.e2e[p]["factrag"][key]["rate"]]
+                for key in ("correct", "hallucination", "false_refusal_on_answerable")
+                for p in run.profiles
+            ],
+            width=1000,
         ),
     )
     paired = []
     for profile in run.profiles:
-        pc = run.e2e[profile]["paired_correctness"]
+        s = run.e2e[profile]
+        pc = s["paired_correctness"]
+        causes = pc.get("vanilla_only_correct_by_cause", {})
+        ids = s.get("hallucination_ids", {})
         paired.append(
-            f"- {PROFILE_NAMES[profile]}: только Vanilla корректна в {pc['vanilla_only_correct']} кейсах, "
-            f"только FactRAG-NLI в {pc['factrag_only_correct']}; точный тест Мак-Немара p = "
-            f"{num(pc['mcnemar_exact_p'], 4)}; относительное снижение доли галлюцинаций "
-            f"{pct(run.e2e[profile]['hallucination_relative_reduction'])}."
+            f"- {PROFILE_NAMES[profile]}: только Vanilla корректна в "
+            f"{plural(pc['vanilla_only_correct'], 'кейсе', 'кейсах', 'кейсах')} ("
+            + ", ".join(f"{CAUSE_NAMES.get(k, k)}: {n}" for k, n in causes.items())
+            + f"), только FactRAG-NLI в {pc['factrag_only_correct']}; точный тест Мак-Немара p = "
+            f"{pval(pc['mcnemar_exact_p'])}. Галлюцинации: Vanilla {count(s['vanilla']['hallucination'])}, "
+            f"FactRAG-NLI {count(s['factrag']['hallucination'])}; только у Vanilla: "
+            f"{', '.join(ids.get('vanilla_only', [])) or 'нет'}, только у FactRAG-NLI: "
+            f"{', '.join(ids.get('factrag_only', [])) or 'нет'}, у обоих: "
+            f"{', '.join(ids.get('both', [])) or 'нет'}."
         )
     if len(run.profiles) == 2:
         on = {r["id"]: r for r in run.e2e_cases["guard_on"] if r.get("ok")}
@@ -679,8 +784,9 @@ def section_e2e(run: Run) -> str:
             b = sum(on[i][variant]["correct"] and not off[i][variant]["correct"] for i in common)
             c = sum(off[i][variant]["correct"] and not on[i][variant]["correct"] for i in common)
             paired.append(
-                f"- Premise guard (вкл. против выкл.), {title}: лучше с guard в {b} кейсах, без guard в {c}; "
-                f"p = {num(mcnemar_exact(b, c), 4)}."
+                f"- Premise guard (вкл. против выкл.), {title}: лучше с guard в "
+                f"{plural(b, 'кейсе', 'кейсах', 'кейсах')}, без guard в {c}; точный тест "
+                f"Мак-Немара p = {pval(mcnemar_exact(b, c))}."
             )
     cat_rows = []
     profile = "guard_on" if "guard_on" in run.profiles else run.profiles[0]
@@ -702,7 +808,7 @@ def section_e2e(run: Run) -> str:
                 f"{pct(v['correct']['rate'], 0)} → {pct(f['correct']['rate'], 0)}",
                 f"{pct(v['hallucination']['rate'], 0)} → {pct(f['hallucination']['rate'], 0)}"
                 if v["hallucination"]["n"]
-                else "—",
+                else "не опр.",
                 f"{pct(v['refused']['rate'], 0)} → {pct(f['refused']['rate'], 0)}",
             ]
         )
@@ -727,6 +833,30 @@ def section_e2e(run: Run) -> str:
     reasons = ", ".join(
         f"{k}: {v}" for k, v in sorted(s["refusal_reasons"].items(), key=lambda kv: -kv[1])
     )
+    keys = list(REASON_NAMES) + sorted(
+        {k for p in run.profiles for k in run.e2e[p]["claims"].get("by_status_reason", {})}
+        - set(REASON_NAMES)
+    )
+    reason_rows = [
+        [
+            REASON_NAMES.get(k, k),
+            *(
+                f"{run.e2e[p]['claims'].get('by_status_reason', {}).get(k, 0)} "
+                f"({pct(run.e2e[p]['claims'].get('by_status_reason', {}).get(k, 0) / (run.e2e[p]['claims']['total'] or 1))})"
+                for p in run.profiles
+            ),
+        ]
+        for k in keys
+    ]
+    write_csv(
+        "e2e_claim_reasons.csv",
+        ["profile", "status_reason", "claims"],
+        [
+            [p, k, n]
+            for p in run.profiles
+            for k, n in run.e2e[p]["claims"].get("by_status_reason", {}).items()
+        ],
+    )
     return "\n".join(
         [
             "### 3.3. Сквозной прогон: Vanilla RAG и FactRAG-NLI",
@@ -743,7 +873,7 @@ def section_e2e(run: Run) -> str:
                 "lrrrr",
             ),
             "",
-            f"![Галлюцинации и отказы]({fig})",
+            f"![Корректный исход, галлюцинации и отказы]({fig})",
             "",
             *paired,
             "",
@@ -751,13 +881,20 @@ def section_e2e(run: Run) -> str:
             "",
             table(["Категория", "Корректный исход", "Галлюцинации", "Отказы"], cat_rows),
             "",
-            f"Утверждений в черновиках: {claims['total']} (VERIFIED {claims['by_status'].get('verified', 0)}, "
-            f"UNVERIFIED {claims['by_status'].get('unverified', 0)}, CONTRADICTION "
-            f"{claims['by_status'].get('contradiction', 0)}; faithfulness micro "
-            f"{pct(claims['faithfulness_micro'])}); пар «утверждение × источник», не поместившихся в "
+            "Вердикты по утверждениям черновиков (доля от всех утверждений профиля):",
+            "",
+            table(
+                ["Статус и причина", *(PROFILE_NAMES[p] for p in run.profiles)],
+                reason_rows,
+                "l" + "r" * len(run.profiles),
+            ),
+            "",
+            f"Faithfulness micro (доля VERIFIED, {PROFILE_NAMES[profile]}): "
+            f"{pct(claims['faithfulness_micro'])}; пар «утверждение × источник», не поместившихся в "
             f"контекст NLI 512 токенов: {claims.get('pairs_exceeding_nli_context', 'н/д')}. "
             f"Причины отказов FactRAG-NLI: {reasons}. Эталонный чанк среди источников ответа: "
-            f"{rate_cell(s['gold_in_sources'])}.",
+            f"{rate_cell(s['gold_in_sources'])}. Таблица: "
+            "[`tables/e2e_claim_reasons.csv`](tables/e2e_claim_reasons.csv).",
             "",
         ]
     )
@@ -919,22 +1056,29 @@ def section_errors(run: Run, dataset: EvalDatasetV3, lengths: dict[str, int]) ->
             parts = []
             for claim in r["claims"][:3]:
                 probs = [p for p in claim["probabilities"] if p]
-                reasons = [x for x in claim.get("reasons", []) if x]
                 detail = (
                     f"P(ent) {num(probs[0]['p_entailment'], 2)}, P(con) {num(probs[0]['p_contradiction'], 2)}"
                     if probs
-                    else ", ".join(reasons) or "без цитаты"
+                    else claim.get("reason") or "без цитаты"
                 )
                 parts.append(f"{claim['status']} ({detail})")
-            return "; ".join(parts) or "—"
+            return "; ".join(parts) or "нет утверждений"
 
-        exceed = Counter(
-            reason
+        over_causes = Counter(
+            "filtered_answer" if not r["refused"] else r["refusal_reason"] for r in over
+        )
+        over_reasons = Counter(
+            f"{claim['status']}:{claim.get('reason') or 'none'}"
             for r in over
             for claim in r["claims"]
-            for reason in claim.get("reasons", [])
-            if reason
         )
+        uncited = [
+            claim["claim"]
+            for r in cases
+            for claim in r["claims"]
+            if claim.get("reason") == "missing_citation"
+        ]
+        fragments = [c for c in uncited if FRAGMENT.search(c.strip())]
         out += [
             f"### 4.2. Сквозной прогон ({PROFILE_NAMES[profile]})",
             "",
@@ -956,33 +1100,59 @@ def section_errors(run: Run, dataset: EvalDatasetV3, lengths: dict[str, int]) ->
                 "llll",
             ),
             "",
-            f"**Пропущенные галлюцинации** ({len(missed_e2e)}): опубликован ответ, противоречащий "
-            "датасету.",
+            f"**Галлюцинации FactRAG-NLI** ({len(missed_e2e)}): опубликован ответ на вопрос без "
+            "ответа или ответ без исправления ложной предпосылки. Если черновик был верным, "
+            "галлюцинацию внёс фильтр: он публикует только VERIFIED-утверждения, а фраза об "
+            "отсутствии сведений или исправление предпосылки опорой в источнике не подтверждается.",
             "",
             table(
-                ["Кейс", "Вопрос", "Опубликованный ответ", "Вердикты NLI"],
+                [
+                    "Кейс",
+                    "Вопрос",
+                    "Черновик LLM (Vanilla)",
+                    "Опубликованный ответ",
+                    "Черновик верен",
+                ],
                 [
                     [
                         r["id"],
-                        quote(by_id[r["id"]].question, 90),
-                        quote(r["answer"], 120),
-                        claim_line(r),
+                        quote(by_id[r["id"]].question, 80),
+                        quote(r["raw_answer"], 150),
+                        quote(r["answer"], 110),
+                        "нет" if r["vanilla"]["hallucination"] else "да",
                     ]
                     for r in missed_e2e[:6]
                 ],
-                "llll",
+                "lllll",
             ),
             "",
-            f"**Избыточные отказы** ({len(over)}): черновик содержал верные ключевые факты, но "
-            "проверка его заблокировала. Причины на уровне пар «утверждение × источник»: "
-            + (", ".join(f"{k}: {v}" for k, v in exceed.items()) or "только вероятности NLI")
+            f"**Потерянные верные ответы** ({len(over)} из "
+            f"{run.e2e[profile]['paired_correctness']['vanilla_only_correct']} исходов, которые "
+            "фильтр сделал неверными; остальные - галлюцинации, внесённые фильтром, см. выше): "
+            "черновик на отвечаемый вопрос содержал все ключевые факты, опубликованный ответ их "
+            "не содержит. Исход: "
+            + ", ".join(f"{CAUSE_NAMES.get(k, k)} - {v}" for k, v in over_causes.most_common())
+            + ". Вердикты утверждений в этих черновиках: "
+            + ", ".join(f"{REASON_NAMES.get(k, k)} - {v}" for k, v in over_reasons.most_common())
             + ".",
             "",
             table(
-                ["Кейс", "Черновик LLM", "Вердикты NLI"],
+                ["Кейс", "Черновик LLM", "Вердикты NLI (первые три утверждения)"],
                 [[r["id"], quote(r["raw_answer"], 130), claim_line(r)] for r in over[:6]],
                 "lll",
             ),
+            "",
+            f"**Разбиение на утверждения.** "
+            f"{plural(len(uncited), 'утверждение', 'утверждения', 'утверждений')} не получили "
+            f"маркер [S#]. Из них {len(fragments)} - обрывки предложений (эвристика: оканчиваются "
+            "на «Rev.», «No.», «;» или начинаются с цифры), например: "
+            + ", ".join(f"«{quote(c, 60)}»" for c in list(dict.fromkeys(fragments))[:3])
+            + ". Защита сокращений в `segment_claims` (`generator_verifier.py`) охватывает только "
+            "русские сокращения (пп., рис., т. е. и др.), поэтому «SP 800-53 Rev. 5» режется после "
+            "«Rev.», и первая часть остаётся без цитаты. Точка с запятой разделяет утверждения по "
+            "правилу, а LLM ставит маркер в конце предложения, поэтому часть до «;» тоже остаётся "
+            f"без цитаты. Остальные {len(uncited) - len(fragments)} - целые предложения, после "
+            "которых LLM не поставила маркер источника.",
             "",
         ]
     return "\n".join(out)
@@ -1005,6 +1175,8 @@ def section_latency(run: Run) -> str:
         lat = run.e2e[profile]["latency_ms"]["generated_queries"]
         for stage in (*stages, "llm_ttft_ms", "total_ms"):
             st = lat[stage]
+            if not st["n"]:
+                continue
             rows.append(
                 [
                     PROFILE_NAMES[profile],
@@ -1019,10 +1191,28 @@ def section_latency(run: Run) -> str:
         chart_rows.append(f"p50, {PROFILE_NAMES[profile]}")
         chart_values.append([lat[s]["p50"] or 0.0 for s in stages])
     write_csv("latency.csv", ["profile", "stage", "n", "mean_ms", "p50_ms", "p95_ms"], csv_rows)
+    streaming = {
+        p: (run.config.get("modes", {}).get(f"e2e_{p}", {}).get("settings") or {}).get(
+            "llm_api_stream"
+        )
+        for p in run.profiles
+    }
+    ttft_note = (
+        [
+            "TTFT LLM не измерялся: в оценённом профиле `RAG_LLM_API_STREAM=false`, ответ "
+            "llama-server приходит целиком.",
+            "",
+        ]
+        if not any(
+            run.e2e[p]["latency_ms"]["generated_queries"]["llm_ttft_ms"]["n"] for p in run.profiles
+        )
+        and not any(streaming.values())
+        else []
+    )
     fig = write_svg(
         "latency_breakdown.svg",
         stacked_hbars(
-            "Время этапов на запрос с генерацией, медиана",
+            "Медианы этапов на запрос с генерацией (подпись: сумма медиан)",
             chart_rows,
             [names[s] for s in stages],
             chart_values,
@@ -1034,13 +1224,16 @@ def section_latency(run: Run) -> str:
     ]
     for name, summary in sources:
         r = (summary or {}).get("resources") or {}
+        uses_llm = name.startswith("E2E")
         res_rows.append(
             [
                 name,
                 ms((r.get("gpu_used_mib") or {}).get("peak")),
                 ms(r.get("torch_max_allocated_mib")),
                 ms((r.get("process_rss_mib") or {}).get("peak")),
-                ms((r.get("llama_server_rss_mib") or {}).get("peak")),
+                ms((r.get("llama_server_rss_mib") or {}).get("peak"))
+                if uses_llm
+                else "не участвует",
             ]
         )
     init = run.e2e[run.profiles[0]]["latency_ms"]["model_init_ms"]
@@ -1109,8 +1302,9 @@ def section_latency(run: Run) -> str:
             "",
             "Запросы, дошедшие до генерации (без первого запроса с ленивой загрузкой моделей); мс:",
             "",
-            table(["Профиль", "Этап", "n", "Среднее", "p50", "p95"], rows),
+            table(["Профиль", "Этап", "n", "Среднее", "p50", "p95"], rows, "llrrrr"),
             "",
+            *ttft_note,
             f"![Время этапов]({fig})",
             "",
             f"Однократная загрузка моделей при первом запросе: {', '.join(ms(x) for x in init) or 'н/д'} мс. "
@@ -1133,11 +1327,36 @@ def section_latency(run: Run) -> str:
     )
 
 
+def cyrillic_share(text: str) -> float:
+    letters = re.findall(r"[A-Za-zА-Яа-яЁё]", text)
+    return sum(bool(re.match(r"[А-Яа-яЁё]", c)) for c in letters) / len(letters) if letters else 0.0
+
+
 def section_limits(run: Run) -> str:
+    language: list[str] = []
+    profile = (
+        "guard_on" if "guard_on" in run.profiles else (run.profiles[0] if run.profiles else None)
+    )
+    if profile:
+        drafts = [r for r in run.e2e_cases[profile] if r.get("ok") and r.get("raw_answer")]
+        ru = sum(cyrillic_share(r["raw_answer"]) > 0.5 for r in drafts)
+        en_q = [r for r in drafts if r["language"] == "en"]
+        en_q_ru = sum(cyrillic_share(r["raw_answer"]) > 0.5 for r in en_q)
+        language = [
+            f"- Все документы корпуса англоязычные. При `RAG_GENERATION_LANGUAGE=ru` {ru} из "
+            f"{len(drafts)} черновиков написаны преимущественно кириллицей (на английские вопросы: "
+            f"{en_q_ru} из {len(en_q)}), поэтому NLI в основном сравнивает русскую гипотезу с "
+            "английской посылкой; на контрольных парах доля ложной отбраковки для EN- и "
+            "RU-гипотез приведена в разделе 3.2.",
+        ]
     return "\n".join(
         [
             "## 6. Ограничения",
             "",
+            "- *Vanilla RAG* в этом отчёте - черновик той же LLM с тем же промптом (включая "
+            "premise guard в прод-профиле) и тем же порогом релевантности, а не внешняя базовая "
+            "система; сравнение изолирует вклад NLI-фильтра.",
+            *language,
             "- Разметка датасета подготовлена ИИ; механические проверки (дословные цитаты, "
             "отсутствие терминов в корпусе, дедупликация) не заменяют экспертную проверку смысла.",
             "- Корректность ответа оценивается по ключевым фактам (`answer_must_contain`), а не "
@@ -1204,11 +1423,16 @@ def headline(run: Run) -> dict[str, Any]:
                     "correct",
                 )
             }
-            | {"hallucination_n": s[variant]["hallucination"]["n"]}
+            | {
+                "hallucination_k": s[variant]["hallucination"]["k"],
+                "hallucination_n": s[variant]["hallucination"]["n"],
+            }
             for variant in ("vanilla", "factrag")
         } | {
             "hallucination_relative_reduction": s["hallucination_relative_reduction"],
             "mcnemar_p": s["paired_correctness"]["mcnemar_exact_p"],
+            "paired_correctness": s["paired_correctness"],
+            "claims_by_status_reason": s["claims"].get("by_status_reason"),
             "latency_p50_ms": {
                 k: v["p50"] for k, v in s["latency_ms"]["generated_queries"].items()
             },
@@ -1225,11 +1449,13 @@ def readme_block(run: Run) -> str:
     prod = run.e2e.get("guard_on")
     if prod:
         v, f = prod["vanilla"], prod["factrag"]
+        lat = prod["latency_ms"]["generated_queries"]
         rows = [
+            ["Корректный исход, все вопросы ↑", rate_cell(v["correct"]), rate_cell(f["correct"])],
             [
-                "Галлюцинации на вопросах с известной истиной ↓",
-                rate_cell(v["hallucination"]),
-                rate_cell(f["hallucination"]),
+                "Ключевые факты верны (отвечаемые) ↑",
+                rate_cell(v["key_fact_accuracy_on_answerable"]),
+                rate_cell(f["key_fact_accuracy_on_answerable"]),
             ],
             [
                 "Отказы на отвечаемых вопросах ↓",
@@ -1237,23 +1463,44 @@ def readme_block(run: Run) -> str:
                 rate_cell(f["false_refusal_on_answerable"]),
             ],
             [
-                "Ключевые факты верны (отвечаемые) ↑",
-                rate_cell(v["key_fact_accuracy_on_answerable"]),
-                rate_cell(f["key_fact_accuracy_on_answerable"]),
+                "Галлюцинации на вопросах с известной истиной ↓",
+                rate_cell(v["hallucination"]),
+                rate_cell(f["hallucination"]),
             ],
-            ["Корректный исход, все вопросы ↑", rate_cell(v["correct"]), rate_cell(f["correct"])],
         ]
-        lat = prod["latency_ms"]["generated_queries"]
+        pc = prod["paired_correctness"]
+        claims = prod["claims"]
+        reasons = claims.get("by_status_reason", {})
+        hv, hf = v["hallucination"]["k"], f["hallucination"]["k"]
         lines += [
-            table(
-                ["Метрика (сквозной прогон)", "Standard RAG (без NLI)", "FactRAG-NLI"], rows, "lrr"
-            ),
+            f"Сквозной прогон на {prod['cases']} вопросах датасета v3, прод-профиль. *Standard RAG* "
+            "- черновик той же LLM до NLI-фильтра (тот же поиск, порог релевантности и промпт), "
+            "поэтому сравнение парное.",
             "",
-            f"Относительное снижение доли галлюцинаций: **{pct(prod['hallucination_relative_reduction'])}**; "
-            "точный тест Мак-Немара по корректности: p = "
-            f"{num(prod['paired_correctness']['mcnemar_exact_p'], 4)}. NLI-верификация: p50 "
-            f"{ms(lat['nli_ms']['p50'])} мс на запрос при полном времени p50 {ms(lat['total_ms']['p50'])} мс "
-            f"(генерация LLM p50 {ms(lat['generation_ms']['p50'])} мс).",
+            table(["Метрика", "Standard RAG (без NLI)", "FactRAG-NLI"], rows, "lrr"),
+            "",
+            "В текущей конфигурации NLI-фильтр **"
+            + direction(
+                v["correct"]["rate"], f["correct"]["rate"], ("снизил", "повысил", "не изменил")
+            )
+            + "** долю корректных исходов (только Standard RAG верен в "
+            f"{plural(pc['vanilla_only_correct'], 'кейсе', 'кейсах', 'кейсах')}, "
+            f"только FactRAG-NLI в {pc['factrag_only_correct']}; точный тест Мак-Немара p = "
+            f"{pval(pc['mcnemar_exact_p'])}) и "
+            + (
+                f"не уменьшил число галлюцинаций ({hv} → {hf} из {f['hallucination']['n']})"
+                if hf >= hv
+                else f"уменьшил число галлюцинаций с {hv} до {hf} из {f['hallucination']['n']}"
+            )
+            + f". Из {claims['total']} утверждений черновиков VERIFIED получили "
+            f"{reasons.get('verified:none', 0)}; {reasons.get('unverified:missing_citation', 0)} "
+            "отклонены без вызова NLI, потому что после разбиения на предложения остались без "
+            f"маркера источника; {reasons.get('contradiction:cited_support_not_established', 0)} "
+            "получили CONTRADICTION (P(con) ≥ 0.2); "
+            f"{reasons.get('unverified:cited_support_not_established', 0)} не подтверждены NLI. "
+            "Разбор причин: [раздел 4 отчёта](reports/EVALUATION_REPORT.md#4-разбор-ошибок). "
+            f"NLI-верификация добавляет p50 {ms(lat['nli_ms']['p50'])} мс к запросу; основное время "
+            f"занимает генерация LLM (p50 {ms(lat['generation_ms']['p50'])} мс).",
             "",
         ]
     if run.nli:
@@ -1298,7 +1545,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parts = [
         "# Оценка FactRAG-NLI на датасете v3",
         "",
-        f"Прогон [`{run.rel}`](../{run.rel}), дата {run.config.get('created_utc', 'н/д')[:10]}, "
+        f"Прогон [`{run.rel}`]({run.dir.relative_to(REPORTS).as_posix()}), дата "
+        f"{run.config.get('created_utc', 'н/д')[:10]}, "
         f"коммит `{(run.config.get('git', {}).get('commit') or 'н/д')[:12]}`. Все числа "
         "сгенерированы `scripts/render_report.py` из сырых логов прогона.",
         "",

@@ -917,6 +917,7 @@ def run_e2e(
                     {
                         "claim": c.claim,
                         "status": c.status.value,
+                        "reason": c.reason,
                         "probabilities": [
                             e.probabilities.model_dump() if e.probabilities else None
                             for e in c.evidence
@@ -972,14 +973,56 @@ def run_e2e(
     return summary
 
 
+def resummarize_e2e(dataset: EvalDatasetV3, run_dir: Path, profile: str) -> dict[str, Any]:
+    """Recompute an E2E summary from logged rows without querying the models again.
+
+    Claim-level reasons missing from older light logs are projected from ``full/`` when
+    available; measured resources of the original run are kept as recorded.
+    """
+    out = run_dir / f"e2e_{profile}"
+    rows = CaseLog(out / "cases.jsonl").rows
+    if not rows:
+        raise FileNotFoundError(f"No logged cases in {out}")
+    full_path = run_dir / "full" / f"e2e_{profile}.jsonl"
+    if full_path.exists():
+        responses = {row["id"]: row["response"] for row in CaseLog(full_path).rows}
+        for row in rows:
+            raw = responses.get(row["id"], {}).get("claims", [])
+            if row.get("ok") and len(raw) == len(row["claims"]):
+                for claim, source in zip(row["claims"], raw, strict=True):
+                    claim.setdefault("reason", source.get("reason"))
+        (out / "cases.jsonl").write_text(
+            "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows), encoding="utf-8"
+        )
+    previous = out / "summary.json"
+    resources = (
+        json.loads(previous.read_text(encoding="utf-8")).get("resources")
+        if previous.exists()
+        else None
+    )
+    summary = summarize_e2e(rows, {c.id: c for c in dataset.cases})
+    summary["resources"] = resources
+    dump_json(previous, summary)
+    return summary
+
+
+def stage_values(stats: Sequence[dict[str, Any]], stage: str) -> list[float]:
+    # TTFT is recorded only with streaming (RAG_LLM_API_STREAM); absence is not 0 ms.
+    if stage == "llm_ttft_ms":
+        return [s[stage] for s in stats if s.get(stage) is not None]
+    return [s.get(stage, 0.0) for s in stats]
+
+
 def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) -> dict[str, Any]:
     ok = [r for r in rows if r.get("ok")]
     vanilla, factrag = summarize_variant(rows, "vanilla"), summarize_variant(rows, "factrag")
-    b = sum(r["vanilla"]["correct"] and not r["factrag"]["correct"] for r in ok)
+    lost = [r for r in ok if r["vanilla"]["correct"] and not r["factrag"]["correct"]]
+    b = len(lost)
     c = sum(r["factrag"]["correct"] and not r["vanilla"]["correct"] for r in ok)
     hv, hf = vanilla["hallucination"]["rate"], factrag["hallucination"]["rate"]
     claims = [claim for r in ok for claim in r["claims"]]
     statuses = Counter(claim["status"] for claim in claims)
+    reasons = Counter(f"{claim['status']}:{claim.get('reason') or 'none'}" for claim in claims)
     stats = [r["execution_stats"] for r in ok]
     # Lazy model loading happens on the first generated query; later ones report ~0 ms.
     warm = [s for s in stats if s.get("model_init_ms", 0.0) < 50.0]
@@ -994,11 +1037,33 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
             "vanilla_only_correct": b,
             "factrag_only_correct": c,
             "mcnemar_exact_p": mcnemar_exact(b, c),
+            # Why the filter turned a correct draft into a wrong answer.
+            "vanilla_only_correct_by_cause": dict(
+                Counter(r["refusal_reason"] if r["refused"] else "filtered_answer" for r in lost)
+            ),
         },
         "hallucination_relative_reduction": (hv - hf) / hv if hv else None,
+        "hallucination_ids": {
+            "vanilla_only": [
+                r["id"]
+                for r in ok
+                if r["vanilla"]["hallucination"] and not r["factrag"]["hallucination"]
+            ],
+            "factrag_only": [
+                r["id"]
+                for r in ok
+                if r["factrag"]["hallucination"] and not r["vanilla"]["hallucination"]
+            ],
+            "both": [
+                r["id"]
+                for r in ok
+                if r["factrag"]["hallucination"] and r["vanilla"]["hallucination"]
+            ],
+        },
         "claims": {
             "total": len(claims),
             "by_status": dict(statuses),
+            "by_status_reason": dict(reasons),
             "pairs_exceeding_nli_context": sum(
                 reason == "pair_exceeds_nli_context"
                 for claim in claims
@@ -1008,11 +1073,9 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
         },
         "refusal_reasons": dict(Counter(r["refusal_reason"] or "none" for r in ok if r["refused"])),
         "latency_ms": {
-            "all_queries": {
-                stage: latency_stats([s.get(stage, 0.0) for s in warm]) for stage in stages
-            },
+            "all_queries": {stage: latency_stats(stage_values(warm, stage)) for stage in stages},
             "generated_queries": {
-                stage: latency_stats([s.get(stage, 0.0) for s in generated]) for stage in stages
+                stage: latency_stats(stage_values(generated, stage)) for stage in stages
             },
             "model_init_ms": [
                 s["model_init_ms"] for s in stats if s.get("model_init_ms", 0.0) >= 50.0
@@ -1041,6 +1104,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     sub.add_parser("nli")
     e2e = sub.add_parser("e2e")
     e2e.add_argument("--profile", choices=sorted(PROFILES), default="guard_on")
+    again = sub.add_parser("resummarize", help="Recompute an E2E summary from existing logs")
+    again.add_argument("--profile", choices=sorted(PROFILES), default="guard_on")
     args = cli.parse_args(argv)
     dataset_path = args.dataset.resolve()
     dataset = load_dataset(dataset_path)
@@ -1052,6 +1117,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     elif args.mode == "nli":
         summary = run_nli(dataset, dataset_path, run_dir, args.limit)
         print(json.dumps(summary["overall"]["decision_rule"], indent=1))
+    elif args.mode == "resummarize":
+        summary = resummarize_e2e(dataset, run_dir, args.profile)
+        print(json.dumps(summary["paired_correctness"], indent=1))
     else:
         summary = run_e2e(dataset, dataset_path, run_dir, args.profile, args.limit)
         print(
