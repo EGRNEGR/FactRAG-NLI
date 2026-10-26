@@ -403,7 +403,21 @@ def llama_props(api_base: str | None) -> dict[str, Any] | None:
     except Exception as exc:  # noqa: BLE001 - recorded, never fatal
         return {"error": f"{type(exc).__name__}: {exc}"}
     settings = props.get("default_generation_settings", {})
+    cmdline = None
+    try:
+        import psutil
+
+        for proc in psutil.process_iter(["name", "cmdline"]):
+            if "llama-server" in (proc.info.get("name") or "").lower():
+                cmdline = [
+                    Path(part).name if i < 3 else part
+                    for i, part in enumerate(proc.info["cmdline"] or [])
+                ]
+                break
+    except Exception:  # noqa: BLE001 - optional provenance only
+        cmdline = None
     return {
+        "cmdline": cmdline,
         "n_ctx": settings.get("n_ctx"),
         "model_path": props.get("model_path"),
         "total_slots": props.get("total_slots"),
