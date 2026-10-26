@@ -42,7 +42,7 @@ exclude = [
 ]
 
 [[tool.mypy.overrides]]
-module = ["numpy", "numpy.*", "torch", "torch.*", "transformers", "transformers.*", "sentence_transformers", "sentence_transformers.*", "llama_cpp", "llama_cpp.*"]
+module = ["numpy", "numpy.*", "torch", "torch.*", "transformers", "transformers.*", "sentence_transformers", "sentence_transformers.*", "llama_cpp", "llama_cpp.*", "safetensors", "safetensors.*"]
 follow_imports = "skip"
 follow_imports_for_stubs = true
 
