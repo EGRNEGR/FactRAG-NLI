@@ -157,7 +157,14 @@ def test_summary_reflows_verified_sentences_without_rewriting(tmp_path: Path) ->
 
 
 def test_budgeted_map_reduce_covers_every_selected_chunk(tmp_path: Path) -> None:
-    settings = config(tmp_path)
+    # The budget must not depend on a developer .env: 4096 forces one 1500-token source per call.
+    settings = RAGSettings(
+        mode="development",
+        allow_fallback=True,
+        qdrant_path=tmp_path / "index",
+        llm_context_window=4096,
+        max_tokens=512,
+    )
     chat = BudgetChat("")
     with HybridRetriever(Encoder(), LexicalReranker(), settings=settings) as retriever:
         retriever.add(
