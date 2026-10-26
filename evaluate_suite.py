@@ -52,6 +52,10 @@ EXPECTED_STATUS = {
     "neutral": "unverified",
     "contradiction": "contradiction",
 }
+# Hardware invariants of the 8 GB stack (docs/evidence/improvement_report.md): with llama-server
+# holding ~6.6 GB, larger embedding/rerank batches overflow VRAM into shared memory on Windows
+# and slow generation 2-3x (observed with the code defaults 16/8).
+RUNTIME: dict[str, Any] = {"embedding_batch_size": 2, "rerank_batch_size": 2}
 PROFILES: dict[str, dict[str, Any]] = {
     "guard_on": {},
     "guard_off": {"premise_guard": False},
@@ -505,6 +509,7 @@ def build_settings(dataset: EvalDatasetV3, overrides: dict[str, Any]) -> Any:
             "chunk_overlap_tokens": int(dataset.chunking["chunk_overlap_tokens"]),
         }
     )
+    values.update(RUNTIME)
     values.update(overrides)
     return RAGSettings.model_validate(values)
 
@@ -570,6 +575,10 @@ def write_config(run_dir: Path, dataset_path: Path, settings: Any, extra: dict[s
                 "max_tokens": settings.llm_max_tokens,
                 "seed": settings.llm_seed,
                 "context_window": settings.llm_context_window,
+            },
+            "runtime": {
+                "embedding_batch_size": settings.embedding_batch_size,
+                "rerank_batch_size": settings.rerank_batch_size,
             },
             "nli_thresholds": {
                 "entailment": settings.nli_entailment_threshold,
