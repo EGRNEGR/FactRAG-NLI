@@ -3,6 +3,8 @@ param(
     [string]$Query, [string]$Preset,
     [ValidateSet('golden','holdout')][string]$Dataset = 'golden',
     [string]$Export, [switch]$IndexOnly, [switch]$NoColor, [switch]$Cli,
+    # 25 GPU layers leave room for BGE-M3, the reranker and NLI on 8 GB (see reports/EVALUATION_REPORT.md).
+    [ValidateRange(0,999)][int]$GpuLayers = 25,
     [ValidateRange(1024,65535)][int]$WebPort = 8501,
     [ValidateRange(10,600)][int]$TimeoutSeconds = 180
 )
@@ -66,10 +68,10 @@ try {
             $serverExe = Join-Path $projectRoot 'tools\llama\llama-server.exe'
             $modelFile = Join-Path $projectRoot 'models\llm\Qwen2.5-14B-Instruct-Q4_K_M.gguf'
             if (-not (Test-Path -LiteralPath $serverExe) -or -not (Test-Path -LiteralPath $modelFile)) { throw 'Missing local server or GGUF.' }
-            $serverArgs = @('-m', ('"' + $modelFile + '"'), '-ngl','35','-c','4096','-b','128','-ub','64','-np','1','--port','8080','--host','127.0.0.1')
+            $serverArgs = @('-m', ('"' + $modelFile + '"'), '-ngl',"$GpuLayers",'-c','4096','-b','128','-ub','64','-np','1','--cache-ram','0','--port','8080','--host','127.0.0.1')
             $startedServer = Start-Process -FilePath $serverExe -ArgumentList $serverArgs -WorkingDirectory $projectRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $artifactRoot 'llama.stdout.log') -RedirectStandardError (Join-Path $artifactRoot 'llama.stderr.log')
             $serverStarted = $true
-            Write-Host "Cold server start: PID $($startedServer.Id); -ngl 35 -c 4096 -b 128 -ub 64 -np 1"
+            Write-Host "Cold server start: PID $($startedServer.Id); -ngl $GpuLayers -c 4096 -b 128 -ub 64 -np 1 --cache-ram 0"
             @{ Pid=$startedServer.Id; StartTime=$startedServer.StartTime.ToUniversalTime().ToString('o'); Path=$serverExe } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $artifactRoot 'server-state.json') -Encoding UTF8
         }
         $deadline = [DateTime]::UtcNow.AddSeconds($TimeoutSeconds)
