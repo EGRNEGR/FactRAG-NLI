@@ -194,6 +194,27 @@ class RAGSettings(BaseSettings):
     nli_contradiction_threshold: float = Field(default=0.2, ge=0, le=1)
     nli_strong_entailment_threshold: float = Field(default=0.7, gt=0, le=1)
     nli_strong_entailment_enabled: bool = True
+    # Claim verification. Defaults are the evaluated profile; claim_segmentation="v1",
+    # nli_aggregation="strict" and the boolean switches set to false restore the
+    # behaviour of the 20261026T1410Z_v3 baseline run.
+    claim_segmentation: Literal["v1", "v2"] = "v2"
+    claim_citation_inheritance: bool = True
+    nli_precision: Literal["auto", "float16", "bfloat16", "float32"] = "float16"
+    nli_batch_size: int = Field(default=16, ge=1, le=256)
+    nli_premise_cleanup: bool = True
+    nli_window_scoring: bool = True
+    nli_window_sentences: int = Field(default=2, ge=1, le=4)
+    nli_window_entailment_threshold: float = Field(default=0.8, ge=0, le=1)
+    nli_window_contradiction_threshold: float = Field(default=0.05, ge=0, le=1)
+    nli_anchor_guard: bool = True
+    nli_anchor_windows: bool = True
+    nli_anchor_window_entailment_threshold: float = Field(default=0.4, ge=0, le=1)
+    nli_anchor_window_contradiction_threshold: float = Field(default=0.2, ge=0, le=1)
+    nli_code_span_min_chars: int = Field(default=12, ge=0, le=200)
+    nli_aggregation: Literal["strict", "support_first"] = "support_first"
+    nli_veto_contradiction_threshold: float = Field(default=0.9, ge=0, le=1)
+    abstention_guard: bool = True
+    sparse_coverage_weighting: bool = True
     chunk_target_tokens: int = Field(default=420, ge=300, le=600)
     chunk_max_tokens: int = Field(default=600, ge=300, le=600)
     chunk_overlap_tokens: int = Field(default=50, ge=0)
@@ -282,14 +303,8 @@ class RAGSettings(BaseSettings):
             raise ValueError("Require ingestion overlap < target <= maximum chunk tokens")
         if self.llm_max_tokens + 128 >= self.llm_context_window:
             raise ValueError("LLM context must exceed output budget plus 128 template tokens")
-        if not (
-            self.nli_entailment_threshold
-            < self.nli_strong_entailment_threshold
-            <= 1.0
-        ):
-            raise ValueError(
-                "Require entailment threshold < strong entailment threshold <= 1"
-            )
+        if not (self.nli_entailment_threshold < self.nli_strong_entailment_threshold <= 1.0):
+            raise ValueError("Require entailment threshold < strong entailment threshold <= 1")
         for path in (self.document_root, self.qdrant_path):
             if path.exists() and not path.is_dir():
                 raise ValueError(f"Expected directory: {path}")

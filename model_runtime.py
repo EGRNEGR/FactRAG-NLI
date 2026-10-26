@@ -5,7 +5,8 @@ from typing import Any
 from settings import RAGSettings
 
 
-def runtime(settings: RAGSettings) -> tuple[str, Any]:
+def runtime(settings: RAGSettings, precision: str | None = None) -> tuple[str, Any]:
+    """Device and dtype; `precision` overrides model_precision for one model (CPU is fp32)."""
     import torch
 
     device = settings.model_device
@@ -15,7 +16,7 @@ def runtime(settings: RAGSettings) -> tuple[str, Any]:
         raise RuntimeError("CUDA requested but unavailable; CPU retry is forbidden")
     if not device.startswith("cuda"):
         return device, torch.float32
-    precision = settings.model_precision
+    precision = precision or settings.model_precision
     if precision == "auto":
         with torch.cuda.device(device):
             precision = "bfloat16" if torch.cuda.is_bf16_supported() else "float16"

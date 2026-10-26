@@ -33,6 +33,7 @@ def configuration(path: Path, **overrides: object) -> RAGSettings:
         "allow_fallback": True,
         "qdrant_path": path,
         "rerank_score_threshold": 0.1,
+        "rrf_k": 60,  # RRF arithmetic below assumes k = 60 regardless of a local .env
     }
     values.update(overrides)
     return RAGSettings.model_validate(values)
