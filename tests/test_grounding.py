@@ -2,17 +2,23 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
+from document_parser import document_title
 from grounding import (
     anchors_present,
     cited_claims,
     claim_anchors,
     clean_premise,
+    content_overlap,
     is_absence_statement,
     is_verdict_marker,
+    premise_header,
     premise_windows,
     segment_claims,
+    title_from_text,
     verbatim_code_span,
 )
 from hybrid_retriever import coverage_weight
@@ -145,3 +151,43 @@ def test_coverage_weight() -> None:
     )
     assert coverage_weight(["таблица"], vocabulary, 2.0) == 0.0
     assert coverage_weight([], vocabulary, 1.5) == 1.5
+
+
+def test_title_from_document_heads() -> None:
+    rfc = "Internet Engineering Task Force (IETF)  R. Fielding\nRequest for Comments: 9110   Adobe\n\n   HTTP Semantics\n\nAbstract\n"
+    assert title_from_text(rfc) == "RFC 9110: HTTP Semantics"
+    page = "<html><head><title>PEP 703 &ndash; Optional GIL | peps.python.org</title></head>"
+    assert title_from_text(page) == "PEP 703 – Optional GIL"
+    assert title_from_text("\n# NIST Special Publication 800-63B\nbody") == (
+        "NIST Special Publication 800-63B"
+    )
+    assert (
+        title_from_text("NIST SP 800-53\n", "Security Controls")
+        == "NIST SP 800-53: Security Controls"
+    )
+    assert title_from_text("12 34\n", None) is None
+
+
+def test_document_title_reads_files_and_tolerates_missing_ones(tmp_path: Path) -> None:
+    doc = tmp_path / "guide.md"
+    doc.write_text(chr(0xFEFF) + "PostgreSQL: CREATE TABLE\ntext", encoding="utf-8")
+    assert document_title(doc) == "PostgreSQL: CREATE TABLE"
+    assert document_title(tmp_path / "missing.txt") is None
+
+
+def test_premise_header_drops_noisy_sections() -> None:
+    assert premise_header("RFC 9000: QUIC", ("14 Datagram Size", "14.1 Initial Datagram Size")) == (
+        "RFC 9000: QUIC. 14.1 Initial Datagram Size."
+    )
+    assert premise_header("RFC 9562: UUIDs", ("0 1 2 3 4 5 6 7 8 9 0 1",)) == "RFC 9562: UUIDs."
+    assert premise_header(None, ()) == ""
+
+
+def test_content_overlap_ignores_citations_and_stopwords() -> None:
+    source = "Data written to unlogged tables is not written to the write-ahead log."
+    assert (
+        content_overlap("Unlogged tables are not written to the write-ahead log [S1].", source)
+        == 1.0
+    )
+    assert content_overlap("GraphQL errors arrays must be converted [S1].", source) == 0.0
+    assert content_overlap("[S1]", source) == 0.0

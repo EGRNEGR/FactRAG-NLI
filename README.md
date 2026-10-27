@@ -186,6 +186,8 @@ python scripts/render_report.py reports/runs/my-run --baseline reports/runs/<old
 | `RAG_NLI_AGGREGATION`, `RAG_NLI_VETO_CONTRADICTION_THRESHOLD` | `support_first`, `0.9` | Одного подтверждающего источника достаточно, если другой не противоречит явно |
 | `RAG_CLAIM_SEGMENTATION`, `RAG_CLAIM_CITATION_INHERITANCE` | `v2`, `true` | Сегментация с защитой сокращений, наследование ссылки соседнего предложения |
 | `RAG_ABSTENTION_GUARD` | `true` | Оговорки об отсутствии сведений публикуются, исправление предпосылки без обоснования не публикуется |
+| `RAG_NLI_PREMISE_TITLE` | `true` | Каждое окно дополнительно оценивается с префиксом «Название документа. Раздел.» |
+| `RAG_NLI_CO_VERIFICATION`, `RAG_NLI_CO_VERIFICATION_OVERLAP` | `true`, `0.5` | Совместная проверка утверждений одного источника |
 | `RAG_NLI_PRECISION`, `RAG_NLI_BATCH_SIZE` | `float16`, `16` | Точность и размер пакета NLI |
 | `RAG_GENERATION_REPAIR_ATTEMPTS` | `1` | Повторная генерация после отказа NLI |
 | `RAG_GENERATION_LANGUAGE` | `ru` | Язык ответа |
@@ -200,7 +202,7 @@ FactRAG-NLI/
 ├── document_processor.py    # инкрементальная загрузка, SHA-256-дедупликация
 ├── hybrid_retriever.py      # BGE-M3 + Qdrant, BM25, RRF, cross-encoder, порог релевантности
 ├── generator_verifier.py    # промпт, llama-server, NLI-правило (окна, якоря, агрегация)
-├── grounding.py             # сегментация, наследование ссылок, окна посылки, якоря
+├── grounding.py             # сегментация, наследование ссылок, окна, якоря, названия документов
 ├── pipeline.py              # оркестрация QA-маршрута и типизированный ответ
 ├── summarization.py         # саммаризация документа с NLI-фильтром
 ├── app.py, web_bridge.py    # Streamlit-интерфейс

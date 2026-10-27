@@ -84,8 +84,9 @@ CORE_FILES = (
 )
 PARSE_CACHE = ROOT / ".artifacts" / "eval_v3_parse_cache"
 # Verifier switches of the baseline run reports/runs/20261026T1410Z_v3 (bf16 NLI, whole-chunk
-# premises, strict multi-source rule). The replay ablation releases them one step at a time
-# in ABLATION order; the last step is the current profile without any override.
+# premises, strict multi-source rule; the last two switches came after 20261026T2139Z_v3).
+# The replay ablation releases them one step at a time in ABLATION order; the last step is
+# the current profile without any override.
 BASELINE_VERIFIER: dict[str, Any] = {
     "nli_precision": "bfloat16",
     "claim_segmentation": "v1",
@@ -97,6 +98,8 @@ BASELINE_VERIFIER: dict[str, Any] = {
     "nli_anchor_windows": False,
     "nli_code_span_min_chars": 0,
     "abstention_guard": False,
+    "nli_premise_title": False,
+    "nli_co_verification": False,
 }
 ABLATION: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("baseline", ()),
@@ -109,6 +112,8 @@ ABLATION: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("anchor_guard", ("nli_anchor_guard", "nli_anchor_windows")),
     ("code_span", ("nli_code_span_min_chars",)),
     ("abstention_guard", ("abstention_guard",)),
+    ("document_titles", ("nli_premise_title",)),
+    ("co_verification", ("nli_co_verification",)),
 )
 
 
@@ -880,6 +885,7 @@ def probe_rows(verifier: Any, case: EvalCase, context: Any) -> list[dict[str, An
 def run_nli(
     dataset: EvalDatasetV3, dataset_path: Path, run_dir: Path, limit: int | None
 ) -> dict[str, Any]:
+    from document_parser import document_title
     from generator_verifier import NLIFactVerifier, SourceContext
 
     settings = build_settings(dataset, {})
@@ -902,6 +908,8 @@ def run_nli(
                     document_id=chunk.document_id,
                     text=chunk.text,
                     citation="S1",
+                    section_path=chunk.section_path,
+                    document_title=document_title(chunk.source),
                 )
                 for row in probe_rows(verifier, case, context):
                     if row["id"] not in log.done:
@@ -991,6 +999,7 @@ def claim_rows(claims: Sequence[Any]) -> list[dict[str, Any]]:
             "chunks": [e.chunk_id for e in c.evidence],
             "reasons": [e.reason for e in c.evidence],
             "support": [e.support for e in c.evidence],
+            "co_verified": c.co_verified,
         }
         for c in claims
     ]
@@ -1221,6 +1230,89 @@ def chunk_texts() -> dict[str, tuple[str, str]]:
     return texts
 
 
+_SECTION_HEADER = re.compile(r"^Документ:[^\n]*\nРаздел: ([^\n]*)\n")
+
+
+def probe_contexts(dataset: EvalDatasetV3) -> dict[str, Any]:
+    """NLI probe premises as SourceContext, with the section and document title of the chunk."""
+    from document_parser import document_title
+    from generator_verifier import SourceContext
+
+    texts = chunk_texts()
+    titles = {
+        d.document_id: document_title(ROOT / dataset.corpus_root / d.path)
+        for d in dataset.documents
+    }
+    contexts = {}
+    for case in dataset.cases:
+        document_id, text = texts[case.nli_probe.premise_chunk_id]
+        header = _SECTION_HEADER.match(text)
+        contexts[case.id] = SourceContext(
+            chunk_id=case.nli_probe.premise_chunk_id,
+            document_id=document_id,
+            text=text,
+            citation="S1",
+            section_path=tuple(header.group(1).split(" > ")) if header and header.group(1) else (),
+            document_title=titles.get(document_id),
+        )
+    return contexts
+
+
+def co_verification_stress(
+    verifier: Any, dataset: EvalDatasetV3, contexts: dict[str, Any]
+) -> dict[str, Any]:
+    """Unsupported claims published next to a supported one from the same source.
+
+    For every Neutral or Contradiction probe the draft is "<longest sentence of its own
+    premise> [S1]" followed by "<probe hypothesis> [S1]". The first claim is verbatim
+    support, the second must stay blocked. Single-claim probes cannot show this risk,
+    which is exactly the case co-verification relaxes. Only drafts whose first claim is
+    VERIFIED count.
+    """
+    from generator_verifier import ClaimStatus, GenerationMetadata, RawGenerationResult
+    from grounding import clean_premise, premise_windows
+
+    rows = []
+    metadata = GenerationMetadata(backend="stress", finish_reason="stop")
+    for case in dataset.cases:
+        if case.nli_probe.label == "entailment":
+            continue
+        context = contexts[case.id]
+        sentences = [
+            w for w in premise_windows(clean_premise(context.text), 1) if len(w.split()) >= 8
+        ]
+        if not sentences:
+            continue
+        support = max(sentences, key=len)
+        for lang in ("en", "ru"):
+            hypothesis = " ".join(getattr(case.nli_probe, f"hypothesis_{lang}").split())
+            result = verifier.verify(
+                RawGenerationResult(
+                    text=f"{support} [S1]\n{hypothesis} [S1]",
+                    contexts={"S1": context},
+                    metadata=metadata,
+                )
+            )
+            facts = [claim for claim in result.claims if claim.kind == "fact"]
+            if len(facts) != 2 or facts[0].status != ClaimStatus.VERIFIED:
+                continue
+            rows.append(
+                {
+                    "id": f"{case.id}:{lang}",
+                    "label": case.nli_probe.label,
+                    "leaked": facts[1].status == ClaimStatus.VERIFIED,
+                    "co_verified": facts[1].co_verified,
+                }
+            )
+    leaked = [row for row in rows if row["leaked"]]
+    return {
+        "pairs": len(rows),
+        "leaked": rate([row["leaked"] for row in rows]),
+        "leaked_by_co_verification": sum(row["co_verified"] for row in rows),
+        "leaked_ids": [row["id"] for row in leaked],
+    }
+
+
 def replay_case(case: EvalCase, response: dict[str, Any], verifier: Any) -> dict[str, Any]:
     """Re-verify the first stored draft of one logged response with `verifier`."""
     from generator_verifier import RawGenerationResult
@@ -1244,11 +1336,23 @@ def replay_case(case: EvalCase, response: dict[str, Any], verifier: Any) -> dict
         )
         return row
     first = attempts[0]
+    contexts = first["contexts"]
+    if verifier.settings.nli_premise_title:
+        # Logs written before titles existed: read them from the logged source files.
+        from document_parser import document_title
+
+        paths = {s.get("source_id"): s.get("source") for s in response["sources"]}
+        contexts = {
+            key: value
+            if value.get("document_title") or not paths.get(key)
+            else {**value, "document_title": document_title(paths[key])}
+            for key, value in contexts.items()
+        }
     verified = verifier.verify(
         RawGenerationResult.model_validate(
             {
                 "text": first["raw_text"],
-                "contexts": first["contexts"],
+                "contexts": contexts,
                 "metadata": first["generation_metadata"],
             }
         )
@@ -1315,7 +1419,7 @@ def run_replay(
     change is measured on identical LLM outputs. Repair attempts are not replayed: they
     need the LLM. Latency is not reported: memoized scores make it meaningless.
     """
-    from generator_verifier import NLIFactVerifier, SourceContext
+    from generator_verifier import NLIFactVerifier
 
     by_id = {c.id: c for c in dataset.cases}
     split = dataset_split(dataset.cases)
@@ -1328,16 +1432,7 @@ def run_replay(
             ]
     if not drafts:
         raise FileNotFoundError(f"No full/e2e_<profile>.jsonl logs in {source}")
-    texts = chunk_texts()
-    contexts = {
-        case.id: SourceContext(
-            chunk_id=case.nli_probe.premise_chunk_id,
-            document_id=texts[case.nli_probe.premise_chunk_id][0],
-            text=texts[case.nli_probe.premise_chunk_id][1],
-            citation="S1",
-        )
-        for case in dataset.cases
-    }
+    contexts = probe_contexts(dataset)
     steps = ablation_steps()[-1:] if final_only else ablation_steps()
     last_use = {
         build_settings(dataset, overrides).nli_precision: i
@@ -1372,6 +1467,9 @@ def run_replay(
                 nli = summarize_nli(pairs, settings, split)
                 record: dict[str, Any] = {"step": name, "overrides": overrides}
                 record.update(replay_step_record(e2e, nli, by_id))
+                record["nli"]["co_verification_stress"] = co_verification_stress(
+                    verifier, dataset, contexts
+                )
                 records.append(record)
                 brief = {p: m["factrag"]["correct"]["k"] for p, m in record["e2e"].items()}
                 brief["nli_frr"] = record["nli"]["overall"]["false_rejection_rate"]
@@ -1405,7 +1503,13 @@ def run_replay(
         run_dir,
         dataset_path,
         settings,
-        {"replay": {"source_run": source_name, "steps": [r["step"] for r in records]}},
+        {
+            "replay": {
+                "source_run": source_name,
+                "steps": [r["step"] for r in records],
+                "settings": settings_record(settings),
+            }
+        },
     )
     return ablation
 

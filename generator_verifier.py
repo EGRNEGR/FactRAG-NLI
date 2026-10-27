@@ -20,15 +20,17 @@ from typing import Any, Literal, Mapping, Protocol, Sequence, Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from document_parser import DocumentChunk
+from document_parser import DocumentChunk, document_title
 from grounding import (
     anchors_present,
     cited_claims,
+    content_overlap,
     claim_anchors,
     clean_premise,
     has_negation,
     is_absence_statement,
     is_verdict_marker,
+    premise_header,
     premise_windows,
     verbatim_code_span,
 )
@@ -107,6 +109,8 @@ class SourceContext(_Result):
     section_path: tuple[str, ...] = ()
     page_start: int | None = None
     page_end: int | None = None
+    # Read from the source file, used only to frame NLI premises; not sent to the LLM.
+    document_title: str | None = None
 
 
 class GenerationMetadata(_Result):
@@ -181,6 +185,9 @@ class VerifiedClaim(_Result):
     # never verified; "verdict": a bare "Нет." that is published only with the next claim.
     kind: Literal["fact", "absence", "verdict"] = "fact"
     citation_inherited: bool = False
+    # Published by co-verification: NLI left it UNVERIFIED, another claim of the answer
+    # is VERIFIED from a shared source that holds all its anchors and most of its words.
+    co_verified: bool = False
 
 
 class VerifiedGenerationResult(_Result):
@@ -529,7 +536,8 @@ class LocalLLMGenerator:
                         "question": query.strip(),
                         **({"revision": revision} if revision is not None else {}),
                         "sources": {
-                            key: value.model_dump(mode="json") for key, value in sources.items()
+                            key: value.model_dump(mode="json", exclude={"document_title"})
+                            for key, value in sources.items()
                         },
                     },
                     ensure_ascii=False,
@@ -550,6 +558,9 @@ class LocalLLMGenerator:
                     section_path=chunk.section_path,
                     page_start=chunk.page_start,
                     page_end=chunk.page_end,
+                    document_title=document_title(chunk.source)
+                    if self.settings.nli_premise_title
+                    else None,
                 )
                 candidate = {**selected, key: value}
                 if self._backend.count_tokens(system_prompt + "\n" + prompt(candidate)) <= budget:
@@ -809,9 +820,23 @@ class NLIFactVerifier:
         s = self.settings
         premise = clean_premise(context.text) if s.nli_premise_cleanup else context.text
         windows = premise_windows(premise, s.nli_window_sentences) if s.nli_window_scoring else []
+        # With a document title, every window (and the chunk) is scored a second time framed by
+        # "Title. Section." as an additional route: a claim naming its document can then be
+        # entailed, while support found on the bare text is never lost. Anchors and verbatim
+        # spans are always searched in the source text itself.
+        header = (
+            premise_header(context.document_title, context.section_path)
+            if s.nli_premise_title
+            else ""
+        )
+        variants = [(w, w) for w in windows]
+        if header:
+            variants += [(f"{header} {w}", w) for w in (*windows, premise)]
         raw_scores = (
-            self._predict_many([(premise, hypothesis), *((w, hypothesis) for w in windows)])
-            if windows
+            self._predict_many(
+                [(premise, hypothesis), *((text, hypothesis) for text, _ in variants)]
+            )
+            if variants
             else [self.backend.predict(premise, hypothesis)]
         )
         scores = [
@@ -819,36 +844,41 @@ class NLIFactVerifier:
             for p in raw_scores
         ]
         full = scores[0]
-        scored = [(w, p) for w, p in zip(windows, scores[1:], strict=True) if p is not None]
+        # (text seen by the classifier, source text it was cut from, probabilities)
+        scored = [
+            (text, source, p)
+            for (text, source), p in zip(variants, scores[1:], strict=True)
+            if p is not None
+        ]
         anchors = claim_anchors(hypothesis)
         tiers: list[
-            tuple[Literal["window", "anchor_window"], list[tuple[str, NLIProbabilities]]]
+            tuple[Literal["window", "anchor_window"], list[tuple[str, str, NLIProbabilities]]]
         ] = [
             (
                 "window",
                 [
-                    (w, p)
-                    for w, p in scored
-                    if p.p_entailment >= s.nli_window_entailment_threshold
-                    and p.p_contradiction < s.nli_window_contradiction_threshold
+                    item
+                    for item in scored
+                    if item[2].p_entailment >= s.nli_window_entailment_threshold
+                    and item[2].p_contradiction < s.nli_window_contradiction_threshold
                 ],
             ),
             (
                 "anchor_window",
                 [
-                    (w, p)
-                    for w, p in scored
+                    item
+                    for item in scored
                     if s.nli_anchor_windows
                     and anchors
-                    and p.p_entailment >= s.nli_anchor_window_entailment_threshold
-                    and p.p_contradiction < s.nli_anchor_window_contradiction_threshold
-                    and anchors_present(anchors, w)
+                    and item[2].p_entailment >= s.nli_anchor_window_entailment_threshold
+                    and item[2].p_contradiction < s.nli_anchor_window_contradiction_threshold
+                    and anchors_present(anchors, item[1])
                 ],
             ),
         ]
         for route, candidates in tiers:
             if candidates:
-                text, best = max(candidates, key=lambda item: item[1].p_entailment)
+                text, _, best = max(candidates, key=lambda item: item[2].p_entailment)
                 return ClaimEvidence(
                     source_id=key,
                     chunk_id=context.chunk_id,
@@ -860,7 +890,7 @@ class NLIFactVerifier:
             hypothesis, premise, s.nli_code_span_min_chars
         ):
             pool = [(premise, full)] if full is not None else []
-            pool += scored
+            pool += [(text, p) for text, _, p in scored]
             if pool:
                 text, best = max(
                     pool, key=lambda item: item[1].p_entailment - item[1].p_contradiction
@@ -878,7 +908,7 @@ class NLIFactVerifier:
             chunk_id=context.chunk_id,
             probabilities=full,
             reason="pair_exceeds_nli_context" if full is None else None,
-            premise_text=premise if windows else getattr(self.backend, "last_premise", premise),
+            premise_text=premise if variants else getattr(self.backend, "last_premise", premise),
         )
 
     def _supports(self, evidence: ClaimEvidence) -> bool:
@@ -1036,6 +1066,45 @@ class NLIFactVerifier:
             citation_inherited=is_inherited,
         )
 
+    def _co_verify(
+        self, claims: tuple[VerifiedClaim, ...], contexts: Mapping[str, SourceContext]
+    ) -> tuple[VerifiedClaim, ...]:
+        """Publish UNVERIFIED claims backed lexically by a source that verified another claim.
+
+        Only claims the NLI rule verified can vouch (no chaining). A candidate must be
+        UNVERIFIED for lack of support (a CONTRADICTION or a missing anchor never qualifies),
+        cite a source shared with a verified claim, and find all its anchors and at least
+        nli_co_verification_overlap of its content words in the shared sources.
+        """
+        vouching = {
+            key
+            for claim in claims
+            if claim.kind == "fact" and claim.status == ClaimStatus.VERIFIED
+            for key in claim.source_ids
+        }
+        if not vouching:
+            return claims
+        result = []
+        for claim in claims:
+            shared = [key for key in claim.source_ids if key in vouching and key in contexts]
+            if (
+                claim.kind == "fact"
+                and claim.status == ClaimStatus.UNVERIFIED
+                and claim.reason == "cited_support_not_established"
+                and shared
+            ):
+                source = " ".join(clean_premise(contexts[key].text) for key in shared)
+                if (
+                    anchors_present(claim_anchors(claim.hypothesis), source)
+                    and content_overlap(claim.hypothesis, source)
+                    >= self.settings.nli_co_verification_overlap
+                ):
+                    claim = claim.model_copy(
+                        update={"status": ClaimStatus.VERIFIED, "reason": None, "co_verified": True}
+                    )
+            result.append(claim)
+        return tuple(result)
+
     def _meta(
         self, text: str, source_ids: tuple[str, ...], kind: Literal["absence", "verdict"]
     ) -> VerifiedClaim:
@@ -1102,6 +1171,8 @@ class NLIFactVerifier:
                 )
             except Exception as exc:
                 raise VerificationError(f"NLI inference failed: {exc}") from exc
+            if s.nli_co_verification:
+                claims = self._co_verify(claims, raw.contexts)
             facts = [claim for claim in claims if claim.kind == "fact"]
             accepted = [claim for claim in facts if claim.status == ClaimStatus.VERIFIED]
             blocked = len(facts) - len(accepted)
