@@ -229,6 +229,12 @@ class Run:
             for profile in ("guard_on", "guard_off")
         }
         self.pilots = read_json(run_dir / "pilots" / "summary.json")
+        # Rows of cases that failed for infrastructure reasons and were run again
+        # (evaluate_suite.py e2e --retry-errors); the original error records are kept.
+        self.retried = {
+            profile: read_jsonl(run_dir / f"e2e_{profile}" / "retried_errors.jsonl")
+            for profile in ("guard_on", "guard_off")
+        }
 
     def setting(self, name: str) -> Any:
         """A setting of the run as recorded in config.json (first E2E profile that has it)."""
@@ -392,6 +398,34 @@ def ablation_rows(run: Run) -> tuple[list[list[Any]], list[list[Any]]]:
     return rows, csv_rows
 
 
+def catch_note(steps: Sequence[dict[str, Any]]) -> str:
+    """Largest correctness gain and what it cost in NLI catch rate along the ladder."""
+    if len(steps) < 2:
+        return ""
+
+    def correct(step: dict[str, Any]) -> int:
+        e2e = step["e2e"].get("guard_on") or next(iter(step["e2e"].values()))
+        return int(e2e["factrag"]["correct"]["k"])
+
+    def catch(step: dict[str, Any]) -> float:
+        return float(step["nli"]["overall"]["hallucination_catch_rate"])
+
+    gains = [(correct(b) - correct(a), b, a) for a, b in zip(steps, steps[1:])]
+    gain, best, before = max(gains, key=lambda item: item[0])
+    lowest = min(steps, key=catch)
+    text = (
+        f"Наибольший вклад даёт шаг «{STEP_NAMES.get(best['step'], best['step'])}» "
+        f"({gain:+d} корректных исходов)"
+    )
+    if catch(lowest) < catch(steps[0]):
+        text += (
+            f"; перехват NLI-проб на пути опускается до {pct(catch(lowest))} (шаг "
+            f"«{STEP_NAMES.get(lowest['step'], lowest['step'])}») и в итоге составляет "
+            f"{pct(catch(steps[-1]))} против {pct(catch(steps[0]))} у базового верификатора"
+        )
+    return text + "."
+
+
 def split_rows(run: Run) -> list[list[Any]]:
     rows: list[list[Any]] = []
     for split in ("dev", "test"):
@@ -423,8 +457,8 @@ def section_changes(run: Run, baseline: Run | None) -> str:
         )
         out += [
             f"Базовый прогон [`{baseline.rel}`]({baseline.dir.relative_to(REPORTS).as_posix()}) и "
-            f"этот прогон выполнены на одних и тех же {run.e2e[run.profiles[0]]['cases']} вопросах, "
-            "корпусе, моделях и стенде. "
+            "этот прогон выполнены на одних и тех же вопросах датасета v3, корпусе, моделях и "
+            "стенде. "
             "Между ними изменены три вещи: настройки гибридного поиска, системный промпт и "
             "верификатор; вклад верификатора отдельно измерен ниже повторной проверкой "
             "сохранённых черновиков базового прогона.",
@@ -459,7 +493,7 @@ def section_changes(run: Run, baseline: Run | None) -> str:
             "### 2.1. Абляция верификатора на тех же черновиках",
             "",
             f"Режим `evaluate_suite.py replay` заново проверяет каждый сохранённый черновик LLM "
-            f"прогона `{run.ablation['source_run']}` ({PROFILE_NAMES[profile]}) и "
+            f"прогона `{run.ablation['source_run']}` (профиль {PROFILE_SHORT[profile]}) и "
             f"{run.ablation['steps'][0]['nli']['overall']['n']} NLI-проб, "
             "включая изменения верификатора по одному (сверху вниз накопительно). LLM и поиск не "
             "вызываются, поэтому разница между строками - вклад только этого изменения. "
@@ -481,8 +515,10 @@ def section_changes(run: Run, baseline: Run | None) -> str:
                 "lrrrrrrr",
             ),
             "",
-            "Первая строка воспроизводит базовый прогон; последняя - текущий профиль. Таблица с "
-            "разбивкой dev/test: [`tables/replay_ablation.csv`](tables/replay_ablation.csv).",
+            "Первая строка воспроизводит базовый прогон; последняя - текущий профиль. "
+            + catch_note(run.ablation["steps"])
+            + " Таблица с разбивкой dev/test: "
+            "[`tables/replay_ablation.csv`](tables/replay_ablation.csv).",
             "",
         ]
     out += [
@@ -1388,6 +1424,18 @@ def section_e2e(run: Run) -> str:
             f"![Корректный исход, галлюцинации и отказы]({fig})",
             "",
             *paired,
+            *(
+                f"- Повторно выполнены после сбоя ({PROFILE_NAMES[p]}): "
+                + "; ".join(
+                    f"{r['id']} - `{quote(r.get('error'), 90)}`, исходное время "
+                    f"{ms(r.get('wall_ms'))} мс"
+                    for r in run.retried[p]
+                )
+                + f". Исходные записи: `{run.rel}/e2e_{p}/retried_errors.jsonl`; в таблицах учтён "
+                "результат повтора."
+                for p in run.profiles
+                if run.retried.get(p)
+            ),
             "",
             f"По категориям ({PROFILE_NAMES[profile]}), Vanilla → FactRAG-NLI:",
             "",
