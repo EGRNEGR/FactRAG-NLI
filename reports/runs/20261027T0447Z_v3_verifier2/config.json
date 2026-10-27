@@ -1,0 +1,192 @@
+{
+ "created_utc": "2026-10-27T04:51:03.351905+00:00",
+ "dataset": {
+  "path": "data/eval_dataset_v3.json",
+  "sha256": "33cb533ee7cc46adfd3edf81fd9c270ed1fe7399f1c0c0b93f321275b71a44d3"
+ },
+ "git": {
+  "commit": "9c2cf775c8c38418150d8824a3d0d170bf6c971b",
+  "dirty_files": [
+   "?? reports/runs/20261027T0447Z_v3_verifier2/"
+  ]
+ },
+ "code_sha256": {
+  "pipeline.py": "be9875602d23c3a8e96f1ba07f21628c2af8b2dbdcc1aa94c2a856f813328d5f",
+  "generator_verifier.py": "35a4137bd4416ccacd78f69476364d8b11d640e69f302cfb45b62404ca2f4db7",
+  "grounding.py": "d5c3e4f632e26a63a8d4da29e8b0aa13e3fe39800631a1bb6735e4bbba64b461",
+  "hybrid_retriever.py": "092f44aef5dae104e061ff64af8d0ce7e5b7b169879bc506f53a35ee5a3c01ce",
+  "document_parser.py": "6e659c95526ede42fa9a124f579d4eed8c76c34cd735fedd45619ba30e6eda9d",
+  "settings.py": "f37193c37ada8d03d5a05332353e38e61887c783057de12d1cf3a44c94e799f6",
+  "eval_dataset.py": "ddcd1b8c59bbabd0ca08903788b164b4141d48d1c30c5267783f17e01dc18023",
+  "evaluate_suite.py": "3bcf2ab6c1f6cdfd5697268393cabea8bd89f2d229a66e8419ac784f6feb5f16"
+ },
+ "python": "3.12.9",
+ "platform": "Windows-11-10.0.26300-SP0",
+ "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU, 8151 MiB, 596.21",
+ "packages": {
+  "torch": "2.12.0.dev20260408+cu128",
+  "transformers": "5.16.1",
+  "sentence-transformers": "6.0.1",
+  "qdrant-client": "1.19.0",
+  "rank-bm25": "0.2.2"
+ },
+ "models": {
+  "embedding": {
+   "path": "C:/Hakatons/RT/models/bge-m3",
+   "files": 63,
+   "bytes": 4587326036,
+   "listing_sha256": "a05886f9b1cf441821176679e75fbbf5ab3f52248bab0bb86314f8a599efc6bc",
+   "config_sha256": "26159e7ad065073448460117eb24b7a4572f6f4e78eadff65dc0a11c052449fa"
+  },
+  "reranker": {
+   "path": "C:/Hakatons/RT/models/bge-reranker-large",
+   "files": 25,
+   "bytes": 6741717181,
+   "listing_sha256": "b884ec4952d670e4d2c5ab5e5e8391c98d2090c0d90bfd0f7c6b4dd3cdcb51ab",
+   "config_sha256": "25dda0319f57e9de243c32eb7ecefa0768271afac6b5d8a94ba7f779198ab102"
+  },
+  "nli": {
+   "path": "C:/Hakatons/RT/models/mdeberta-nli",
+   "files": 29,
+   "bytes": 2590780573,
+   "listing_sha256": "b1b9a9e777cc63e9247b606d6903a76da16fa70ad8e3eccbb874e54b390b6b89",
+   "config_sha256": "bc7b85f164a17c1b007d87fb99d3676f4a4d2e6511d2288dd3f5334dc0f34e6b"
+  },
+  "llm": {
+   "path": "C:/Hakatons/RT/models/llm/Qwen2.5-14B-Instruct-Q4_K_M.gguf",
+   "bytes": 8988110976,
+   "sha256_first_64MiB": "5c9f89137299af5a51bed1a89b4002a32c771e514a6c3ecbb071fe893226b38c"
+  }
+ },
+ "llama_server": {
+  "error": "ConnectError: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение"
+ },
+ "sampling": {
+  "temperature": 0.0,
+  "top_p": 0.9,
+  "max_tokens": 512,
+  "seed": 42,
+  "context_window": 4096
+ },
+ "runtime": {
+  "embedding_batch_size": 2,
+  "rerank_batch_size": 2
+ },
+ "nli_thresholds": {
+  "entailment": 0.4,
+  "contradiction": 0.2,
+  "strong_entailment": 0.7,
+  "strong_enabled": true
+ },
+ "modes": {
+  "replay": {
+   "source_run": "reports/runs/20261026T2139Z_v3",
+   "steps": [
+    "baseline",
+    "nli_float16",
+    "segmentation_v2",
+    "citation_inheritance",
+    "premise_cleanup",
+    "sentence_windows",
+    "support_first",
+    "anchor_guard",
+    "code_span",
+    "abstention_guard",
+    "document_titles",
+    "co_verification"
+   ],
+   "settings": {
+    "mode": "production",
+    "allow_fallback": false,
+    "embedding_model_path": "C:\\Hakatons\\RT\\models\\bge-m3",
+    "reranker_model_path": "C:\\Hakatons\\RT\\models\\bge-reranker-large",
+    "nli_model_path": "C:\\Hakatons\\RT\\models\\mdeberta-nli",
+    "llm_model_path": "C:\\Hakatons\\RT\\models\\llm\\Qwen2.5-14B-Instruct-Q4_K_M.gguf",
+    "llm_backend": "vllm",
+    "max_question_chars": 4000,
+    "llm_api_base": "http://127.0.0.1:8080/v1",
+    "llm_api_model": null,
+    "llm_api_timeout": 300.0,
+    "llm_api_stream": false,
+    "llm_tokenizer_mode": "llama_server",
+    "generation_language": "ru",
+    "generation_repair_attempts": 1,
+    "premise_guard": true,
+    "nli_evidence_focus": false,
+    "llm_context_window": 4096,
+    "llm_seed": 42,
+    "llm_gpu_layers": -1,
+    "llm_cpu_retry": true,
+    "nli_max_length": 512,
+    "document_root": "C:\\Hakatons\\FactRAG-NLI\\data\\test_docs",
+    "qdrant_path": "C:\\Hakatons\\FactRAG-NLI\\.artifacts\\eval-v3-index",
+    "qdrant_collection": "rag_chunks",
+    "embedding_batch_size": 2,
+    "rerank_batch_size": 2,
+    "rerank_max_length": 512,
+    "rerank_candidates": 40,
+    "model_device": "auto",
+    "model_precision": "auto",
+    "fallback_dimension": 384,
+    "network_policy": "local_only",
+    "network_probe_timeout": 3.0,
+    "minimum_free_ram_gb": 16.0,
+    "minimum_free_disk_gb": 10.0,
+    "max_upload_file_size_mb": 100,
+    "max_document_pages": 500,
+    "dense_candidates": 60,
+    "sparse_candidates": 60,
+    "rrf_k": 30,
+    "dense_weight": 1.0,
+    "sparse_weight": 1.0,
+    "rerank_top_k": 5,
+    "rerank_score_threshold": 0.05,
+    "rerank_rrf_alpha": 0.2,
+    "rerank_window_tokens": 384,
+    "nli_entailment_threshold": 0.4,
+    "nli_contradiction_threshold": 0.2,
+    "nli_strong_entailment_threshold": 0.7,
+    "nli_strong_entailment_enabled": true,
+    "claim_segmentation": "v2",
+    "claim_citation_inheritance": true,
+    "nli_precision": "float16",
+    "nli_batch_size": 16,
+    "nli_premise_cleanup": true,
+    "nli_window_scoring": true,
+    "nli_window_sentences": 2,
+    "nli_window_entailment_threshold": 0.8,
+    "nli_window_contradiction_threshold": 0.05,
+    "nli_anchor_guard": true,
+    "nli_anchor_windows": true,
+    "nli_anchor_window_entailment_threshold": 0.4,
+    "nli_anchor_window_contradiction_threshold": 0.2,
+    "nli_code_span_min_chars": 12,
+    "nli_aggregation": "support_first",
+    "nli_veto_contradiction_threshold": 0.9,
+    "nli_premise_title": true,
+    "nli_co_verification": true,
+    "nli_co_verification_overlap": 0.5,
+    "abstention_guard": true,
+    "sparse_coverage_weighting": true,
+    "chunk_target_tokens": 320,
+    "chunk_max_tokens": 384,
+    "chunk_overlap_tokens": 50,
+    "ingestion_target_tokens": 650,
+    "ingestion_max_tokens": 800,
+    "ingestion_overlap_tokens": 75,
+    "ingestion_batch_size": 2,
+    "ingestion_max_chunks": 10000,
+    "summary_pool_size": 30,
+    "summary_top_k": 12,
+    "summary_mmr_lambda": 0.6,
+    "summary_contradiction_threshold": 0.3,
+    "summary_similarity_threshold": 0.85,
+    "summary_output_tokens": 768,
+    "summary_max_generation_calls": 16,
+    "temperature": 0.0,
+    "top_p": 0.9,
+    "max_tokens": 512
+   }
+  }
+ }
+}
