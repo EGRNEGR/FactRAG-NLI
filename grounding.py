@@ -168,6 +168,76 @@ def premise_windows(premise: str, max_sentences: int = 2) -> list[str]:
     return [w for w in dict.fromkeys(windows) if w != premise]
 
 
+# ----------------------------------------------------------------------------- titles
+
+_HTML_TITLE = re.compile(r"<title[^>]*>(.*?)</title>", re.I | re.S)
+_RFC_NUMBER = re.compile(r"Request for Comments:\s*(\d+)")
+_LETTER = re.compile(r"[^\W\d_]")
+
+
+def title_from_text(head: str, metadata_title: str | None = None) -> str | None:
+    """Document title from the head of its text, by generic rules (no per-document table).
+
+    HTML <title> without the site suffix; an RFC header gives "RFC N: <line before
+    Abstract>"; otherwise the first non-empty line, with a different metadata title
+    (PDF/DOCX properties) appended.
+    """
+    head = head.lstrip(chr(0xFEFF))
+    match = _HTML_TITLE.search(head)
+    if match:
+        title = " ".join(html.unescape(match.group(1)).split()).split(" | ")[0]
+        return title[:160] or None
+    lines = [line.strip().lstrip("#").strip() for line in head.splitlines()]
+    lines = [line for line in lines if line]
+    rfc = _RFC_NUMBER.search(head)
+    if rfc:
+        name = next(
+            (prev for prev, line in zip(lines, lines[1:]) if line.casefold() == "abstract"), None
+        )
+        return f"RFC {rfc.group(1)}: {name}" if name else f"RFC {rfc.group(1)}"
+    first = next((line for line in lines if len(_LETTER.findall(line)) >= 3), None)
+    if first and metadata_title and metadata_title.casefold() not in first.casefold():
+        first = f"{first}: {metadata_title}"
+    return first[:160] if first else metadata_title or None
+
+
+def premise_header(title: str | None, section_path: tuple[str, ...] | list[str]) -> str:
+    """'Title. Section.' prefix for an NLI premise; noisy section names are dropped.
+
+    Parser section paths of plain-text and PDF documents sometimes hold ASCII diagrams or
+    sentence fragments; a section name is kept only if letters make up half of it.
+    """
+    section = section_path[-1].strip() if section_path else ""
+    letters = len(_LETTER.findall(section))
+    if letters < 3 or letters < 0.5 * len(section.replace(" ", "")):
+        section = ""
+    parts = [part.strip().rstrip(".") for part in (title, section) if part and part.strip()]
+    return ". ".join(parts) + "." if parts else ""
+
+
+_WORD = re.compile(r"\w+")
+_STOPWORDS = frozenset(
+    "the and for are with that this from its has have been was were will can all any each "
+    "into than then which when also such their there these those not but only must should "
+    "may shall это для что как при или его она они если также быть может должен должна "
+    "должны которые который которая только тоже".split()
+)
+
+
+def content_overlap(claim: str, source: str) -> float:
+    """Share of the claim's content words (3+ characters, or containing a digit) in `source`."""
+    words = {
+        word.casefold()
+        for word in _WORD.findall(_ANY_CITATION.sub(" ", claim))
+        if (len(word) >= 3 or any(ch.isdigit() for ch in word))
+        and word.casefold() not in _STOPWORDS
+    }
+    if not words:
+        return 0.0
+    vocabulary = {word.casefold() for word in _WORD.findall(source)}
+    return sum(word in vocabulary for word in words) / len(words)
+
+
 # ----------------------------------------------------------------------------- anchors
 
 # Document designators are provenance, not facts the chunk text has to contain.

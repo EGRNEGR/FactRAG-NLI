@@ -213,6 +213,15 @@ class RAGSettings(BaseSettings):
     nli_code_span_min_chars: int = Field(default=12, ge=0, le=200)
     nli_aggregation: Literal["strict", "support_first"] = "support_first"
     nli_veto_contradiction_threshold: float = Field(default=0.9, ge=0, le=1)
+    # Prefix NLI premises (chunk and windows) with the document title and section heading,
+    # so a claim naming its document ("RFC 9110 specifies ...") is not Neutral only
+    # because the window itself never names the document.
+    nli_premise_title: bool = True
+    # A claim the NLI rule left UNVERIFIED (not CONTRADICTION) is published when another
+    # claim of the same answer is VERIFIED from a shared cited source, all its anchors occur
+    # in that source and at least this share of its content words does.
+    nli_co_verification: bool = True
+    nli_co_verification_overlap: float = Field(default=0.5, ge=0, le=1)
     abstention_guard: bool = True
     sparse_coverage_weighting: bool = True
     chunk_target_tokens: int = Field(default=420, ge=300, le=600)

@@ -220,3 +220,97 @@ def test_windows_are_scored_in_one_batch_when_supported() -> None:
         raw("Клиент дополняет до 1200 байт [S1].", {"S1": source(CHUNK)})
     )
     assert backend.batches == [6]  # whole chunk + 3 single + 2 paired sentence windows
+
+
+def titled(text: str, title: str | None, identifier: str = "one") -> SourceContext:
+    return SourceContext(
+        chunk_id=identifier,
+        document_id="doc",
+        text=text,
+        citation="doc, 1",
+        section_path=("1.2 Idle Timeout",),
+        document_title=title,
+    )
+
+
+class Framed:
+    """Entails only premises that start with the document header (or only bare ones)."""
+
+    def __init__(self, framed_only: bool) -> None:
+        self.framed_only = framed_only
+
+    def predict(self, premise: str, hypothesis: str) -> NLIProbabilities:
+        is_framed = premise.startswith("RFC 9000: QUIC.")
+        return ENTAILMENT if is_framed == self.framed_only else NEUTRAL
+
+
+SENTENCES = "Each endpoint advertises a timeout. The effective timeout is the minimum."
+
+
+def test_document_title_adds_a_framed_route_without_losing_bare_support() -> None:
+    claim = "RFC 9000 makes the effective timeout the minimum [S1]."
+    framed = NLIFactVerifier(settings(), backend=Framed(framed_only=True)).verify(
+        raw(claim, {"S1": titled(SENTENCES, "RFC 9000: QUIC")})
+    )
+    assert framed.claims[0].status == ClaimStatus.VERIFIED
+    premise = framed.claims[0].evidence[0].premise_text or ""
+    assert premise.startswith("RFC 9000: QUIC. 1.2 Idle Timeout. ")
+    untitled = NLIFactVerifier(settings(), backend=Framed(framed_only=True)).verify(
+        raw(claim, {"S1": titled(SENTENCES, None)})
+    )
+    assert untitled.claims[0].status == ClaimStatus.UNVERIFIED
+    bare = NLIFactVerifier(settings(), backend=Framed(framed_only=False)).verify(
+        raw(claim, {"S1": titled(SENTENCES, "RFC 9000: QUIC")})
+    )
+    assert bare.claims[0].status == ClaimStatus.VERIFIED  # framing never removes support
+
+
+class FirstClaim:
+    def __init__(self, second: NLIProbabilities) -> None:
+        self.second = second
+
+    def predict(self, premise: str, hypothesis: str) -> NLIProbabilities:
+        return ENTAILMENT if "advertises" in hypothesis else self.second
+
+
+TWO_CLAIMS = "Each endpoint advertises a timeout [S1]. The effective timeout is the minimum [S1]."
+
+
+def test_co_verification_publishes_a_lexically_backed_claim_of_the_same_source() -> None:
+    result = NLIFactVerifier(settings(), backend=FirstClaim(NEUTRAL)).verify(
+        raw(TWO_CLAIMS, {"S1": titled(SENTENCES, None)})
+    )
+    assert [c.status for c in result.claims] == [ClaimStatus.VERIFIED, ClaimStatus.VERIFIED]
+    assert [c.co_verified for c in result.claims] == [False, True]
+    off = NLIFactVerifier(settings(nli_co_verification=False), backend=FirstClaim(NEUTRAL)).verify(
+        raw(TWO_CLAIMS, {"S1": titled(SENTENCES, None)})
+    )
+    assert off.claims[1].status == ClaimStatus.UNVERIFIED
+
+
+def test_co_verification_never_overrides_contradiction_missing_overlap_or_other_sources() -> None:
+    contradicted = NLIFactVerifier(settings(), backend=FirstClaim(CONTRADICTION)).verify(
+        raw(TWO_CLAIMS, {"S1": titled(SENTENCES, None)})
+    )
+    assert contradicted.claims[1].status == ClaimStatus.CONTRADICTION
+    unrelated = NLIFactVerifier(settings(), backend=FirstClaim(NEUTRAL)).verify(
+        raw(
+            "Each endpoint advertises a timeout [S1]. Servers rotate certificates daily [S1].",
+            {"S1": titled(SENTENCES, None)},
+        )
+    )
+    assert unrelated.claims[1].status == ClaimStatus.UNVERIFIED
+    other_source = NLIFactVerifier(settings(), backend=FirstClaim(NEUTRAL)).verify(
+        raw(
+            "Each endpoint advertises a timeout [S1]. The effective timeout is the minimum [S2].",
+            {"S1": titled(SENTENCES, None), "S2": titled(SENTENCES, None, "two")},
+        )
+    )
+    assert other_source.claims[1].status == ClaimStatus.UNVERIFIED
+    anchored = NLIFactVerifier(settings(), backend=FirstClaim(NEUTRAL)).verify(
+        raw(
+            "Each endpoint advertises a timeout [S1]. The effective timeout is 30 seconds [S1].",
+            {"S1": titled(SENTENCES, None)},
+        )
+    )
+    assert anchored.claims[1].status == ClaimStatus.UNVERIFIED  # "30" is not in the source

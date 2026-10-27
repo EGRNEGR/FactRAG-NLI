@@ -725,3 +725,46 @@ class DocumentParser:
                         )
                     )
         return output
+
+
+def _read_title(path: Path) -> str | None:
+    from grounding import title_from_text
+
+    suffix = path.suffix.lower()
+    if suffix == ".pdf":
+        import pymupdf
+
+        with pymupdf.open(path) as document:  # type: ignore[no-untyped-call]
+            first = document[0].get_text() if document.page_count else ""
+            metadata = (document.metadata or {}).get("title") or None
+        return title_from_text(str(first), metadata)
+    if suffix == ".docx":
+        from docx import Document
+
+        docx = Document(str(path))
+        head = "\n".join(paragraph.text for paragraph in docx.paragraphs[:20])
+        return title_from_text(head, docx.core_properties.title or None)
+    with path.open(encoding="utf-8-sig", errors="ignore") as stream:
+        return title_from_text(stream.read(8000))
+
+
+_TITLES: dict[tuple[str, int], str | None] = {}
+
+
+def document_title(path: str | Path) -> str | None:
+    """Title of a source document read from its head (cached by path and mtime).
+
+    Optional metadata: an unreadable or missing file yields None, never an error, because
+    the title only frames NLI premises and the document was already parsed for indexing.
+    """
+    file_path = Path(path)
+    try:
+        key = (str(file_path.resolve()), file_path.stat().st_mtime_ns)
+    except OSError:
+        return None
+    if key not in _TITLES:
+        try:
+            _TITLES[key] = _read_title(file_path)
+        except (OSError, ValueError, RuntimeError):
+            _TITLES[key] = None
+    return _TITLES[key]

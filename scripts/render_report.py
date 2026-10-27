@@ -3,7 +3,8 @@
 Every number is read from one run directory produced by evaluate_suite.py; nothing is typed
 by hand. Sections whose mode has not been run are reported as missing.
 
-Usage:  python scripts/render_report.py reports/runs/<run_id> [--baseline reports/runs/<old_run_id>]
+Usage:  python scripts/render_report.py reports/runs/<run_id> [--baseline reports/runs/<old>]
+        [--replay reports/runs/<replay_of_run_id>]
 """
 
 from __future__ import annotations
@@ -108,6 +109,8 @@ STEP_NAMES = {
     "anchor_guard": "+ якоря: числа и идентификаторы обязаны быть в источнике",
     "code_span": "+ дословные фрагменты синтаксиса",
     "abstention_guard": "+ защита оговорок и исправлений предпосылки",
+    "document_titles": "+ название документа и раздела в посылке (дополнительный маршрут)",
+    "co_verification": "+ совместная проверка утверждений одного источника",
 }
 # Heuristic: a citation-less claim that is a cut piece of a sentence rather than a whole one.
 FRAGMENT = re.compile(r"(?:\b(?:Rev|No|Sec|Vol|Fig|vs)\.|;)$|^\d")
@@ -237,14 +240,19 @@ class Run:
         }
 
     def setting(self, name: str) -> Any:
-        """A setting of the run as recorded in config.json (first E2E profile that has it)."""
-        for profile in ("guard_on", "guard_off"):
-            value = (
-                self.config.get("modes", {}).get(f"e2e_{profile}", {}).get("settings") or {}
-            ).get(name)
+        """A setting of the run as recorded in config.json (E2E profiles first, then replay)."""
+        for mode in ("e2e_guard_on", "e2e_guard_off", "replay"):
+            value = (self.config.get("modes", {}).get(mode, {}).get("settings") or {}).get(name)
             if value is not None:
                 return value
         return None
+
+
+def run_commit(run: Run) -> str | None:
+    """Commit recorded for the run, translated through reports/runs/commit_map.json."""
+    commit = run.config.get("git", {}).get("commit")
+    mapping = (read_json(REPORTS / "runs" / "commit_map.json") or {}).get("map", {})
+    return mapping.get(commit, commit) if commit else None
 
 
 def premise_lengths(dataset: EvalDatasetV3) -> dict[str, int]:
@@ -356,6 +364,11 @@ def comparison_rows(run: Run, baseline: Run) -> list[list[Any]]:
     return rows
 
 
+def stress_cell(step: dict[str, Any]) -> str:
+    stress = step["nli"].get("co_verification_stress")
+    return count(stress["leaked"]) if stress else "н/д"
+
+
 def ablation_rows(run: Run) -> tuple[list[list[Any]], list[list[Any]]]:
     """Report rows and CSV rows of the replay ablation (guard_on drafts of the source run)."""
     rows: list[list[Any]] = []
@@ -376,6 +389,7 @@ def ablation_rows(run: Run) -> tuple[list[list[Any]], list[list[Any]]]:
                 len(e2e["filter_induced_hallucinations"]),
                 pct(nli["false_rejection_rate"]),
                 pct(nli["hallucination_catch_rate"]),
+                stress_cell(step),
             ]
         )
         csv_rows.append(
@@ -392,6 +406,7 @@ def ablation_rows(run: Run) -> tuple[list[list[Any]], list[list[Any]]]:
                     e2e["by_split"].get(split, {}).get("factrag", {}).get("correct", {}).get("k")
                     for split in ("dev", "test")
                 ),
+                (step["nli"].get("co_verification_stress") or {}).get("leaked", {}).get("k"),
             ]
         )
         previous = correct
@@ -496,7 +511,89 @@ def split_rows(run: Run) -> list[list[Any]]:
     return rows
 
 
-def section_changes(run: Run, baseline: Run | None) -> str:
+ABLATION_HEADER = [
+    "Шаг",
+    "FactRAG корректно",
+    "Δ",
+    "Отказы на отвечаемых",
+    "Галлюцинации",
+    "Внесены фильтром",
+    "NLI: ложная отбраковка",
+    "NLI: перехват",
+    "Стресс-тест: ложное опубликовано",
+]
+ABLATION_CSV = [
+    "step",
+    "factrag_correct",
+    "false_refusals_on_answerable",
+    "factrag_hallucinations",
+    "filter_induced_hallucinations",
+    "nli_false_rejection_rate",
+    "nli_catch_rate",
+    "factrag_correct_dev",
+    "factrag_correct_test",
+    "stress_leaked",
+]
+
+
+def drop_empty_stress(rows: list[list[Any]]) -> tuple[list[str], list[list[Any]], str]:
+    """Hide the stress column for ablations recorded before the stress test existed."""
+    if all(row[-1] == "н/д" for row in rows):
+        return ABLATION_HEADER[:-1], [row[:-1] for row in rows], "lrrrrrrr"
+    return ABLATION_HEADER, rows, "lrrrrrrrr"
+
+
+def v2_section(run: Run, v2: Run) -> list[str]:
+    """Verifier v2 on the drafts of this run: replay ladder, final numbers, dev/test."""
+    steps, csv_rows = ablation_rows(v2)
+    if not steps or not v2.ablation:
+        return []
+    write_csv("replay_ablation_v2.csv", ABLATION_CSV, csv_rows)
+    header, rows, align = drop_empty_stress(steps)
+    first = v2.ablation["steps"][0]["e2e"]
+    profile = "guard_on" if "guard_on" in first else next(iter(first))
+    last = v2.ablation["steps"][-1]
+    final = last["e2e"][profile]
+    live = run.e2e.get(profile)
+    stress = last["nli"].get("co_verification_stress") or {}
+    split = final.get("by_split", {})
+    return [
+        "### 2.2. Верификатор v2 на черновиках этого прогона",
+        "",
+        f"После прогона верификатор дополнен двумя правилами (две нижние строки). Их вклад "
+        f"измерен повторной проверкой сохранённых черновиков этого прогона "
+        f"(`{v2.rel}`, профиль {PROFILE_SHORT[profile]}): LLM и поиск не вызывались, поэтому "
+        "повторная генерация после отказа NLI не воспроизводится, проверяется первая попытка. "
+        "Столбец «Стресс-тест» - сколько ложных утверждений опубликовано, когда в том же ответе "
+        "рядом стоит дословно подтверждённое предложение того же источника "
+        "(`evaluate_suite.co_verification_stress`).",
+        "",
+        table(header, rows, align),
+        "",
+        f"Итог v2 на этих черновиках: корректный исход {count(final['factrag']['correct'])}"
+        + (
+            f" (живой прогон с повторной генерацией: {count(live['factrag']['correct'])})"
+            if live
+            else ""
+        )
+        + f", отказы на отвечаемых {count(final['factrag']['false_refusal_on_answerable'])}, "
+        f"галлюцинации {count(final['factrag']['hallucination'])}, внесённые фильтром - "
+        f"{len(final['filter_induced_hallucinations'])}; "
+        + "; ".join(
+            f"{name}: {count(block['factrag']['correct'])}" for name, block in split.items()
+        )
+        + (
+            ". Совместная проверка сама не опубликовала ни одного ложного утверждения стресс-теста"
+            if stress.get("leaked_by_co_verification") == 0
+            else ". Ложных утверждений стресс-теста, опубликованных совместной проверкой: "
+            f"{stress.get('leaked_by_co_verification', 'н/д')}"
+        )
+        + ". Таблица: [`tables/replay_ablation_v2.csv`](tables/replay_ablation_v2.csv).",
+        "",
+    ]
+
+
+def section_changes(run: Run, baseline: Run | None, v2: Run | None = None) -> str:
     out = ["## 2. Что изменено и почему", ""]
     if baseline:
         rows = comparison_rows(run, baseline)
@@ -521,21 +618,7 @@ def section_changes(run: Run, baseline: Run | None) -> str:
         ]
     steps, csv_rows = ablation_rows(run)
     if steps:
-        write_csv(
-            "replay_ablation.csv",
-            [
-                "step",
-                "factrag_correct",
-                "false_refusals_on_answerable",
-                "factrag_hallucinations",
-                "filter_induced_hallucinations",
-                "nli_false_rejection_rate",
-                "nli_catch_rate",
-                "factrag_correct_dev",
-                "factrag_correct_test",
-            ],
-            csv_rows,
-        )
+        write_csv("replay_ablation.csv", ABLATION_CSV, csv_rows)
         first = run.ablation["steps"][0]["e2e"]
         profile = "guard_on" if "guard_on" in first else next(iter(first))
         vanilla = first[profile]["vanilla"]
@@ -550,20 +633,7 @@ def section_changes(run: Run, baseline: Run | None) -> str:
             f"Черновик (Vanilla RAG) одинаков во всех строках: корректен в "
             f"{count(vanilla['correct'])}, галлюцинации {count(vanilla['hallucination'])}.",
             "",
-            table(
-                [
-                    "Шаг",
-                    "FactRAG корректно",
-                    "Δ",
-                    "Отказы на отвечаемых",
-                    "Галлюцинации",
-                    "Внесены фильтром",
-                    "NLI: ложная отбраковка",
-                    "NLI: перехват",
-                ],
-                steps,
-                "lrrrrrrr",
-            ),
+            table(*drop_empty_stress(steps)),
             "",
             "Первая строка воспроизводит базовый прогон; последняя - текущий профиль. "
             + catch_note(run.ablation["steps"])
@@ -571,8 +641,10 @@ def section_changes(run: Run, baseline: Run | None) -> str:
             "[`tables/replay_ablation.csv`](tables/replay_ablation.csv).",
             "",
         ]
+    if v2:
+        out += v2_section(run, v2)
     out += [
-        "### 2.2. Инженерные решения",
+        "### 2.3. Инженерные решения",
         "",
         "- **Сегментация v2** (`grounding.segment_claims`). Прежнее разбиение резало "
         "«SP 800-53 Rev. 5», «No. 1», «e.g.» и «LIKE ... INCLUDING» на обрывки и считало «;» "
@@ -605,6 +677,22 @@ def section_changes(run: Run, baseline: Run | None) -> str:
         "публикуются как оговорка и не считаются заблокированными, ответ только из оговорок "
         "становится каноническим отказом, а исправление предпосылки («Нет, ...») не публикуется "
         "без подтверждённого обоснования.",
+        "- **Название документа в посылке** (`nli_premise_title`, верификатор v2). Утверждение "
+        "вида «RFC 9110 specifies ...» или «A QUIC client ...» модель оценивала как Neutral, "
+        "потому что окно не называет документ. Название читается из головы исходного файла по "
+        "общим правилам (`document_parser.document_title`: заголовок RFC, `<title>` HTML, первая "
+        "строка, свойства PDF/DOCX), без таблицы соответствий и без переиндексации; LLM его не "
+        "видит. Каждое окно оценивается дважды: как есть и с префиксом «Название. Раздел.»; "
+        "поддержка засчитывается по любому варианту, поэтому подтверждённое голым окном "
+        "утверждение не теряется.",
+        "- **Совместная проверка** (`nli_co_verification`, верификатор v2). Утверждение, "
+        "оставшееся UNVERIFIED (не CONTRADICTION и не без якоря), публикуется, если другое "
+        "утверждение того же ответа VERIFIED по общему процитированному источнику, все числа и "
+        "идентификаторы утверждения есть в этом источнике и не меньше "
+        f"{(v2 or run).setting('nli_co_verification_overlap') or 0.5:.0%} его значимых слов. "
+        "Риск правила "
+        "(ложное утверждение рядом с подтверждённым) одиночные NLI-пробы не видят, поэтому он "
+        "измеряется отдельным стресс-тестом.",
         "- **NLI в float16 пакетами.** В bf16 вероятности одной и той же пары заметно "
         "различаются между пакетом с паддингом и одиночным вызовом; float16 совпадает с float32 "
         "по метрикам при той же памяти, поэтому окна оцениваются пакетами в float16.",
@@ -688,7 +776,7 @@ def section_changes(run: Run, baseline: Run | None) -> str:
             for p in run.pilots["variants"]
         ]
         out += [
-            "### 2.3. Пилоты на dev-половине",
+            "### 2.4. Пилоты на dev-половине",
             "",
             run.pilots["description"],
             "",
@@ -707,7 +795,7 @@ def section_changes(run: Run, baseline: Run | None) -> str:
             "",
         ]
     out += [
-        "### 2.4. Что не сработало",
+        "### 2.5. Что не сработало",
         "",
         "- Окна из трёх предложений вместо двух не добавили подтверждённых утверждений на dev.",
         "- Замена обозначений документов в гипотезе («RFC 9110» → «документ») снижала перехват "
@@ -719,6 +807,14 @@ def section_changes(run: Run, baseline: Run | None) -> str:
         "отказы; оставлено только правило для исправления предпосылки без обоснования.",
         "- Повышение точности NLI (bf16 → float16/float32) само по себе ошибки не исправляет: "
         "это видно по второй строке абляции.",
+        "- Префикс названия документа вместо голого окна (а не как дополнительный вариант): "
+        "часть утверждений, подтверждённых голым окном, переставала подтверждаться, и выигрыш "
+        "почти исчезал.",
+        "- Ослабленная совместная проверка: поручиться может любое подтверждённое утверждение "
+        "ответа, без общего источника, допускается P(con) < 0.9, а утверждение без чисел и "
+        "идентификаторов проходит без проверки слов. На черновиках этого прогона она добавляла "
+        "несколько корректных исходов, но в стресс-тесте публиковала ложное утверждение рядом с "
+        "подтверждённым почти втрое чаще текущего правила; отклонена.",
         "",
     ]
     return "\n".join(out)
@@ -728,7 +824,11 @@ def section_changes(run: Run, baseline: Run | None) -> str:
 
 
 def section_summary(
-    run: Run, dataset: EvalDatasetV3, headline: dict[str, Any], baseline: Run | None = None
+    run: Run,
+    dataset: EvalDatasetV3,
+    headline: dict[str, Any],
+    baseline: Run | None = None,
+    v2: Run | None = None,
 ) -> str:
     lines = ["## 1. Краткие выводы", ""]
     prod = run.e2e.get("guard_on")
@@ -827,6 +927,26 @@ def section_summary(
                 f"{count(last[profile]['factrag']['false_refusal_on_answerable'])}, внесённые "
                 f"фильтром галлюцинации {len(first[profile]['filter_induced_hallucinations'])} → "
                 f"{len(last[profile]['filter_induced_hallucinations'])} (раздел 2.1)."
+            )
+        final = v2_final(v2)
+        if final and "guard_on" in final["e2e"]:
+            e2e, nli = final["e2e"]["guard_on"], final["nli"]["overall"]
+            stress = final["nli"].get("co_verification_stress") or {}
+            lines.append(
+                "- **Верификатор v2** (название документа в посылке и совместная проверка, "
+                "повторная проверка черновиков этого прогона без LLM, первая попытка): "
+                f"корректный исход {count(e2e['factrag']['correct'])}, отказы на отвечаемых "
+                f"{count(e2e['factrag']['false_refusal_on_answerable'])}, галлюцинации "
+                f"{count(e2e['factrag']['hallucination'])}, внесённые фильтром - "
+                f"{len(e2e['filter_induced_hallucinations'])}; NLI-пробы: ложная отбраковка "
+                f"{pct(nli['false_rejection_rate'])}, перехват {pct(nli['hallucination_catch_rate'])}"
+                + (
+                    f"; стресс-тест: ложное утверждение рядом с подтверждённым опубликовано в "
+                    f"{count(stress['leaked'])} пар"
+                    if stress
+                    else ""
+                )
+                + " (раздел 2.2)."
             )
     if run.retrieval:
         o = run.retrieval["overall"]
@@ -940,7 +1060,7 @@ def section_method(run: Run, dataset: EvalDatasetV3) -> str:
         table(
             ["Параметр", "Значение"],
             [
-                ["Коммит кода", f"`{cfg.get('git', {}).get('commit', 'н/д')[:12]}`"],
+                ["Коммит кода", f"`{(run_commit(run) or 'н/д')[:12]}`"],
                 ["GPU", cfg.get("gpu") or "н/д"],
                 ["Python / платформа", f"{cfg.get('python')} / {cfg.get('platform')}"],
                 ["Пакеты", ", ".join(f"{k} {v}" for k, v in cfg.get("packages", {}).items())],
@@ -2122,7 +2242,7 @@ def section_limits(run: Run) -> str:
     )
 
 
-def section_repro(run: Run, baseline: Run | None = None) -> str:
+def section_repro(run: Run, baseline: Run | None = None, v2: Run | None = None) -> str:
     source = (run.ablation or {}).get("source_run") or (baseline.rel if baseline else None)
     return "\n".join(
         [
@@ -2140,8 +2260,14 @@ def section_repro(run: Run, baseline: Run | None = None) -> str:
                 if source
                 else []
             ),
+            *(
+                [f"python evaluate_suite.py --run-dir {v2.rel} replay --source {run.rel}"]
+                if v2
+                else []
+            ),
             f"python scripts/render_report.py {run.rel}"
-            + (f" --baseline {baseline.rel}" if baseline else ""),
+            + (f" --baseline {baseline.rel}" if baseline else "")
+            + (f" --replay {v2.rel}" if v2 else ""),
             "```",
             "",
             "`replay` не вызывает LLM и поиск: он заново проверяет сохранённые черновики "
@@ -2156,8 +2282,16 @@ def section_repro(run: Run, baseline: Run | None = None) -> str:
     )
 
 
-def headline(run: Run, baseline: Run | None = None) -> dict[str, Any]:
-    out: dict[str, Any] = {"run": run.rel, "commit": run.config.get("git", {}).get("commit")}
+def v2_final(v2: Run | None) -> dict[str, Any] | None:
+    """Last replay step of the current verifier over this run's drafts."""
+    if not v2 or not v2.ablation:
+        return None
+    step = v2.ablation["steps"][-1]
+    return {"source_run": v2.ablation["source_run"], "replay_run": v2.rel, **step}
+
+
+def headline(run: Run, baseline: Run | None = None, v2: Run | None = None) -> dict[str, Any]:
+    out: dict[str, Any] = {"run": run.rel, "commit": run_commit(run)}
     if run.retrieval:
         out["retrieval_recall@5"] = {m: run.retrieval["overall"][m]["recall@5"] for m in MODE_ORDER}
         out["retrieval_mrr@10"] = {m: run.retrieval["overall"][m]["mrr@10"] for m in MODE_ORDER}
@@ -2250,14 +2384,34 @@ def headline(run: Run, baseline: Run | None = None) -> dict[str, Any]:
         }
     if baseline:
         out["baseline"] = headline(baseline)
+    final = v2_final(v2)
+    if final:
+        out["verifier_v2_replay"] = {
+            "source_run": final["source_run"],
+            "replay_run": final["replay_run"],
+            **{
+                profile: {
+                    "factrag_correct": e2e["factrag"]["correct"],
+                    "false_refusal_on_answerable": e2e["factrag"]["false_refusal_on_answerable"],
+                    "factrag_hallucination": e2e["factrag"]["hallucination"],
+                    "filter_induced_hallucinations": e2e["filter_induced_hallucinations"],
+                    "by_split": e2e["by_split"],
+                }
+                for profile, e2e in final["e2e"].items()
+            },
+            "nli": final["nli"]["overall"],
+            "nli_by_split": final["nli"]["by_split"],
+            "co_verification_stress": final["nli"].get("co_verification_stress"),
+        }
     return out
 
 
-def readme_block(run: Run, baseline: Run | None = None) -> str:
+def readme_block(run: Run, baseline: Run | None = None, v2: Run | None = None) -> str:
     """Compact results table injected into README.md between the results markers."""
     lines = []
     prod = run.e2e.get("guard_on")
     base = baseline.e2e.get("guard_on") if baseline else None
+    replayed = v2.replay.get("guard_on") if v2 else None
     if prod:
         v, f = prod["vanilla"], prod["factrag"]
         lat = prod["latency_ms"]["generated_queries"]
@@ -2268,20 +2422,29 @@ def readme_block(run: Run, baseline: Run | None = None) -> str:
             ("Галлюцинации на вопросах с известной истиной ↓", "hallucination"),
         )
         rows = [
-            [title, rate_cell(v[key]), rate_cell(f[key])]
+            [title, rate_cell(v[key])]
+            + ([rate_cell(replayed["factrag"][key])] if replayed else [])
+            + [rate_cell(f[key])]
             + ([rate_cell(base["factrag"][key])] if base else [])
             for title, key in metrics
         ]
         induced = len(prod["hallucination_ids"]["factrag_only"])
         rows.append(
-            ["Галлюцинации, внесённые NLI-фильтром ↓", "-", str(induced)]
+            ["Галлюцинации, внесённые NLI-фильтром ↓", "-"]
+            + ([str(len(replayed["hallucination_ids"]["factrag_only"]))] if replayed else [])
+            + [str(induced)]
             + ([str(len(base["hallucination_ids"]["factrag_only"]))] if base else [])
         )
         pc = prod["paired_correctness"]
-        header = ["Метрика", "Standard RAG (без NLI)", "FactRAG-NLI"] + (
-            [f"FactRAG-NLI, базовый прогон `{baseline.rel.rsplit('/', 1)[-1]}`"]
-            if base and baseline
-            else []
+        header = (
+            ["Метрика", "Standard RAG (без NLI)"]
+            + (["FactRAG-NLI, верификатор v2 (те же черновики)"] if replayed else [])
+            + ["FactRAG-NLI" + (", верификатор v1" if replayed else "")]
+            + (
+                [f"FactRAG-NLI, базовый прогон `{baseline.rel.rsplit('/', 1)[-1]}`"]
+                if base and baseline
+                else []
+            )
         )
         lines += [
             f"Сквозной прогон на {prod['cases']} вопросах датасета v3, прод-профиль. *Standard RAG* "
@@ -2297,6 +2460,17 @@ def readme_block(run: Run, baseline: Run | None = None) -> str:
             "",
             table(header, rows, "l" + "r" * (len(header) - 1)),
             "",
+            *(
+                [
+                    "Столбец «верификатор v2» - текущий верификатор (название документа в посылке и "
+                    "совместная проверка), применённый без LLM к сохранённым первым черновикам "
+                    f"этого же прогона (`{v2.rel}`); столбец «верификатор v1» измерен в живом "
+                    "прогоне с повторной генерацией после отказа NLI.",
+                    "",
+                ]
+                if replayed and v2
+                else []
+            ),
             "NLI-фильтр "
             + direction(
                 v["correct"]["rate"],
@@ -2370,25 +2544,32 @@ def main(argv: Sequence[str] | None = None) -> int:
     cli.add_argument(
         "--baseline", type=Path, default=None, help="Earlier run directory to compare against"
     )
+    cli.add_argument(
+        "--replay",
+        type=Path,
+        default=None,
+        help="Run directory of `evaluate_suite.py replay --source <run_dir>` (current verifier)",
+    )
     args = cli.parse_args(argv)
     run = Run(args.run_dir.resolve())
     baseline = Run(args.baseline.resolve()) if args.baseline else None
+    v2 = Run(args.replay.resolve()) if args.replay else None
     # Every table and figure is regenerated; files of a previous render must not linger.
     for stale in [*TABLES.glob("*.csv"), *FIGURES.glob("*.svg")]:
         stale.unlink()
     dataset = load_dataset(ROOT / "data" / "eval_dataset_v3.json")
     lengths = premise_lengths(dataset)
-    head = headline(run, baseline)
+    head = headline(run, baseline, v2)
     parts = [
         "# Оценка FactRAG-NLI на датасете v3",
         "",
         f"Прогон [`{run.rel}`]({run.dir.relative_to(REPORTS).as_posix()}), дата "
         f"{run.config.get('created_utc', 'н/д')[:10]}, "
-        f"коммит `{(run.config.get('git', {}).get('commit') or 'н/д')[:12]}`. Все числа "
+        f"коммит `{(run_commit(run) or 'н/д')[:12]}`. Все числа "
         "сгенерированы `scripts/render_report.py` из сырых логов прогона.",
         "",
-        section_summary(run, dataset, head, baseline),
-        section_changes(run, baseline),
+        section_summary(run, dataset, head, baseline, v2),
+        section_changes(run, baseline, v2),
         section_method(run, dataset),
         "## 4. Количественные результаты",
         "",
@@ -2398,7 +2579,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         section_errors(run, dataset, lengths),
         section_latency(run, baseline),
         section_limits(run),
-        section_repro(run, baseline),
+        section_repro(run, baseline, v2),
     ]
     REPORTS.mkdir(exist_ok=True)
     text = "\n".join(parts).replace("\n\n\n", "\n\n")
@@ -2406,7 +2587,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     (REPORTS / "summary.json").write_text(
         json.dumps(head, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n"
     )
-    readme = update_readme(readme_block(run, baseline))
+    readme = update_readme(readme_block(run, baseline, v2))
     print(
         f"Wrote reports/EVALUATION_REPORT.md, reports/summary.json, {len(list(TABLES.glob('*.csv')))} tables, {len(list(FIGURES.glob('*.svg')))} figures"
         + ("; README results block updated" if readme else "")

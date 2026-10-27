@@ -173,3 +173,32 @@ def test_replay_keeps_gate_refusals_and_reports_refusal_causes() -> None:
     assert truncated["refusal_reason"] == "generation_incomplete"
     assert logged_response(REFUSAL)["refusal_reason"] == "llm_refusal"
     assert logged_response("Факт [S1].")["refusal_reason"] is None
+
+
+def test_co_verification_stress_counts_only_pairs_with_a_supported_first_claim() -> None:
+    from types import SimpleNamespace
+
+    from evaluate_suite import co_verification_stress
+
+    sentence = "Every endpoint must advertise its idle timeout to the peer in parameters."
+    probe = SimpleNamespace(
+        label="neutral", hypothesis_en="The idle timeout is negotiated.", hypothesis_ru="Таймаут."
+    )
+    cases = [
+        SimpleNamespace(id="N1", nli_probe=probe),
+        SimpleNamespace(id="E1", nli_probe=SimpleNamespace(label="entailment")),
+    ]
+    contexts = {
+        "N1": SourceContext(chunk_id="c", document_id="d", text=f"{sentence} Short.", citation="S1")
+    }
+
+    class SupportFirst:
+        def predict(self, premise: str, hypothesis: str) -> NLIProbabilities:
+            return SUPPORT if hypothesis.startswith("Every endpoint") else NEUTRAL
+
+    settings = RAGSettings.model_validate({"mode": "development", "allow_fallback": True})
+    verifier = NLIFactVerifier(settings, backend=SupportFirst())
+    dataset: Any = SimpleNamespace(cases=cases)  # only .cases is read
+    report = co_verification_stress(verifier, dataset, contexts)
+    assert report["pairs"] == 2 and report["leaked"]["k"] == 1
+    assert report["leaked_by_co_verification"] == 1 and report["leaked_ids"] == ["N1:en"]
