@@ -1031,13 +1031,47 @@ def outcome(
     }
 
 
+def archive_failed(log: CaseLog, archive_path: Path) -> list[str]:
+    """Move failed rows of `log` to `archive_path` so a resumed run executes them again."""
+    failed = [row for row in log.rows if not row.get("ok")]
+    if not failed:
+        return []
+    archive = CaseLog(archive_path)
+    for row in failed:
+        archive.append(row)
+    log.rows = [row for row in log.rows if row.get("ok")]
+    log.path.write_text(
+        "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in log.rows),
+        encoding="utf-8",
+    )
+    return [row["id"] for row in failed]
+
+
 def run_e2e(
-    dataset: EvalDatasetV3, dataset_path: Path, run_dir: Path, profile: str, limit: int | None
+    dataset: EvalDatasetV3,
+    dataset_path: Path,
+    run_dir: Path,
+    profile: str,
+    limit: int | None,
+    retry_errors: bool = False,
 ) -> dict[str, Any]:
+    """Run the pipeline on every case; logged cases are skipped, so an interrupted run resumes.
+
+    With retry_errors, cases logged as failed (an exception, e.g. a timeout while the machine
+    slept) are moved to retried_errors.jsonl and run again; the resource measurements of the
+    original run are kept and those of the retry are reported separately.
+    """
     settings = build_settings(dataset, PROFILES[profile])
     seed_everything(settings.llm_seed)
     out = run_dir / f"e2e_{profile}"
     log = CaseLog(out / "cases.jsonl")
+    previous = out / "summary.json"
+    retried = archive_failed(log, out / "retried_errors.jsonl") if retry_errors else []
+    kept_resources = (
+        json.loads(previous.read_text(encoding="utf-8")).get("resources")
+        if retried and previous.exists()
+        else None
+    )
     full = CaseLog(run_dir / "full" / f"e2e_{profile}.jsonl")
     cases = dataset.cases[:limit] if limit else dataset.cases
     by_id = {c.id: c for c in dataset.cases}
@@ -1084,20 +1118,20 @@ def run_e2e(
         finally:
             pipeline.close()
     summary = summarize_e2e(log.rows, by_id)
-    summary["resources"] = monitor.summary()
-    dump_json(out / "summary.json", summary)
-    write_config(
-        run_dir,
-        dataset_path,
-        settings,
-        {
-            f"e2e_{profile}": {
-                "cases": len(log.rows),
-                "overrides": PROFILES[profile],
-                "settings": settings_record(settings),
-            }
-        },
-    )
+    if kept_resources is not None:
+        summary["resources"] = kept_resources
+        summary["resources_retry"] = monitor.summary()
+    else:
+        summary["resources"] = monitor.summary()
+    dump_json(previous, summary)
+    record: dict[str, Any] = {
+        "cases": len(log.rows),
+        "overrides": PROFILES[profile],
+        "settings": settings_record(settings),
+    }
+    if retried:
+        record["retried_errors"] = retried
+    write_config(run_dir, dataset_path, settings, {f"e2e_{profile}": record})
     return summary
 
 
@@ -1500,6 +1534,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     sub.add_parser("nli")
     e2e = sub.add_parser("e2e")
     e2e.add_argument("--profile", choices=sorted(PROFILES), default="guard_on")
+    e2e.add_argument(
+        "--retry-errors",
+        action="store_true",
+        help="Run cases logged as failed again (originals go to retried_errors.jsonl)",
+    )
     again = sub.add_parser("resummarize", help="Recompute an E2E summary from existing logs")
     again.add_argument("--profile", choices=sorted(PROFILES), default="guard_on")
     replay = sub.add_parser(
@@ -1530,7 +1569,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         summary = resummarize_e2e(dataset, run_dir, args.profile)
         print(json.dumps(summary["paired_correctness"], indent=1))
     else:
-        summary = run_e2e(dataset, dataset_path, run_dir, args.profile, args.limit)
+        summary = run_e2e(
+            dataset, dataset_path, run_dir, args.profile, args.limit, args.retry_errors
+        )
         print(
             json.dumps({k: summary[k] for k in ("cases", "errors", "paired_correctness")}, indent=1)
         )

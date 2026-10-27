@@ -10,11 +10,13 @@ from eval_dataset import load_dataset
 from evaluate_suite import (
     ABLATION,
     BASELINE_VERIFIER,
+    CaseLog,
     MemoNLI,
-    outcome,
     ablation_steps,
+    archive_failed,
     case_row,
     dataset_split,
+    outcome,
     replay_case,
     summarize_e2e,
 )
@@ -119,6 +121,16 @@ def test_replay_reverifies_the_first_draft_with_the_given_verifier() -> None:
     summary = summarize_e2e([current, old], {c.id: c for c in DATASET.cases})
     assert summary["claims"]["total"] == 4 and summary["errors"] == 0
     assert summary["repair"]["attempted"] == 0
+
+
+def test_failed_cases_are_archived_and_rerun(tmp_path: Path) -> None:
+    log = CaseLog(tmp_path / "cases.jsonl")
+    log.append({"id": "A", "ok": True})
+    log.append({"id": "B", "ok": False, "error": "VerificationError: timed out"})
+    assert archive_failed(log, tmp_path / "retried_errors.jsonl") == ["B"]
+    assert CaseLog(tmp_path / "cases.jsonl").done == {"A"}
+    assert CaseLog(tmp_path / "retried_errors.jsonl").rows[0]["error"].endswith("timed out")
+    assert archive_failed(log, tmp_path / "retried_errors.jsonl") == []
 
 
 def test_vanilla_is_the_first_draft_when_a_repair_attempt_was_published() -> None:
