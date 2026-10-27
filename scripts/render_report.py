@@ -2506,6 +2506,12 @@ def readme_block(run: Run, baseline: Run | None = None, v2: Run | None = None) -
                 if baseline and baseline.nli
                 else ""
             )
+            + (
+                f"; верификатор v2: перехват {pct(final['nli']['overall']['hallucination_catch_rate'])}, "
+                f"ложная отбраковка {pct(final['nli']['overall']['false_rejection_rate'])}"
+                if (final := v2_final(v2))
+                else ""
+            )
             + "."
         )
         lines.append("")
