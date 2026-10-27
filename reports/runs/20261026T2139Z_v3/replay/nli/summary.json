@@ -1,0 +1,838 @@
+{
+ "overall": {
+  "pairs": 440,
+  "pairs_exceeding_context": 0,
+  "argmax": {
+   "n": 440,
+   "accuracy": 0.8318181818181818,
+   "macro_f1": 0.7672362608814899,
+   "per_class": {
+    "entailment": {
+     "precision": 0.867595818815331,
+     "recall": 0.9803149606299213,
+     "f1": 0.9205175600739371,
+     "support": 254
+    },
+    "neutral": {
+     "precision": 0.8405797101449275,
+     "recall": 0.6041666666666666,
+     "f1": 0.7030303030303029,
+     "support": 96
+    },
+    "contradiction": {
+     "precision": 0.7023809523809523,
+     "recall": 0.6555555555555556,
+     "f1": 0.6781609195402298,
+     "support": 90
+    }
+   },
+   "confusion_matrix": {
+    "entailment": {
+     "entailment": 249,
+     "neutral": 0,
+     "contradiction": 5
+    },
+    "neutral": {
+     "entailment": 18,
+     "neutral": 58,
+     "contradiction": 20
+    },
+    "contradiction": {
+     "entailment": 20,
+     "neutral": 11,
+     "contradiction": 59
+    }
+   }
+  },
+  "decision_rule": {
+   "n": 440,
+   "hallucination_catch_rate": 0.8763440860215054,
+   "contradiction_catch_rate": 0.8111111111111111,
+   "neutral_catch_rate": 0.9375,
+   "contradiction_labelled_as_contradiction": 0.7,
+   "false_rejection_rate": 0.03543307086614173,
+   "status_agreement": 0.8477272727272728,
+   "status_matrix": {
+    "entailment": {
+     "verified": 245,
+     "contradiction": 8,
+     "unverified": 1
+    },
+    "neutral": {
+     "contradiction": 25,
+     "unverified": 65,
+     "verified": 6
+    },
+    "contradiction": {
+     "contradiction": 63,
+     "unverified": 10,
+     "verified": 17
+    }
+   }
+  }
+ },
+ "by_hypothesis_language": {
+  "en": {
+   "pairs": 220,
+   "pairs_exceeding_context": 0,
+   "argmax": {
+    "n": 220,
+    "accuracy": 0.8454545454545455,
+    "macro_f1": 0.783967586005066,
+    "per_class": {
+     "entailment": {
+      "precision": 0.8865248226950354,
+      "recall": 0.984251968503937,
+      "f1": 0.9328358208955224,
+      "support": 127
+     },
+     "neutral": {
+      "precision": 0.8378378378378378,
+      "recall": 0.6458333333333334,
+      "f1": 0.7294117647058824,
+      "support": 48
+     },
+     "contradiction": {
+      "precision": 0.7142857142857143,
+      "recall": 0.6666666666666666,
+      "f1": 0.689655172413793,
+      "support": 45
+     }
+    },
+    "confusion_matrix": {
+     "entailment": {
+      "entailment": 125,
+      "neutral": 0,
+      "contradiction": 2
+     },
+     "neutral": {
+      "entailment": 7,
+      "neutral": 31,
+      "contradiction": 10
+     },
+     "contradiction": {
+      "entailment": 9,
+      "neutral": 6,
+      "contradiction": 30
+     }
+    }
+   },
+   "decision_rule": {
+    "n": 220,
+    "hallucination_catch_rate": 0.8924731182795699,
+    "contradiction_catch_rate": 0.8222222222222222,
+    "neutral_catch_rate": 0.9583333333333334,
+    "contradiction_labelled_as_contradiction": 0.7111111111111111,
+    "false_rejection_rate": 0.023622047244094488,
+    "status_agreement": 0.8636363636363636,
+    "status_matrix": {
+     "entailment": {
+      "verified": 124,
+      "contradiction": 2,
+      "unverified": 1
+     },
+     "neutral": {
+      "contradiction": 12,
+      "unverified": 34,
+      "verified": 2
+     },
+     "contradiction": {
+      "contradiction": 32,
+      "verified": 8,
+      "unverified": 5
+     }
+    }
+   }
+  },
+  "ru": {
+   "pairs": 220,
+   "pairs_exceeding_context": 0,
+   "argmax": {
+    "n": 220,
+    "accuracy": 0.8181818181818182,
+    "macro_f1": 0.750030525030525,
+    "per_class": {
+     "entailment": {
+      "precision": 0.8493150684931506,
+      "recall": 0.9763779527559056,
+      "f1": 0.9084249084249084,
+      "support": 127
+     },
+     "neutral": {
+      "precision": 0.84375,
+      "recall": 0.5625,
+      "f1": 0.675,
+      "support": 48
+     },
+     "contradiction": {
+      "precision": 0.6904761904761905,
+      "recall": 0.6444444444444445,
+      "f1": 0.6666666666666666,
+      "support": 45
+     }
+    },
+    "confusion_matrix": {
+     "entailment": {
+      "entailment": 124,
+      "neutral": 0,
+      "contradiction": 3
+     },
+     "neutral": {
+      "entailment": 11,
+      "neutral": 27,
+      "contradiction": 10
+     },
+     "contradiction": {
+      "entailment": 11,
+      "neutral": 5,
+      "contradiction": 29
+     }
+    }
+   },
+   "decision_rule": {
+    "n": 220,
+    "hallucination_catch_rate": 0.8602150537634409,
+    "contradiction_catch_rate": 0.8,
+    "neutral_catch_rate": 0.9166666666666666,
+    "contradiction_labelled_as_contradiction": 0.6888888888888889,
+    "false_rejection_rate": 0.047244094488188976,
+    "status_agreement": 0.8318181818181818,
+    "status_matrix": {
+     "entailment": {
+      "verified": 121,
+      "contradiction": 6
+     },
+     "neutral": {
+      "contradiction": 13,
+      "unverified": 31,
+      "verified": 4
+     },
+     "contradiction": {
+      "contradiction": 31,
+      "unverified": 5,
+      "verified": 9
+     }
+    }
+   }
+  }
+ },
+ "by_category": {
+  "adversarial": {
+   "pairs": 90,
+   "pairs_exceeding_context": 0,
+   "argmax": {
+    "n": 90,
+    "accuracy": 0.6555555555555556,
+    "macro_f1": 0.7919463087248323,
+    "per_class": {
+     "entailment": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+     },
+     "neutral": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+     },
+     "contradiction": {
+      "precision": 1.0,
+      "recall": 0.6555555555555556,
+      "f1": 0.7919463087248323,
+      "support": 90
+     }
+    },
+    "confusion_matrix": {
+     "entailment": {
+      "entailment": 0,
+      "neutral": 0,
+      "contradiction": 0
+     },
+     "neutral": {
+      "entailment": 0,
+      "neutral": 0,
+      "contradiction": 0
+     },
+     "contradiction": {
+      "entailment": 20,
+      "neutral": 11,
+      "contradiction": 59
+     }
+    }
+   },
+   "decision_rule": {
+    "n": 90,
+    "hallucination_catch_rate": 0.8111111111111111,
+    "contradiction_catch_rate": 0.8111111111111111,
+    "neutral_catch_rate": null,
+    "contradiction_labelled_as_contradiction": 0.7,
+    "false_rejection_rate": null,
+    "status_agreement": 0.7,
+    "status_matrix": {
+     "entailment": {},
+     "neutral": {},
+     "contradiction": {
+      "contradiction": 63,
+      "unverified": 10,
+      "verified": 17
+     }
+    }
+   }
+  },
+  "lexical_trap": {
+   "pairs": 60,
+   "pairs_exceeding_context": 0,
+   "argmax": {
+    "n": 60,
+    "accuracy": 0.8,
+    "macro_f1": 0.7931034482758621,
+    "per_class": {
+     "entailment": {
+      "precision": 0.9302325581395349,
+      "recall": 0.9090909090909091,
+      "f1": 0.9195402298850575,
+      "support": 44
+     },
+     "neutral": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "support": 16
+     },
+     "contradiction": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+     }
+    },
+    "confusion_matrix": {
+     "entailment": {
+      "entailment": 40,
+      "neutral": 0,
+      "contradiction": 4
+     },
+     "neutral": {
+      "entailment": 3,
+      "neutral": 8,
+      "contradiction": 5
+     },
+     "contradiction": {
+      "entailment": 0,
+      "neutral": 0,
+      "contradiction": 0
+     }
+    }
+   },
+   "decision_rule": {
+    "n": 60,
+    "hallucination_catch_rate": 1.0,
+    "contradiction_catch_rate": null,
+    "neutral_catch_rate": 1.0,
+    "contradiction_labelled_as_contradiction": null,
+    "false_rejection_rate": 0.09090909090909091,
+    "status_agreement": 0.8333333333333334,
+    "status_matrix": {
+     "entailment": {
+      "verified": 40,
+      "contradiction": 4
+     },
+     "neutral": {
+      "contradiction": 6,
+      "unverified": 10
+     },
+     "contradiction": {}
+    }
+   }
+  },
+  "multi_hop": {
+   "pairs": 80,
+   "pairs_exceeding_context": 0,
+   "argmax": {
+    "n": 80,
+    "accuracy": 0.9875,
+    "macro_f1": 0.9937106918238994,
+    "per_class": {
+     "entailment": {
+      "precision": 1.0,
+      "recall": 0.9875,
+      "f1": 0.9937106918238994,
+      "support": 80
+     },
+     "neutral": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+     },
+     "contradiction": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+     }
+    },
+    "confusion_matrix": {
+     "entailment": {
+      "entailment": 79,
+      "neutral": 0,
+      "contradiction": 1
+     },
+     "neutral": {
+      "entailment": 0,
+      "neutral": 0,
+      "contradiction": 0
+     },
+     "contradiction": {
+      "entailment": 0,
+      "neutral": 0,
+      "contradiction": 0
+     }
+    }
+   },
+   "decision_rule": {
+    "n": 80,
+    "hallucination_catch_rate": null,
+    "contradiction_catch_rate": null,
+    "neutral_catch_rate": null,
+    "contradiction_labelled_as_contradiction": null,
+    "false_rejection_rate": 0.0375,
+    "status_agreement": 0.9625,
+    "status_matrix": {
+     "entailment": {
+      "verified": 77,
+      "contradiction": 2,
+      "unverified": 1
+     },
+     "neutral": {},
+     "contradiction": {}
+    }
+   }
+  },
+  "single_hop": {
+   "pairs": 60,
+   "pairs_exceeding_context": 0,
+   "argmax": {
+    "n": 60,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "per_class": {
+     "entailment": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 60
+     },
+     "neutral": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+     },
+     "contradiction": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+     }
+    },
+    "confusion_matrix": {
+     "entailment": {
+      "entailment": 60,
+      "neutral": 0,
+      "contradiction": 0
+     },
+     "neutral": {
+      "entailment": 0,
+      "neutral": 0,
+      "contradiction": 0
+     },
+     "contradiction": {
+      "entailment": 0,
+      "neutral": 0,
+      "contradiction": 0
+     }
+    }
+   },
+   "decision_rule": {
+    "n": 60,
+    "hallucination_catch_rate": null,
+    "contradiction_catch_rate": null,
+    "neutral_catch_rate": null,
+    "contradiction_labelled_as_contradiction": null,
+    "false_rejection_rate": 0.0,
+    "status_agreement": 1.0,
+    "status_matrix": {
+     "entailment": {
+      "verified": 60
+     },
+     "neutral": {},
+     "contradiction": {}
+    }
+   }
+  },
+  "tabular_code": {
+   "pairs": 70,
+   "pairs_exceeding_context": 0,
+   "argmax": {
+    "n": 70,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "per_class": {
+     "entailment": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 70
+     },
+     "neutral": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+     },
+     "contradiction": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+     }
+    },
+    "confusion_matrix": {
+     "entailment": {
+      "entailment": 70,
+      "neutral": 0,
+      "contradiction": 0
+     },
+     "neutral": {
+      "entailment": 0,
+      "neutral": 0,
+      "contradiction": 0
+     },
+     "contradiction": {
+      "entailment": 0,
+      "neutral": 0,
+      "contradiction": 0
+     }
+    }
+   },
+   "decision_rule": {
+    "n": 70,
+    "hallucination_catch_rate": null,
+    "contradiction_catch_rate": null,
+    "neutral_catch_rate": null,
+    "contradiction_labelled_as_contradiction": null,
+    "false_rejection_rate": 0.02857142857142857,
+    "status_agreement": 0.9714285714285714,
+    "status_matrix": {
+     "entailment": {
+      "verified": 68,
+      "contradiction": 2
+     },
+     "neutral": {},
+     "contradiction": {}
+    }
+   }
+  },
+  "unanswerable": {
+   "pairs": 80,
+   "pairs_exceeding_context": 0,
+   "argmax": {
+    "n": 80,
+    "accuracy": 0.625,
+    "macro_f1": 0.7692307692307693,
+    "per_class": {
+     "entailment": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+     },
+     "neutral": {
+      "precision": 1.0,
+      "recall": 0.625,
+      "f1": 0.7692307692307693,
+      "support": 80
+     },
+     "contradiction": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+     }
+    },
+    "confusion_matrix": {
+     "entailment": {
+      "entailment": 0,
+      "neutral": 0,
+      "contradiction": 0
+     },
+     "neutral": {
+      "entailment": 15,
+      "neutral": 50,
+      "contradiction": 15
+     },
+     "contradiction": {
+      "entailment": 0,
+      "neutral": 0,
+      "contradiction": 0
+     }
+    }
+   },
+   "decision_rule": {
+    "n": 80,
+    "hallucination_catch_rate": 0.925,
+    "contradiction_catch_rate": null,
+    "neutral_catch_rate": 0.925,
+    "contradiction_labelled_as_contradiction": null,
+    "false_rejection_rate": null,
+    "status_agreement": 0.6875,
+    "status_matrix": {
+     "entailment": {},
+     "neutral": {
+      "contradiction": 19,
+      "unverified": 55,
+      "verified": 6
+     },
+     "contradiction": {}
+    }
+   }
+  }
+ },
+ "by_split": {
+  "dev": {
+   "n": 222,
+   "hallucination_catch_rate": 0.8469387755102041,
+   "contradiction_catch_rate": 0.8043478260869565,
+   "neutral_catch_rate": 0.8846153846153846,
+   "contradiction_labelled_as_contradiction": 0.6086956521739131,
+   "false_rejection_rate": 0.03225806451612903,
+   "status_agreement": 0.8018018018018018,
+   "status_matrix": {
+    "entailment": {
+     "verified": 120,
+     "contradiction": 4
+    },
+    "neutral": {
+     "contradiction": 16,
+     "unverified": 30,
+     "verified": 6
+    },
+    "contradiction": {
+     "contradiction": 28,
+     "unverified": 9,
+     "verified": 9
+    }
+   }
+  },
+  "test": {
+   "n": 218,
+   "hallucination_catch_rate": 0.9090909090909091,
+   "contradiction_catch_rate": 0.8181818181818182,
+   "neutral_catch_rate": 1.0,
+   "contradiction_labelled_as_contradiction": 0.7954545454545454,
+   "false_rejection_rate": 0.038461538461538464,
+   "status_agreement": 0.8944954128440367,
+   "status_matrix": {
+    "entailment": {
+     "verified": 125,
+     "contradiction": 4,
+     "unverified": 1
+    },
+    "neutral": {
+     "unverified": 35,
+     "contradiction": 9
+    },
+    "contradiction": {
+     "contradiction": 35,
+     "verified": 8,
+     "unverified": 1
+    }
+   }
+  }
+ },
+ "threshold_sweep": [
+  {
+   "entailment_threshold": 0.2,
+   "contradiction_threshold": 0.1,
+   "hallucination_catch_rate": 0.8172043010752689,
+   "false_rejection_rate": 0.047244094488188976
+  },
+  {
+   "entailment_threshold": 0.2,
+   "contradiction_threshold": 0.2,
+   "hallucination_catch_rate": 0.7688172043010753,
+   "false_rejection_rate": 0.031496062992125984
+  },
+  {
+   "entailment_threshold": 0.2,
+   "contradiction_threshold": 0.3,
+   "hallucination_catch_rate": 0.7580645161290323,
+   "false_rejection_rate": 0.023622047244094488
+  },
+  {
+   "entailment_threshold": 0.2,
+   "contradiction_threshold": 0.5,
+   "hallucination_catch_rate": 0.7473118279569892,
+   "false_rejection_rate": 0.01968503937007874
+  },
+  {
+   "entailment_threshold": 0.2,
+   "contradiction_threshold": 0.7,
+   "hallucination_catch_rate": 0.7150537634408602,
+   "false_rejection_rate": 0.011811023622047244
+  },
+  {
+   "entailment_threshold": 0.3,
+   "contradiction_threshold": 0.1,
+   "hallucination_catch_rate": 0.8333333333333334,
+   "false_rejection_rate": 0.047244094488188976
+  },
+  {
+   "entailment_threshold": 0.3,
+   "contradiction_threshold": 0.2,
+   "hallucination_catch_rate": 0.8010752688172043,
+   "false_rejection_rate": 0.031496062992125984
+  },
+  {
+   "entailment_threshold": 0.3,
+   "contradiction_threshold": 0.3,
+   "hallucination_catch_rate": 0.7903225806451613,
+   "false_rejection_rate": 0.023622047244094488
+  },
+  {
+   "entailment_threshold": 0.3,
+   "contradiction_threshold": 0.5,
+   "hallucination_catch_rate": 0.7795698924731183,
+   "false_rejection_rate": 0.01968503937007874
+  },
+  {
+   "entailment_threshold": 0.3,
+   "contradiction_threshold": 0.7,
+   "hallucination_catch_rate": 0.7580645161290323,
+   "false_rejection_rate": 0.011811023622047244
+  },
+  {
+   "entailment_threshold": 0.4,
+   "contradiction_threshold": 0.1,
+   "hallucination_catch_rate": 0.8387096774193549,
+   "false_rejection_rate": 0.047244094488188976
+  },
+  {
+   "entailment_threshold": 0.4,
+   "contradiction_threshold": 0.2,
+   "hallucination_catch_rate": 0.8118279569892473,
+   "false_rejection_rate": 0.031496062992125984
+  },
+  {
+   "entailment_threshold": 0.4,
+   "contradiction_threshold": 0.3,
+   "hallucination_catch_rate": 0.8064516129032258,
+   "false_rejection_rate": 0.023622047244094488
+  },
+  {
+   "entailment_threshold": 0.4,
+   "contradiction_threshold": 0.5,
+   "hallucination_catch_rate": 0.7956989247311828,
+   "false_rejection_rate": 0.01968503937007874
+  },
+  {
+   "entailment_threshold": 0.4,
+   "contradiction_threshold": 0.7,
+   "hallucination_catch_rate": 0.7903225806451613,
+   "false_rejection_rate": 0.015748031496062992
+  },
+  {
+   "entailment_threshold": 0.5,
+   "contradiction_threshold": 0.1,
+   "hallucination_catch_rate": 0.8440860215053764,
+   "false_rejection_rate": 0.047244094488188976
+  },
+  {
+   "entailment_threshold": 0.5,
+   "contradiction_threshold": 0.2,
+   "hallucination_catch_rate": 0.8279569892473119,
+   "false_rejection_rate": 0.031496062992125984
+  },
+  {
+   "entailment_threshold": 0.5,
+   "contradiction_threshold": 0.3,
+   "hallucination_catch_rate": 0.8225806451612904,
+   "false_rejection_rate": 0.023622047244094488
+  },
+  {
+   "entailment_threshold": 0.5,
+   "contradiction_threshold": 0.5,
+   "hallucination_catch_rate": 0.8118279569892473,
+   "false_rejection_rate": 0.01968503937007874
+  },
+  {
+   "entailment_threshold": 0.5,
+   "contradiction_threshold": 0.7,
+   "hallucination_catch_rate": 0.8118279569892473,
+   "false_rejection_rate": 0.01968503937007874
+  },
+  {
+   "entailment_threshold": 0.6,
+   "contradiction_threshold": 0.1,
+   "hallucination_catch_rate": 0.8440860215053764,
+   "false_rejection_rate": 0.047244094488188976
+  },
+  {
+   "entailment_threshold": 0.6,
+   "contradiction_threshold": 0.2,
+   "hallucination_catch_rate": 0.8333333333333334,
+   "false_rejection_rate": 0.031496062992125984
+  },
+  {
+   "entailment_threshold": 0.6,
+   "contradiction_threshold": 0.3,
+   "hallucination_catch_rate": 0.8333333333333334,
+   "false_rejection_rate": 0.023622047244094488
+  },
+  {
+   "entailment_threshold": 0.6,
+   "contradiction_threshold": 0.5,
+   "hallucination_catch_rate": 0.8333333333333334,
+   "false_rejection_rate": 0.01968503937007874
+  },
+  {
+   "entailment_threshold": 0.6,
+   "contradiction_threshold": 0.7,
+   "hallucination_catch_rate": 0.8333333333333334,
+   "false_rejection_rate": 0.01968503937007874
+  },
+  {
+   "entailment_threshold": 0.7,
+   "contradiction_threshold": 0.1,
+   "hallucination_catch_rate": 0.8548387096774194,
+   "false_rejection_rate": 0.047244094488188976
+  },
+  {
+   "entailment_threshold": 0.7,
+   "contradiction_threshold": 0.2,
+   "hallucination_catch_rate": 0.8548387096774194,
+   "false_rejection_rate": 0.031496062992125984
+  },
+  {
+   "entailment_threshold": 0.7,
+   "contradiction_threshold": 0.3,
+   "hallucination_catch_rate": 0.8548387096774194,
+   "false_rejection_rate": 0.031496062992125984
+  },
+  {
+   "entailment_threshold": 0.7,
+   "contradiction_threshold": 0.5,
+   "hallucination_catch_rate": 0.8548387096774194,
+   "false_rejection_rate": 0.031496062992125984
+  },
+  {
+   "entailment_threshold": 0.7,
+   "contradiction_threshold": 0.7,
+   "hallucination_catch_rate": 0.8548387096774194,
+   "false_rejection_rate": 0.031496062992125984
+  }
+ ]
+}
