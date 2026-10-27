@@ -1,0 +1,1 @@
+{"id": "V3-MH-017", "category": "multi_hop", "subtype": "compare_sections", "language": "en", "expected_behavior": "answer", "ok": false, "error": "VerificationError: Local generation failed: timed out", "wall_ms": 11642249.712099962}

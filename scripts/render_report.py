@@ -426,6 +426,56 @@ def catch_note(steps: Sequence[dict[str, Any]]) -> str:
     return text + "."
 
 
+def prompt_cost(run: Run, baseline: Run | None) -> str:
+    """How often the drafts themselves hallucinated before and after the prompt change."""
+    now, before = run.e2e.get("guard_on"), baseline.e2e.get("guard_on") if baseline else None
+    if not now or not before:
+        return ""
+    v_now, v_before = now["vanilla"]["hallucination"], before["vanilla"]["hallucination"]
+    if v_now["k"] <= v_before["k"]:
+        return ""
+    return (
+        f"; черновик чаще отвечает там, где ответа нет или предпосылка ложна (галлюцинации "
+        f"Vanilla RAG {count(v_before)} в базовом прогоне и {count(v_now)} в этом, guard вкл."
+        + ("; в пилотах 2.3 рост появляется вместе с новым промптом" if run.pilots else "")
+        + "), и удерживать их приходится фильтру"
+    )
+
+
+def repair_note(run: Run) -> str:
+    repair = (run.e2e.get("guard_on") or {}).get("repair")
+    if not repair or not repair["attempted"]:
+        return ""
+    return (
+        f". В этом прогоне (guard вкл.) повтор понадобился в {repair['attempted']} кейсах: "
+        f"опубликован ответ в {repair['published']}, корректный исход в "
+        f"{repair['factrag_correct']} (включая верные отказы), галлюцинаций после повтора "
+        f"{repair['factrag_hallucinations']}"
+    )
+
+
+def split_note(run: Run) -> str:
+    """Flag a dev/test gap in false refusals: the check against threshold overfitting."""
+    block = (run.e2e.get("guard_on") or {}).get("by_split", {})
+    if "dev" not in block or "test" not in block:
+        return ""
+    dev, test = (block[s]["factrag"]["false_refusal_on_answerable"] for s in ("dev", "test"))
+    dev_c, test_c = (block[s]["factrag"]["correct"] for s in ("dev", "test"))
+    text = (
+        f"Корректный исход FactRAG-NLI на dev и test почти одинаков ({pct(dev_c['rate'])} и "
+        f"{pct(test_c['rate'])}, guard вкл.)"
+    )
+    if test["rate"] is not None and dev["rate"] is not None and test["rate"] > dev["rate"]:
+        text += (
+            f", но ложных отказов на отвечаемых вопросах на test больше: {count(test)} против "
+            f"{count(dev)} на dev. Пороги верификатора подбирались на dev, поэтому оценку "
+            "test-половины следует считать ожидаемой для новых вопросов."
+        )
+    else:
+        text += "."
+    return text
+
+
 def split_rows(run: Run) -> list[list[Any]]:
     rows: list[list[Any]] = []
     for split in ("dev", "test"):
@@ -575,7 +625,21 @@ def section_changes(run: Run, baseline: Run | None) -> str:
         "- **Промпт.** Добавлены требования: каждое предложение заканчивается ссылкой, составной "
         "вопрос - отдельное предложение на каждую часть, числа, коды, идентификаторы и правила "
         "ABNF переносятся дословно. Дословный перенос делает утверждение проверяемым NLI и "
-        "якорями; цена - больше англоязычных цитат в русском ответе.",
+        "якорями; цена - больше англоязычных цитат в русском ответе"
+        + prompt_cost(run, baseline)
+        + ".",
+        *(
+            [
+                f"- **Повторная генерация** (`generation_repair_attempts = "
+                f"{run.setting('generation_repair_attempts')}`). Если NLI отклонил ответ, LLM "
+                "получает отклонённые утверждения и сужает ответ до подтверждаемых фактов. "
+                "Vanilla RAG в отчёте - всегда первый черновик, повтор относится к FactRAG-NLI"
+                + repair_note(run)
+                + ".",
+            ]
+            if run.setting("generation_repair_attempts")
+            else []
+        ),
         "",
         "Пороги подобраны на dev-половине датасета (`evaluate_suite.dataset_split`: внутри каждой "
         "категории кейсы упорядочены по SHA-1 идентификатора и чередуются), test-половина "
@@ -596,6 +660,8 @@ def section_changes(run: Run, baseline: Run | None) -> str:
                 rows,
                 "lrrrr",
             ),
+            "",
+            split_note(run),
             "",
         ]
     if run.nli and run.nli.get("by_split"):
@@ -754,7 +820,7 @@ def section_summary(
             profile = "guard_on" if "guard_on" in first else next(iter(first))
             lines.append(
                 f"- **Вклад верификатора отдельно** (повторная проверка тех же черновиков "
-                f"`{run.ablation['source_run']}`, {PROFILE_NAMES[profile]}): корректный исход "
+                f"`{run.ablation['source_run']}`, профиль {PROFILE_SHORT[profile]}): корректный исход "
                 f"{count(first[profile]['factrag']['correct'])} → "
                 f"{count(last[profile]['factrag']['correct'])}, отказы на отвечаемых "
                 f"{count(first[profile]['factrag']['false_refusal_on_answerable'])} → "
@@ -893,9 +959,49 @@ def section_method(run: Run, dataset: EvalDatasetV3) -> str:
                     f"temperature {sampling.get('temperature')}, top_p {sampling.get('top_p')}, seed {sampling.get('seed')}, max_tokens {sampling.get('max_tokens')}, контекст {sampling.get('context_window')}",
                 ],
                 [
-                    "Пороги NLI",
+                    "Пороги NLI (целый чанк)",
                     f"entailment > {thresholds.get('entailment')}, contradiction ≥ {thresholds.get('contradiction')}, strong entailment ≥ {thresholds.get('strong_entailment')}",
                 ],
+                *(
+                    [
+                        [
+                            "Верификатор",
+                            ", ".join(
+                                f"`{name}` {run.setting(name)}"
+                                for name in (
+                                    "claim_segmentation",
+                                    "claim_citation_inheritance",
+                                    "nli_precision",
+                                    "nli_window_sentences",
+                                    "nli_window_entailment_threshold",
+                                    "nli_window_contradiction_threshold",
+                                    "nli_anchor_guard",
+                                    "nli_anchor_window_entailment_threshold",
+                                    "nli_code_span_min_chars",
+                                    "nli_aggregation",
+                                    "nli_veto_contradiction_threshold",
+                                    "abstention_guard",
+                                    "generation_repair_attempts",
+                                )
+                            ),
+                        ],
+                        [
+                            "Поиск",
+                            ", ".join(
+                                f"`{name}` {run.setting(name)}"
+                                for name in (
+                                    "rerank_rrf_alpha",
+                                    "rrf_k",
+                                    "rerank_candidates",
+                                    "rerank_score_threshold",
+                                    "sparse_coverage_weighting",
+                                )
+                            ),
+                        ],
+                    ]
+                    if run.setting("nli_window_scoring") is not None
+                    else []
+                ),
                 [
                     "Датасет",
                     f"`{cfg.get('dataset', {}).get('path')}`, SHA-256 `{cfg.get('dataset', {}).get('sha256', '')[:16]}…`",
@@ -916,9 +1022,15 @@ def section_method(run: Run, dataset: EvalDatasetV3) -> str:
         "гипотезе. Отдельно оценены argmax трёх классов (матрица ошибок, P/R/F1) и решение "
         "боевого правила: *Hallucination Catch Rate* (доля проб Contradiction/Neutral, не "
         "получивших VERIFIED) и *False Rejection Rate* (доля проб Entailment, не получивших VERIFIED).",
-        "- **Сквозной прогон**: полный конвейер на 220 вопросах. *Vanilla RAG* = черновик LLM до "
-        "NLI-фильтра (`raw_answer`), *FactRAG-NLI* = опубликованный ответ; оба из одного вызова "
-        "LLM, поэтому сравнение парное. Отказ = канонический текст отказа; воздержание = отказ "
+        "- **Сквозной прогон**: полный конвейер на 220 вопросах. *Vanilla RAG* = первый черновик "
+        "LLM до NLI-фильтра (`raw_answer`), *FactRAG-NLI* = опубликованный ответ; "
+        + (
+            "оба получены из одного вызова конвейера (повторная генерация после отказа NLI "
+            "относится к FactRAG-NLI), поэтому сравнение парное. "
+            if run.setting("generation_repair_attempts")
+            else "оба из одного вызова LLM, поэтому сравнение парное. "
+        )
+        + "Отказ = канонический текст отказа; воздержание = отказ "
         "или явная фраза об отсутствии сведений. Корректность: для отвечаемых вопросов все "
         "ключевые факты (`answer_must_contain`) присутствуют; для вопросов без ответа воздержание; "
         "для adversarial воздержание или верный факт-исправление. Галлюцинация определена только "
@@ -1697,7 +1809,13 @@ def section_errors(run: Run, dataset: EvalDatasetV3, lengths: dict[str, int]) ->
             "",
             f"**Потерянные верные ответы** ({len(over)} из "
             f"{run.e2e[profile]['paired_correctness']['vanilla_only_correct']} исходов, которые "
-            "фильтр сделал неверными; остальные - галлюцинации, внесённые фильтром, см. выше): "
+            "фильтр сделал неверными"
+            + (
+                "; остальные - галлюцинации, внесённые фильтром, см. выше"
+                if len(over) < run.e2e[profile]["paired_correctness"]["vanilla_only_correct"]
+                else ""
+            )
+            + "): "
             "черновик на отвечаемый вопрос содержал все ключевые факты, опубликованный ответ их "
             "не содержит. Исход: "
             + ", ".join(f"{CAUSE_NAMES.get(k, k)} - {v}" for k, v in over_causes.most_common())
@@ -1729,8 +1847,8 @@ def segmentation_note(
     """Claims left without a source marker, explained for the segmentation the run used."""
     head = (
         f"**Разбиение на утверждения.** "
-        f"{plural(len(uncited), 'утверждение', 'утверждения', 'утверждений')} остались без "
-        "маркера [S#]"
+        "Без маркера [S#] осталось "
+        f"{plural(len(uncited), 'утверждение', 'утверждения', 'утверждений')}"
     )
     if run.setting("claim_segmentation") != "v2":
         return (
@@ -2167,8 +2285,15 @@ def readme_block(run: Run, baseline: Run | None = None) -> str:
         )
         lines += [
             f"Сквозной прогон на {prod['cases']} вопросах датасета v3, прод-профиль. *Standard RAG* "
-            "- черновик той же LLM до NLI-фильтра (тот же поиск, порог релевантности и промпт), "
-            "поэтому сравнение парное.",
+            "- первый черновик той же LLM до NLI-фильтра (тот же поиск, порог релевантности и "
+            "промпт), поэтому сравнение парное"
+            + (
+                "; после отказа NLI FactRAG-NLI один раз повторяет генерацию с отклонёнными "
+                "утверждениями"
+                if run.setting("generation_repair_attempts")
+                else ""
+            )
+            + ".",
             "",
             table(header, rows, "l" + "r" * (len(header) - 1)),
             "",
