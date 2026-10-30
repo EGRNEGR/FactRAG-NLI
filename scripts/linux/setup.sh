@@ -75,7 +75,7 @@ if [[ "${SKIP_MODELS:-0}" == "1" ]]; then
   echo "SKIP_MODELS=1"
 else
   # Reachability first: an unreachable endpoint makes huggingface_hub hang without output.
-  hf_ok() { curl -fsS -m 15 -o /dev/null "$1/api/models/BAAI/bge-m3"; }
+  hf_ok() { curl -4 -fsS -m 15 -o /dev/null "$1/api/models/BAAI/bge-m3"; }
   if [[ -z "${HF_ENDPOINT:-}" ]] && ! hf_ok https://huggingface.co; then
     if hf_ok https://hf-mirror.com; then
       echo "huggingface.co does not answer; using the mirror https://hf-mirror.com"
@@ -89,8 +89,14 @@ else
   echo "Models from ${HF_ENDPOINT:-https://huggingface.co}"
   # Encoders: huggingface_hub without the Xet transfer (it stalled on a 16 GB file in testing).
   HF_HUB_DISABLE_XET=1 "$PYTHON" - <<'PY'
+import socket
 from pathlib import Path
-from huggingface_hub import snapshot_download
+
+# IPv4 first: hosts with AAAA records but no IPv6 route fail with "Network is unreachable".
+_resolve = socket.getaddrinfo
+socket.getaddrinfo = lambda *a, **k: sorted(_resolve(*a, **k), key=lambda r: r[0] != socket.AF_INET)
+
+from huggingface_hub import snapshot_download  # noqa: E402
 
 ENCODERS = {
     # name: (repo, ignored patterns); ONNX exports and duplicate .bin weights are not used.
@@ -116,7 +122,7 @@ PY
       echo "- $file present"
     else
       echo "- $repo/$file -> models/llm"
-      curl -fL --retry 20 --retry-delay 5 -C - -o "$target.part" \
+      curl -4 -fL --retry 20 --retry-delay 5 -C - -o "$target.part" \
         "${HF_ENDPOINT:-https://huggingface.co}/$repo/resolve/main/$file"
       mv "$target.part" "$target"
     fi
