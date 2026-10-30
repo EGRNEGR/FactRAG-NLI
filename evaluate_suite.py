@@ -31,6 +31,7 @@ import hashlib
 import importlib.metadata
 import json
 import math
+import os
 import platform
 import random
 import re
@@ -48,8 +49,20 @@ from typing import Any, Iterable, Sequence
 from eval_dataset import EvalCase, EvalDatasetV3, contains_fact, load_dataset
 
 ROOT = Path(__file__).resolve().parent
+
+
+def _env_path(name: str, default: Path) -> Path:
+    """Path from the environment (relative paths resolve against ROOT), else the default."""
+    value = os.environ.get(name)
+    if not value:
+        return default
+    path = Path(value)
+    return path if path.is_absolute() else ROOT / path
+
+
 DATASET = ROOT / "data" / "eval_dataset_v3.json"
-INDEX = ROOT / ".artifacts" / "eval-v3-index"
+# Each dataset needs its own index and parse cache: open_pipeline rebuilds a mismatching index.
+INDEX = _env_path("FACTRAG_INDEX", ROOT / ".artifacts" / "eval-v3-index")
 KS = (1, 3, 5, 10)
 LABELS = ("entailment", "neutral", "contradiction")
 EXPECTED_STATUS = {
@@ -59,8 +72,12 @@ EXPECTED_STATUS = {
 }
 # Hardware invariants of the 8 GB stack (docs/evidence/improvement_report.md): with llama-server
 # holding ~6.6 GB, larger embedding/rerank batches overflow VRAM into shared memory on Windows
-# and slow generation 2-3x (observed with the code defaults 16/8).
-RUNTIME: dict[str, Any] = {"embedding_batch_size": 2, "rerank_batch_size": 2}
+# and slow generation 2-3x (observed with the code defaults 16/8). A 24 GB card raises them via
+# FACTRAG_EMBEDDING_BATCH / FACTRAG_RERANK_BATCH (scripts/linux/env.rtx3090.sh).
+RUNTIME: dict[str, Any] = {
+    "embedding_batch_size": int(os.environ.get("FACTRAG_EMBEDDING_BATCH", "2")),
+    "rerank_batch_size": int(os.environ.get("FACTRAG_RERANK_BATCH", "2")),
+}
 PROFILES: dict[str, dict[str, Any]] = {
     "guard_on": {},
     "guard_off": {"premise_guard": False},
@@ -82,7 +99,7 @@ CORE_FILES = (
     "eval_dataset.py",
     "evaluate_suite.py",
 )
-PARSE_CACHE = ROOT / ".artifacts" / "eval_v3_parse_cache"
+PARSE_CACHE = _env_path("FACTRAG_PARSE_CACHE", ROOT / ".artifacts" / "eval_v3_parse_cache")
 # Verifier switches of the baseline run reports/runs/20261026T1410Z_v3 (bf16 NLI, whole-chunk
 # premises, strict multi-source rule; the last two switches came after 20261026T2139Z_v3).
 # The replay ablation releases them one step at a time in ABLATION order; the last step is
@@ -783,6 +800,12 @@ def run_retrieval(
                     "language": case.language,
                     "answerable": case.answerable,
                     "gate_passed": bool(results),
+                    # Best reranker probability of a substantive chunk: the relevance gate
+                    # passes iff it reaches rerank_score_threshold (scripts/calibrate_gate.py).
+                    "top_rerank_score": max(
+                        (d["rerank_score"] for d in diagnostics if not d["heading_only"]),
+                        default=None,
+                    ),
                     "timing_ms": timing,
                     "top5": {mode: ids[:5] for mode, ids in rankings.items()},
                     "metrics": {},
