@@ -8,7 +8,8 @@
 #
 # Plans (configuration = LLM profile + reranker):
 #   full   qwen38-27b+bge-reranker-large, qwen25-14b+bge-reranker-large (same-GPU baseline),
-#          qwen38-27b+bge-reranker-v2-m3; each on eval_dataset_v3 (220) and XQuAD (198)
+#          qwen38-27b+bge-reranker-v2-m3, qwen38-27b-think+bge-reranker-large;
+#          each on eval_dataset_v3 (220) and XQuAD (198)
 #   main   qwen38-27b+bge-reranker-large only
 #   quick  main with 10 cases per dataset
 # The run is detached (setsid + nohup): closing the AnyDesk session or the terminal does not
@@ -59,7 +60,7 @@ if [[ "$FOREGROUND" == "0" && -z "${FACTRAG_DETACHED:-}" ]]; then
 fi
 
 case "$PLAN" in
-  full) CONFIGS="qwen38-27b:bge-reranker-large qwen25-14b:bge-reranker-large qwen38-27b:bge-reranker-v2-m3" ;;
+  full) CONFIGS="qwen38-27b:bge-reranker-large qwen25-14b:bge-reranker-large qwen38-27b:bge-reranker-v2-m3 qwen38-27b-think:bge-reranker-large" ;;
   main | quick) CONFIGS="qwen38-27b:bge-reranker-large" ;;
   *) echo "Unknown PLAN=$PLAN (full | main | quick)" >&2; exit 2 ;;
 esac

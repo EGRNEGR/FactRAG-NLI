@@ -115,14 +115,34 @@ def sentence_at(text: str, offset: int) -> str:
     return text[start:].strip()
 
 
+# Russian and English number words: an answer may use the digit instead ("4 перехвата").
+NUMERALS = {
+    form: digit
+    for digit, forms in (
+        ("1", "один одна одно одного одной одному одним одну one"),
+        ("2", "два две двух двум двумя two"),
+        ("3", "три трех трем тремя three"),
+        ("4", "четыре четырех четырем четырьмя four"),
+        ("5", "пять пяти пятью five"),
+        ("6", "шесть шести шестью six"),
+        ("7", "семь семи семью seven"),
+        ("8", "восемь восьми восемью eight"),
+        ("9", "девять девяти девятью nine"),
+        ("10", "десять десяти десятью ten"),
+    )
+    for form in forms.split()
+}
+
+
 def stem(token: str) -> str:
+    """Prefix pattern that survives inflection (четырьмя -> четыре, Элвей -> Элвея)."""
     if any(ch.isdigit() for ch in token):
         return rf"(?<!\d){re.escape(token)}(?!\d)"
-    if len(token) >= 6:
-        return rf"\b{re.escape(token[:-2])}\w*"
-    if len(token) >= 4:
-        return rf"\b{re.escape(token[:-1])}\w*"
-    return rf"\b{re.escape(token)}\w*"
+    if token in NUMERALS:
+        prefix = re.escape(token[: min(4, len(token))])
+        return rf"(?:\b{prefix}\w*|(?<!\d){NUMERALS[token]}(?!\d))"
+    keep = max(4, -(-len(token) * 3 // 5)) if len(token) >= 5 else max(3, len(token) - 1)
+    return rf"\b{re.escape(token[:keep])}\w*"
 
 
 def span_pattern(answer: str) -> str:

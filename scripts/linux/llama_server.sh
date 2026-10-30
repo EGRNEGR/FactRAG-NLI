@@ -24,8 +24,8 @@ running_pid() {
 start() {
   if pid="$(running_pid)"; then
     echo "llama-server already running (PID $pid, $(cat "$STATE_DIR/model"))"
-    if [[ "$(cat "$STATE_DIR/model")" != "$LLM_FILE" ]]; then
-      echo "It serves another model; run: LLM_PROFILE=$LLM_PROFILE $0 restart" >&2
+    if [[ "$(cat "$STATE_DIR/model")" != "$LLM_PROFILE" ]]; then
+      echo "It serves another profile; run: LLM_PROFILE=$LLM_PROFILE $0 restart" >&2
       exit 1
     fi
     return 0
@@ -46,12 +46,14 @@ start() {
     # Server-side default (b12002 deprecates --chat-template-kwargs for this); the pipeline
     # also sends chat_template_kwargs {"enable_thinking": false} with every request.
     args+=(--reasoning off)
+  elif [[ "$LLM_REASONING_BUDGET" != "-1" ]]; then
+    args+=(--reasoning-budget "$LLM_REASONING_BUDGET")
   fi
   echo "Starting llama-server $LLAMA_BUILD: $LLM_FILE, ctx $LLAMA_CTX, ngl $LLAMA_GPU_LAYERS"
   LD_LIBRARY_PATH="$LLAMA_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
     nohup "$SERVER" "${args[@]}" >"$LOG_FILE" 2>&1 &
   echo $! >"$PID_FILE"
-  echo "$LLM_FILE" >"$STATE_DIR/model"
+  echo "$LLM_PROFILE" >"$STATE_DIR/model"
   for _ in $(seq 1 300); do
     if ready; then
       echo "llama-server ready: http://$LLAMA_HOST:$LLAMA_PORT/v1 (PID $(cat "$PID_FILE"))"
