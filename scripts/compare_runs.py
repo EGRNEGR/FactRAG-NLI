@@ -1,8 +1,9 @@
 """Comparison table of an RTX 3090 benchmark run (scripts/linux/run_benchmark.sh).
 
-Reads <run>/<profile>+<reranker>/{v3,xquad}/e2e_guard_on/summary.json,
-<run>/retrieval/<dataset>+<reranker>/retrieval/summary.json and <run>/nli/xquad, prints a
-Markdown report and writes it to <run>/COMPARISON.md. The live laptop run 20261026T2139Z_v3
+Reads <run>/<profile>+<reranker>/{v3,xquad,xquad-full}/e2e_guard_on/summary.json,
+<run>/retrieval/<dataset>+<reranker>/retrieval/summary.json and <run>/nli/{xquad,xquad-full},
+prints a Markdown report and writes it to <run>/COMPARISON.md. A configuration evaluated on
+several datasets also gets a pooled "all" row (rates over the summed counts). The live laptop run 20261026T2139Z_v3
 (RTX 5060 Laptop 8 GB, Qwen2.5-14B, verifier v1) is listed as the reference for v3.
 
 Usage:  python scripts/compare_runs.py reports/runs/<run_id>
@@ -17,6 +18,7 @@ from typing import Any, Sequence
 
 ROOT = Path(__file__).resolve().parents[1]
 REFERENCE = ROOT / "reports" / "runs" / "20261026T2139Z_v3" / "e2e_guard_on" / "summary.json"
+DATASETS = ("v3", "xquad", "xquad-full")
 
 
 def load(path: Path) -> dict[str, Any] | None:
@@ -44,6 +46,32 @@ def e2e_row(label: str, dataset: str, summary: dict[str, Any]) -> str:
     )
 
 
+def pooled(summaries: Sequence[dict[str, Any]]) -> dict[str, Any]:
+    """Summed counts of several E2E summaries; latencies are not pooled."""
+
+    def block(*keys: str) -> dict[str, Any]:
+        k = n = 0
+        for summary in summaries:
+            value: Any = summary
+            for key in keys:
+                value = value.get(key) or {}
+            k += value.get("k", 0)
+            n += value.get("n", 0)
+        return {"k": k, "n": n, "rate": k / n if n else None}
+
+    return {
+        "cases": sum(s["cases"] for s in summaries),
+        "errors": sum(s["errors"] for s in summaries),
+        "vanilla": {"correct": block("vanilla", "correct")},
+        "factrag": {
+            "correct": block("factrag", "correct"),
+            "hallucination": block("factrag", "hallucination"),
+            "false_refusal_on_answerable": block("factrag", "false_refusal_on_answerable"),
+        },
+        "latency_ms": {"generated_queries": {}},
+    }
+
+
 def report(run: Path) -> str:
     lines = [
         f"# FactRAG-NLI on RTX 3090: {run.name}",
@@ -64,10 +92,14 @@ def report(run: Path) -> str:
             e2e_row("reference: RTX 5060 8 GB, Qwen2.5-14B (2139Z, verifier v1)", "v3", reference)
         )
     for config in sorted(p for p in run.iterdir() if p.is_dir() and "+" in p.name):
-        for dataset in ("v3", "xquad"):
+        found = []
+        for dataset in DATASETS:
             summary = load(config / dataset / "e2e_guard_on" / "summary.json")
             if summary:
                 lines.append(e2e_row(config.name, dataset, summary))
+                found.append(summary)
+        if len(found) > 1:
+            lines.append(e2e_row(config.name, "all", pooled(found)))
     lines += [
         "",
         "Verifier v2 replay of the reference drafts (20261027T0447Z_v3_verifier2): FactRAG 78.6%",
@@ -88,12 +120,14 @@ def report(run: Path) -> str:
             f"| {path.parents[1].name} | {hybrid.get('recall@5', 0):.3f} | {hybrid.get('mrr@10', 0):.3f} "
             f"| {pct(gate.get('rejected_unanswerable'))} | {pct(gate.get('rejected_answerable'))} |"
         )
-    nli = load(run / "nli" / "xquad" / "nli" / "summary.json")
-    if nli:
+    for dataset in DATASETS[1:]:
+        nli = load(run / "nli" / dataset / "nli" / "summary.json")
+        if not nli:
+            continue
         rule = nli["overall"]["decision_rule"]
         lines += [
             "",
-            "## NLI probes, XQuAD",
+            f"## NLI probes, {dataset}",
             "",
             f"Catch rate of neutral probes {rule['hallucination_catch_rate']:.3f}, false rejection of "
             f"entailed probes {rule['false_rejection_rate']:.3f}, status agreement "

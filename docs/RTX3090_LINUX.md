@@ -158,7 +158,15 @@ bash scripts/linux/run_benchmark.sh                 # PLAN=full
 PLAN=quick bash scripts/linux/run_benchmark.sh      # 10 кейсов на датасет, проверка за ~15 мин
 bash scripts/linux/run_benchmark.sh --resume        # продолжить после остановки или перезагрузки
 bash scripts/linux/stop_benchmark.sh                # остановить прогон и llama-server
+XQUAD=full PLAN=main bash scripts/linux/run_benchmark.sh   # 1307 вопросов: v3 220 + XQuAD 1087
 ```
+
+`XQUAD=standard` (по умолчанию) берёт 198 вопросов XQuAD: по 4 на статью корпуса и по 5 отказов
+на исключённую статью. `XQUAD=full` берёт все 1087 подходящих вопросов того же корпуса (911 с
+ответом, 176 отказов; `data/xquad_dataset_full.json`, сборка `build_xquad_dataset.py --full`).
+Результаты полного набора пишутся в подкаталоги `xquad-full`, а `COMPARISON.md` добавляет строку
+`all` с долями по сумме вопросов. Вместе с `--resume` переменные `PLAN` и `XQUAD` переключают уже
+идущий прогон: готовые кейсы сохраняются, оставшиеся стадии идут по новому выбору.
 
 Прогон отвязан от терминала (`setsid nohup`): закрытие AnyDesk или окна его не прерывает,
 Ctrl+C прекращает только просмотр лога. Каждые 45 минут работы `gpu_duty_cycle.py`
@@ -173,7 +181,7 @@ Ctrl+C прекращает только просмотр лога. Каждые
 2. поиск v3 и XQuAD для каждого реранкера;
 3. для каждой конфигурации (`qwen38-27b+bge-reranker-large`, `qwen25-14b+bge-reranker-large`,
    `qwen38-27b+bge-reranker-v2-m3`, `qwen38-27b-think+bge-reranker-large`): перезапуск
-   llama-server с нужной моделью, e2e v3 (220), e2e XQuAD (198), повтор кейсов с
+   llama-server с нужной моделью, e2e v3 (220), e2e XQuAD (198 или 1087), повтор кейсов с
    инфраструктурными ошибками;
 4. остановка сервера и `COMPARISON.md`.
 
