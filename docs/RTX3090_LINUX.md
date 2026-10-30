@@ -140,7 +140,7 @@ entailment-проб 9.8%, совпадение статусов 84.8% (n = 396).
 
 ```bash
 sudo apt install -y python3.12 python3.12-venv curl     # Ubuntu 24.04
-unzip FactRAG-NLI-3090.zip && cd FactRAG-NLI-3090        # или: git clone -b rtx3090-linux ...
+unzip FactRAG-NLI-3090.zip && cd FactRAG-NLI-rtx3090-linux   # или: git clone -b rtx3090-linux ...
 bash scripts/linux/setup.sh
 ```
 
@@ -200,9 +200,11 @@ source scripts/linux/env.rtx3090.sh
 
 ## 9. Перенос на другой ПК
 
-Архив `FactRAG-NLI-3090.zip` содержит код, данные и отчёты (без моделей и `.venv`; их ставит
-`setup.sh`). Его можно взять с Google Диска или клонировать ветку `rtx3090-linux` с GitHub. Архив
-собран `git archive`, поэтому bash-скрипты в нём с LF.
+Архив `FactRAG-NLI-3090.zip` (папка `FactRAG-NLI-rtx3090-linux`) содержит код, данные и отчёты
+без моделей и `.venv`: их ставит `setup.sh`. Источники с одинаковым содержимым: Google Диск,
+https://github.com/EGRNEGR/FactRAG-NLI/archive/refs/heads/rtx3090-linux.zip или
+`git clone -b rtx3090-linux`. Архив собран `git archive`, bash-скрипты в нём с LF и правом
+на исполнение.
 
 ## 10. Неполадки
 
