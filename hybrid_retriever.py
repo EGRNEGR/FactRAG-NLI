@@ -768,6 +768,16 @@ class HybridRetriever:
             ):
                 raise RetrievalError("Reranker must return one finite probability per candidate")
             substantive = {key: not heading_only(self._chunks[key]) for key in candidates}
+            passing = {
+                key: score >= self.settings.rerank_score_threshold and substantive[key]
+                for key, score in zip(candidates, reranked, strict=True)
+            }
+            if self.settings.rerank_gate_scope == "top":
+                # The best substantive chunk opens the gate; the ranked rest follows it.
+                gate_open = any(passing.values())
+                eligible = {key: gate_open and substantive[key] for key in candidates}
+            else:
+                eligible = passing
             result = [
                 SearchResult(
                     self._chunks[key],
@@ -786,7 +796,7 @@ class HybridRetriever:
                     + (1 - self.settings.rerank_rrf_alpha) * score,
                 )
                 for key, score in zip(candidates, reranked, strict=True)
-                if score >= self.settings.rerank_score_threshold and substantive[key]
+                if eligible[key]
             ]
             details = getattr(self.reranker, "diagnostics", [])
             self._retrieval_diagnostics = [
@@ -794,7 +804,7 @@ class HybridRetriever:
                     "chunk_id": key,
                     "rrf_score": fused[key],
                     "rerank_score": score,
-                    "eligible": score >= self.settings.rerank_score_threshold and substantive[key],
+                    "eligible": eligible[key],
                     "heading_only": not substantive[key],
                     **(details[i] if i < len(details) else {}),
                 }
