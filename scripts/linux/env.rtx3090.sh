@@ -101,6 +101,9 @@ export REST_MINUTES="${REST_MINUTES:-5}"
 # An early rest starts when the GPU reaches this temperature (Celsius).
 export GPU_TEMP_LIMIT="${GPU_TEMP_LIMIT:-83}"
 
+# A ROS 2 setup (source /opt/ros/*/setup.bash) exports PYTHONPATH, whose entries precede the
+# venv's site-packages; the project needs none of them.
+unset PYTHONPATH
 export PYTHON="${PYTHON:-$PROJECT_ROOT/.venv/bin/python}"
 export PYTHONIOENCODING=utf-8
 export HF_HUB_DISABLE_TELEMETRY=1
