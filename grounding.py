@@ -296,10 +296,15 @@ def verbatim_code_span(hypothesis: str, premise: str, min_chars: int = 12) -> bo
         return False
     haystack = _code_normal(premise)
     for match in re.finditer(r"[\x20-\x7e]{%d,}" % min_chars, hypothesis.translate(_QUOTES)):
-        span = " ".join(match.group(0).split()).strip(" .,;:")
-        if len(span) >= min_chars and _OPERATOR.search(span) and len(span.split()) >= 2:
-            if _code_normal(span) in haystack:
-                return True
+        run = " ".join(match.group(0).split())
+        # "Retry-After: Retry-After = HTTP-date / delay-seconds": a label introduced by ": "
+        # precedes the rule itself, so the part after each such separator is a candidate too.
+        candidates = [run] + [run[m.end() :] for m in re.finditer(r":\s", run)]
+        for candidate in candidates:
+            span = candidate.strip(" .,;:")
+            if len(span) >= min_chars and _OPERATOR.search(span) and len(span.split()) >= 2:
+                if _code_normal(span) in haystack:
+                    return True
     return False
 
 
@@ -330,6 +335,27 @@ def is_verdict_marker(text: str) -> bool:
     """A bare verdict such as "Нет." or "Неверно." that only introduces the next claim."""
     words = re.findall(r"\w+", _ANY_CITATION.sub("", text))
     return bool(_VERDICT.match(text.strip())) and len(words) <= 3
+
+
+# A negative verdict that opens a correction: "Нет, X ..." / "No, X ...". Only the clause after it
+# is a statement about the source; the verdict answers the question's premise.
+_VERDICT_PREFIX = re.compile(r"^\s*(?:нет|неверно|это\s+не\s+так|no|incorrect)\s*[,:;—–-]\s*", re.I)
+
+
+def strip_verdict_prefix(hypothesis: str, min_words: int = 4) -> str:
+    """NLI hypothesis without a leading negative verdict when a full statement follows it.
+
+    mDeBERTa reads "Нет, title не должен меняться..." as contradicting a source that says
+    "title should not change": the verdict adds a negation the source cannot entail. The clause
+    is kept as is when fewer than `min_words` words follow ("Нет, не обязательно").
+    """
+    match = _VERDICT_PREFIX.match(hypothesis)
+    if not match:
+        return hypothesis
+    rest = hypothesis[match.end() :]
+    if len(re.findall(r"\w+", rest)) < min_words:
+        return hypothesis
+    return rest[:1].upper() + rest[1:]
 
 
 def has_negation(text: str) -> bool:

@@ -122,6 +122,14 @@ def test_verbatim_code_span() -> None:
         "The server must send the content.", "The server must send the content."
     )
     assert not verbatim_code_span("Allow = [ method ]", "Allow = #method")
+    # A label before the rule ("Name: rule"), as Qwen3.8 writes ABNF definitions.
+    rfc = "Retry-After = HTTP-date / delay-seconds\nA value.\ndelay-seconds  = 1*DIGIT"
+    assert verbatim_code_span(
+        "ABNF-определение значения поля Retry-After: Retry-After = HTTP-date / delay-seconds",
+        rfc,
+    )
+    assert verbatim_code_span("ABNF-определение delay-seconds: delay-seconds = 1*DIGIT", rfc)
+    assert not verbatim_code_span("Retry-After: Retry-After = HTTP-date / seconds", rfc)
 
 
 @pytest.mark.parametrize(

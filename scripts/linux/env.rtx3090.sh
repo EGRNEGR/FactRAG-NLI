@@ -103,6 +103,14 @@ esac
 # GATE_THRESHOLD overrides it for every reranker.
 export RAG_RERANK_SCORE_THRESHOLD="${GATE_THRESHOLD:-$default_gate}"
 unset default_gate
+# Ten ranked chunks reach the LLM. Local A/B with Qwen3.8 on eval_dataset_v3 (40 cases: 16 whose
+# evidence ranks 6-10, 12 unanswerable, 12 adversarial): top_k 10 answered 37 correctly against
+# 28 with top_k 5, no new hallucination; generation ~1.7x longer. TOP_K=5 restores the old value.
+export RAG_RERANK_TOP_K="${TOP_K:-10}"
+# NLI hypothesis without a leading "Нет," / "No,": Qwen3.8 opens corrections this way and
+# mDeBERTa read the verdict as a contradiction (replay of its drafts: 3 correct corrections
+# verified instead of rejected; Qwen2.5 drafts of run 20261026T2139Z unchanged).
+export RAG_NLI_STRIP_VERDICT_PREFIX="${STRIP_VERDICT_PREFIX:-true}"
 
 # ---------------------------------------------------------------- GPU duty cycle
 export WORK_MINUTES="${WORK_MINUTES:-45}"
