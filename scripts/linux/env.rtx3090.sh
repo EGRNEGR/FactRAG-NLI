@@ -10,6 +10,10 @@ export PROJECT_ROOT
 #             layers keep a KV cache (4 KV heads x 256), so 8K context costs ~0.5 GB.
 #             UD-Q4_K_XL 16.4 GB + KV/compute ~1.5 GB + BGE-M3, reranker, mDeBERTa ~3.5 GB
 #             fits under the ~23.4 GB left by the desktop session.
+# qwen38-27b-think  the same weights with thinking on: llama-server caps the hidden reasoning
+#             at LLAMA_REASONING_BUDGET tokens and RAG_MAX_TOKENS rises to 1024 (the settings
+#             ceiling). In a laptop test it answered an inverted question ("who lost to X" from
+#             "X beat Y") that the non-thinking mode refused; it costs ~2-3x generation time.
 # qwen25-14b  the previous model (Qwen2.5-14B-Instruct Q4_K_M, 8.4 GB), fully offloaded:
 #             the same-hardware baseline for the comparison.
 LLM_PROFILE="${LLM_PROFILE:-qwen38-27b}"
@@ -19,6 +23,16 @@ case "$LLM_PROFILE" in
     LLM_FILE="Qwen3.8-27B-UD-Q4_K_XL.gguf"
     LLM_SHA256="3f227079003add2511437e5b1e94812e363385225bf6a9b47b0054a72bc8b01e"
     LLM_THINKING_OFF=true
+    LLM_REASONING_BUDGET=-1
+    LLM_MAX_TOKENS=512
+    ;;
+  qwen38-27b-think)
+    LLM_REPO="unsloth/Qwen3.8-27B-GGUF"
+    LLM_FILE="Qwen3.8-27B-UD-Q4_K_XL.gguf"
+    LLM_SHA256="3f227079003add2511437e5b1e94812e363385225bf6a9b47b0054a72bc8b01e"
+    LLM_THINKING_OFF=false
+    LLM_REASONING_BUDGET="${LLAMA_REASONING_BUDGET:-640}"
+    LLM_MAX_TOKENS=1024
     ;;
   qwen38-27b-q5)
     # Only on a headless machine (sudo systemctl isolate multi-user.target): ~1 GB more VRAM.
@@ -26,20 +40,28 @@ case "$LLM_PROFILE" in
     LLM_FILE="Qwen3.8-27B-UD-Q5_K_M.gguf"
     LLM_SHA256="2de73110cb254cbf09b54b717578dadff12ef1194e7271527e68202f39ba4bfd"
     LLM_THINKING_OFF=true
+    LLM_REASONING_BUDGET=-1
+    LLM_MAX_TOKENS=512
     ;;
   qwen25-14b)
     LLM_REPO="bartowski/Qwen2.5-14B-Instruct-GGUF"
     LLM_FILE="Qwen2.5-14B-Instruct-Q4_K_M.gguf"
     LLM_SHA256="e47ad95dad6ff848b431053b375adb5d39321290ea2c638682577dafca87c008"
     LLM_THINKING_OFF=false
+    LLM_REASONING_BUDGET=-1
+    LLM_MAX_TOKENS=512
     ;;
   *)
-    echo "Unknown LLM_PROFILE=$LLM_PROFILE (qwen38-27b | qwen38-27b-q5 | qwen25-14b)" >&2
+    echo "Unknown LLM_PROFILE=$LLM_PROFILE (qwen38-27b | qwen38-27b-think | qwen38-27b-q5 | qwen25-14b)" >&2
     return 1 2>/dev/null || exit 1
     ;;
 esac
-export LLM_PROFILE LLM_REPO LLM_FILE LLM_SHA256 LLM_THINKING_OFF
-export LLM_PATH="${LLM_PATH:-models/llm/$LLM_FILE}"
+# LLM_REASONING_BUDGET -1 = no --reasoning-budget flag (non-thinking profiles)
+export LLM_PROFILE LLM_REPO LLM_FILE LLM_SHA256 LLM_THINKING_OFF LLM_REASONING_BUDGET
+export RAG_MAX_TOKENS="$LLM_MAX_TOKENS"
+# Derived values are always recomputed: with_profile.sh re-sources this file under another
+# profile inside an environment that already holds the parent's exports.
+export LLM_PATH="models/llm/$LLM_FILE"
 
 # ---------------------------------------------------------------- llama.cpp
 # CUDA 12.8 build: driver 595 (CUDA 13.2) runs it natively; the 13.4 build would rely on
@@ -69,7 +91,8 @@ case "$RERANKER" in
   bge-reranker-v2-m3) default_gate=0.2082 ;;
   *) default_gate=0.05 ;;
 esac
-export RAG_RERANK_SCORE_THRESHOLD="${RAG_RERANK_SCORE_THRESHOLD:-$default_gate}"
+# GATE_THRESHOLD overrides it for every reranker.
+export RAG_RERANK_SCORE_THRESHOLD="${GATE_THRESHOLD:-$default_gate}"
 unset default_gate
 
 # ---------------------------------------------------------------- GPU duty cycle
