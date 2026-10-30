@@ -170,6 +170,7 @@ step "6/7 Datasets"
 # longer binds to a chunk; they also leave the parse caches that the replay mode reads.
 "$PYTHON" -X utf8 scripts/build_eval_dataset_v3.py --check >/dev/null
 "$PYTHON" -X utf8 scripts/build_xquad_dataset.py --check
+"$PYTHON" -X utf8 scripts/build_xquad_dataset.py --full --check >/dev/null
 
 step "7/7 Tests"
 "$PYTHON" -m pytest -q -x tests/test_llm_http.py tests/test_settings.py tests/test_evaluate_suite.py tests/test_replay.py \

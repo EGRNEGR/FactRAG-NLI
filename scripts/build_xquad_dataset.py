@@ -20,9 +20,14 @@ Answer scoring: XQuAD answers are short spans, but Russian inflects them in a ge
 answer, so answer_must_contain is one order-free regex over word stems of the RU span
 (alternatively the EN span).
 
+The standard set samples 4 answerable questions per corpus article and 5 refusals per
+held-out article (data/xquad_dataset.json, ~200 cases); --full keeps every eligible question
+of the same corpus (data/xquad_dataset_full.json, ~1000 cases) for a larger sample.
+
 Usage:
-  python scripts/build_xquad_dataset.py            # download if needed, build, write JSON
-  python scripts/build_xquad_dataset.py --check    # rebuild and require identical JSON
+  python scripts/build_xquad_dataset.py                   # download if needed, build, write JSON
+  python scripts/build_xquad_dataset.py --check           # rebuild and require identical JSON
+  python scripts/build_xquad_dataset.py --full [--check]  # every eligible question
 """
 
 from __future__ import annotations
@@ -54,6 +59,7 @@ BASE = ROOT / "data" / "xquad"
 RAW = BASE / "raw"
 DOCS = BASE / "docs"
 OUTPUT = ROOT / "data" / "xquad_dataset.json"
+OUTPUT_FULL = ROOT / "data" / "xquad_dataset_full.json"
 CACHE = ROOT / ".artifacts" / "xquad_parse_cache"
 SOURCES = {
     "xquad.ru.parquet": "https://huggingface.co/datasets/google/xquad/resolve/main/"
@@ -189,8 +195,19 @@ def drafts(
     keep: Sequence[str],
     held_out: Sequence[str],
     corpus_norm: str,
+    full: bool = False,
 ) -> list[DraftCase]:
+    """Draft cases; `full` keeps every eligible question instead of the per-article sample."""
     rng = random.Random(SEED)
+    counters: dict[str, int] = defaultdict(int)
+
+    def case_id(kind: str) -> str:
+        # The schema allows 3-digit numbers: the full set numbers each kind separately.
+        if not full:
+            return f"V3-XQ{kind}-{len(cases) + 1:03d}"
+        counters[kind] += 1
+        return f"V3-XQF{kind}-{counters[kind]:03d}"
+
     by_article: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in ru:
         by_article[titles[row["id"]]].append(row)
@@ -211,14 +228,18 @@ def drafts(
             and len(sentence_at(r["context"], r["answers"]["answer_start"][0])) >= 12
             and len(en_sentence(r["id"])[1]) >= 12
         ]
-        for i, row in enumerate(rng.sample(pool, min(PER_ARTICLE_ANSWERABLE, len(pool)))):
+        sampled = rng.sample(pool, len(pool) if full else min(PER_ARTICLE_ANSWERABLE, len(pool)))
+        # One-character answers ("5") are below the schema minimum; skipped after sampling so
+        # that the standard set keeps its seeded draw.
+        sampled = [r for r in sampled if len(r["answers"]["text"][0].strip()) >= 2]
+        for i, row in enumerate(sampled):
             answer = row["answers"]["text"][0]
             quote = sentence_at(row["context"], row["answers"]["answer_start"][0])
             en_answer, en_quote = en_sentence(row["id"])
             language: Literal["ru", "en"] = "ru" if i % 2 == 0 else "en"
             cases.append(
                 DraftCase(
-                    id=f"V3-XQ{language.upper()}-{len(cases) + 1:03d}",
+                    id=case_id(language.upper()),
                     category="single_hop",
                     subtype=f"xquad_span_{language}",
                     language=language,
@@ -254,13 +275,14 @@ def drafts(
             if len(answer) >= 3 and not any(re.search(t, corpus_norm) for t in terms):
                 candidates.append((row, terms, en_quote))
         for row, terms, en_quote in rng.sample(
-            candidates, min(PER_ARTICLE_UNANSWERABLE, len(candidates))
+            candidates,
+            len(candidates) if full else min(PER_ARTICLE_UNANSWERABLE, len(candidates)),
         ):
             language = "ru" if len(cases) % 2 == 0 else "en"
             document, premise = premises[rng.randrange(len(premises))]
             cases.append(
                 DraftCase(
-                    id=f"V3-XQNA-{len(cases) + 1:03d}",
+                    id=case_id("NA"),
                     category="unanswerable",
                     subtype=f"out_of_corpus_{language}",
                     language=language,
@@ -290,7 +312,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     cli.add_argument("--check", action="store_true", help="Require the rebuilt JSON to match")
+    cli.add_argument(
+        "--full", action="store_true", help="Every eligible question (xquad_dataset_full.json)"
+    )
     args = cli.parse_args(argv)
+    output = OUTPUT_FULL if args.full else OUTPUT
     download()
     ru, en, titles = load_rows()
     articles: dict[str, list[str]] = defaultdict(list)
@@ -304,7 +330,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     files = write_corpus(articles, keep)
     parsed = parse_all(files, corpus=DOCS, cache=CACHE)
     corpus_norm = "\n".join(normalize(c["text"]) for r in parsed.values() for c in r["chunks"])
-    draft_cases = drafts(ru, en, titles, keep, held_out, corpus_norm)
+    draft_cases = drafts(ru, en, titles, keep, held_out, corpus_norm, full=args.full)
     cases, errors = bind(draft_cases, parsed)
     if errors:
         # A quote split across a chunk boundary cannot be bound; such cases are dropped.
@@ -318,7 +344,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             "External FactRAG-NLI test set built from XQuAD (google/xquad, CC BY-SA 4.0): "
             "Russian Wikipedia paragraphs of 40 articles as the corpus, RU and EN span questions "
             "(single_hop) and out-of-corpus questions about 8 held-out articles (unanswerable). "
-            "Generated by scripts/build_xquad_dataset.py."
+            + ("Every eligible question. " if args.full else "")
+            + "Generated by scripts/build_xquad_dataset.py"
+            + (" --full." if args.full else ".")
         ),
         corpus_root=DOCS.relative_to(ROOT).as_posix(),
         chunking={**CHUNKING, "tokenizer": "models/bge-m3 (BAAI/bge-m3)"},
@@ -341,13 +369,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
     )
     if args.check:
-        if not OUTPUT.exists() or OUTPUT.read_text(encoding="utf-8") != text:
-            print(f"{OUTPUT.relative_to(ROOT)} differs from the rebuild", file=sys.stderr)
+        if not output.exists() or output.read_text(encoding="utf-8") != text:
+            print(f"{output.relative_to(ROOT)} differs from the rebuild", file=sys.stderr)
             return 1
-        print(f"{OUTPUT.relative_to(ROOT)} matches the rebuild", file=sys.stderr)
+        print(f"{output.relative_to(ROOT)} matches the rebuild", file=sys.stderr)
         return 0
-    OUTPUT.write_text(text, encoding="utf-8", newline="\n")
-    print(f"Wrote {OUTPUT.relative_to(ROOT)} ({len(cases)} cases)", file=sys.stderr)
+    output.write_text(text, encoding="utf-8", newline="\n")
+    print(f"Wrote {output.relative_to(ROOT)} ({len(cases)} cases)", file=sys.stderr)
     return 0
 
 
