@@ -86,46 +86,47 @@ else
   elif [[ -n "${HF_ENDPOINT:-}" ]] && ! hf_ok "$HF_ENDPOINT"; then
     fail "HF_ENDPOINT=$HF_ENDPOINT does not answer"
   fi
-  echo "Models from ${HF_ENDPOINT:-https://huggingface.co}"
-  # Encoders: huggingface_hub without the Xet transfer (it stalled on a 16 GB file in testing).
-  HF_HUB_DISABLE_XET=1 "$PYTHON" - <<'PY'
-import socket
-from pathlib import Path
-
-# IPv4 first: hosts with AAAA records but no IPv6 route fail with "Network is unreachable".
-_resolve = socket.getaddrinfo
-socket.getaddrinfo = lambda *a, **k: sorted(_resolve(*a, **k), key=lambda r: r[0] != socket.AF_INET)
-
-from huggingface_hub import snapshot_download  # noqa: E402
-
-ENCODERS = {
-    # name: (repo, ignored patterns); ONNX exports and duplicate .bin weights are not used.
-    "bge-m3": ("BAAI/bge-m3", ["onnx/*", "imgs/*", "*.jpg"]),
-    "bge-reranker-large": ("BAAI/bge-reranker-large", ["onnx/*", "pytorch_model.bin"]),
-    "bge-reranker-v2-m3": ("BAAI/bge-reranker-v2-m3", ["onnx/*", "pytorch_model.bin"]),
-    "mdeberta-nli": (
-        "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7",
-        ["onnx/*", "pytorch_model.bin"],
-    ),
-}
-for name, (repo, ignore) in ENCODERS.items():
-    print(f"- {repo} -> models/{name}", flush=True)
-    snapshot_download(repo, local_dir=Path("models") / name, ignore_patterns=ignore)
-PY
-  # GGUF: resumable curl (an interrupted 16 GB download continues) and a SHA-256 check.
-  # HF_ENDPOINT (e.g. https://hf-mirror.com) switches both curl and huggingface_hub to a mirror.
+  HF="${HF_ENDPOINT:-https://huggingface.co}"
+  echo "Models from $HF"
+  # Every file goes through resumable IPv4 curl: huggingface_hub's Xet transfer hung after the
+  # first repos (also with HF_HUB_DISABLE_XET=1), and Python resolved hosts to an unrouted IPv6.
+  # HF_ENDPOINT (e.g. https://hf-mirror.com) switches all downloads to a mirror.
+  fetch() {  # fetch REPO FILE DEST
+    [[ -f "$3" ]] && return 0
+    mkdir -p "$(dirname "$3")"
+    curl -4 -fL --retry 20 --retry-delay 5 -C - -o "$3.part" "$HF/$1/resolve/main/$2"
+    mv "$3.part" "$3"
+  }
+  # name|repo|ignored patterns: ONNX exports and duplicate .bin weights are not used.
+  ENCODERS=(
+    "bge-m3|BAAI/bge-m3|onnx/* imgs/* *.jpg"
+    "bge-reranker-large|BAAI/bge-reranker-large|onnx/* assets/* pytorch_model.bin"
+    "bge-reranker-v2-m3|BAAI/bge-reranker-v2-m3|onnx/* assets/* pytorch_model.bin"
+    "mdeberta-nli|MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7|onnx/* assets/* pytorch_model.bin"
+  )
+  for spec in "${ENCODERS[@]}"; do
+    IFS='|' read -r name repo ignore <<<"$spec"
+    echo "- $repo -> models/$name"
+    files="$(curl -4 -fsS -m 30 --retry 5 "$HF/api/models/$repo" | "$PYTHON" -c '
+import fnmatch, json, sys
+ignore = sys.argv[1].split()
+for sibling in json.load(sys.stdin)["siblings"]:
+    name = sibling["rfilename"]
+    if not any(fnmatch.fnmatch(name, pattern) for pattern in ignore):
+        print(name)
+' "$ignore")" || fail "cannot list the files of $repo"
+    while IFS= read -r file; do
+      echo "  $file"
+      fetch "$repo" "$file" "models/$name/$file"
+    done <<<"$files"
+  done
+  # GGUF: the same resumable curl (an interrupted 16 GB download continues) plus a SHA-256 check.
   mkdir -p models/llm
   for profile in $LLM_PROFILES; do
     eval "$(LLM_PROFILE="$profile" bash -c 'source scripts/linux/env.rtx3090.sh && printf "repo=%q file=%q sha=%q" "$LLM_REPO" "$LLM_FILE" "$LLM_SHA256"')"
     target="models/llm/$file"
-    if [[ -f "$target" ]]; then
-      echo "- $file present"
-    else
-      echo "- $repo/$file -> models/llm"
-      curl -4 -fL --retry 20 --retry-delay 5 -C - -o "$target.part" \
-        "${HF_ENDPOINT:-https://huggingface.co}/$repo/resolve/main/$file"
-      mv "$target.part" "$target"
-    fi
+    echo "- $repo/$file -> models/llm"
+    fetch "$repo" "$file" "$target"
     if [[ ! -f "$target.sha256ok" ]]; then
       echo "  checking SHA-256 ..."
       echo "$sha  $target" | sha256sum -c - || fail "$target is corrupt: delete it and rerun setup"
