@@ -74,6 +74,19 @@ step "4/7 Models (Hugging Face)"
 if [[ "${SKIP_MODELS:-0}" == "1" ]]; then
   echo "SKIP_MODELS=1"
 else
+  # Reachability first: an unreachable endpoint makes huggingface_hub hang without output.
+  hf_ok() { curl -fsS -m 15 -o /dev/null "$1/api/models/BAAI/bge-m3"; }
+  if [[ -z "${HF_ENDPOINT:-}" ]] && ! hf_ok https://huggingface.co; then
+    if hf_ok https://hf-mirror.com; then
+      echo "huggingface.co does not answer; using the mirror https://hf-mirror.com"
+      export HF_ENDPOINT=https://hf-mirror.com
+    else
+      fail "Neither huggingface.co nor hf-mirror.com answers: a VPN/proxy is needed for the models"
+    fi
+  elif [[ -n "${HF_ENDPOINT:-}" ]] && ! hf_ok "$HF_ENDPOINT"; then
+    fail "HF_ENDPOINT=$HF_ENDPOINT does not answer"
+  fi
+  echo "Models from ${HF_ENDPOINT:-https://huggingface.co}"
   # Encoders: huggingface_hub without the Xet transfer (it stalled on a 16 GB file in testing).
   HF_HUB_DISABLE_XET=1 "$PYTHON" - <<'PY'
 from pathlib import Path
