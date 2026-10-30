@@ -109,6 +109,9 @@ class RAGSettings(BaseSettings):
     llm_api_timeout: float = Field(default=120.0, gt=0, le=3600, allow_inf_nan=False)
     llm_api_stream: bool = False
     llm_tokenizer_mode: Literal["bytes", "llama_server"] = "bytes"
+    # Hybrid-reasoning models (Qwen3.x) think by default; the <think> block would consume
+    # max_tokens and break [S#] citation parsing. Sent as chat_template_kwargs per request.
+    llm_disable_thinking: bool = False
     generation_language: Literal["ru", "source"] = "ru"
     generation_repair_attempts: int = Field(default=0, ge=0, le=2)
     premise_guard: bool = True

@@ -5,3 +5,8 @@ data/test_docs/** -text
 *.pdf binary
 *.docx binary
 *.zip binary
+# Скрипты Linux-поставки RTX 3090: bash не исполняет CRLF.
+*.sh text eol=lf
+scripts/linux/** text eol=lf
+# Корпус XQuAD проверяется по SHA-256 так же, как test_docs.
+data/xquad/** -text

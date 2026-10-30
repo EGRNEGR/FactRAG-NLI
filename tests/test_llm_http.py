@@ -77,6 +77,35 @@ def test_http_completion_and_no_native_loader() -> None:
         generator.close()
 
 
+@pytest.mark.parametrize("disabled", [False, True])
+def test_thinking_switch_in_request(disabled: bool) -> None:
+    generator = LocalLLMGenerator(configured().model_copy(update={"llm_disable_thinking": disabled}))
+    backend = generator._backend
+    assert isinstance(backend, _HTTPBackend)
+    backend.client.close()
+    bodies: list[dict[str, object]] = []
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/v1/models":
+            return httpx.Response(200, json={"data": [{"id": "local-qwen"}]})
+        bodies.append(json.loads(request.content))
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": "10 МПа [S1]."}, "finish_reason": "stop"}]},
+        )
+
+    backend.client = httpx.Client(
+        base_url="http://127.0.0.1:8080/v1/", transport=httpx.MockTransport(handle)
+    )
+    try:
+        chunk = DocumentChunk("one", "10 МПа", "doc", "source.txt", (), None, None, (), 3)
+        generator.generate("Давление?", [chunk])
+        expected = {"enable_thinking": False} if disabled else None
+        assert bodies[0].get("chat_template_kwargs") == expected
+    finally:
+        generator.close()
+
+
 @pytest.mark.parametrize("failure", ["timeout", "invalid", "http_error", "redirect"])
 def test_failures_raise_without_native_fallback(failure: str) -> None:
     settings = configured().model_copy(update={"llm_api_model": "qwen"})

@@ -372,6 +372,11 @@ class _HTTPBackend:
             return len(tokens)
         return len(text.encode("utf-8"))
 
+    def _template_kwargs(self) -> dict[str, Any]:
+        if not self.settings.llm_disable_thinking:
+            return {}
+        return {"chat_template_kwargs": {"enable_thinking": False}}
+
     def complete(self, system_prompt: str, prompt: str) -> ChatReply:
         if self.model is None:
             response = self.client.get("models")
@@ -396,6 +401,7 @@ class _HTTPBackend:
                 "top_p": self.settings.llm_top_p,
                 "max_tokens": self.settings.llm_max_tokens,
                 "stream": False,
+                **self._template_kwargs(),
             },
         )
         response.raise_for_status()
@@ -436,6 +442,7 @@ class _HTTPBackend:
                 "max_tokens": self.settings.llm_max_tokens,
                 "stream": True,
                 "stream_options": {"include_usage": True},
+                **self._template_kwargs(),
             },
         ) as response:
             response.raise_for_status()

@@ -81,19 +81,21 @@ def corpus_files(mapping: dict[str, str]) -> list[str]:
     return native + sorted(mapping)
 
 
-def parse_all(files: Sequence[str]) -> dict[str, dict[str, Any]]:
+def parse_all(
+    files: Sequence[str], corpus: Path = CORPUS, cache: Path = CACHE
+) -> dict[str, dict[str, Any]]:
     settings = RAGSettings().model_copy(update=CHUNKING)
     parser: DocumentParser | None = None
-    CACHE.mkdir(parents=True, exist_ok=True)
+    cache.mkdir(parents=True, exist_ok=True)
     tokenizer = settings.embedding_model_path.name
     parsed: dict[str, dict[str, Any]] = {}
     for name in files:
-        path = CORPUS / name
+        path = corpus / name
         digest = sha256(path)
         key = hashlib.sha256(
             json.dumps([digest, CHUNKING, tokenizer], sort_keys=True).encode()
         ).hexdigest()[:20]
-        cached = CACHE / f"{key}.json"
+        cached = cache / f"{key}.json"
         if cached.exists():
             parsed[name] = json.loads(cached.read_text(encoding="utf-8"))
             continue
