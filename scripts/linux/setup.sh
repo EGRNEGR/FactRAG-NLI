@@ -124,6 +124,9 @@ else
 fi
 
 step "6/7 Datasets"
+# Both builds re-parse the corpus with this machine's parser and fail if any evidence quote no
+# longer binds to a chunk; they also leave the parse caches that the replay mode reads.
+"$PYTHON" -X utf8 scripts/build_eval_dataset_v3.py --check >/dev/null
 "$PYTHON" -X utf8 scripts/build_xquad_dataset.py --check
 
 step "7/7 Tests"
