@@ -32,6 +32,7 @@ from grounding import (
     is_verdict_marker,
     premise_header,
     premise_windows,
+    strip_verdict_prefix,
     verbatim_code_span,
 )
 from grounding import segment_claims as segment_claims  # re-export for existing importers
@@ -938,6 +939,8 @@ class NLIFactVerifier:
     ) -> VerifiedClaim:
         source_ids = tuple(dict.fromkeys(f"S{match[1]}" for match in _CITATION.finditer(text)))
         hypothesis = _ANY_CITATION.sub("", text).strip()
+        if self.settings.nli_strip_verdict_prefix:
+            hypothesis = strip_verdict_prefix(hypothesis)
         malformed = any(not _CITATION.fullmatch(marker) for marker in _ANY_CITATION.findall(text))
         is_inherited = not source_ids and not malformed and bool(inherited)
         if is_inherited:

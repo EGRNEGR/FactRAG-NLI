@@ -314,3 +314,50 @@ def test_co_verification_never_overrides_contradiction_missing_overlap_or_other_
         )
     )
     assert anchored.claims[1].status == ClaimStatus.UNVERIFIED  # "30" is not in the source
+
+
+def test_strip_verdict_prefix_keeps_the_correcting_clause() -> None:
+    from grounding import strip_verdict_prefix
+
+    assert (
+        strip_verdict_prefix("Нет, член title не должен меняться между возникновениями проблемы")
+        == "Член title не должен меняться между возникновениями проблемы"
+    )
+    assert strip_verdict_prefix("No: the server MUST send WWW-Authenticate") == (
+        "The server MUST send WWW-Authenticate"
+    )
+    # Too short to be a statement, an affirmative verdict, or no verdict at all: unchanged.
+    assert strip_verdict_prefix("Нет, не обязательно") == "Нет, не обязательно"
+    assert strip_verdict_prefix("Да, член status может расходиться с кодом") == (
+        "Да, член status может расходиться с кодом"
+    )
+    assert strip_verdict_prefix("Нетто-масса указана в таблице 2") == (
+        "Нетто-масса указана в таблице 2"
+    )
+
+
+class VerdictSensitive:
+    """mDeBERTa-like: a hypothesis opening with a negative verdict reads as a contradiction."""
+
+    def __init__(self) -> None:
+        self.hypotheses: list[str] = []
+
+    def predict(self, premise: str, hypothesis: str) -> NLIProbabilities:
+        self.hypotheses.append(hypothesis)
+        return CONTRADICTION if hypothesis.lower().startswith("нет") else ENTAILMENT
+
+
+def test_negative_verdict_prefix_is_not_sent_to_nli() -> None:
+    text = "Нет, по умолчанию генерируемые столбцы создаются как VIRTUAL [S1]."
+    context = {"S1": source("Generated columns are VIRTUAL by default.")}
+    backend = VerdictSensitive()
+    result = NLIFactVerifier(settings(nli_strip_verdict_prefix=True), backend=backend).verify(
+        raw(text, context)
+    )
+    assert result.claims[0].status == ClaimStatus.VERIFIED and not result.refused
+    assert result.answer.startswith("Нет, по умолчанию")  # the published claim keeps it
+    assert not any(h.lower().startswith("нет") for h in backend.hypotheses)
+    off = NLIFactVerifier(
+        settings(nli_strip_verdict_prefix=False), backend=VerdictSensitive()
+    ).verify(raw(text, context))
+    assert off.claims[0].status == ClaimStatus.CONTRADICTION and off.refused

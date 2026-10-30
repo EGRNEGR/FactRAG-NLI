@@ -123,6 +123,7 @@ BASELINE_VERIFIER: dict[str, Any] = {
     "abstention_guard": False,
     "nli_premise_title": False,
     "nli_co_verification": False,
+    "nli_strip_verdict_prefix": False,
 }
 ABLATION: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("baseline", ()),
@@ -137,6 +138,7 @@ ABLATION: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("abstention_guard", ("abstention_guard",)),
     ("document_titles", ("nli_premise_title",)),
     ("co_verification", ("nli_co_verification",)),
+    ("verdict_prefix", ("nli_strip_verdict_prefix",)),
 )
 
 

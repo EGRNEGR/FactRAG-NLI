@@ -230,6 +230,10 @@ class RAGSettings(BaseSettings):
     # in that source and at least this share of its content words does.
     nli_co_verification: bool = True
     nli_co_verification_overlap: float = Field(default=0.5, ge=0, le=1)
+    # The NLI hypothesis drops a leading negative verdict ("Нет, X ...", "No, X ..."): the
+    # clause is the statement about the source. Qwen3.8 opens corrections this way and mDeBERTa
+    # read the extra negation as a contradiction. The published claim keeps the verdict.
+    nli_strip_verdict_prefix: bool = True
     abstention_guard: bool = True
     sparse_coverage_weighting: bool = True
     chunk_target_tokens: int = Field(default=420, ge=300, le=600)
