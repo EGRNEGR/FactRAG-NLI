@@ -91,10 +91,14 @@ else
   # Every file goes through resumable IPv4 curl: huggingface_hub's Xet transfer hung after the
   # first repos (also with HF_HUB_DISABLE_XET=1), and Python resolved hosts to an unrouted IPv6.
   # HF_ENDPOINT (e.g. https://hf-mirror.com) switches all downloads to a mirror.
+  # Some huggingface.co addresses sometimes do not accept connections: give up on a connection
+  # after 20 s and retry (usually another address); restart transfers stalled below 10 KB/s.
+  CURL_HF=(-4 -fL --connect-timeout 20 --speed-limit 10240 --speed-time 60
+    --retry 30 --retry-delay 3 --retry-all-errors)
   fetch() {  # fetch REPO FILE DEST
     [[ -f "$3" ]] && return 0
     mkdir -p "$(dirname "$3")"
-    curl -4 -fL --retry 20 --retry-delay 5 -C - -o "$3.part" "$HF/$1/resolve/main/$2"
+    curl "${CURL_HF[@]}" -# -C - -o "$3.part" "$HF/$1/resolve/main/$2"
     mv "$3.part" "$3"
   }
   # name|repo|ignored patterns: ONNX exports and duplicate .bin weights are not used.
@@ -107,7 +111,7 @@ else
   for spec in "${ENCODERS[@]}"; do
     IFS='|' read -r name repo ignore <<<"$spec"
     echo "- $repo -> models/$name"
-    files="$(curl -4 -fsS -m 30 --retry 5 "$HF/api/models/$repo" | "$PYTHON" -c '
+    files="$(curl "${CURL_HF[@]}" -sS -m 60 "$HF/api/models/$repo" | "$PYTHON" -c '
 import fnmatch, json, sys
 ignore = sys.argv[1].split()
 for sibling in json.load(sys.stdin)["siblings"]:
