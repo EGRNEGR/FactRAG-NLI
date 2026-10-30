@@ -35,6 +35,7 @@ import os
 import platform
 import random
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -82,6 +83,11 @@ PROFILES: dict[str, dict[str, Any]] = {
     "guard_on": {},
     "guard_off": {"premise_guard": False},
 }
+# llama-server watchdog of long e2e stages (scripts/linux/run_benchmark.sh sets the command):
+# FACTRAG_LLM_RECOVER_CMD brings the server back, e.g. "bash scripts/linux/llama_server.sh ensure".
+RECOVER_COMMAND = os.environ.get("FACTRAG_LLM_RECOVER_CMD", "")
+MAX_CONSECUTIVE_ERRORS = int(os.environ.get("FACTRAG_MAX_CONSECUTIVE_ERRORS", "5"))
+EXIT_ABORTED = 3
 NO_INFO = re.compile(
     r"(не\s+(указ|определ|опис|упомина|содерж|привод|рассматрива|регламентир|зада[её]т|"
     r"устанавлива|называ|перечисля|предусматрива)|нет\s+(сведени|информаци|данных|упоминани)|"
@@ -1079,6 +1085,50 @@ def archive_failed(log: CaseLog, archive_path: Path) -> list[str]:
     return [row["id"] for row in failed]
 
 
+class LLMWatchdog:
+    """Keeps the external LLM server alive during an e2e stage.
+
+    A dead llama-server turns every later case into an error, retry stages included. With a
+    recovery command the stage checks /health before the first case and after each failure,
+    brings the server back and runs the failed case once more.
+    """
+
+    def __init__(self, api_base: str | None, command: str) -> None:
+        base = (api_base or "").rstrip("/")
+        self.health_url = (base.removesuffix("/v1") + "/health") if base else None
+        self.command = shlex.split(command) if command else []
+        self.recoveries = 0
+
+    def healthy(self) -> bool:
+        if self.health_url is None:
+            return True
+        import httpx
+
+        try:
+            return httpx.get(self.health_url, timeout=10, trust_env=False).status_code == 200
+        except httpx.HTTPError:
+            return False
+
+    def recover(self) -> bool:
+        """Run the recovery command if the server does not answer; True if it answers now."""
+        if self.healthy():
+            return False
+        if not self.command:
+            return False
+        print(
+            f"[watchdog] LLM server is not answering; running: {shlex.join(self.command)}",
+            file=sys.stderr,
+            flush=True,
+        )
+        self.recoveries += 1
+        try:
+            done = subprocess.run(self.command, cwd=ROOT, timeout=1800, check=False)
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            print(f"[watchdog] recovery failed: {exc}", file=sys.stderr, flush=True)
+            return False
+        return done.returncode == 0 and self.healthy()
+
+
 def run_e2e(
     dataset: EvalDatasetV3,
     dataset_path: Path,
@@ -1092,8 +1142,15 @@ def run_e2e(
     With retry_errors, cases logged as failed (an exception, e.g. a timeout while the machine
     slept) are moved to retried_errors.jsonl and run again; the resource measurements of the
     original run are kept and those of the retry are reported separately.
+
+    FACTRAG_MAX_CONSECUTIVE_ERRORS failures in a row stop the stage (summary key "aborted",
+    exit code 3) instead of logging the rest of the dataset as errors; a resumed or retry
+    run executes the remaining cases.
     """
     settings = build_settings(dataset, PROFILES[profile])
+    watchdog = LLMWatchdog(settings.llm_api_base, RECOVER_COMMAND)
+    if watchdog.command and not watchdog.healthy() and not watchdog.recover():
+        print("[watchdog] LLM server unavailable before the first case", file=sys.stderr)
     seed_everything(settings.llm_seed)
     out = run_dir / f"e2e_{profile}"
     log = CaseLog(out / "cases.jsonl")
@@ -1107,6 +1164,8 @@ def run_e2e(
     full = CaseLog(run_dir / "full" / f"e2e_{profile}.jsonl")
     cases = dataset.cases[:limit] if limit else dataset.cases
     by_id = {c.id: c for c in dataset.cases}
+    consecutive_errors = 0
+    aborted: str | None = None
     with ResourceMonitor() as monitor:
         pipeline = open_pipeline(dataset, settings)
         try:
@@ -1116,13 +1175,29 @@ def run_e2e(
                 print(f"[e2e:{profile}] {case.id} ({i}/{len(cases)})", file=sys.stderr, flush=True)
                 started = time.perf_counter()
                 row = case_row(case)
-                try:
-                    response = pipeline.query(case.question)
-                except Exception as exc:  # noqa: BLE001 - recorded per case, never fabricated
-                    row["error"] = f"{type(exc).__name__}: {exc}"
+                response = None
+                error = ""
+                for attempt in (1, 2):
+                    try:
+                        response = pipeline.query(case.question)
+                        break
+                    except Exception as exc:  # noqa: BLE001 - recorded per case, never fabricated
+                        error = f"{type(exc).__name__}: {exc}"
+                        print(f"[e2e:{profile}] {case.id} failed: {error}", file=sys.stderr)
+                        # Run the case again only if the server was down and is back now.
+                        if attempt == 2 or not watchdog.recover():
+                            break
+                if response is None:
+                    row["error"] = error
                     row["wall_ms"] = (time.perf_counter() - started) * 1000
                     log.append(row)
+                    consecutive_errors += 1
+                    if consecutive_errors >= MAX_CONSECUTIVE_ERRORS:
+                        aborted = f"{consecutive_errors} consecutive errors, last: {error}"
+                        print(f"[e2e:{profile}] stage stopped: {aborted}", file=sys.stderr)
+                        break
                     continue
+                consecutive_errors = 0
                 attempts = response.verification_attempts
                 # Vanilla RAG is the first draft: a repair attempt exists only because the
                 # NLI filter rejected that draft, so it belongs to FactRAG-NLI.
@@ -1155,6 +1230,10 @@ def run_e2e(
         summary["resources_retry"] = monitor.summary()
     else:
         summary["resources"] = monitor.summary()
+    if watchdog.recoveries:
+        summary["llm_server_recoveries"] = watchdog.recoveries
+    if aborted:
+        summary["aborted"] = aborted
     dump_json(previous, summary)
     record: dict[str, Any] = {
         "cases": len(log.rows),
@@ -1702,6 +1781,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(
             json.dumps({k: summary[k] for k in ("cases", "errors", "paired_correctness")}, indent=1)
         )
+        if summary.get("aborted"):
+            return EXIT_ABORTED
     return 0
 
 

@@ -191,6 +191,11 @@ class RAGSettings(BaseSettings):
     rerank_top_k: int = Field(default=5, ge=5, le=10)
     # Threshold applies to sigmoid-normalized cross-encoder logits.
     rerank_score_threshold: float = Field(default=0.5, ge=0, le=1)
+    # chunk: every source sent to the LLM must reach the threshold. top: the threshold is only
+    # the relevance gate (the best substantive chunk must reach it, otherwise refusal); the
+    # top_k chunks then go to the LLM by rank, so a low-scored gold chunk is not dropped
+    # behind a confident distractor.
+    rerank_gate_scope: Literal["chunk", "top"] = "chunk"
     rerank_rrf_alpha: float = Field(default=0.0, ge=0, le=1)
     rerank_window_tokens: int = Field(default=384, ge=32, le=448)
     nli_entailment_threshold: float = Field(default=0.4, ge=0, le=1)

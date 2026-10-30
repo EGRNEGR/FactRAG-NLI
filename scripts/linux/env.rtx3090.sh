@@ -79,16 +79,25 @@ export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 # The 8 GB laptop needed batch 2 next to llama-server; 24 GB takes 16/8 (code defaults).
 export FACTRAG_EMBEDDING_BATCH="${FACTRAG_EMBEDDING_BATCH:-16}"
 export FACTRAG_RERANK_BATCH="${FACTRAG_RERANK_BATCH:-8}"
-# Reranker: bge-reranker-large is the calibrated production model (English-centric);
-# bge-reranker-v2-m3 is multilingual: far better on the Russian XQuAD corpus, weaker relevance
-# gate on eval_dataset_v3 (measurements in docs/RTX3090_LINUX.md). PLAN=full runs both.
-export RERANKER="${RERANKER:-bge-reranker-large}"
-# The relevance gate threshold depends on the reranker's score scale. 0.05 is the production
-# value for bge-reranker-large; 0.2082 was calibrated for bge-reranker-v2-m3 on the dev half
-# of eval_dataset_v3 to the same false rejection share (scripts/calibrate_gate.py).
+# llama-server holds ~18 GB next to the encoders: growable segments keep PyTorch's cache from
+# fragmenting the remaining few GB over a multi-hour run.
+export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
+# Reranker: bge-reranker-v2-m3 (multilingual) is the default since run 20261030T1420Z: with the
+# top-scope gate below, Recall@5 of the LLM context is 0.837 on eval_dataset_v3 and 0.987 on
+# XQuAD, against 0.820 / 0.671 for bge-reranker-large with the per-chunk threshold of that run.
+export RERANKER="${RERANKER:-bge-reranker-v2-m3}"
+# Gate scope "top": the threshold only decides refusal (the best substantive chunk must reach
+# it) and the top_k ranked chunks reach the LLM. With "chunk" every source had to pass the
+# threshold, which dropped low-scored gold chunks behind confident distractors.
+export RAG_RERANK_GATE_SCOPE="${GATE_SCOPE:-top}"
+# The threshold depends on the reranker's score scale. v2-m3: 0.02, chosen on the dev halves of
+# eval_dataset_v3 and XQuAD (an answerable question rejected costs a likely correct answer, an
+# unanswerable one passed costs a refusal the LLM gives anyway in ~95% of cases): dev rejects
+# 2 of 164 answerable and 21 of 46 unanswerable, test 0 of 166 and 19 of 42.
+# bge-reranker-large: 0.05, the production value.
 case "$RERANKER" in
   bge-reranker-large) default_gate=0.05 ;;
-  bge-reranker-v2-m3) default_gate=0.2082 ;;
+  bge-reranker-v2-m3) default_gate=0.02 ;;
   *) default_gate=0.05 ;;
 esac
 # GATE_THRESHOLD overrides it for every reranker.

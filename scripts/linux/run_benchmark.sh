@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 # FactRAG-NLI benchmark on the RTX 3090 with GPU rest periods (45 min work / 5 min rest).
 #
-#   bash scripts/linux/run_benchmark.sh              # PLAN=full, detached, shows the log
-#   bash scripts/linux/run_benchmark.sh --resume     # continue the last run after a stop/reboot
+#   bash scripts/linux/run_benchmark.sh              # PLAN=full, XQUAD=full, detached, shows the log
+#   PLAN=main bash scripts/linux/run_benchmark.sh    # best configuration only, ~1.5 h
 #   PLAN=quick bash scripts/linux/run_benchmark.sh   # 10 cases per dataset, ~15 min smoke test
-#   XQUAD=full PLAN=main bash scripts/linux/run_benchmark.sh   # 1307 questions (v3 220 + XQuAD 1087)
-#   XQUAD=full PLAN=main bash scripts/linux/run_benchmark.sh --resume   # switch the last run over
+#   bash scripts/linux/run_benchmark.sh --resume     # continue the last run after a stop/reboot
 #   bash scripts/linux/run_benchmark.sh --foreground # stay attached to the terminal
 #
-# Plans (configuration = LLM profile + reranker):
-#   full   qwen38-27b+bge-reranker-large, qwen25-14b+bge-reranker-large (same-GPU baseline),
-#          qwen38-27b+bge-reranker-v2-m3, qwen38-27b-think+bge-reranker-large;
-#          each on eval_dataset_v3 (220) and XQuAD
-#   XQUAD  standard (198 sampled questions, default) | full (all 1087 eligible questions)
-#   main   qwen38-27b+bge-reranker-large only
+# Plans (configuration = LLM profile + reranker); every e2e stage runs eval_dataset_v3 (220)
+# and XQuAD:
+#   full   qwen38-27b+bge-reranker-v2-m3 (main), qwen38-27b-think+bge-reranker-v2-m3,
+#          qwen25-14b+bge-reranker-v2-m3 (previous LLM, same retrieval),
+#          qwen38-27b+bge-reranker-large (reranker ablation)
+#   main   qwen38-27b+bge-reranker-v2-m3 only
 #   quick  main with 10 cases per dataset
+#   XQUAD  full (all 1087 eligible questions, default: 1307 questions with v3)
+#          | standard (198 sampled questions, the set of run 20261030T1420Z)
+# PLAN and XQUAD given together with --resume switch the last run over (finished cases stay).
 # The run is detached (setsid + nohup): closing the AnyDesk session or the terminal does not
 # stop it. Ctrl+C only stops watching the log. Stop the run: bash scripts/linux/stop_benchmark.sh
 set -euo pipefail
@@ -40,10 +42,10 @@ if [[ "$RESUME" == "1" ]]; then
   plan_now="${PLAN:-}" xquad_now="${XQUAD:-}"
   source "$STATE/last_run"
   PLAN="${plan_now:-$PLAN}"
-  XQUAD="${xquad_now:-${XQUAD:-standard}}"
+  XQUAD="${xquad_now:-${XQUAD:-standard}}"  # runs before XQUAD existed used the standard set
 else
   PLAN="${PLAN:-full}"
-  XQUAD="${XQUAD:-standard}"
+  XQUAD="${XQUAD:-full}"
   RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%MZ)_rtx3090_$PLAN}"
 fi
 printf 'RUN_ID=%q\nPLAN=%q\nXQUAD=%q\n' "$RUN_ID" "$PLAN" "$XQUAD" >"$STATE/last_run"
@@ -69,8 +71,8 @@ if [[ "$FOREGROUND" == "0" && -z "${FACTRAG_DETACHED:-}" ]]; then
 fi
 
 case "$PLAN" in
-  full) CONFIGS="qwen38-27b:bge-reranker-large qwen25-14b:bge-reranker-large qwen38-27b:bge-reranker-v2-m3 qwen38-27b-think:bge-reranker-large" ;;
-  main | quick) CONFIGS="qwen38-27b:bge-reranker-large" ;;
+  full) CONFIGS="qwen38-27b:bge-reranker-v2-m3 qwen38-27b-think:bge-reranker-v2-m3 qwen25-14b:bge-reranker-v2-m3 qwen38-27b:bge-reranker-large" ;;
+  main | quick) CONFIGS="qwen38-27b:bge-reranker-v2-m3" ;;
   *) echo "Unknown PLAN=$PLAN (full | main | quick)" >&2; exit 2 ;;
 esac
 LIMIT=()
@@ -103,7 +105,8 @@ for config in $CONFIGS; do
     add "xquad-retrieval[$reranker]" "$(q "${with[@]}" "${XQ[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${XQ_DATA[@]}" --run-dir "$RUN_ROOT/retrieval/$XQ_DIR+$reranker" "${LIMIT[@]}" retrieval)"
     done_retrieval+="$reranker "
   fi
-  add "llama-server[$profile]" "$(q "${with[@]}" bash scripts/linux/llama_server.sh restart)"
+  # ensure: a server already answering with this profile (e.g. on --resume) is kept.
+  add "llama-server[$profile]" "$(q "${with[@]}" bash scripts/linux/llama_server.sh ensure)"
   add "v3-e2e[$config]" "$(q "${with[@]}" "$PYTHON" -X utf8 evaluate_suite.py --run-dir "$dir/v3" "${LIMIT[@]}" e2e --profile guard_on)"
   add "xquad-e2e[$config]" "$(q "${with[@]}" "${XQ[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${XQ_DATA[@]}" --run-dir "$dir/$XQ_DIR" "${LIMIT[@]}" e2e --profile guard_on)"
   # Cases that failed on infrastructure (timeouts) run once more; logged answers are kept.
@@ -115,12 +118,19 @@ if [[ "${KEEP_SERVER:-0}" != "1" ]]; then
 fi
 add "comparison" "$(q "$PYTHON" -X utf8 scripts/compare_runs.py "$RUN_ROOT")"
 
+# Watchdog: an e2e stage whose llama-server stops answering restarts it (same profile, the
+# stage runs under with_profile.sh) and runs the failed case again; 5 failures in a row end
+# the stage, and the retry stage continues with a fresh process.
+export FACTRAG_LLM_RECOVER_CMD="bash scripts/linux/llama_server.sh ensure"
+
 set +e
 "$PYTHON" scripts/linux/gpu_duty_cycle.py --keep-going \
   --work-minutes "$WORK_MINUTES" --rest-minutes "$REST_MINUTES" --temp-limit "$GPU_TEMP_LIMIT" \
   "${stages[@]}"
 code=$?
 set -e
+# Server log (appended across restarts) next to the results, for crash diagnostics.
+cp -f .artifacts/llama/server.log "$RUN_ROOT/llama-server.log" 2>/dev/null || true
 echo "=== finished $(date) with exit code $code"
 echo "Results: $PROJECT_ROOT/$RUN_ROOT/COMPARISON.md"
 rm -f "$STATE/pid"

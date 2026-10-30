@@ -261,12 +261,16 @@ class RAGPipeline:
             lists: dict[str, list[str]] = getattr(retriever, "candidate_lists", dict)()
             dense_ids, sparse_ids = lists.get("dense", []), lists.get("sparse", [])
             stats.update(timing)
-            results = [
+            passing = [
                 hit
                 for hit in results
                 if hit.rerank_score is not None
                 and hit.rerank_score >= self.settings.rerank_score_threshold
             ]
+            if self.settings.rerank_gate_scope == "chunk":
+                results = passing
+            elif not passing:  # "top": the best chunk is the gate, the ranked rest is context
+                results = []
             if not results:
                 stats["total_ms"] = (time.perf_counter() - started) * 1000
                 return RAGResponse(

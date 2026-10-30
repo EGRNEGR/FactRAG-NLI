@@ -250,3 +250,34 @@ def test_cli_indexes_queries_and_benchmarks(tmp_path: Path) -> None:
     assert lines[0]["processed_files"] == 1
     assert "answer" in lines[1]
     assert lines[2]["count"] == 3 and lines[2]["failed"] == 0
+
+
+class SourceCountingChat(RecordedChat):
+    def __init__(self) -> None:
+        super().__init__()
+        self.source_counts: list[int] = []
+
+    def complete(self, system_prompt: str, prompt: str) -> ChatReply:
+        self.source_counts.append(len(json.loads(prompt)["sources"]))
+        return super().complete(system_prompt, prompt)
+
+
+@pytest.mark.parametrize(("scope", "sources"), [("chunk", 1), ("top", 2)])
+def test_gate_scope_decides_which_sources_reach_the_llm(
+    tmp_path: Path, scope: str, sources: int
+) -> None:
+    settings = configured(tmp_path).model_copy(
+        update={"rerank_score_threshold": 0.8, "rerank_gate_scope": scope}
+    )
+    root = settings.document_root
+    (root / "a.md").write_text("# ГОСТ\n## 4.2\nРабочее давление насоса 10 МПа.", encoding="utf-8")
+    (root / "b.md").write_text("# ГОСТ\n## 5.1\nДавление воды в сети.", encoding="utf-8")
+    chat = SourceCountingChat()
+    with make_pipeline(settings, chat) as pipeline:
+        pipeline.index_documents([root / "a.md", root / "b.md"])
+        pipeline.query("Рабочее давление насоса?")
+        assert chat.source_counts == [sources]
+        # No chunk reaches the threshold: refusal before the LLM in both scopes.
+        response = pipeline.query("Электропроводность алюминия?")
+        assert response.refusal_reason == "relevance_threshold_not_met"
+        assert chat.source_counts == [sources]

@@ -348,3 +348,17 @@ def test_incomplete_classifier_is_rejected(tmp_path: Path, monkeypatch: pytest.M
         CrossEncoderReranker(configuration(tmp_path / "db", reranker_model_path=path))
     assert all(options["local_files_only"] is True for options in captured)
     assert all(options["trust_remote_code"] is False for options in captured)
+
+
+def test_gate_scope_top_keeps_ranked_context_behind_the_best_chunk(tmp_path: Path) -> None:
+    both = chunk("both", "давление температура")
+    one = chunk("one", "давление воды")
+    for scope, expected in (("chunk", ["both"]), ("top", ["both", "one"])):
+        with retriever(
+            tmp_path / scope, rerank_score_threshold=0.8, rerank_gate_scope=scope
+        ) as index:
+            index.add([both, one])
+            hits = index.search("давление температура")
+            assert [hit.chunk.chunk_id for hit in hits] == expected
+            # No chunk reaches the threshold: the gate refuses in both scopes.
+            assert index.search("давление влажность") == []
