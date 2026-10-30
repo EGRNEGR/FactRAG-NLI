@@ -74,31 +74,48 @@ step "4/7 Models (Hugging Face)"
 if [[ "${SKIP_MODELS:-0}" == "1" ]]; then
   echo "SKIP_MODELS=1"
 else
-  # Reachability first: an unreachable endpoint makes huggingface_hub hang without output.
-  hf_ok() { curl -4 -fsS -m 15 -o /dev/null "$1/api/models/BAAI/bge-m3"; }
-  if [[ -z "${HF_ENDPOINT:-}" ]] && ! hf_ok https://huggingface.co; then
-    if hf_ok https://hf-mirror.com; then
-      echo "huggingface.co does not answer; using the mirror https://hf-mirror.com"
-      export HF_ENDPOINT=https://hf-mirror.com
-    else
-      fail "Neither huggingface.co nor hf-mirror.com answers: a VPN/proxy is needed for the models"
-    fi
-  elif [[ -n "${HF_ENDPOINT:-}" ]] && ! hf_ok "$HF_ENDPOINT"; then
-    fail "HF_ENDPOINT=$HF_ENDPOINT does not answer"
-  fi
-  HF="${HF_ENDPOINT:-https://huggingface.co}"
-  echo "Models from $HF"
   # Every file goes through resumable IPv4 curl: huggingface_hub's Xet transfer hung after the
   # first repos (also with HF_HUB_DISABLE_XET=1), and Python resolved hosts to an unrouted IPv6.
-  # HF_ENDPOINT (e.g. https://hf-mirror.com) switches all downloads to a mirror.
-  # Some huggingface.co addresses sometimes do not accept connections: give up on a connection
-  # after 20 s and retry (usually another address); restart transfers stalled below 10 KB/s.
+  # Restart transfers stalled below 10 KB/s for a minute; retry any error.
   CURL_HF=(-4 -fL --connect-timeout 20 --speed-limit 10240 --speed-time 60
-    --retry 30 --retry-delay 3 --retry-all-errors)
+    --retry 3 --retry-delay 3 --retry-all-errors)
+  good=()
+  if [[ -n "${HF_ENDPOINT:-}" ]]; then
+    HF="$HF_ENDPOINT"
+    curl -4 -fsSL -m 30 -o /dev/null "$HF/api/models/BAAI/bge-m3" || fail "HF_ENDPOINT=$HF does not answer"
+  else
+    # huggingface.co resolves to several CloudFront addresses, and from some networks part of
+    # them never accept a connection. Probe each address and pin curl to the ones that answer.
+    # (hf-mirror.com is no way around it: outside China it redirects every request here.)
+    HF=https://huggingface.co
+    for round in 1 2 3; do
+      for ip in $(getent ahostsv4 huggingface.co | awk '{print $1}' | sort -u); do
+        [[ " ${good[*]} " == *" $ip "* ]] && continue
+        curl -4 -fsS -m 10 --connect-timeout 5 -o /dev/null --resolve "huggingface.co:443:$ip" \
+          "$HF/api/models/BAAI/bge-m3" 2>/dev/null && good+=("$ip")
+      done
+      ((${#good[@]})) && break
+      sleep 5
+    done
+    ((${#good[@]})) || fail "huggingface.co does not accept connections from this PC: a VPN is needed for the models"
+    echo "huggingface.co addresses that answer: ${good[*]}"
+  fi
+  # curl stays on the first pinned address even when it stops answering, so cycle through the
+  # answering addresses here, one per curl call.
+  hf_curl() {
+    local attempt ip
+    for attempt in 1 2 3 4 5; do
+      for ip in "${good[@]:-}"; do
+        curl "${CURL_HF[@]}" ${ip:+--resolve "huggingface.co:443:$ip"} "$@" && return 0
+      done
+      sleep 5
+    done
+    return 1
+  }
   fetch() {  # fetch REPO FILE DEST
     [[ -f "$3" ]] && return 0
     mkdir -p "$(dirname "$3")"
-    curl "${CURL_HF[@]}" -# -C - -o "$3.part" "$HF/$1/resolve/main/$2"
+    hf_curl -# -C - -o "$3.part" "$HF/$1/resolve/main/$2" || fail "cannot download $1/$2"
     mv "$3.part" "$3"
   }
   # name|repo|ignored patterns: ONNX exports and duplicate .bin weights are not used.
@@ -111,7 +128,7 @@ else
   for spec in "${ENCODERS[@]}"; do
     IFS='|' read -r name repo ignore <<<"$spec"
     echo "- $repo -> models/$name"
-    files="$(curl "${CURL_HF[@]}" -sS -m 60 "$HF/api/models/$repo" | "$PYTHON" -c '
+    files="$(hf_curl -sS -m 60 "$HF/api/models/$repo" | "$PYTHON" -c '
 import fnmatch, json, sys
 ignore = sys.argv[1].split()
 for sibling in json.load(sys.stdin)["siblings"]:
