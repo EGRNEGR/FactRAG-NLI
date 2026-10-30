@@ -94,6 +94,7 @@ for name, (repo, ignore) in ENCODERS.items():
     snapshot_download(repo, local_dir=Path("models") / name, ignore_patterns=ignore)
 PY
   # GGUF: resumable curl (an interrupted 16 GB download continues) and a SHA-256 check.
+  # HF_ENDPOINT (e.g. https://hf-mirror.com) switches both curl and huggingface_hub to a mirror.
   mkdir -p models/llm
   for profile in $LLM_PROFILES; do
     eval "$(LLM_PROFILE="$profile" bash -c 'source scripts/linux/env.rtx3090.sh && printf "repo=%q file=%q sha=%q" "$LLM_REPO" "$LLM_FILE" "$LLM_SHA256"')"
@@ -103,7 +104,7 @@ PY
     else
       echo "- $repo/$file -> models/llm"
       curl -fL --retry 20 --retry-delay 5 -C - -o "$target.part" \
-        "https://huggingface.co/$repo/resolve/main/$file"
+        "${HF_ENDPOINT:-https://huggingface.co}/$repo/resolve/main/$file"
       mv "$target.part" "$target"
     fi
     if [[ ! -f "$target.sha256ok" ]]; then
