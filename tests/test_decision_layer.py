@@ -324,3 +324,44 @@ def test_embedding_device_overrides_model_device() -> None:
     assert runtime(settings, device=settings.embedding_device) == ("cpu", torch.float32)
     with pytest.raises(ValueError):
         RAGSettings(mode="development", allow_fallback=True, embedding_device="tpu")
+
+
+class RevisingChat:
+    """Wrong without thinking, right with it; records whether each prompt carried a revision."""
+
+    supports_thinking = True
+
+    def __init__(self) -> None:
+        self.calls: list[tuple[bool, bool]] = []
+
+    def count_tokens(self, text: str) -> int:
+        return len(text.split())
+
+    def complete(
+        self,
+        system_prompt: str,
+        prompt: str,
+        *,
+        thinking: bool = False,
+        sampling: dict[str, object] | None = None,
+    ) -> ChatReply:
+        revision = json.loads(prompt).get("revision")
+        self.calls.append((thinking, revision is not None))
+        if revision is not None:
+            assert revision["rejected_claims"][0]["text"].startswith("Давление составляет 99")
+        text = (
+            "Давление составляет 10 МПа [S1]." if thinking else "Давление составляет 99 МПа [S1]."
+        )
+        return ChatReply(text=text, finish_reason="stop", prompt_tokens=10, completion_tokens=5)
+
+    def close(self) -> None:
+        pass
+
+
+@pytest.mark.parametrize(("mode", "revised"), [("fresh", False), ("revise", True)])
+def test_thinking_pass_revises_a_rejected_answer(tmp_path: Path, mode: str, revised: bool) -> None:
+    chat = RevisingChat()
+    with recovery_pipeline(tmp_path, chat, llm_think_mode=mode) as pipeline:  # type: ignore[arg-type]
+        response = pipeline.query("Какое давление?")
+    assert chat.calls == [(False, False), (True, revised)]
+    assert response.refusal_reason is None

@@ -1,6 +1,9 @@
 """PHASES 9-10: candidate architectures compared on the same 1307 cases (replay of run 0508Z).
 
-A candidate = verifier (verifier v2 rules | decision layer) x thinking router x recovery.
+A candidate = verifier (verifier v2 rules | decision layer) x thinking router x thinking mode
+(fresh draft | revision of an NLI-rejected answer, research.opt2.think_revise) x recovery.
+A thinking revision rejected again would get one more thinking repair live; that draft does not
+exist, so the case counts as withheld (pessimistic, reported as revise_rejected).
 Recovery (llm_recovery) uses the drafts of research.opt2.recovery; its trigger threshold
 (best reranker score) is chosen on dev: the most correct dev answers with no more dev
 hallucinations than the same candidate without recovery. Generation time is the logged RTX
@@ -18,7 +21,9 @@ import json
 from collections.abc import Callable
 from typing import Any
 
-from research.opt2 import data, recovery
+from pipeline import refusal_reason
+
+from research.opt2 import data, recovery, think_revise
 from research.opt2.metrics import Outcome, outcome, paired, pct, summarize
 from research.opt2.routing import ROUTERS, Case, prepare
 from research.opt2.routing import judge_verifier as build_verifier
@@ -33,20 +38,37 @@ def run_candidate(
     mode: str | None,
     threshold: float | None,
     store: dict[Any, Any],
+    revise_store: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     outs: list[Outcome] = []
-    calls = recovered = 0
+    calls = recovered = revise_missing = revise_rejected = 0
     ms = 0.0
     for c in cases:
         routed = router(c)
         final = c.think if routed else c.base
         config = "think" if routed else "base"
-        published = final.published
+        published, reason = final.published, final.reason
         ms += c.base_ms + (c.think_ms if routed else 0.0)
+        base_v = c.base.verified
+        if (
+            routed
+            and revise_store is not None
+            and c.base.reason == "nli_verification_failed"
+            and base_v is not None
+            and base_v.claims
+        ):
+            revision = think_revise.revised(v, c.record, base_v, revise_store)
+            if revision is None:
+                revise_missing += 1
+            else:
+                published = None if revision.refused else revision.cleaned_text
+                reason = refusal_reason(revision)
+                revise_rejected += revision.refused
+                config = "base"
         if (
             mode
             and threshold is not None
-            and final.reason == "llm_refusal"
+            and reason == "llm_refusal"
             and recovery.top_rerank(c.record) >= threshold
         ):
             first_ms = c.record.drafts["base"][0].metadata.get("generation_ms") or 0.0
@@ -68,18 +90,22 @@ def run_candidate(
         "outcomes": outs,
         "thinking_calls": calls,
         "recovered": recovered,
+        "revise_missing": revise_missing,
+        "revise_rejected": revise_rejected,
         "generation_hours_3090": ms / 3.6e6,
     }
 
 
-def choose_threshold(cases, router, v, mode, store) -> tuple[float | None, list[dict[str, Any]]]:
-    plain = run_candidate(cases, router, v, None, None, store)
+def choose_threshold(
+    cases, router, v, mode, store, revise_store=None
+) -> tuple[float | None, list[dict[str, Any]]]:
+    plain = run_candidate(cases, router, v, None, None, store, revise_store)
     dev_h = sum(
         bool(o["factrag"]["hallucination"]) for o in plain["outcomes"] if o["split"] == "dev"
     )
     sweep, best = [], None
     for t in THRESHOLDS:
-        res = run_candidate(cases, router, v, mode, t, store)
+        res = run_candidate(cases, router, v, mode, t, store, revise_store)
         dev = [o for o in res["outcomes"] if o["split"] == "dev"]
         correct = sum(o["factrag"]["correct"] for o in dev)
         halluc = sum(bool(o["factrag"]["hallucination"]) for o in dev)
@@ -96,39 +122,62 @@ def main() -> None:
     store = recovery.load_store()
     verifiers = {"rules": build_verifier("none"), "judge": build_verifier("bge-m3-zeroshot")}
     prepared = {name: prepare(v) for name, v in verifiers.items()}
+    revise_store = think_revise.load_store()
+    # (name, verifier, router, thinking mode, recovery mode)
     plan = [
         (
             "C0 baseline: verifier v2, thinking on first-draft LLM refusal",
             "rules",
             "A1_first_llm_refusal",
+            "fresh",
             None,
         ),
-        ("C1 verifier v2, thinking on any withheld answer (f888cdf)", "rules", "A_withheld", None),
-        ("C2 decision layer, thinking on any withheld answer", "judge", "A_withheld", None),
-        ("C3 C2 + recovery: evidence prompt", "judge", "A_withheld", "evidence_prompt"),
-        ("C4 C2 + recovery: 2 samples T=0.7", "judge", "A_withheld", "sampling"),
-        ("C5 C1 + recovery: 2 samples T=0.7", "rules", "A_withheld", "sampling"),
-        ("C6 C1 + recovery: evidence prompt", "rules", "A_withheld", "evidence_prompt"),
-        ("R1 qwen38-27b without thinking, verifier v2", "rules", "A0_never", None),
-        ("R2 qwen38-27b-think always, verifier v2", "rules", "Z_always", None),
-        ("R3 qwen38-27b-think always, decision layer", "judge", "Z_always", None),
+        (
+            "C1 verifier v2, thinking on any withheld answer (f888cdf)",
+            "rules",
+            "A_withheld",
+            "fresh",
+            None,
+        ),
+        (
+            "C2 decision layer, thinking on any withheld answer",
+            "judge",
+            "A_withheld",
+            "fresh",
+            None,
+        ),
+        ("C3 C2 + recovery: evidence prompt", "judge", "A_withheld", "fresh", "evidence_prompt"),
+        ("C4 C2 + recovery: 2 samples T=0.7", "judge", "A_withheld", "fresh", "sampling"),
+        ("C5 C1 + recovery: 2 samples T=0.7", "rules", "A_withheld", "fresh", "sampling"),
+        ("C6 C1 + recovery: evidence prompt", "rules", "A_withheld", "fresh", "evidence_prompt"),
+        ("C7 C2 + thinking revises NLI-rejected answers", "judge", "A_withheld", "revise", None),
+        ("C8 C1 + thinking revises NLI-rejected answers", "rules", "A_withheld", "revise", None),
+        ("C9 C7 + recovery: 2 samples T=0.7", "judge", "A_withheld", "revise", "sampling"),
+        ("C10 C7 + recovery: evidence prompt", "judge", "A_withheld", "revise", "evidence_prompt"),
+        ("R1 qwen38-27b without thinking, verifier v2", "rules", "A0_never", "fresh", None),
+        ("R2 qwen38-27b-think always, verifier v2", "rules", "Z_always", "fresh", None),
+        ("R3 qwen38-27b-think always, decision layer", "judge", "Z_always", "fresh", None),
     ]
     results: dict[str, Any] = {}
     baseline: list[Outcome] | None = None
-    for name, vname, router_name, mode in plan:
+    for name, vname, router_name, think_mode, mode in plan:
         router = ROUTERS[router_name][1]
+        rstore = revise_store if think_mode == "revise" else None
         threshold, sweep = (None, [])
         if mode:
             threshold, sweep = choose_threshold(
-                prepared[vname], router, verifiers[vname], mode, store
+                prepared[vname], router, verifiers[vname], mode, store, rstore
             )
-        res = run_candidate(prepared[vname], router, verifiers[vname], mode, threshold, store)
+        res = run_candidate(
+            prepared[vname], router, verifiers[vname], mode, threshold, store, rstore
+        )
         outs = res.pop("outcomes")
         if baseline is None:
             baseline = outs
         res.update(
             verifier=vname,
             router=router_name,
+            think_mode=think_mode,
             recovery=mode,
             recovery_threshold=threshold,
             threshold_sweep=sweep,
@@ -166,6 +215,7 @@ def main() -> None:
         "configuration",
         "verifier",
         "router",
+        "think_mode",
         "recovery",
         "recovery_threshold",
         "factrag_all",
@@ -199,6 +249,8 @@ def main() -> None:
         "ci95_all_pp",
         "mcnemar_p_all",
         "missing_repair",
+        "revise_rejected",
+        "revise_missing",
     ]
     with (data.OUT / "METRICS_COMPARISON.csv").open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
@@ -210,6 +262,7 @@ def main() -> None:
                     "configuration": name,
                     "verifier": r["verifier"],
                     "router": r["router"],
+                    "think_mode": r["think_mode"],
                     "recovery": r["recovery"] or "",
                     "recovery_threshold": r["recovery_threshold"]
                     if r["recovery_threshold"] is not None
@@ -245,6 +298,8 @@ def main() -> None:
                     "ci95_all_pp": [round(x, 2) for x in r["vs_baseline_all"]["ci95_pp"]],
                     "mcnemar_p_all": round(r["vs_baseline_all"]["mcnemar_p"], 4),
                     "missing_repair": r["missing_repair"],
+                    "revise_rejected": r["revise_rejected"],
+                    "revise_missing": r["revise_missing"],
                 }
             )
 
