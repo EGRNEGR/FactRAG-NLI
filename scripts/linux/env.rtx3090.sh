@@ -24,6 +24,7 @@ export PROJECT_ROOT
 #             the same-hardware baseline for the comparison.
 LLM_PROFILE="${LLM_PROFILE:-qwen38-27b-hybrid}"
 LLM_THINK_RETRY=off
+LLM_RECOVERY=off
 case "$LLM_PROFILE" in
   qwen38-27b)
     LLM_REPO="unsloth/Qwen3.8-27B-GGUF"
@@ -41,6 +42,11 @@ case "$LLM_PROFILE" in
     LLM_REASONING_BUDGET="${LLAMA_REASONING_BUDGET:-640}"
     LLM_MAX_TOKENS=512
     LLM_THINK_RETRY="${THINK_RETRY:-refusal}"
+    # optimization_2: an answer still refused by the LLM after the thinking pass, with a best
+    # source scored >= 0.5 by the reranker, gets two non-thinking drafts at T=0.7; the first
+    # one the verifier accepts is published (replay of 0508Z: +3-4 answers, no new
+    # hallucination on 44 unanswerable control questions). RECOVERY=off disables it.
+    LLM_RECOVERY="${RECOVERY:-sampling}"
     ;;
   qwen38-27b-think)
     LLM_REPO="unsloth/Qwen3.8-27B-GGUF"
@@ -73,11 +79,18 @@ case "$LLM_PROFILE" in
     ;;
 esac
 # LLM_REASONING_BUDGET -1 = no --reasoning-budget flag (non-thinking profiles)
-export LLM_PROFILE LLM_REPO LLM_FILE LLM_SHA256 LLM_THINKING_OFF LLM_REASONING_BUDGET LLM_THINK_RETRY
+export LLM_PROFILE LLM_REPO LLM_FILE LLM_SHA256 LLM_THINKING_OFF LLM_REASONING_BUDGET LLM_THINK_RETRY LLM_RECOVERY
 export RAG_MAX_TOKENS="$LLM_MAX_TOKENS"
 # The thinking pass of the hybrid profile gets the output budget of qwen38-27b-think.
 export RAG_LLM_THINK_RETRY="$LLM_THINK_RETRY"
 export RAG_LLM_THINK_MAX_TOKENS=1024
+# fresh: the thinking pass drafts anew; revise: after an NLI rejection it revises the withheld
+# answer (reports/optimization_2/SELECTIVE_THINKING_RESEARCH.md).
+export RAG_LLM_THINK_MODE="${THINK_MODE:-fresh}"
+export RAG_LLM_RECOVERY="$LLM_RECOVERY"
+export RAG_LLM_RECOVERY_MIN_RERANK="${RECOVERY_MIN_RERANK:-0.5}"
+export RAG_LLM_RECOVERY_SAMPLES=2
+export RAG_LLM_RECOVERY_TEMPERATURE=0.7
 # Derived values are always recomputed: with_profile.sh re-sources this file under another
 # profile inside an environment that already holds the parent's exports.
 export LLM_PATH="models/llm/$LLM_FILE"

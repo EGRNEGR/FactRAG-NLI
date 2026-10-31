@@ -143,6 +143,7 @@ def report(run: Path) -> str:
             e2e_row("reference: RTX 5060 8 GB, Qwen2.5-14B (2139Z, verifier v1)", "v3", reference)
         )
     thinking_notes = []
+    recovery_notes = []
     for config in sorted(p for p in run.iterdir() if p.is_dir() and "+" in p.name):
         found = []
         for dataset in DATASETS:
@@ -155,6 +156,13 @@ def report(run: Path) -> str:
                     thinking_notes.append(
                         f"{config.name} {dataset}: {passes['attempted']} of {summary['cases']} "
                         f"cases, {passes['factrag_correct']} of them correct after it."
+                    )
+                recovery = summary.get("recovery_pass") or {}
+                if recovery.get("attempted"):
+                    recovery_notes.append(
+                        f"{config.name} {dataset}: {recovery['attempted']} cases, "
+                        f"{recovery['published']} published, {recovery['factrag_correct']} correct, "
+                        f"{recovery['factrag_hallucinations']} hallucinations."
                     )
         if len(found) > 1:
             lines.append(e2e_row(config.name, "all", pooled(found)))
@@ -184,6 +192,8 @@ def report(run: Path) -> str:
         ]
     if thinking_notes:
         lines += ["", "Thinking pass (RAG_LLM_THINK_RETRY) ran for: " + " ".join(thinking_notes)]
+    if recovery_notes:
+        lines += ["", "Recovery pass (RAG_LLM_RECOVERY) ran for: " + " ".join(recovery_notes)]
     lines += [
         "",
         "Verifier v2 replay of the reference drafts (20261027T0447Z_v3_verifier2): FactRAG 78.6%",

@@ -256,6 +256,8 @@ def test_recovery_after_a_refused_thinking_pass(
     assert len(chat.calls) == calls == len(response.verification_attempts)
     assert [c["thinking"] for c in chat.calls[:2]] == [False, True]
     assert (response.refusal_reason is None) is published
+    flags = [a["generation_metadata"]["recovery"] for a in response.verification_attempts]
+    assert flags == [False, False] + [True] * (calls - 2)
     if mode == "sampling":
         assert [c["sampling"] for c in chat.calls[2:]] == [
             {"temperature": 0.7, "seed": 1000},
