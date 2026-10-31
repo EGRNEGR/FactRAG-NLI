@@ -1,0 +1,14016 @@
+{
+ "experiment_id": "V10_bge-m3-zeroshot",
+ "description": "MoritzLaurer/bge-m3-zeroshot-v2.0 (XLM-R large, 2-way) alone",
+ "models": [
+  "bge-m3-zeroshot"
+ ],
+ "overrides": {},
+ "dataset_versions": {
+  "v3": "33cb533ee7cc46adfd3edf81fd9c270ed1fe7399f1c0c0b93f321275b71a44d3",
+  "xquad-full": "53b3db2531977f9232e450b484b5e8b93b5c61a6621e01b1ee72e5f029997edb"
+ },
+ "source_run": "20261031T0508Z_rtx3090_full",
+ "seed": 42,
+ "llm": "Qwen3.8-27B UD-Q4_K_XL drafts of run 0508Z (temperature 0, seed 42)",
+ "reranker": "bge-reranker-v2-m3 (contexts of run 0508Z)",
+ "hardware": "NUC / Intel64 Family 6 Model 197 Stepping 2, GenuineIntel",
+ "errors": [],
+ "replay_withheld": {
+  "all": {
+   "cases": 1307,
+   "factrag_correct": {
+    "k": 1175,
+    "n": 1307,
+    "rate": 0.8990053557765876,
+    "wilson95": [
+     0.8814820051607812,
+     0.9141900272190273
+    ]
+   },
+   "vanilla_correct": {
+    "k": 1184,
+    "n": 1307,
+    "rate": 0.9058913542463657,
+    "wilson95": [
+     0.8888507089086591,
+     0.9205529596963041
+    ]
+   },
+   "hallucination": {
+    "k": 3,
+    "n": 269,
+    "rate": 0.011152416356877323,
+    "wilson95": [
+     0.0037998714958330237,
+     0.032270874314190075
+    ]
+   },
+   "vanilla_hallucination": {
+    "k": 2,
+    "n": 269,
+    "rate": 0.007434944237918215,
+    "wilson95": [
+     0.0020412607015241543,
+     0.02669922462036224
+    ]
+   },
+   "false_refusal": {
+    "k": 85,
+    "n": 1038,
+    "rate": 0.08188824662813102,
+    "wilson95": [
+     0.06670874927066513,
+     0.10015116494278149
+    ]
+   },
+   "coverage": {
+    "k": 953,
+    "n": 1038,
+    "rate": 0.918111753371869,
+    "wilson95": [
+     0.8998488350572186,
+     0.9332912507293348
+    ]
+   },
+   "selective_accuracy": {
+    "k": 909,
+    "n": 953,
+    "rate": 0.9538300104931794,
+    "wilson95": [
+     0.9385867500151444,
+     0.9654291288931305
+    ]
+   },
+   "net_contribution": -9,
+   "correction": 0,
+   "damage": 9,
+   "filter": {
+    "precision": 0.9568706118355065,
+    "recall": 0.9916839916839917,
+    "specificity": 0.06521739130434782,
+    "f1": 0.9739663093415007,
+    "macro_f1": 0.5396147336181187,
+    "balanced_accuracy": 0.5284506914941698,
+    "mcc": 0.11429976886599232,
+    "tp": 954,
+    "fp": 43,
+    "fn": 8,
+    "tn": 3
+   }
+  },
+  "dev": {
+   "cases": 651,
+   "factrag_correct": {
+    "k": 593,
+    "n": 651,
+    "rate": 0.9109062980030722,
+    "wilson95": [
+     0.8865433063611332,
+     0.9304481614991862
+    ]
+   },
+   "vanilla_correct": {
+    "k": 595,
+    "n": 651,
+    "rate": 0.9139784946236559,
+    "wilson95": [
+     0.8899367295266822,
+     0.9331630857568918
+    ]
+   },
+   "hallucination": {
+    "k": 0,
+    "n": 136,
+    "rate": 0.0,
+    "wilson95": [
+     0.0,
+     0.02747108156657246
+    ]
+   },
+   "vanilla_hallucination": {
+    "k": 0,
+    "n": 136,
+    "rate": 0.0,
+    "wilson95": [
+     0.0,
+     0.02747108156657246
+    ]
+   },
+   "false_refusal": {
+    "k": 36,
+    "n": 515,
+    "rate": 0.06990291262135923,
+    "wilson95": [
+     0.050916833525092,
+     0.09525802986288615
+    ]
+   },
+   "coverage": {
+    "k": 479,
+    "n": 515,
+    "rate": 0.9300970873786408,
+    "wilson95": [
+     0.9047419701371139,
+     0.9490831664749081
+    ]
+   },
+   "selective_accuracy": {
+    "k": 457,
+    "n": 479,
+    "rate": 0.954070981210856,
+    "wilson95": [
+     0.9314401367309787,
+     0.9694764371516363
+    ]
+   },
+   "net_contribution": -2,
+   "correction": 0,
+   "damage": 2,
+   "filter": {
+    "precision": 0.958,
+    "recall": 0.9917184265010351,
+    "specificity": 0.045454545454545456,
+    "f1": 0.9745676500508645,
+    "macro_f1": 0.5243208620624693,
+    "balanced_accuracy": 0.5185864859777903,
+    "mcc": 0.07663765111863582,
+    "tp": 479,
+    "fp": 21,
+    "fn": 4,
+    "tn": 1
+   }
+  },
+  "test": {
+   "cases": 656,
+   "factrag_correct": {
+    "k": 582,
+    "n": 656,
+    "rate": 0.8871951219512195,
+    "wilson95": [
+     0.8606973688550037,
+     0.9091843724598816
+    ]
+   },
+   "vanilla_correct": {
+    "k": 589,
+    "n": 656,
+    "rate": 0.8978658536585366,
+    "wilson95": [
+     0.8723275181320942,
+     0.9187714365261146
+    ]
+   },
+   "hallucination": {
+    "k": 3,
+    "n": 133,
+    "rate": 0.022556390977443608,
+    "wilson95": [
+     0.0077002833384402225,
+     0.06421936682642192
+    ]
+   },
+   "vanilla_hallucination": {
+    "k": 2,
+    "n": 133,
+    "rate": 0.015037593984962405,
+    "wilson95": [
+     0.0041334978576213245,
+     0.05317071372715991
+    ]
+   },
+   "false_refusal": {
+    "k": 49,
+    "n": 523,
+    "rate": 0.09369024856596558,
+    "wilson95": [
+     0.07159426885603935,
+     0.12171165079798947
+    ]
+   },
+   "coverage": {
+    "k": 474,
+    "n": 523,
+    "rate": 0.9063097514340345,
+    "wilson95": [
+     0.8782883492020106,
+     0.9284057311439606
+    ]
+   },
+   "selective_accuracy": {
+    "k": 452,
+    "n": 474,
+    "rate": 0.9535864978902954,
+    "wilson95": [
+     0.9307274119932132,
+     0.9691523808084181
+    ]
+   },
+   "net_contribution": -7,
+   "correction": 0,
+   "damage": 7,
+   "filter": {
+    "precision": 0.9557344064386318,
+    "recall": 0.9916492693110647,
+    "specificity": 0.08333333333333333,
+    "f1": 0.9733606557377049,
+    "macro_f1": 0.5533469945355192,
+    "balanced_accuracy": 0.537491301322199,
+    "mcc": 0.1472244934399012,
+    "tp": 475,
+    "fp": 22,
+    "fn": 4,
+    "tn": 2
+   }
+  },
+  "v3": {
+   "cases": 220,
+   "factrag_correct": {
+    "k": 195,
+    "n": 220,
+    "rate": 0.8863636363636364,
+    "wilson95": [
+     0.8376306485493717,
+     0.9218349735691264
+    ]
+   },
+   "vanilla_correct": {
+    "k": 199,
+    "n": 220,
+    "rate": 0.9045454545454545,
+    "wilson95": [
+     0.8584869509131916,
+     0.9367182298932357
+    ]
+   },
+   "hallucination": {
+    "k": 3,
+    "n": 93,
+    "rate": 0.03225806451612903,
+    "wilson95": [
+     0.011030412935116203,
+     0.09059533467748004
+    ]
+   },
+   "vanilla_hallucination": {
+    "k": 2,
+    "n": 93,
+    "rate": 0.021505376344086023,
+    "wilson95": [
+     0.005917375771978241,
+     0.07505609017653975
+    ]
+   },
+   "false_refusal": {
+    "k": 7,
+    "n": 127,
+    "rate": 0.05511811023622047,
+    "wilson95": [
+     0.026952431461022795,
+     0.10940786984987524
+    ]
+   },
+   "coverage": {
+    "k": 120,
+    "n": 127,
+    "rate": 0.9448818897637795,
+    "wilson95": [
+     0.8905921301501247,
+     0.9730475685389772
+    ]
+   },
+   "selective_accuracy": {
+    "k": 105,
+    "n": 120,
+    "rate": 0.875,
+    "wilson95": [
+     0.8039690855177497,
+     0.9227657111903032
+    ]
+   },
+   "net_contribution": -4,
+   "correction": 0,
+   "damage": 4,
+   "filter": {
+    "precision": 0.9146341463414634,
+    "recall": 0.9803921568627451,
+    "specificity": 0.0,
+    "f1": 0.9463722397476341,
+    "macro_f1": 0.47318611987381703,
+    "balanced_accuracy": 0.49019607843137253,
+    "mcc": -0.04091259302237445,
+    "tp": 150,
+    "fp": 14,
+    "fn": 3,
+    "tn": 0
+   }
+  },
+  "xquad-full": {
+   "cases": 1087,
+   "factrag_correct": {
+    "k": 980,
+    "n": 1087,
+    "rate": 0.9015639374425023,
+    "wilson95": [
+     0.8824145720040214,
+     0.9178849398591123
+    ]
+   },
+   "vanilla_correct": {
+    "k": 985,
+    "n": 1087,
+    "rate": 0.906163753449862,
+    "wilson95": [
+     0.8873696645386063,
+     0.9220970811373926
+    ]
+   },
+   "hallucination": {
+    "k": 0,
+    "n": 176,
+    "rate": 0.0,
+    "wilson95": [
+     1.734723475976807e-18,
+     0.021361019919751596
+    ]
+   },
+   "vanilla_hallucination": {
+    "k": 0,
+    "n": 176,
+    "rate": 0.0,
+    "wilson95": [
+     1.734723475976807e-18,
+     0.021361019919751596
+    ]
+   },
+   "false_refusal": {
+    "k": 78,
+    "n": 911,
+    "rate": 0.08562019758507135,
+    "wilson95": [
+     0.06914542163626476,
+     0.1055750982876215
+    ]
+   },
+   "coverage": {
+    "k": 833,
+    "n": 911,
+    "rate": 0.9143798024149287,
+    "wilson95": [
+     0.8944249017123784,
+     0.9308545783637352
+    ]
+   },
+   "selective_accuracy": {
+    "k": 804,
+    "n": 833,
+    "rate": 0.9651860744297719,
+    "wilson95": [
+     0.950448489851439,
+     0.9756526982348129
+    ]
+   },
+   "net_contribution": -5,
+   "correction": 0,
+   "damage": 5,
+   "filter": {
+    "precision": 0.9651860744297719,
+    "recall": 0.9938195302843016,
+    "specificity": 0.09375,
+    "f1": 0.9792935444579781,
+    "macro_f1": 0.5646467722289891,
+    "balanced_accuracy": 0.5437847651421508,
+    "mcc": 0.17259760933186644,
+    "tp": 804,
+    "fp": 29,
+    "fn": 5,
+    "tn": 3
+   }
+  },
+  "thinking_calls": 240,
+  "missing_repair": 17,
+  "seconds": 224.70484729998861
+ },
+ "case_outcomes": {
+  "withheld": {
+   "V3-SH-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-017": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-018": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-022": [
+    true,
+    false,
+    true
+   ],
+   "V3-MH-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-024": [
+    false,
+    false,
+    false
+   ],
+   "V3-MH-025": [
+    false,
+    false,
+    true
+   ],
+   "V3-TC-017": [
+    false,
+    false,
+    true
+   ],
+   "V3-TC-018": [
+    false,
+    false,
+    true
+   ],
+   "V3-TC-019": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-020": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-025": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-026": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-019": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-020": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-021": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-022": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-023": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-015": [
+    false,
+    false,
+    false
+   ],
+   "V3-LEX-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-017": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-013": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-017": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-018": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-019": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-020": [
+    false,
+    false,
+    true
+   ],
+   "V3-MH-021": [
+    false,
+    false,
+    false
+   ],
+   "V3-TC-013": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-014": [
+    false,
+    false,
+    false
+   ],
+   "V3-TC-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-017": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-018": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-019": [
+    true,
+    false,
+    true
+   ],
+   "V3-ADV-020": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-021": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-013": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-014": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-015": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-016": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-017": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-018": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-013": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-014": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-025": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-026": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-035": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-036": [
+    false,
+    false,
+    false
+   ],
+   "V3-MH-037": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-038": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-033": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-038": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-039": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-040": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-041": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-032": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-033": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-034": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-035": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-036": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-025": [
+    false,
+    false,
+    false
+   ],
+   "V3-LEX-026": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-031": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-033": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-034": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-031": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-033": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-034": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-035": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-036": [
+    true,
+    false,
+    true
+   ],
+   "V3-ADV-037": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-028": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-029": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-030": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-031": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-021": [
+    false,
+    false,
+    false
+   ],
+   "V3-LEX-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-023": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-008": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-013": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-008": [
+    false,
+    false,
+    true
+   ],
+   "V3-TC-009": [
+    false,
+    false,
+    true
+   ],
+   "V3-TC-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-011": [
+    true,
+    false,
+    true
+   ],
+   "V3-ADV-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-013": [
+    false,
+    true,
+    false
+   ],
+   "V3-ADV-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-008": [
+    false,
+    true,
+    true
+   ],
+   "V3-UNA-009": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-010": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-011": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-012": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-008": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-010": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-001": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-003": [
+    false,
+    false,
+    false
+   ],
+   "V3-SH-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-001": [
+    false,
+    false,
+    false
+   ],
+   "V3-MH-002": [
+    false,
+    false,
+    false
+   ],
+   "V3-MH-003": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-008": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-001": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-003": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-001": [
+    true,
+    false,
+    true
+   ],
+   "V3-ADV-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-003": [
+    true,
+    false,
+    true
+   ],
+   "V3-ADV-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-008": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-001": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-002": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-003": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-004": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-005": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-006": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-007": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-001": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-003": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-006": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-039": [
+    false,
+    false,
+    false
+   ],
+   "V3-MH-040": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-034": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-035": [
+    false,
+    false,
+    false
+   ],
+   "V3-ADV-042": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-043": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-044": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-045": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-037": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-038": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-039": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-028": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-040": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-030": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-019": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-020": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-021": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-026": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-021": [
+    false,
+    false,
+    false
+   ],
+   "V3-TC-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-025": [
+    true,
+    false,
+    true
+   ],
+   "V3-TC-026": [
+    false,
+    false,
+    false
+   ],
+   "V3-ADV-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-029": [
+    false,
+    true,
+    true
+   ],
+   "V3-ADV-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-031": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-024": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-025": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-026": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-027": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-018": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-019": [
+    false,
+    false,
+    false
+   ],
+   "V3-LEX-020": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-001": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-001": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-002": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-003": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-003": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-007": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-008": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-008": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-013": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-013": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-016": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-016": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-017": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-018": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-018": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-019": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-019": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-020": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-020": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-021": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-021": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-022": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-024": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-025": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-025": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-026": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-026": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-030": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-031": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-031": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-033": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-033": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-034": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-034": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-035": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-035": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-036": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-036": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-037": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-038": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-037": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-039": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-038": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-040": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-039": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-041": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-040": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-042": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-041": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-043": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-042": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-044": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-043": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-045": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-044": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-046": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-045": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-047": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-046": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-048": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-047": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-049": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-048": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-050": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-049": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-051": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-050": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-052": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-051": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-053": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-052": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-054": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-053": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-055": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-054": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-056": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-055": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-057": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-056": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-058": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-057": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-059": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-058": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-060": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-059": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-061": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-060": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-062": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-061": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-063": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-062": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-064": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-065": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-063": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-066": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-064": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-067": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-065": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-068": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-066": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-069": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-067": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-070": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-068": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-071": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-069": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-072": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-070": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-073": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-071": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-074": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-072": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-075": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-073": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-076": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-074": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-077": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-075": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-078": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-076": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-079": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-077": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-080": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-078": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-081": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-079": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-082": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-080": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-083": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-081": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-084": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-082": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-085": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-083": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-086": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-084": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-087": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-085": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-088": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-086": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-089": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-087": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-090": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-088": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-091": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-089": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-092": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-090": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-093": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-091": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-094": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-092": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-095": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-093": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-096": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-094": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-097": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-095": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-098": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-096": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-099": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-097": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-100": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-101": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-098": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-102": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-099": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-103": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-100": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-104": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-101": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-105": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-102": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-103": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-107": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-104": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-108": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-105": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-109": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-106": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-110": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-107": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-111": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-108": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-112": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-113": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-109": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-114": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-110": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-115": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-111": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-116": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-112": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-117": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-113": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-118": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-114": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-119": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-115": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-120": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-116": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-121": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-117": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-122": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-118": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-123": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-119": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-124": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-125": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-120": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-126": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-121": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-127": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-122": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-128": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-123": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-129": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-124": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-130": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-125": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-131": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-126": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-132": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-127": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-133": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-128": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-134": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-129": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-135": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-130": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-136": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-131": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-137": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-132": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-138": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-133": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-139": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-134": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-140": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-135": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-141": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-136": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-142": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-137": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-143": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-138": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-144": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-139": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-145": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-140": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-146": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-141": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-147": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-142": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-148": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-143": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-149": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-144": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-150": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-145": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-151": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-146": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-152": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-147": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-153": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-148": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-154": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-149": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-155": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-150": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-156": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-151": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-157": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-152": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-158": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-153": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-159": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-154": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-160": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-155": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-161": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-156": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-162": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-157": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-163": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-158": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-164": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-159": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-165": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-160": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-166": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-161": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-167": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-162": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-168": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-163": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-169": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-164": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-170": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-165": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-171": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-166": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-172": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-167": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-173": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-168": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-174": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-169": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-175": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-170": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-176": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-171": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-172": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-178": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-173": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-179": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-180": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-174": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-181": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-175": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-182": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-176": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-183": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-177": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-184": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-178": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-185": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-179": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-186": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-180": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-187": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-181": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-188": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-182": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-189": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-183": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-190": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-184": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-191": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-192": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-185": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-193": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-186": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-194": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-187": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-195": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-188": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-196": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-189": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-197": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-190": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-198": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-191": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-199": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-192": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-200": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-193": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-201": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-194": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-202": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-195": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-203": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-196": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-204": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-205": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-197": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-206": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-198": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-207": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-199": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-208": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-200": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-209": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-201": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-210": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-202": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-211": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-203": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-212": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-204": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-213": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-205": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-214": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-206": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-215": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-207": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-216": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-208": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-217": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-209": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-218": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-210": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-219": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-211": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-220": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-212": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-221": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-213": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-222": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-214": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-223": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-215": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-224": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-216": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-225": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-217": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-226": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-227": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-218": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-228": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-219": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-229": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-220": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-230": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-221": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-231": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-222": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-232": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-223": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-233": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-224": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-234": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-225": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-235": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-226": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-236": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-227": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-237": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-228": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-238": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-229": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-239": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-230": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-240": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-231": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-241": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-232": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-242": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-233": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-243": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-234": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-244": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-235": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-245": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-236": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-246": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-237": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-247": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-238": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-248": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-249": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-239": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-250": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-240": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-251": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-241": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-252": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-242": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-253": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-243": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-254": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-244": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-255": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-245": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-256": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-246": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-257": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-247": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-258": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-248": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-259": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-249": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-260": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-250": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-261": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-251": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-262": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-252": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-263": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-253": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-264": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-254": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-265": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-255": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-266": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-256": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-267": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-257": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-268": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-258": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-269": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-259": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-270": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-260": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-271": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-261": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-272": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-262": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-273": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-263": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-274": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-264": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-275": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-265": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-276": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-266": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-277": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-267": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-278": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-268": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-279": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-280": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-269": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-281": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-270": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-282": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-271": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-283": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-272": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-284": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-273": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-285": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-274": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-286": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-275": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-287": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-276": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-288": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-277": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-289": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-278": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-290": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-279": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-291": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-280": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-292": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-281": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-293": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-282": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-294": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-283": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-295": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-284": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-296": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-285": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-297": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-286": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-298": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-287": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-299": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-288": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-300": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-289": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-290": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-302": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-291": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-303": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-304": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-305": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-294": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-306": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-295": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-307": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-308": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-297": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-309": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-298": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-310": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-299": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-311": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-300": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-312": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-301": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-313": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-302": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-314": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-303": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-315": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-304": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-316": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-305": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-317": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-306": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-318": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-307": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-319": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-308": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-320": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-321": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-309": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-322": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-310": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-323": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-311": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-324": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-312": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-325": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-313": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-326": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-314": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-327": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-315": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-328": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-316": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-329": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-317": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-330": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-318": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-331": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-319": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-332": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-320": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-333": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-321": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-334": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-322": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-335": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-323": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-336": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-324": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-337": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-325": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-338": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-326": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-339": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-327": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-340": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-328": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-341": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-329": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-342": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-330": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-343": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-331": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-344": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-332": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-345": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-333": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-346": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-334": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-347": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-335": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-348": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-336": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-349": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-337": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-350": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-338": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-351": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-339": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-352": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-340": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-353": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-341": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-354": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-342": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-355": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-343": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-356": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-357": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-344": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-358": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-345": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-359": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-346": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-360": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-347": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-361": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-348": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-362": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-349": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-363": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-350": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-364": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-351": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-365": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-352": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-366": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-353": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-367": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-354": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-368": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-369": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-355": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-370": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-356": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-371": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-357": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-372": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-358": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-373": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-359": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-374": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-360": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-375": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-361": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-376": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-362": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-377": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-363": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-378": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-364": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-379": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-365": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-380": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-366": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-381": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-367": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-382": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-368": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-383": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-369": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-384": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-370": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-385": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-371": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-386": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-372": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-387": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-373": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-388": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-374": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-389": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-375": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-390": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-376": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-391": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-377": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-392": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-378": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-393": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-379": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-394": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-380": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-395": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-381": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-396": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-382": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-397": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-383": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-398": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-384": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-399": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-385": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-400": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-386": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-401": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-387": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-402": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-388": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-403": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-389": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-404": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-390": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-405": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-391": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-406": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-392": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-407": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-393": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-408": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-394": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-409": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-395": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-410": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-396": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-411": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-397": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-412": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-398": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-413": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-399": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-414": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-400": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-415": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-401": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-416": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-402": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-417": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-403": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-418": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-404": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-419": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-405": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-420": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-406": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-421": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-407": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-422": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-408": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-423": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-409": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-424": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-410": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-425": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-411": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-426": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-412": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-427": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-413": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-428": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-414": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-429": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-415": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-430": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-416": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-431": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-417": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-432": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-418": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-433": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-419": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-434": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-420": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-435": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-421": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-436": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-422": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-437": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-423": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-438": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-424": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-439": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-425": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-440": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-426": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-441": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-427": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-442": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-428": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-443": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-429": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-444": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-430": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-445": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-431": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-446": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-432": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-447": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-433": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-448": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-434": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-449": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-435": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-450": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-436": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-451": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-437": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-452": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-438": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-453": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-439": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-454": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-440": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-455": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-441": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-456": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-457": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-442": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-458": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-443": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-459": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-444": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-460": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-445": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-461": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-446": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-462": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-447": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-463": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-448": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-464": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-449": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-465": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-450": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-466": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-451": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-467": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-001": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-003": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-008": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-013": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-017": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-018": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-019": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-020": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-021": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-025": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-026": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-031": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-033": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-034": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-035": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-036": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-037": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-038": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-039": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-040": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-041": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-042": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-044": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-045": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-046": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-047": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-048": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-049": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-050": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-051": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-052": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-053": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-054": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-055": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-056": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-057": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-058": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-059": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-060": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-061": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-062": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-063": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-064": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-065": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-066": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-067": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-068": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-069": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-070": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-071": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-072": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-073": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-074": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-075": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-076": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-077": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-078": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-079": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-080": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-081": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-082": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-083": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-084": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-085": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-086": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-087": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-088": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-089": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-090": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-091": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-092": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-093": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-094": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-095": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-096": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-097": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-098": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-099": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-100": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-101": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-102": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-103": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-104": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-105": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-106": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-107": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-108": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-109": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-110": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-111": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-112": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-113": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-114": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-115": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-116": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-117": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-118": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-119": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-120": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-121": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-122": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-123": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-124": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-125": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-126": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-127": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-128": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-129": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-130": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-131": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-132": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-133": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-134": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-135": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-136": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-137": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-138": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-139": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-141": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-142": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-143": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-144": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-145": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-146": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-147": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-148": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-149": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-150": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-151": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-152": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-153": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-154": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-155": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-156": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-157": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-158": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-159": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-160": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-161": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-162": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-163": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-164": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-165": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-166": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-167": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-168": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-169": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-170": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-171": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-172": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-173": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-174": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-175": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-176": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-177": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-178": [
+    true,
+    false,
+    false
+   ]
+  },
+  "first_llm_refusal": {
+   "V3-SH-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-017": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-018": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-022": [
+    true,
+    false,
+    true
+   ],
+   "V3-MH-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-024": [
+    false,
+    false,
+    false
+   ],
+   "V3-MH-025": [
+    false,
+    false,
+    true
+   ],
+   "V3-TC-017": [
+    false,
+    false,
+    true
+   ],
+   "V3-TC-018": [
+    false,
+    false,
+    true
+   ],
+   "V3-TC-019": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-020": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-025": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-026": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-019": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-020": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-021": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-022": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-023": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-015": [
+    false,
+    false,
+    false
+   ],
+   "V3-LEX-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-017": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-013": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-017": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-018": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-019": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-020": [
+    false,
+    false,
+    true
+   ],
+   "V3-MH-021": [
+    false,
+    false,
+    false
+   ],
+   "V3-TC-013": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-014": [
+    false,
+    false,
+    false
+   ],
+   "V3-TC-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-017": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-018": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-019": [
+    true,
+    false,
+    true
+   ],
+   "V3-ADV-020": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-021": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-013": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-014": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-015": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-016": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-017": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-018": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-013": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-014": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-025": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-026": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-035": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-036": [
+    false,
+    false,
+    false
+   ],
+   "V3-MH-037": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-038": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-033": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-038": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-039": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-040": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-041": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-032": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-033": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-034": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-035": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-036": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-025": [
+    false,
+    false,
+    false
+   ],
+   "V3-LEX-026": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-031": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-033": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-034": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-031": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-033": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-034": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-035": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-036": [
+    true,
+    false,
+    true
+   ],
+   "V3-ADV-037": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-028": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-029": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-030": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-031": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-021": [
+    false,
+    false,
+    false
+   ],
+   "V3-LEX-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-023": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-008": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-013": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-008": [
+    false,
+    false,
+    true
+   ],
+   "V3-TC-009": [
+    false,
+    false,
+    true
+   ],
+   "V3-TC-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-011": [
+    true,
+    false,
+    true
+   ],
+   "V3-ADV-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-013": [
+    false,
+    true,
+    false
+   ],
+   "V3-ADV-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-008": [
+    false,
+    true,
+    true
+   ],
+   "V3-UNA-009": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-010": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-011": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-012": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-008": [
+    false,
+    false,
+    false
+   ],
+   "V3-LEX-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-010": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-001": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-003": [
+    false,
+    false,
+    false
+   ],
+   "V3-SH-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-001": [
+    false,
+    false,
+    false
+   ],
+   "V3-MH-002": [
+    false,
+    false,
+    false
+   ],
+   "V3-MH-003": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-008": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-001": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-003": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-001": [
+    true,
+    false,
+    true
+   ],
+   "V3-ADV-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-003": [
+    true,
+    false,
+    true
+   ],
+   "V3-ADV-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-008": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-001": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-002": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-003": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-004": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-005": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-006": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-007": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-001": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-003": [
+    false,
+    false,
+    false
+   ],
+   "V3-LEX-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-006": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-039": [
+    false,
+    false,
+    false
+   ],
+   "V3-MH-040": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-034": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-035": [
+    false,
+    false,
+    false
+   ],
+   "V3-ADV-042": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-043": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-044": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-045": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-037": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-038": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-039": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-028": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-040": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-030": [
+    true,
+    false,
+    true
+   ],
+   "V3-SH-019": [
+    false,
+    false,
+    false
+   ],
+   "V3-SH-020": [
+    true,
+    false,
+    false
+   ],
+   "V3-SH-021": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-026": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-MH-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-021": [
+    false,
+    false,
+    false
+   ],
+   "V3-TC-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-TC-025": [
+    true,
+    false,
+    true
+   ],
+   "V3-TC-026": [
+    false,
+    false,
+    false
+   ],
+   "V3-ADV-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-031": [
+    true,
+    false,
+    false
+   ],
+   "V3-ADV-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-UNA-024": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-025": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-026": [
+    true,
+    false,
+    true
+   ],
+   "V3-UNA-027": [
+    true,
+    false,
+    true
+   ],
+   "V3-LEX-018": [
+    true,
+    false,
+    false
+   ],
+   "V3-LEX-019": [
+    false,
+    false,
+    false
+   ],
+   "V3-LEX-020": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-001": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-001": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-002": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-003": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-003": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-007": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-008": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-008": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-013": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-013": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-016": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-016": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-017": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-018": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-018": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-019": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-019": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-020": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-020": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-021": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-021": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-022": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-024": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-025": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-025": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-026": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-026": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-030": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-031": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-031": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-033": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-033": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-034": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-034": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-035": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-035": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-036": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-036": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-037": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-038": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-037": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-039": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-038": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-040": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-039": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-041": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-040": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-042": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-041": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-043": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-042": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-044": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-043": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-045": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-044": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-046": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-045": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-047": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-046": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-048": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-047": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-049": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-048": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-050": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-049": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-051": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-050": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-052": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-051": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-053": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-052": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-054": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-053": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-055": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-054": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-056": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-055": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-057": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-056": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-058": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-057": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-059": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-058": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-060": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-059": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-061": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-060": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-062": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-061": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-063": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-062": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-064": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-065": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-063": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-066": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-064": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-067": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-065": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-068": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-066": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-069": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-067": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-070": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-068": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-071": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-069": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-072": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-070": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-073": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-071": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-074": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-072": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-075": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-073": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-076": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-074": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-077": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-075": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-078": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-076": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-079": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-077": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-080": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-078": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-081": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-079": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-082": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-080": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-083": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-081": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-084": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-082": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-085": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-083": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-086": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-084": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-087": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-085": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-088": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-086": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-089": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-087": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-090": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-088": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-091": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-089": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-092": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-090": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-093": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-091": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-094": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-092": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-095": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-093": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-096": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-094": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-097": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-095": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-098": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-096": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-099": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-097": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-100": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-101": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-098": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-102": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-099": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-103": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-100": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-104": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-101": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-105": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-102": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-103": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-107": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-104": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-108": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-105": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-109": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-106": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-110": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-107": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-111": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-108": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-112": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-113": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-109": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-114": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-110": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-115": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-111": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-116": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-112": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-117": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-113": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-118": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-114": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-119": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-115": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-120": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-116": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-121": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-117": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-122": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-118": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-123": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-119": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-124": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-125": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-120": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-126": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-121": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-127": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-122": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-128": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-123": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-129": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-124": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-130": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-125": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-131": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-126": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-132": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-127": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-133": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-128": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-134": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-129": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-135": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-130": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-136": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-131": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-137": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-132": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-138": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-133": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-139": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-134": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-140": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-135": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-141": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-136": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-142": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-137": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-143": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-138": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-144": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-139": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-145": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-140": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-146": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-141": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-147": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-142": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-148": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-143": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-149": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-144": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-150": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-145": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-151": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-146": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-152": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-147": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-153": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-148": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-154": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-149": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-155": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-150": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-156": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-151": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-157": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-152": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-158": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-153": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-159": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-154": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-160": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-155": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-161": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-156": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-162": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-157": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-163": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-158": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-164": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-159": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-165": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-160": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-166": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-161": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-167": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-162": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-168": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-163": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-169": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-164": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-170": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-165": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-171": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-166": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-172": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-167": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-173": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-168": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-174": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-169": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-175": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-170": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-176": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-171": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-172": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-178": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-173": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-179": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-180": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-174": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-181": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-175": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-182": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-176": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-183": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-177": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-184": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-178": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-185": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-179": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-186": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-180": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-187": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-181": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-188": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-182": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-189": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-183": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-190": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-184": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-191": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-192": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-185": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-193": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-186": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-194": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-187": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-195": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-188": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-196": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-189": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-197": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-190": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-198": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-191": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-199": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-192": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-200": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-193": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-201": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-194": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-202": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-195": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-203": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-196": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-204": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-205": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-197": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-206": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-198": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-207": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-199": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-208": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-200": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-209": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-201": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-210": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-202": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-211": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-203": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-212": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-204": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-213": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-205": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-214": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-206": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-215": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-207": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-216": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-208": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-217": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-209": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-218": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-210": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-219": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-211": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-220": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-212": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-221": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-213": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-222": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-214": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-223": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-215": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-224": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-216": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-225": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-217": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-226": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-227": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-218": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-228": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-219": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-229": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-220": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-230": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-221": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-231": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-222": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-232": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-223": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-233": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-224": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-234": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-225": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-235": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-226": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-236": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-227": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-237": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-228": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-238": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-229": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-239": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-230": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-240": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-231": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-241": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-232": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-242": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-233": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-243": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-234": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-244": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-235": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-245": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-236": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-246": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-237": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-247": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-238": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-248": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-249": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-239": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-250": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-240": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-251": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-241": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-252": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-242": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-253": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-243": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-254": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-244": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-255": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-245": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-256": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-246": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-257": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-247": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-258": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-248": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-259": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-249": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-260": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-250": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-261": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-251": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-262": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-252": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-263": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-253": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-264": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-254": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-265": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-255": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-266": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-256": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-267": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-257": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-268": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-258": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-269": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-259": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-270": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-260": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-271": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-261": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-272": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-262": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-273": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-263": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-274": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-264": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-275": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-265": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-276": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-266": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-277": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-267": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-278": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-268": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-279": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-280": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-269": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-281": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-270": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-282": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-271": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-283": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-272": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-284": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-273": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-285": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-274": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-286": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-275": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-287": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-276": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-288": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-277": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-289": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-278": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-290": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-279": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-291": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-280": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-292": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-281": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-293": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-282": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-294": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-283": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-295": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-284": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-296": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-285": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-297": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-286": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-298": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-287": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-299": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-288": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-300": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-289": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-290": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-302": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-291": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-303": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-304": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-305": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-294": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-306": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-295": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-307": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-308": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-297": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-309": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-298": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-310": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-299": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-311": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-300": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-312": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-301": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-313": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-302": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-314": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-303": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-315": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-304": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-316": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-305": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-317": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-306": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-318": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-307": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-319": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-308": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-320": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-321": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-309": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-322": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-310": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-323": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-311": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-324": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-312": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-325": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-313": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-326": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-314": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-327": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-315": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-328": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-316": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-329": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-317": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-330": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-318": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-331": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-319": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-332": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-320": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-333": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-321": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-334": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-322": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-335": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-323": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-336": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-324": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-337": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-325": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-338": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-326": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-339": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-327": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-340": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-328": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-341": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-329": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-342": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-330": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-343": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-331": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-344": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-332": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-345": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-333": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-346": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-334": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-347": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-335": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-348": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-336": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-349": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-337": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-350": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-338": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-351": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-339": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-352": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-340": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-353": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-341": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-354": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-342": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-355": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-343": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-356": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-357": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-344": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-358": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-345": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-359": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-346": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-360": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-347": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-361": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-348": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-362": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-349": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-363": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-350": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-364": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-351": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-365": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-352": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-366": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-353": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-367": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-354": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-368": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-369": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-355": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-370": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-356": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-371": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-357": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-372": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-358": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-373": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-359": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-374": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-360": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-375": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-361": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-376": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-362": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-377": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-363": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-378": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-364": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-379": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-365": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-380": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-366": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-381": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-367": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-382": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-368": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-383": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-369": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-384": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-370": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-385": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-371": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-386": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-372": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-387": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-373": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-388": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-374": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-389": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-375": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-390": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-376": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-391": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-377": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-392": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-378": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-393": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-379": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-394": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-380": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-395": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-381": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-396": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-382": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-397": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-383": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-398": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-384": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-399": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-385": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-400": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-386": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-401": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-387": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-402": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-388": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-403": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-389": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-404": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-390": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-405": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-391": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-406": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-392": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-407": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-393": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-408": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-394": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-409": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-395": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-410": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-396": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-411": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-397": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-412": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-398": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-413": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-399": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-414": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-400": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-415": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-401": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-416": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-402": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-417": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-403": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-418": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-404": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-419": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-405": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-420": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-406": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-421": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-407": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-422": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-408": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-423": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-409": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-424": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-410": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-425": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFEN-411": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-426": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-412": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-427": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-413": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-428": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-414": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-429": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-415": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-430": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-416": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-431": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-417": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-432": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-418": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-433": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-419": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-434": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-420": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-435": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-421": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-436": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-422": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-437": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-423": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-438": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-424": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-439": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-425": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-440": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-426": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-441": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-427": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-442": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-428": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-443": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-429": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-444": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-430": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-445": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-431": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-446": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-432": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-447": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-433": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-448": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-434": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-449": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-435": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-450": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-436": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-451": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-437": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-452": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-438": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-453": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-439": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-454": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-440": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFRU-455": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFEN-441": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-456": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFRU-457": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-442": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-458": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-443": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-459": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-444": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-460": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-445": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-461": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-446": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-462": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-447": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-463": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-448": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-464": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-449": [
+    false,
+    false,
+    false
+   ],
+   "V3-XQFRU-465": [
+    false,
+    false,
+    true
+   ],
+   "V3-XQFEN-450": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-466": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFEN-451": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFRU-467": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-001": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-002": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-003": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-004": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-005": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-006": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-007": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-008": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-009": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-010": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-011": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-012": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-013": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-014": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-015": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-016": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-017": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-018": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-019": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-020": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-021": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-022": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-023": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-024": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-025": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-026": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-027": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-028": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-029": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-030": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-031": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-032": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-033": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-034": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-035": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-036": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-037": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-038": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-039": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-040": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-041": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-042": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-044": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-045": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-046": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-047": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-048": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-049": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-050": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-051": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-052": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-053": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-054": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-055": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-056": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-057": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-058": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-059": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-060": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-061": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-062": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-063": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-064": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-065": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-066": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-067": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-068": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-069": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-070": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-071": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-072": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-073": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-074": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-075": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-076": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-077": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-078": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-079": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-080": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-081": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-082": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-083": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-084": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-085": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-086": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-087": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-088": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-089": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-090": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-091": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-092": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-093": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-094": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-095": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-096": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-097": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-098": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-099": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-100": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-101": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-102": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-103": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-104": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-105": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-106": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-107": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-108": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-109": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-110": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-111": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-112": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-113": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-114": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-115": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-116": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-117": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-118": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-119": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-120": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-121": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-122": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-123": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-124": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-125": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-126": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-127": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-128": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-129": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-130": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-131": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-132": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-133": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-134": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-135": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-136": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-137": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-138": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-139": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-141": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-142": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-143": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-144": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-145": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-146": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-147": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-148": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-149": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-150": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-151": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-152": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-153": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-154": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-155": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-156": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-157": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-158": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-159": [
+    true,
+    false,
+    true
+   ],
+   "V3-XQFNA-160": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-161": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-162": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-163": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-164": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-165": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-166": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-167": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-168": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-169": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-170": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-171": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-172": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-173": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-174": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-175": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-176": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-177": [
+    true,
+    false,
+    false
+   ],
+   "V3-XQFNA-178": [
+    true,
+    false,
+    false
+   ]
+  }
+ },
+ "replay_first_llm_refusal": {
+  "all": {
+   "cases": 1307,
+   "factrag_correct": {
+    "k": 1165,
+    "n": 1307,
+    "rate": 0.891354246365723,
+    "wilson95": [
+     0.8733217239153022,
+     0.9070929348810008
+    ]
+   },
+   "vanilla_correct": {
+    "k": 1187,
+    "n": 1307,
+    "rate": 0.9081866870696251,
+    "wilson95": [
+     0.8913124909767273,
+     0.9226683897032878
+    ]
+   },
+   "hallucination": {
+    "k": 2,
+    "n": 269,
+    "rate": 0.007434944237918215,
+    "wilson95": [
+     0.0020412607015241543,
+     0.02669922462036224
+    ]
+   },
+   "vanilla_hallucination": {
+    "k": 2,
+    "n": 269,
+    "rate": 0.007434944237918215,
+    "wilson95": [
+     0.0020412607015241543,
+     0.02669922462036224
+    ]
+   },
+   "false_refusal": {
+    "k": 96,
+    "n": 1038,
+    "rate": 0.09248554913294797,
+    "wilson95": [
+     0.07633197601554716,
+     0.11164439198511623
+    ]
+   },
+   "coverage": {
+    "k": 942,
+    "n": 1038,
+    "rate": 0.9075144508670521,
+    "wilson95": [
+     0.8883556080148838,
+     0.9236680239844528
+    ]
+   },
+   "selective_accuracy": {
+    "k": 898,
+    "n": 942,
+    "rate": 0.9532908704883227,
+    "wilson95": [
+     0.9378762747282534,
+     0.9650233228364975
+    ]
+   },
+   "net_contribution": -22,
+   "correction": 0,
+   "damage": 22,
+   "filter": {
+    "precision": 0.9563451776649746,
+    "recall": 0.9761658031088083,
+    "specificity": 0.06521739130434782,
+    "f1": 0.9661538461538461,
+    "macro_f1": 0.5247435897435897,
+    "balanced_accuracy": 0.5206915972065781,
+    "mcc": 0.05448309803036752,
+    "tp": 942,
+    "fp": 43,
+    "fn": 23,
+    "tn": 3
+   }
+  },
+  "dev": {
+   "cases": 651,
+   "factrag_correct": {
+    "k": 588,
+    "n": 651,
+    "rate": 0.9032258064516129,
+    "wilson95": [
+     0.878092417636296,
+     0.9236281816658863
+    ]
+   },
+   "vanilla_correct": {
+    "k": 596,
+    "n": 651,
+    "rate": 0.9155145929339478,
+    "wilson95": [
+     0.891636416603217,
+     0.9345175723919844
+    ]
+   },
+   "hallucination": {
+    "k": 0,
+    "n": 136,
+    "rate": 0.0,
+    "wilson95": [
+     0.0,
+     0.02747108156657246
+    ]
+   },
+   "vanilla_hallucination": {
+    "k": 0,
+    "n": 136,
+    "rate": 0.0,
+    "wilson95": [
+     0.0,
+     0.02747108156657246
+    ]
+   },
+   "false_refusal": {
+    "k": 41,
+    "n": 515,
+    "rate": 0.07961165048543689,
+    "wilson95": [
+     0.05922491922604679,
+     0.10622364927732687
+    ]
+   },
+   "coverage": {
+    "k": 474,
+    "n": 515,
+    "rate": 0.920388349514563,
+    "wilson95": [
+     0.893776350722673,
+     0.9407750807739532
+    ]
+   },
+   "selective_accuracy": {
+    "k": 452,
+    "n": 474,
+    "rate": 0.9535864978902954,
+    "wilson95": [
+     0.9307274119932132,
+     0.9691523808084181
+    ]
+   },
+   "net_contribution": -8,
+   "correction": 0,
+   "damage": 8,
+   "filter": {
+    "precision": 0.9575757575757575,
+    "recall": 0.9793388429752066,
+    "specificity": 0.045454545454545456,
+    "f1": 0.968335035750766,
+    "macro_f1": 0.5144705481784133,
+    "balanced_accuracy": 0.512396694214876,
+    "mcc": 0.0346713668816579,
+    "tp": 474,
+    "fp": 21,
+    "fn": 10,
+    "tn": 1
+   }
+  },
+  "test": {
+   "cases": 656,
+   "factrag_correct": {
+    "k": 577,
+    "n": 656,
+    "rate": 0.8795731707317073,
+    "wilson95": [
+     0.8524318956581469,
+     0.90229469326865
+    ]
+   },
+   "vanilla_correct": {
+    "k": 591,
+    "n": 656,
+    "rate": 0.9009146341463414,
+    "wilson95": [
+     0.8756640601408758,
+     0.9214969554725683
+    ]
+   },
+   "hallucination": {
+    "k": 2,
+    "n": 133,
+    "rate": 0.015037593984962405,
+    "wilson95": [
+     0.0041334978576213245,
+     0.05317071372715991
+    ]
+   },
+   "vanilla_hallucination": {
+    "k": 2,
+    "n": 133,
+    "rate": 0.015037593984962405,
+    "wilson95": [
+     0.0041334978576213245,
+     0.05317071372715991
+    ]
+   },
+   "false_refusal": {
+    "k": 55,
+    "n": 523,
+    "rate": 0.10516252390057361,
+    "wilson95": [
+     0.08168882707078617,
+     0.13439433720477595
+    ]
+   },
+   "coverage": {
+    "k": 468,
+    "n": 523,
+    "rate": 0.8948374760994264,
+    "wilson95": [
+     0.8656056627952241,
+     0.9183111729292138
+    ]
+   },
+   "selective_accuracy": {
+    "k": 446,
+    "n": 468,
+    "rate": 0.9529914529914529,
+    "wilson95": [
+     0.9298523383444091,
+     0.9687543127011959
+    ]
+   },
+   "net_contribution": -14,
+   "correction": 0,
+   "damage": 14,
+   "filter": {
+    "precision": 0.9551020408163265,
+    "recall": 0.972972972972973,
+    "specificity": 0.08333333333333333,
+    "f1": 0.9639546858908341,
+    "macro_f1": 0.5332593942274684,
+    "balanced_accuracy": 0.5281531531531531,
+    "mcc": 0.07056535456712132,
+    "tp": 468,
+    "fp": 22,
+    "fn": 13,
+    "tn": 2
+   }
+  },
+  "v3": {
+   "cases": 220,
+   "factrag_correct": {
+    "k": 193,
+    "n": 220,
+    "rate": 0.8772727272727273,
+    "wilson95": [
+     0.8273273628818703,
+     0.9142684798926632
+    ]
+   },
+   "vanilla_correct": {
+    "k": 199,
+    "n": 220,
+    "rate": 0.9045454545454545,
+    "wilson95": [
+     0.8584869509131916,
+     0.9367182298932357
+    ]
+   },
+   "hallucination": {
+    "k": 2,
+    "n": 93,
+    "rate": 0.021505376344086023,
+    "wilson95": [
+     0.005917375771978241,
+     0.07505609017653975
+    ]
+   },
+   "vanilla_hallucination": {
+    "k": 2,
+    "n": 93,
+    "rate": 0.021505376344086023,
+    "wilson95": [
+     0.005917375771978241,
+     0.07505609017653975
+    ]
+   },
+   "false_refusal": {
+    "k": 10,
+    "n": 127,
+    "rate": 0.07874015748031496,
+    "wilson95": [
+     0.0433298959009003,
+     0.1388873805616315
+    ]
+   },
+   "coverage": {
+    "k": 117,
+    "n": 127,
+    "rate": 0.9212598425196851,
+    "wilson95": [
+     0.8611126194383686,
+     0.9566701040990998
+    ]
+   },
+   "selective_accuracy": {
+    "k": 102,
+    "n": 117,
+    "rate": 0.8717948717948718,
+    "wilson95": [
+     0.7992064199482437,
+     0.9207443254904132
+    ]
+   },
+   "net_contribution": -6,
+   "correction": 0,
+   "damage": 6,
+   "filter": {
+    "precision": 0.9125,
+    "recall": 0.954248366013072,
+    "specificity": 0.0,
+    "f1": 0.9329073482428115,
+    "macro_f1": 0.46645367412140576,
+    "balanced_accuracy": 0.477124183006536,
+    "mcc": -0.06327138353044139,
+    "tp": 146,
+    "fp": 14,
+    "fn": 7,
+    "tn": 0
+   }
+  },
+  "xquad-full": {
+   "cases": 1087,
+   "factrag_correct": {
+    "k": 972,
+    "n": 1087,
+    "rate": 0.8942042318307267,
+    "wilson95": [
+     0.8745105248867516,
+     0.9111214128757977
+    ]
+   },
+   "vanilla_correct": {
+    "k": 988,
+    "n": 1087,
+    "rate": 0.9089236430542779,
+    "wilson95": [
+     0.8903486646446787,
+     0.9246184213190397
+    ]
+   },
+   "hallucination": {
+    "k": 0,
+    "n": 176,
+    "rate": 0.0,
+    "wilson95": [
+     1.734723475976807e-18,
+     0.021361019919751596
+    ]
+   },
+   "vanilla_hallucination": {
+    "k": 0,
+    "n": 176,
+    "rate": 0.0,
+    "wilson95": [
+     1.734723475976807e-18,
+     0.021361019919751596
+    ]
+   },
+   "false_refusal": {
+    "k": 86,
+    "n": 911,
+    "rate": 0.09440175631174534,
+    "wilson95": [
+     0.0770815244876588,
+     0.11512836190141663
+    ]
+   },
+   "coverage": {
+    "k": 825,
+    "n": 911,
+    "rate": 0.9055982436882547,
+    "wilson95": [
+     0.8848716380985834,
+     0.9229184755123413
+    ]
+   },
+   "selective_accuracy": {
+    "k": 796,
+    "n": 825,
+    "rate": 0.9648484848484848,
+    "wilson95": [
+     0.9499723689604893,
+     0.9754155459318132
+    ]
+   },
+   "net_contribution": -16,
+   "correction": 0,
+   "damage": 16,
+   "filter": {
+    "precision": 0.9648484848484848,
+    "recall": 0.9802955665024631,
+    "specificity": 0.09375,
+    "f1": 0.9725106902871107,
+    "macro_f1": 0.54507887455532,
+    "balanced_accuracy": 0.5370227832512315,
+    "mcc": 0.09533410399441092,
+    "tp": 796,
+    "fp": 29,
+    "fn": 16,
+    "tn": 3
+   }
+  },
+  "thinking_calls": 218,
+  "missing_repair": 17,
+  "seconds": 1.946117300001788
+ },
+ "stress": {
+  "answer_swap": {
+   "all": {
+    "k": 479,
+    "n": 950,
+    "rate": 0.5042105263157894
+   },
+   "dev": {
+    "k": 255,
+    "n": 474,
+    "rate": 0.5379746835443038
+   },
+   "test": {
+    "k": 224,
+    "n": 476,
+    "rate": 0.47058823529411764
+   }
+  },
+  "negation": {
+   "all": {
+    "k": 317,
+    "n": 742,
+    "rate": 0.4272237196765499
+   },
+   "dev": {
+    "k": 140,
+    "n": 331,
+    "rate": 0.4229607250755287
+   },
+   "test": {
+    "k": 177,
+    "n": 411,
+    "rate": 0.4306569343065693
+   }
+  },
+  "number_swap": {
+   "all": {
+    "k": 82,
+    "n": 678,
+    "rate": 0.12094395280235988
+   },
+   "dev": {
+    "k": 47,
+    "n": 360,
+    "rate": 0.13055555555555556
+   },
+   "test": {
+    "k": 35,
+    "n": 318,
+    "rate": 0.11006289308176101
+   }
+  },
+  "positive": {
+   "all": {
+    "k": 1731,
+    "n": 1805,
+    "rate": 0.9590027700831025
+   },
+   "dev": {
+    "k": 865,
+    "n": 898,
+    "rate": 0.9632516703786191
+   },
+   "test": {
+    "k": 866,
+    "n": 907,
+    "rate": 0.9547960308710033
+   }
+  },
+  "transplant": {
+   "all": {
+    "k": 78,
+    "n": 1825,
+    "rate": 0.042739726027397264
+   },
+   "dev": {
+    "k": 50,
+    "n": 910,
+    "rate": 0.054945054945054944
+   },
+   "test": {
+    "k": 28,
+    "n": 915,
+    "rate": 0.030601092896174863
+   }
+  }
+ },
+ "stress_seconds": 577.8355585999961,
+ "nli_pairs_computed": 118723,
+ "seconds": 804.5926282,
+ "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+ "max_vram_mb": 1189
+}

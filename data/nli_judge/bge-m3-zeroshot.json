@@ -1,0 +1,42 @@
+{
+ "version": 1,
+ "primary_model": "mdeberta-nli (MoritzLaurer mDeBERTa-v3-base multilingual-nli-2mil7)",
+ "secondary_model": "bge-m3-zeroshot",
+ "features": [
+  "a_e_max",
+  "a_c_at_a",
+  "a_c_max",
+  "b_e_max",
+  "b_c_max",
+  "ab_e_max",
+  "a_full_e",
+  "a_full_c",
+  "b_full_e",
+  "overlap",
+  "code_span",
+  "anchors_ok",
+  "has_anchors"
+ ],
+ "coef": [
+  0.1942406925087033,
+  1.1398175504932542,
+  0.04402608072932986,
+  0.3527637841919679,
+  0.0,
+  0.5409708089699283,
+  -0.034759511664021525,
+  -1.4180963210105557,
+  0.47827064760559707,
+  0.5190435807724361,
+  1.507240468876852,
+  1.5976232168381157,
+  0.4864520814725788
+ ],
+ "intercept": -3.5165527798576393,
+ "threshold": 0.3,
+ "contradiction": 0.5,
+ "disagreement": 0.6,
+ "veto": 0.9,
+ "fitted_on": "stress claims of the dev half of run 20261031T0508Z (research/opt2/judge.py)",
+ "partial_threshold": 0.15
+}

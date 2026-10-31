@@ -119,6 +119,16 @@ class RAGSettings(BaseSettings):
     # 1101 -> 1174 of 1307 with "refusal" (1166 with "llm_refusal"), hallucination 1 -> 3 of 269.
     llm_think_retry: Literal["off", "llm_refusal", "refusal"] = "off"
     llm_think_max_tokens: int = Field(default=1024, ge=1, le=4096)
+    # Recovery after the thinking pass also ended in an LLM refusal while the best source has
+    # a reranker score of at least llm_recovery_min_rerank: "evidence_prompt" asks once more
+    # (non-thinking, T=0) with a system-prompt note naming the top sources; "sampling" draws
+    # llm_recovery_samples non-thinking drafts at llm_recovery_temperature and publishes the
+    # first one the verifier accepts. Every draft is verified as usual; at most
+    # llm_recovery_samples extra LLM calls per question.
+    llm_recovery: Literal["off", "evidence_prompt", "sampling"] = "off"
+    llm_recovery_min_rerank: float = Field(default=0.2, ge=0, le=1)
+    llm_recovery_samples: int = Field(default=2, ge=1, le=4)
+    llm_recovery_temperature: float = Field(default=0.7, ge=0, le=2)
     generation_language: Literal["ru", "source"] = "ru"
     generation_repair_attempts: int = Field(default=0, ge=0, le=2)
     premise_guard: bool = True
@@ -245,6 +255,18 @@ class RAGSettings(BaseSettings):
     # of its cited sources: "AC-7", "Super Bowl 50" or "UUIDv1" name the subject of a chunk in
     # its heading, which the NLI premise already carries, not in the body text.
     nli_anchor_headings: bool = True
+    # Upper-case RFC 2119 keywords ("SHALL NOT", "MUST") are lower-cased in both NLI inputs:
+    # mDeBERTa reads them as evidence of entailment even against an unrelated premise
+    # (P(entailment) 0.73 vs 0.01 for the same sentence in lower case).
+    nli_keyword_normalization: bool = False
+    # Decision layer. "rules" is verifier v2. "judge" scores every cited source with a second
+    # NLI model as well and publishes a claim when the calibrated logistic model in
+    # nli_judge_path (fitted on the dev half of run 0508Z, reports/optimization_2) gives a
+    # support probability at or above its threshold; the anchor guard still applies.
+    nli_decision: Literal["rules", "judge"] = "rules"
+    nli_secondary_model_path: Path | None = None
+    nli_secondary_max_length: int = Field(default=1024, ge=32, le=8192)
+    nli_judge_path: Path | None = None
     abstention_guard: bool = True
     sparse_coverage_weighting: bool = True
     chunk_target_tokens: int = Field(default=420, ge=300, le=600)
@@ -307,10 +329,14 @@ class RAGSettings(BaseSettings):
         "llm_model_path",
         "document_root",
         "qdrant_path",
+        "nli_secondary_model_path",
+        "nli_judge_path",
     )
     @classmethod
-    def absolute_path(cls, value: Path) -> Path:
+    def absolute_path(cls, value: Path | None) -> Path | None:
         """Resolve symlinks and relative paths against the startup directory."""
+        if value is None:
+            return None
         resolved = value.expanduser().resolve()
         if str(resolved).startswith(("\\\\", "//")):
             raise ValueError("Network paths are not allowed in a local deployment")
@@ -342,6 +368,10 @@ class RAGSettings(BaseSettings):
             raise ValueError("LLM context must exceed thinking budget plus 128 template tokens")
         if not (self.nli_entailment_threshold < self.nli_strong_entailment_threshold <= 1.0):
             raise ValueError("Require entailment threshold < strong entailment threshold <= 1")
+        if self.nli_decision == "judge" and self.nli_judge_path is None:
+            raise ValueError("nli_decision=judge requires RAG_NLI_JUDGE_PATH")
+        if self.nli_decision == "judge" and self.nli_judge_path is not None:
+            _nonempty_file(self.nli_judge_path)
         for path in (self.document_root, self.qdrant_path):
             if path.exists() and not path.is_dir():
                 raise ValueError(f"Expected directory: {path}")
@@ -357,6 +387,10 @@ class RAGSettings(BaseSettings):
         if not self.allow_fallback:
             for path in (self.embedding_model_path, self.reranker_model_path, self.nli_model_path):
                 validate_transformer_directory(path)
+            if self.nli_decision == "judge":
+                if self.nli_secondary_model_path is None:
+                    raise ValueError("nli_decision=judge requires RAG_NLI_SECONDARY_MODEL_PATH")
+                validate_transformer_directory(self.nli_secondary_model_path)
             if self.llm_model_path.is_dir():
                 validate_transformer_directory(self.llm_model_path)
             else:
