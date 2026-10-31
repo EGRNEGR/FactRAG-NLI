@@ -112,6 +112,13 @@ class RAGSettings(BaseSettings):
     # Hybrid-reasoning models (Qwen3.x) think by default; the <think> block would consume
     # max_tokens and break [S#] citation parsing. Sent as chat_template_kwargs per request.
     llm_disable_thinking: bool = False
+    # A second pass with thinking enabled (chat_template_kwargs, so the llama-server must not
+    # run with --reasoning off) replaces a withheld non-thinking answer: "llm_refusal" after the
+    # model refused, "refusal" after any refusal except the relevance gate and context budget.
+    # Run 20261031T0508Z, computed from the qwen38-27b and qwen38-27b-think logs: correct
+    # 1101 -> 1174 of 1307 with "refusal" (1166 with "llm_refusal"), hallucination 1 -> 3 of 269.
+    llm_think_retry: Literal["off", "llm_refusal", "refusal"] = "off"
+    llm_think_max_tokens: int = Field(default=1024, ge=1, le=4096)
     generation_language: Literal["ru", "source"] = "ru"
     generation_repair_attempts: int = Field(default=0, ge=0, le=2)
     premise_guard: bool = True
@@ -328,6 +335,11 @@ class RAGSettings(BaseSettings):
             raise ValueError("Require ingestion overlap < target <= maximum chunk tokens")
         if self.llm_max_tokens + 128 >= self.llm_context_window:
             raise ValueError("LLM context must exceed output budget plus 128 template tokens")
+        if (
+            self.llm_think_retry != "off"
+            and self.llm_think_max_tokens + 128 >= self.llm_context_window
+        ):
+            raise ValueError("LLM context must exceed thinking budget plus 128 template tokens")
         if not (self.nli_entailment_threshold < self.nli_strong_entailment_threshold <= 1.0):
             raise ValueError("Require entailment threshold < strong entailment threshold <= 1")
         for path in (self.document_root, self.qdrant_path):

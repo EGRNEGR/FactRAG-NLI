@@ -395,7 +395,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bэлве\\w*)(?=[\\s\\S]*\\bджо\\w*)|(?=[\\s\\S]*\\belwa\\w*)(?=[\\s\\S]*\\bjoh\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bэлв\\w*)(?=[\\s\\S]*\\bджо\\w*)|(?=[\\s\\S]*\\belwa\\w*)(?=[\\s\\S]*\\bjoh\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -432,7 +432,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bэлве\\w*)(?=[\\s\\S]*\\bджо\\w*)|(?=[\\s\\S]*\\belwa\\w*)(?=[\\s\\S]*\\bjoh\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bэлв\\w*)(?=[\\s\\S]*\\bджо\\w*)|(?=[\\s\\S]*\\belwa\\w*)(?=[\\s\\S]*\\bjoh\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -1024,7 +1024,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bэлве\\w*)(?=[\\s\\S]*\\bджо\\w*)|(?=[\\s\\S]*\\belwa\\w*)(?=[\\s\\S]*\\bjoh\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bэлв\\w*)(?=[\\s\\S]*\\bджо\\w*)|(?=[\\s\\S]*\\belwa\\w*)(?=[\\s\\S]*\\bjoh\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -1061,7 +1061,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bэлве\\w*)(?=[\\s\\S]*\\bджо\\w*)|(?=[\\s\\S]*\\belwa\\w*)(?=[\\s\\S]*\\bjoh\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bэлв\\w*)(?=[\\s\\S]*\\bджо\\w*)|(?=[\\s\\S]*\\belwa\\w*)(?=[\\s\\S]*\\bjoh\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -3059,7 +3059,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bтурец\\w*)(?=[\\s\\S]*\\bсила\\w*)|(?=[\\s\\S]*\\bturki\\w*)(?=[\\s\\S]*\\bforc\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bтурец\\w*)(?=[\\s\\S]*\\bсил\\w*)|(?=[\\s\\S]*\\bturki\\w*)(?=[\\s\\S]*\\bforc\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -3503,7 +3503,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)1990(?!\\d))(?=[\\s\\S]*\\bгодо\\w*)|(?=[\\s\\S]*(?<!\\d)1990s(?!\\d)))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)1990(?!\\d))(?=[\\s\\S]*\\bгод\\w*)|(?=[\\s\\S]*(?<!\\d)1990s(?!\\d)))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -3836,7 +3836,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bсумасшед\\w*)(?=[\\s\\S]*\\bучено\\w*)|(?=[\\s\\S]*\\bscient\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bсумасшед\\w*)(?=[\\s\\S]*\\bучен\\w*)|(?=[\\s\\S]*\\bscient\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -4391,7 +4391,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bстрок\\w*)(?=[\\s\\S]*\\bбито\\w*)|(?=[\\s\\S]*\\bbitstr\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bстрок\\w*)(?=[\\s\\S]*\\bбит\\w*)|(?=[\\s\\S]*\\bbitstr\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -4983,7 +4983,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bлама\\w*)|(?=[\\s\\S]*\\blam\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bлам\\w*)|(?=[\\s\\S]*\\blam\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -5538,7 +5538,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)2005(?!\\d))(?=[\\s\\S]*(?<!\\d)2010(?!\\d))(?=[\\s\\S]*\\bгода\\w*)(?=[\\s\\S]*\\bмежд\\w*)|(?=[\\s\\S]*(?<!\\d)2005(?!\\d))(?=[\\s\\S]*(?<!\\d)2010(?!\\d))(?=[\\s\\S]*\\bbetwe\\w*))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)2005(?!\\d))(?=[\\s\\S]*(?<!\\d)2010(?!\\d))(?=[\\s\\S]*\\bгод\\w*)(?=[\\s\\S]*\\bмежд\\w*)|(?=[\\s\\S]*(?<!\\d)2005(?!\\d))(?=[\\s\\S]*(?<!\\d)2010(?!\\d))(?=[\\s\\S]*\\bbetwe\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -6093,7 +6093,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bголлан\\w*)(?=[\\s\\S]*\\bнова\\w*)|(?=[\\s\\S]*\\bholla\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bголлан\\w*)(?=[\\s\\S]*\\bнов\\w*)|(?=[\\s\\S]*\\bholla\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -6278,7 +6278,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)1600(?!\\d))(?=[\\s\\S]*(?<!\\d)5(?!\\d))(?=[\\s\\S]*(?<!\\d)3(?!\\d))(?=[\\s\\S]*\\bфуто\\w*)|(?=[\\s\\S]*(?<!\\d)1(?!\\d))(?=[\\s\\S]*(?<!\\d)600(?!\\d))(?=[\\s\\S]*(?<!\\d)5(?!\\d))(?=[\\s\\S]*(?<!\\d)3(?!\\d)))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)1600(?!\\d))(?=[\\s\\S]*(?<!\\d)5(?!\\d))(?=[\\s\\S]*(?<!\\d)3(?!\\d))(?=[\\s\\S]*\\bфут\\w*)|(?=[\\s\\S]*(?<!\\d)1(?!\\d))(?=[\\s\\S]*(?<!\\d)600(?!\\d))(?=[\\s\\S]*(?<!\\d)5(?!\\d))(?=[\\s\\S]*(?<!\\d)3(?!\\d)))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -6389,7 +6389,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bновы\\w*)(?=[\\s\\S]*\\bюжны\\w*)(?=[\\s\\S]*\\bуэль\\w*)|(?=[\\s\\S]*\\bsout\\w*)(?=[\\s\\S]*\\bwale\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bнов\\w*)(?=[\\s\\S]*\\bюжн\\w*)(?=[\\s\\S]*\\bуэль\\w*)|(?=[\\s\\S]*\\bsout\\w*)(?=[\\s\\S]*\\bwale\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -7092,7 +7092,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bфаре\\w*)(?=[\\s\\S]*\\bгийо\\w*)|(?=[\\s\\S]*\\bwilli\\w*)(?=[\\s\\S]*\\bfare\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bфаре\\w*)(?=[\\s\\S]*\\bгий\\w*)|(?=[\\s\\S]*\\bwilli\\w*)(?=[\\s\\S]*\\bfare\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -7166,7 +7166,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bсообще\\w*)(?=[\\s\\S]*\\bпредел\\w*)(?=[\\s\\S]*\\bвступ\\w*)(?=[\\s\\S]*\\bсвое\\w*)|(?=[\\s\\S]*\\bcommuni\\w*)(?=[\\s\\S]*\\bimmedi\\w*)(?=[\\s\\S]*\\bmarri\\w*)(?=[\\s\\S]*\\boutsi\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bсообще\\w*)(?=[\\s\\S]*\\bпредел\\w*)(?=[\\s\\S]*\\bвступ\\w*)(?=[\\s\\S]*\\bсво\\w*)|(?=[\\s\\S]*\\bcommuni\\w*)(?=[\\s\\S]*\\bimmedi\\w*)(?=[\\s\\S]*\\bmarri\\w*)(?=[\\s\\S]*\\boutsi\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -10940,7 +10940,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bполов\\w*)(?=[\\s\\S]*\\bболе\\w*)|(?=[\\s\\S]*\\bove\\w*)(?=[\\s\\S]*\\bhal\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bполов\\w*)(?=[\\s\\S]*\\bбол\\w*)|(?=[\\s\\S]*\\bove\\w*)(?=[\\s\\S]*\\bhal\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -11791,7 +11791,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)1950(?!\\d))(?=[\\s\\S]*\\bгода\\w*)|(?=[\\s\\S]*(?<!\\d)1950s(?!\\d)))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)1950(?!\\d))(?=[\\s\\S]*\\bгод\\w*)|(?=[\\s\\S]*(?<!\\d)1950s(?!\\d)))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -12457,7 +12457,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bпроник\\w*)(?=[\\s\\S]*\\bволна\\w*)(?=[\\s\\S]*\\bевро\\w*)(?=[\\s\\S]*\\bмогл\\w*)|(?=[\\s\\S]*\\benter\\w*)(?=[\\s\\S]*\\bplag\\w*)(?=[\\s\\S]*\\beuro\\w*)(?=[\\s\\S]*\\bwave\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bпроник\\w*)(?=[\\s\\S]*\\bволн\\w*)(?=[\\s\\S]*\\bевро\\w*)(?=[\\s\\S]*\\bмогл\\w*)|(?=[\\s\\S]*\\benter\\w*)(?=[\\s\\S]*\\bplag\\w*)(?=[\\s\\S]*\\beuro\\w*)(?=[\\s\\S]*\\bwave\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -13863,7 +13863,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bпредполаг\\w*)(?=[\\s\\S]*\\bнамно\\w*)(?=[\\s\\S]*\\bдолж\\w*)(?=[\\s\\S]*\\bстар\\w*)|(?=[\\s\\S]*\\bprevio\\w*)(?=[\\s\\S]*\\bsuppo\\w*)(?=[\\s\\S]*\\beart\\w*)(?=[\\s\\S]*\\bolde\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bпредполаг\\w*)(?=[\\s\\S]*\\bнамн\\w*)(?=[\\s\\S]*\\bдолж\\w*)(?=[\\s\\S]*\\bстар\\w*)|(?=[\\s\\S]*\\bprevio\\w*)(?=[\\s\\S]*\\bsuppo\\w*)(?=[\\s\\S]*\\beart\\w*)(?=[\\s\\S]*\\bolde\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -14566,7 +14566,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bполитехни\\w*)(?=[\\s\\S]*\\bуниверсит\\w*)(?=[\\s\\S]*\\bинстит\\w*)(?=[\\s\\S]*\\bновы\\w*)|(?=[\\s\\S]*\\bpolytech\\w*)(?=[\\s\\S]*\\buniversi\\w*)(?=[\\s\\S]*\\bbeca\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bполитехни\\w*)(?=[\\s\\S]*\\bуниверсит\\w*)(?=[\\s\\S]*\\bинстит\\w*)(?=[\\s\\S]*\\bнов\\w*)|(?=[\\s\\S]*\\bpolytech\\w*)(?=[\\s\\S]*\\buniversi\\w*)(?=[\\s\\S]*\\bbeca\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -14640,7 +14640,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bуниверси\\w*)(?=[\\s\\S]*\\bнагра\\w*)(?=[\\s\\S]*\\bлучше\\w*)(?=[\\s\\S]*\\bверс\\w*)|(?=[\\s\\S]*\\buniver\\w*)(?=[\\s\\S]*\\bsund\\w*)(?=[\\s\\S]*\\btime\\w*)(?=[\\s\\S]*\\bawar\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bуниверси\\w*)(?=[\\s\\S]*\\bнагра\\w*)(?=[\\s\\S]*\\bлучш\\w*)(?=[\\s\\S]*\\bверс\\w*)|(?=[\\s\\S]*\\buniver\\w*)(?=[\\s\\S]*\\bsund\\w*)(?=[\\s\\S]*\\btime\\w*)(?=[\\s\\S]*\\bawar\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -14677,7 +14677,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)37(?!\\d))(?=[\\s\\S]*\\bмиллио\\w*)(?=[\\s\\S]*\\bболе\\w*)|(?=[\\s\\S]*(?<!\\d)37(?!\\d))(?=[\\s\\S]*\\bmilli\\w*)(?=[\\s\\S]*\\bove\\w*))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)37(?!\\d))(?=[\\s\\S]*\\bмиллио\\w*)(?=[\\s\\S]*\\bбол\\w*)|(?=[\\s\\S]*(?<!\\d)37(?!\\d))(?=[\\s\\S]*\\bmilli\\w*)(?=[\\s\\S]*\\bove\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -15454,7 +15454,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)5(?!\\d))(?=[\\s\\S]*(?<!\\d)100(?!\\d))(?=[\\s\\S]*\\bболе\\w*)|(?=[\\s\\S]*(?<!\\d)5(?!\\d))(?=[\\s\\S]*(?<!\\d)100(?!\\d))(?=[\\s\\S]*\\bove\\w*))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)5(?!\\d))(?=[\\s\\S]*(?<!\\d)100(?!\\d))(?=[\\s\\S]*\\bбол\\w*)|(?=[\\s\\S]*(?<!\\d)5(?!\\d))(?=[\\s\\S]*(?<!\\d)100(?!\\d))(?=[\\s\\S]*\\bove\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -15602,7 +15602,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)70(?!\\d))(?=[\\s\\S]*(?<!\\d)000(?!\\d))(?=[\\s\\S]*\\bболе\\w*)|(?=[\\s\\S]*(?<!\\d)70(?!\\d))(?=[\\s\\S]*(?<!\\d)000(?!\\d))(?=[\\s\\S]*\\bmor\\w*)(?=[\\s\\S]*\\btha\\w*))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)70(?!\\d))(?=[\\s\\S]*(?<!\\d)000(?!\\d))(?=[\\s\\S]*\\bбол\\w*)|(?=[\\s\\S]*(?<!\\d)70(?!\\d))(?=[\\s\\S]*(?<!\\d)000(?!\\d))(?=[\\s\\S]*\\bmor\\w*)(?=[\\s\\S]*\\btha\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -15639,7 +15639,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)14(?!\\d))(?=[\\s\\S]*(?<!\\d)000(?!\\d))(?=[\\s\\S]*\\bболе\\w*)|(?=[\\s\\S]*(?<!\\d)14(?!\\d))(?=[\\s\\S]*(?<!\\d)000(?!\\d))(?=[\\s\\S]*\\bove\\w*))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)14(?!\\d))(?=[\\s\\S]*(?<!\\d)000(?!\\d))(?=[\\s\\S]*\\bбол\\w*)|(?=[\\s\\S]*(?<!\\d)14(?!\\d))(?=[\\s\\S]*(?<!\\d)000(?!\\d))(?=[\\s\\S]*\\bove\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -15861,7 +15861,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bхорним\\w*)(?=[\\s\\S]*\\bмузе\\w*)|(?=[\\s\\S]*\\bhorni\\w*)(?=[\\s\\S]*\\bmuse\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bхорним\\w*)(?=[\\s\\S]*\\bмуз\\w*)|(?=[\\s\\S]*\\bhorni\\w*)(?=[\\s\\S]*\\bmuse\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -17341,7 +17341,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bпокрови\\w*)(?=[\\s\\S]*\\bджаму\\w*)(?=[\\s\\S]*\\bсвое\\w*)(?=[\\s\\S]*\\bтоор\\w*)|(?=[\\s\\S]*\\bprotec\\w*)(?=[\\s\\S]*\\bjamuk\\w*)(?=[\\s\\S]*\\btoghr\\w*)(?=[\\s\\S]*\\bkha\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bпокрови\\w*)(?=[\\s\\S]*\\bджаму\\w*)(?=[\\s\\S]*\\bсво\\w*)(?=[\\s\\S]*\\bтоор\\w*)|(?=[\\s\\S]*\\bprotec\\w*)(?=[\\s\\S]*\\bjamuk\\w*)(?=[\\s\\S]*\\btoghr\\w*)(?=[\\s\\S]*\\bkha\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -17859,7 +17859,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bпрестар\\w*)(?=[\\s\\S]*\\bдома\\w*)|(?=[\\s\\S]*\\bnursi\\w*)(?=[\\s\\S]*\\bhome\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bпрестар\\w*)(?=[\\s\\S]*\\bдом\\w*)|(?=[\\s\\S]*\\bnursi\\w*)(?=[\\s\\S]*\\bhome\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -19339,7 +19339,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bрассмотр\\w*)(?=[\\s\\S]*\\bдобит\\w*)(?=[\\s\\S]*\\bпробл\\w*)(?=[\\s\\S]*\\bсвое\\w*)|(?=[\\s\\S]*\\bthei\\w*)(?=[\\s\\S]*\\bissu\\w*)(?=[\\s\\S]*\\btabl\\w*)(?=[\\s\\S]*\\bont\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bрассмотр\\w*)(?=[\\s\\S]*\\bдобит\\w*)(?=[\\s\\S]*\\bпробл\\w*)(?=[\\s\\S]*\\bсво\\w*)|(?=[\\s\\S]*\\bthei\\w*)(?=[\\s\\S]*\\bissu\\w*)(?=[\\s\\S]*\\btabl\\w*)(?=[\\s\\S]*\\bont\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -19376,7 +19376,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bнесправед\\w*)(?=[\\s\\S]*\\bформа\\w*)(?=[\\s\\S]*\\bвлас\\w*)|(?=[\\s\\S]*\\bauthor\\w*)(?=[\\s\\S]*\\bunju\\w*)(?=[\\s\\S]*\\bform\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bнесправед\\w*)(?=[\\s\\S]*\\bформ\\w*)(?=[\\s\\S]*\\bвлас\\w*)|(?=[\\s\\S]*\\bauthor\\w*)(?=[\\s\\S]*\\bunju\\w*)(?=[\\s\\S]*\\bform\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -19598,7 +19598,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bущемля\\w*)(?=[\\s\\S]*\\bдруг\\w*)(?=[\\s\\S]*\\bправ\\w*)(?=[\\s\\S]*\\bлюде\\w*)|(?=[\\s\\S]*\\binfri\\w*)(?=[\\s\\S]*\\brigh\\w*)(?=[\\s\\S]*\\bothe\\w*)(?=[\\s\\S]*\\bdoe\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bущемля\\w*)(?=[\\s\\S]*\\bдруг\\w*)(?=[\\s\\S]*\\bправ\\w*)(?=[\\s\\S]*\\bлюд\\w*)|(?=[\\s\\S]*\\binfri\\w*)(?=[\\s\\S]*\\brigh\\w*)(?=[\\s\\S]*\\bothe\\w*)(?=[\\s\\S]*\\bdoe\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -20301,7 +20301,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bфункциони\\w*)(?=[\\s\\S]*\\bтруд\\w*)(?=[\\s\\S]*\\bболе\\w*)|(?=[\\s\\S]*\\bdiffic\\w*)(?=[\\s\\S]*\\bfunct\\w*)(?=[\\s\\S]*\\bsyst\\w*)(?=[\\s\\S]*\\bmak\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bфункциони\\w*)(?=[\\s\\S]*\\bтруд\\w*)(?=[\\s\\S]*\\bбол\\w*)|(?=[\\s\\S]*\\bdiffic\\w*)(?=[\\s\\S]*\\bfunct\\w*)(?=[\\s\\S]*\\bsyst\\w*)(?=[\\s\\S]*\\bmak\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -20560,7 +20560,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bсоверш\\w*)(?=[\\s\\S]*\\bкомпан\\w*)(?=[\\s\\S]*\\bразны\\w*)|(?=[\\s\\S]*\\bcompan\\w*)(?=[\\s\\S]*\\bentir\\w*)(?=[\\s\\S]*\\bsepar\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bсоверш\\w*)(?=[\\s\\S]*\\bкомпан\\w*)(?=[\\s\\S]*\\bразн\\w*)|(?=[\\s\\S]*\\bcompan\\w*)(?=[\\s\\S]*\\bentir\\w*)(?=[\\s\\S]*\\bsepar\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -20930,7 +20930,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bфинансиро\\w*)(?=[\\s\\S]*\\bпланиров\\w*)(?=[\\s\\S]*\\bнеобхо\\w*)(?=[\\s\\S]*\\bдизай\\w*)|(?=[\\s\\S]*\\bfinanc\\w*)(?=[\\s\\S]*\\bplann\\w*)(?=[\\s\\S]*\\bcitat\\w*)(?=[\\s\\S]*\\bneed\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bфинансиро\\w*)(?=[\\s\\S]*\\bпланиров\\w*)(?=[\\s\\S]*\\bдизай\\w*)|(?=[\\s\\S]*\\bfinanc\\w*)(?=[\\s\\S]*\\bplann\\w*)(?=[\\s\\S]*\\bdesi\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -21374,7 +21374,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bнезависи\\w*)(?=[\\s\\S]*\\bшкола\\w*)|(?=[\\s\\S]*\\bindepen\\w*)(?=[\\s\\S]*\\bschoo\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bнезависи\\w*)(?=[\\s\\S]*\\bшкол\\w*)|(?=[\\s\\S]*\\bindepen\\w*)(?=[\\s\\S]*\\bschoo\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -21411,7 +21411,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bбелы\\w*)|(?=[\\s\\S]*\\bwhit\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bбел\\w*)|(?=[\\s\\S]*\\bwhit\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -21818,7 +21818,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bнамно\\w*)(?=[\\s\\S]*\\bвысок\\w*)(?=[\\s\\S]*\\bболе\\w*)|(?=[\\s\\S]*\\bhigh\\w*)(?=[\\s\\S]*\\bmuc\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bнамн\\w*)(?=[\\s\\S]*\\bвысок\\w*)(?=[\\s\\S]*\\bбол\\w*)|(?=[\\s\\S]*\\bhigh\\w*)(?=[\\s\\S]*\\bmuc\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -22077,7 +22077,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)1980(?!\\d))(?=[\\s\\S]*\\bконц\\w*)(?=[\\s\\S]*\\bгодо\\w*)|(?=[\\s\\S]*(?<!\\d)1980s(?!\\d))(?=[\\s\\S]*\\blat\\w*))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)1980(?!\\d))(?=[\\s\\S]*\\bконц\\w*)(?=[\\s\\S]*\\bгод\\w*)|(?=[\\s\\S]*(?<!\\d)1980s(?!\\d))(?=[\\s\\S]*\\blat\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -22780,7 +22780,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)340(?!\\d))(?=[\\s\\S]*\\bмиля\\w*)|(?=[\\s\\S]*(?<!\\d)340(?!\\d))(?=[\\s\\S]*\\bmile\\w*))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)340(?!\\d))(?=[\\s\\S]*\\bмил\\w*)|(?=[\\s\\S]*(?<!\\d)340(?!\\d))(?=[\\s\\S]*\\bmile\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -23409,7 +23409,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)1970(?!\\d))(?=[\\s\\S]*\\bгода\\w*)|(?=[\\s\\S]*(?<!\\d)1970s(?!\\d)))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)1970(?!\\d))(?=[\\s\\S]*\\bгод\\w*)|(?=[\\s\\S]*(?<!\\d)1970s(?!\\d)))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -24112,7 +24112,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bобъедине\\w*)(?=[\\s\\S]*\\bорганиз\\w*)(?=[\\s\\S]*\\bнаци\\w*)|(?=[\\s\\S]*\\bnatio\\w*)(?=[\\s\\S]*\\bunit\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bобъедине\\w*)(?=[\\s\\S]*\\bорганиз\\w*)(?=[\\s\\S]*\\bнац\\w*)|(?=[\\s\\S]*\\bnatio\\w*)(?=[\\s\\S]*\\bunit\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -24297,7 +24297,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bсудно\\w*)(?=[\\s\\S]*\\bдокт\\w*)(?=[\\s\\S]*\\bдале\\w*)(?=[\\s\\S]*\\bключ\\w*)|(?=[\\s\\S]*\\bdooms\\w*)(?=[\\s\\S]*\\bdoct\\w*)(?=[\\s\\S]*\\bdale\\w*)(?=[\\s\\S]*(?:\\bseve\\w*|\\b(?:seven|семи|семь|семью)\\b|(?<!\\d)7(?!\\d))))"
+    "re:^(?:(?=[\\s\\S]*\\bсудн\\w*)(?=[\\s\\S]*\\bдокт\\w*)(?=[\\s\\S]*\\bдале\\w*)(?=[\\s\\S]*\\bключ\\w*)|(?=[\\s\\S]*\\bdooms\\w*)(?=[\\s\\S]*\\bdoct\\w*)(?=[\\s\\S]*\\bdale\\w*)(?=[\\s\\S]*(?:\\bseve\\w*|\\b(?:seven|семи|семь|семью)\\b|(?<!\\d)7(?!\\d))))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -24889,7 +24889,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)1960(?!\\d))(?=[\\s\\S]*(?<!\\d)1970(?!\\d))(?=[\\s\\S]*\\bгодо\\w*)|(?=[\\s\\S]*(?<!\\d)1960s(?!\\d))(?=[\\s\\S]*(?<!\\d)1970s(?!\\d)))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)1960(?!\\d))(?=[\\s\\S]*(?<!\\d)1970(?!\\d))(?=[\\s\\S]*\\bгод\\w*)|(?=[\\s\\S]*(?<!\\d)1960s(?!\\d))(?=[\\s\\S]*(?<!\\d)1970s(?!\\d)))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -25592,7 +25592,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)1940(?!\\d))(?=[\\s\\S]*\\bгодо\\w*)|(?=[\\s\\S]*(?<!\\d)1940s(?!\\d)))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)1940(?!\\d))(?=[\\s\\S]*\\bгод\\w*)|(?=[\\s\\S]*(?<!\\d)1940s(?!\\d)))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -27849,7 +27849,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bполов\\w*)(?=[\\s\\S]*\\bболе\\w*)|(?=[\\s\\S]*\\bove\\w*)(?=[\\s\\S]*\\bhal\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bполов\\w*)(?=[\\s\\S]*\\bбол\\w*)|(?=[\\s\\S]*\\bove\\w*)(?=[\\s\\S]*\\bhal\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -28034,7 +28034,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bэндосимбиот\\w*)(?=[\\s\\S]*\\bперен\\w*)(?=[\\s\\S]*\\bгено\\w*)|(?=[\\s\\S]*\\bendosymb\\w*)(?=[\\s\\S]*\\btrans\\w*)(?=[\\s\\S]*\\bgen\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bэндосимбиот\\w*)(?=[\\s\\S]*\\bперен\\w*)(?=[\\s\\S]*\\bген\\w*)|(?=[\\s\\S]*\\bendosymb\\w*)(?=[\\s\\S]*\\btrans\\w*)(?=[\\s\\S]*\\bgen\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -29033,7 +29033,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bвиноградн\\w*)(?=[\\s\\S]*\\bзамка\\w*)|(?=[\\s\\S]*\\bvineya\\w*)(?=[\\s\\S]*\\bcastl\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bвиноградн\\w*)(?=[\\s\\S]*\\bзамк\\w*)|(?=[\\s\\S]*\\bvineya\\w*)(?=[\\s\\S]*\\bcastl\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -30328,7 +30328,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bважн\\w*)(?=[\\s\\S]*\\bболе\\w*)|(?=[\\s\\S]*\\bstron\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bважн\\w*)(?=[\\s\\S]*\\bбол\\w*)|(?=[\\s\\S]*\\bstron\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -30735,7 +30735,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bисла\\w*)|(?=[\\s\\S]*\\bisla\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bисл\\w*)|(?=[\\s\\S]*\\bisla\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -31734,7 +31734,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*(?<!\\d)1950(?!\\d))(?=[\\s\\S]*\\bгодо\\w*)|(?=[\\s\\S]*(?<!\\d)1950s(?!\\d)))"
+    "re:^(?:(?=[\\s\\S]*(?<!\\d)1950(?!\\d))(?=[\\s\\S]*\\bгод\\w*)|(?=[\\s\\S]*(?<!\\d)1950s(?!\\d)))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -32178,7 +32178,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bвторо\\w*)(?=[\\s\\S]*\\bсорт\\w*)|(?=[\\s\\S]*\\binfer\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bвтор\\w*)(?=[\\s\\S]*\\bсорт\\w*)|(?=[\\s\\S]*\\binfer\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,
@@ -33251,7 +33251,7 @@
     "label": "entailment"
    },
    "answer_must_contain": [
-    "re:^(?:(?=[\\s\\S]*\\bотносител\\w*)(?=[\\s\\S]*\\bтеор\\w*)(?=[\\s\\S]*\\bобща\\w*)|(?=[\\s\\S]*\\brelati\\w*)(?=[\\s\\S]*\\bgener\\w*))"
+    "re:^(?:(?=[\\s\\S]*\\bотносител\\w*)(?=[\\s\\S]*\\bтеор\\w*)(?=[\\s\\S]*\\bобщ\\w*)|(?=[\\s\\S]*\\brelati\\w*)(?=[\\s\\S]*\\bgener\\w*))"
    ],
    "absence_terms": [],
    "distortion": null,

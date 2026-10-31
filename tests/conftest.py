@@ -18,6 +18,8 @@ def explicit_development_mode(
     monkeypatch.setenv("RAG_NLI_EVIDENCE_FOCUS", "false")
     monkeypatch.setenv("RAG_RERANK_RRF_ALPHA", "0")
     monkeypatch.setenv("RAG_RERANK_SCORE_THRESHOLD", "0.5")
+    # The RTX 3090 .env gates on the top chunk only; the retrieval tests expect per-chunk gating.
+    monkeypatch.setenv("RAG_RERANK_GATE_SCOPE", "chunk")
     for name in ("EMBEDDING", "RERANKER", "NLI", "LLM"):
         monkeypatch.setenv(f"RAG_{name}_MODEL_PATH", str(tmp_path / f"missing-{name}"))
     if request.path.name != "test_settings.py":

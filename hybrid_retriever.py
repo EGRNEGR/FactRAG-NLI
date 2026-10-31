@@ -204,7 +204,9 @@ class CrossEncoderReranker:
 
         scores: list[float] = []
         self.diagnostics = []
-        query_length = len(self._tokenizer.encode(query, add_special_tokens=False))
+        # verbose=False: lengths are counted here, overlong texts are windowed below; without it
+        # transformers warns once about any text over 512 tokens.
+        query_length = len(self._tokenizer.encode(query, add_special_tokens=False, verbose=False))
         pair_limit = min(self._max_length, query_length + self._window_tokens + 4)
         if pair_limit - query_length - 4 <= 64:
             raise RetrievalError("Query leaves insufficient reranker context")
@@ -242,7 +244,11 @@ class CrossEncoderReranker:
                         {
                             "pair_tokens": query_length
                             + 4
-                            + len(self._tokenizer.encode(text, add_special_tokens=False)),
+                            + len(
+                                self._tokenizer.encode(
+                                    text, add_special_tokens=False, verbose=False
+                                )
+                            ),
                             "windows": len(windows),
                             "window_limit": pair_limit,
                         }
