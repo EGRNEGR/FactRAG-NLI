@@ -1242,6 +1242,8 @@ def run_e2e(
                     ),
                     # llm_think_retry: the published answer comes from the thinking pass.
                     thinking_pass=any(a["generation_metadata"].get("thinking") for a in attempts),
+                    # llm_recovery: a recovery draft was requested after a refused thinking pass.
+                    recovery_pass=any(a["generation_metadata"].get("recovery") for a in attempts),
                     execution_stats=response.execution_stats,
                     wall_ms=(time.perf_counter() - started) * 1000,
                 )
@@ -1739,6 +1741,12 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
             "published": sum(not r["refused"] for r in thought),
             "factrag_correct": sum(bool(r["factrag"]["correct"]) for r in thought),
             "factrag_hallucinations": sum(bool(r["factrag"]["hallucination"]) for r in thought),
+        },
+        "recovery_pass": {
+            "attempted": len(rec := [r for r in ok if r.get("recovery_pass")]),
+            "published": sum(not r["refused"] for r in rec),
+            "factrag_correct": sum(bool(r["factrag"]["correct"]) for r in rec),
+            "factrag_hallucinations": sum(bool(r["factrag"]["hallucination"]) for r in rec),
         },
         "latency_ms": {
             "all_queries": {stage: latency_stats(stage_values(warm, stage)) for stage in stages},

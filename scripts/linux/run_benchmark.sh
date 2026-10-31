@@ -2,18 +2,21 @@
 # FactRAG-NLI benchmark on the RTX 3090 with GPU rest periods (45 min work / 5 min rest).
 #
 #   bash scripts/linux/run_benchmark.sh              # PLAN=full, XQUAD=full, detached, shows the log
-#   PLAN=main bash scripts/linux/run_benchmark.sh    # best configuration only, ~3 h
+#   PLAN=main bash scripts/linux/run_benchmark.sh    # best configuration only, ~3.5 h
 #   PLAN=quick bash scripts/linux/run_benchmark.sh   # 10 cases per dataset, ~15 min smoke test
 #   bash scripts/linux/run_benchmark.sh --resume     # continue the last run after a stop/reboot
 #   bash scripts/linux/run_benchmark.sh --foreground # stay attached to the terminal
 #
-# Plans (configuration = LLM profile + reranker); every e2e stage runs eval_dataset_v3 (220)
-# and XQuAD:
-#   full   qwen38-27b-hybrid+bge-reranker-v2-m3 (main), qwen38-27b+bge-reranker-v2-m3 and
-#          qwen38-27b-think+bge-reranker-v2-m3 (its two modes alone), qwen25-14b+bge-reranker-v2-m3
-#          (previous LLM, same retrieval); ~11.5 h. The bge-reranker-large ablation left the plan
-#          after run 20261031T0508Z (75.2% correct against 84.2% with bge-reranker-v2-m3).
-#   main   qwen38-27b-hybrid+bge-reranker-v2-m3 only
+# Plans (configuration = LLM profile + reranker + verifier); every e2e stage runs
+# eval_dataset_v3 (220) and XQuAD:
+#   full   qwen38-27b-hybrid+bge-reranker-v2-m3+judge (main: decision layer, thinking pass,
+#          recovery), qwen38-27b-hybrid+bge-reranker-v2-m3 (the same with verifier v2: the
+#          decision-layer ablation), qwen38-27b+bge-reranker-v2-m3 (no thinking, the 0508Z
+#          reference), qwen25-14b+bge-reranker-v2-m3+judge (the previous LLM, where the verifier
+#          matters most); ~10.5 h. After run 20261031T0508Z (reports/optimization_2) the plan
+#          dropped bge-reranker-large (75.2% against 84.2%) and qwen38-27b-think (always thinking:
+#          87.8% against 89.8% for the hybrid at 2.6x the generation time).
+#   main   qwen38-27b-hybrid+bge-reranker-v2-m3+judge only
 #   quick  main with 10 cases per dataset
 #   XQUAD  full (all 1087 eligible questions, default: 1307 questions with v3)
 #          | standard (198 sampled questions, the set of run 20261030T1420Z)
@@ -72,8 +75,8 @@ if [[ "$FOREGROUND" == "0" && -z "${FACTRAG_DETACHED:-}" ]]; then
 fi
 
 case "$PLAN" in
-  full) CONFIGS="qwen38-27b-hybrid:bge-reranker-v2-m3 qwen38-27b:bge-reranker-v2-m3 qwen38-27b-think:bge-reranker-v2-m3 qwen25-14b:bge-reranker-v2-m3" ;;
-  main | quick) CONFIGS="qwen38-27b-hybrid:bge-reranker-v2-m3" ;;
+  full) CONFIGS="qwen38-27b-hybrid:bge-reranker-v2-m3:judge qwen38-27b-hybrid:bge-reranker-v2-m3:rules qwen38-27b:bge-reranker-v2-m3:rules qwen25-14b:bge-reranker-v2-m3:judge" ;;
+  main | quick) CONFIGS="qwen38-27b-hybrid:bge-reranker-v2-m3:judge" ;;
   *) echo "Unknown PLAN=$PLAN (full | main | quick)" >&2; exit 2 ;;
 esac
 LIMIT=()

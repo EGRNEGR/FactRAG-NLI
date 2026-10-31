@@ -145,6 +145,8 @@ class GenerationMetadata(_Result):
     omitted_sources: tuple[str, ...] = ()
     # True for the thinking pass of llm_think_retry.
     thinking: bool = False
+    # True for a recovery attempt (llm_recovery: system note or sampling override).
+    recovery: bool = False
 
 
 class RawGenerationResult(_Result):
@@ -708,6 +710,7 @@ class LocalLLMGenerator:
                     cpu_retry=isinstance(self._backend, _LlamaBackend) and self._backend.cpu_retry,
                     omitted_sources=tuple(omitted),
                     thinking=thinking,
+                    recovery=system_note is not None or sampling is not None,
                 ),
             )
 
