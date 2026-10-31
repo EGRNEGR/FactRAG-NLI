@@ -64,3 +64,20 @@ register(
         factory=_judge,
     )
 )
+
+
+def _stacked() -> object:
+    from research.opt2.routing import judge_verifier
+
+    return judge_verifier("bge-m3-zeroshot-stacked")
+
+
+register(
+    Variant(
+        "V31_judge_stacked",
+        "decision layer + verifier v2's own verdict as a feature (threshold 0.25; sensitivity check)",
+        single("mdeberta"),
+        models=("mdeberta", "bge-m3-zeroshot"),
+        factory=_stacked,
+    )
+)

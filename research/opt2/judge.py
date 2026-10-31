@@ -97,13 +97,15 @@ def capture(secondary: str, records: dict[str, data.CaseRecord]) -> list[dict[st
     return rows
 
 
-def fit(rows: list[dict[str, Any]]) -> tuple[list[float], float, dict[str, Any]]:
+def fit(
+    rows: list[dict[str, Any]], features: tuple[str, ...] = FEATURES
+) -> tuple[list[float], float, dict[str, Any]]:
     import numpy as np
     from sklearn.linear_model import LogisticRegression
     from sklearn.model_selection import GroupKFold, cross_val_score
 
     dev = [r for r in rows if r["split"] == "dev"]
-    x = np.array([[r["features"][f] for f in FEATURES] for r in dev])
+    x = np.array([[r["features"][f] for f in features] for r in dev])
     y = np.array([r["label"] for r in dev])
     groups = np.array([r["id"] for r in dev])
     scores = {}
@@ -128,15 +130,18 @@ def fit(rows: list[dict[str, Any]]) -> tuple[list[float], float, dict[str, Any]]
     )
 
 
-def main(secondary: str) -> None:
+def main(secondary: str, tag: str = "") -> None:
+    """tag "stacked": the features plus rules_support (verifier v2's own verdict per source)."""
+    features = FEATURES + (("rules_support",) if tag == "stacked" else ())
+    name = f"{secondary}-{tag}" if tag else secondary
     records = data.records(("base", "think"))
     rows = capture(secondary, records)
-    coef, intercept, record = fit(rows)
+    coef, intercept, record = fit(rows, features)
     spec = {
         "version": 1,
         "primary_model": "mdeberta-nli (MoritzLaurer mDeBERTa-v3-base multilingual-nli-2mil7)",
         "secondary_model": secondary,
-        "features": FEATURES,
+        "features": features,
         "coef": coef,
         "intercept": intercept,
         "threshold": 0.5,
@@ -182,16 +187,16 @@ def main(secondary: str) -> None:
         calibration_dev=ece([p for p, _ in dev_scores], [bool(y) for _, y in dev_scores]),
     )
     JUDGE_DIR.mkdir(parents=True, exist_ok=True)
-    (JUDGE_DIR / f"{secondary}.json").write_text(json.dumps(spec, indent=1), encoding="utf-8")
+    (JUDGE_DIR / f"{name}.json").write_text(json.dumps(spec, indent=1), encoding="utf-8")
     out = data.OUT / "judge"
     out.mkdir(parents=True, exist_ok=True)
-    (out / f"{secondary}.json").write_text(json.dumps({"spec": spec, **record}, indent=1), "utf-8")
+    (out / f"{name}.json").write_text(json.dumps({"spec": spec, **record}, indent=1), "utf-8")
     print("chosen", chosen, "C", record["C"])
     print(
-        "coef", dict(zip(FEATURES, [round(c, 3) for c in coef])), "intercept", round(intercept, 3)
+        "coef", dict(zip(features, [round(c, 3) for c in coef])), "intercept", round(intercept, 3)
     )
     print("ECE dev", round(record["calibration_dev"]["ece"], 4), "logit", math.isfinite(intercept))
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else "")
