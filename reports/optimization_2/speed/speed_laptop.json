@@ -1,0 +1,35 @@
+{
+ "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+ "pairs_per_draft": {
+  "median": 24.0,
+  "mean": 25.69333333333333,
+  "p90": 46
+ },
+ "models": {
+  "mdeberta": {
+   "pairs": 7708,
+   "seconds": 16.764095900012762,
+   "pairs_per_second": 459.7921680938447,
+   "batch_size": 16,
+   "max_length": 512,
+   "peak_vram_mib": 1139.64111328125,
+   "attention": "eager",
+   "ms_per_median_draft": 52.19749631555608
+  },
+  "bge-m3-zeroshot": {
+   "pairs": 7708,
+   "seconds": 26.85303539999586,
+   "pairs_per_second": 287.0438997001132,
+   "batch_size": 8,
+   "max_length": 1024,
+   "peak_vram_mib": 1184.58544921875,
+   "attention": "sdpa",
+   "ms_per_median_draft": 83.61090420341212
+  }
+ },
+ "bge_m3_query_on_cpu": {
+  "questions": 200,
+  "median_ms": 61.468599997169804,
+  "p90_ms": 70.51160000264645
+ }
+}

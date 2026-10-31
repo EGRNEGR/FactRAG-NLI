@@ -145,7 +145,7 @@ export RAG_NLI_STRIP_VERDICT_PREFIX="${STRIP_VERDICT_PREFIX:-true}"
 #                 (negation), 10.4% -> 7.9% (number), 13.3% -> 1.2% (transplanted claim); see
 #                 reports/optimization_2/NLI_VERIFIER_RESEARCH.md. The second model needs
 #                 ~1.2 GB of VRAM: the query encoder (BGE-M3) moves to the CPU (the retrieval
-#                 stages build the index first; one query costs ~0.1 s there).
+#                 stages build the index first; one query costs ~60 ms on a laptop CPU).
 # VERIFIER=rules  verifier v2 (mDeBERTa only), as in run 20261031T0508Z.
 export VERIFIER="${VERIFIER:-judge}"
 case "$VERIFIER" in
