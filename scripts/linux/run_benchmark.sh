@@ -94,16 +94,21 @@ add() { stages+=(--stage "$1=$2"); }
 q() { printf '%q ' "$@"; }
 
 add "xquad-dataset" "$(q "$PYTHON" -X utf8 scripts/build_xquad_dataset.py "${XQ_BUILD[@]}" --check)"
-add "xquad-nli" "$(q "${XQ[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${XQ_DATA[@]}" --run-dir "$RUN_ROOT/nli/$XQ_DIR" "${LIMIT[@]}" nli)"
+# Index-building stages run before any llama-server and keep the encoder on the GPU; the
+# decision layer (VERIFIER=judge) moves it to the CPU only for the e2e stages.
+IDX=(env EMBEDDING_DEVICE=auto RAG_EMBEDDING_DEVICE=auto)
+add "xquad-nli" "$(q "${IDX[@]}" "${XQ[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${XQ_DATA[@]}" --run-dir "$RUN_ROOT/nli/$XQ_DIR" "${LIMIT[@]}" nli)"
 done_retrieval=" "
 for config in $CONFIGS; do
-  profile="${config%%:*}"
-  reranker="${config#*:}"
+  # profile:reranker[:verifier]; verifier v2 ("rules") keeps the folder names of earlier runs.
+  IFS=: read -r profile reranker verifier <<<"$config"
+  verifier="${verifier:-rules}"
   dir="$RUN_ROOT/$profile+$reranker"
-  with=(env RERANKER="$reranker" bash scripts/linux/with_profile.sh "$profile")
+  [[ "$verifier" != "rules" ]] && dir+="+$verifier"
+  with=(env RERANKER="$reranker" VERIFIER="$verifier" bash scripts/linux/with_profile.sh "$profile")
   if [[ "$done_retrieval" != *" $reranker "* ]]; then
-    add "v3-retrieval[$reranker]" "$(q "${with[@]}" "$PYTHON" -X utf8 evaluate_suite.py --run-dir "$RUN_ROOT/retrieval/v3+$reranker" "${LIMIT[@]}" retrieval)"
-    add "xquad-retrieval[$reranker]" "$(q "${with[@]}" "${XQ[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${XQ_DATA[@]}" --run-dir "$RUN_ROOT/retrieval/$XQ_DIR+$reranker" "${LIMIT[@]}" retrieval)"
+    add "v3-retrieval[$reranker]" "$(q "${IDX[@]}" "${with[@]}" "$PYTHON" -X utf8 evaluate_suite.py --run-dir "$RUN_ROOT/retrieval/v3+$reranker" "${LIMIT[@]}" retrieval)"
+    add "xquad-retrieval[$reranker]" "$(q "${IDX[@]}" "${with[@]}" "${XQ[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${XQ_DATA[@]}" --run-dir "$RUN_ROOT/retrieval/$XQ_DIR+$reranker" "${LIMIT[@]}" retrieval)"
     done_retrieval+="$reranker "
   fi
   # ensure: a server already answering with this profile (e.g. on --resume) is kept.

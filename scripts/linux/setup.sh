@@ -124,6 +124,8 @@ else
     "bge-reranker-large|BAAI/bge-reranker-large|onnx/* assets/* pytorch_model.bin"
     "bge-reranker-v2-m3|BAAI/bge-reranker-v2-m3|onnx/* assets/* pytorch_model.bin"
     "mdeberta-nli|MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7|onnx/* assets/* pytorch_model.bin"
+    # Second NLI model of the decision layer (VERIFIER=judge), MIT, ~1.1 GB.
+    "nli-bge-m3-zeroshot|MoritzLaurer/bge-m3-zeroshot-v2.0|onnx/* *.bin"
   )
   for spec in "${ENCODERS[@]}"; do
     IFS='|' read -r name repo ignore <<<"$spec"
@@ -174,6 +176,6 @@ step "6/7 Datasets"
 
 step "7/7 Tests"
 "$PYTHON" -m pytest -q -x tests/test_llm_http.py tests/test_settings.py tests/test_evaluate_suite.py tests/test_replay.py \
-  tests/test_gpu_duty_cycle.py
+  tests/test_gpu_duty_cycle.py tests/test_decision_layer.py
 
 printf '\nSetup complete. Start the benchmark:\n  bash scripts/linux/run_benchmark.sh\n'
