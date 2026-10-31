@@ -932,12 +932,15 @@ def judge_features(
     code_span: bool,
     anchors_ok: bool,
     has_anchors: bool,
+    rules_support: bool = False,
 ) -> dict[str, float]:
     """Features of one cited source for the decision layer.
 
     `primary` and `secondary` hold both models' probabilities on the same premise texts:
     index 0 is the whole chunk, the rest are the sentence windows and title-framed variants
     the rules verifier scores. A pair too long for a model is None and contributes nothing.
+    `rules_support`: verifier v2 (its window, anchored-window and code-span routes) supports
+    the claim from this source; the judge weighs that expert rule as one more signal.
     """
     pairs = list(zip(primary, secondary, strict=True))
     a = [p for p in primary if p is not None]
@@ -962,6 +965,7 @@ def judge_features(
         "code_span": float(code_span),
         "anchors_ok": float(anchors_ok),
         "has_anchors": float(has_anchors),
+        "rules_support": float(rules_support),
     }
 
 
@@ -1103,9 +1107,11 @@ class NLIFactVerifier:
             for p in self._predict_many(pairs, self.secondary)
         ]
         anchors = claim_anchors(hypothesis)
+        rules = self._evidence(key, context, hypothesis, scores=primary)
         features = judge_features(
             primary,
             secondary,
+            rules_support=self._supports(rules),
             overlap=content_overlap(hypothesis, premise),
             code_span=bool(
                 self.settings.nli_code_span_min_chars
@@ -1214,8 +1220,17 @@ class NLIFactVerifier:
             grade=grade,
         )
 
-    def _evidence(self, key: str, context: SourceContext, hypothesis: str) -> ClaimEvidence:
+    def _evidence(
+        self,
+        key: str,
+        context: SourceContext,
+        hypothesis: str,
+        scores: Sequence[NLIProbabilities | None] | None = None,
+    ) -> ClaimEvidence:
         """Score the whole chunk and, if enabled, its sentence windows in one batch.
+
+        `scores` (the decision layer) are the primary model's probabilities already computed
+        for exactly these texts: [chunk, *variants], in _variants order.
 
         A long chunk mixes the supporting sentence with neighbouring rows, codes and
         conditions; the classifier then often reports a contradiction for a sentence the
@@ -1238,17 +1253,20 @@ class NLIFactVerifier:
         variants = [(w, w) for w in windows]
         if header:
             variants += [(f"{header} {w}", w) for w in (*windows, premise)]
-        raw_scores = (
-            self._predict_many(
-                [(premise, hypothesis), *((text, hypothesis) for text, _ in variants)]
+        if scores is None:
+            raw_scores = (
+                self._predict_many(
+                    [(premise, hypothesis), *((text, hypothesis) for text, _ in variants)]
+                )
+                if variants
+                else [self.backend.predict(premise, hypothesis)]
             )
-            if variants
-            else [self.backend.predict(premise, hypothesis)]
-        )
-        scores = [
-            None if p is None else NLIProbabilities.model_validate(p.model_dump())
-            for p in raw_scores
-        ]
+            scores = [
+                None if p is None else NLIProbabilities.model_validate(p.model_dump())
+                for p in raw_scores
+            ]
+        elif len(scores) != 1 + len(variants):
+            raise VerificationError("Precomputed NLI scores do not match the premise variants")
         full = scores[0]
         # (text seen by the classifier, source text it was cut from, probabilities)
         scored = [

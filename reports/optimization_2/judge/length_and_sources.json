@@ -1,0 +1,82 @@
+{
+ "judge|negative|cites|1": [
+  501,
+  4090
+ ],
+ "judge|negative|cites|2+": [
+  13,
+  105
+ ],
+ "judge|negative|len|800-1400": [
+  362,
+  3033
+ ],
+ "judge|negative|len|<800": [
+  81,
+  721
+ ],
+ "judge|negative|len|>=1400": [
+  71,
+  441
+ ],
+ "judge|positive|cites|1": [
+  1680,
+  1757
+ ],
+ "judge|positive|cites|2+": [
+  42,
+  48
+ ],
+ "judge|positive|len|800-1400": [
+  1254,
+  1295
+ ],
+ "judge|positive|len|<800": [
+  281,
+  319
+ ],
+ "judge|positive|len|>=1400": [
+  187,
+  191
+ ],
+ "v2|negative|cites|1": [
+  1124,
+  4090
+ ],
+ "v2|negative|cites|2+": [
+  24,
+  105
+ ],
+ "v2|negative|len|800-1400": [
+  854,
+  3033
+ ],
+ "v2|negative|len|<800": [
+  173,
+  721
+ ],
+ "v2|negative|len|>=1400": [
+  121,
+  441
+ ],
+ "v2|positive|cites|1": [
+  1682,
+  1757
+ ],
+ "v2|positive|cites|2+": [
+  42,
+  48
+ ],
+ "v2|positive|len|800-1400": [
+  1250,
+  1295
+ ],
+ "v2|positive|len|<800": [
+  285,
+  319
+ ],
+ "v2|positive|len|>=1400": [
+  189,
+  191
+ ]
+}

@@ -193,7 +193,7 @@ def judge_verifier(name: str) -> NLIFactVerifier:
     from research.opt2.judge import judge_verifier as build
 
     spec = json.loads((data.ROOT / "data" / "nli_judge" / f"{name}.json").read_text("utf-8"))
-    return build(name, ClaimJudge(spec))
+    return build(spec["secondary_model"], ClaimJudge(spec))
 
 
 def main(judge_name: str) -> dict[str, Any]:
