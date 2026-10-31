@@ -88,7 +88,9 @@ def strategy(name: str):
     return wrap
 
 
-def ordered(pool: dict[str, Any], score: Callable[[dict[str, Any]], float], gate_key: str) -> list[tuple[str, float]]:
+def ordered(
+    pool: dict[str, Any], score: Callable[[dict[str, Any]], float], gate_key: str
+) -> list[tuple[str, float]]:
     """Candidates by mixing score, each with the reranker score the gate reads."""
     rows = sorted(pool["rows"], key=lambda r: (-score(r), r["chunk_id"]))
     return [(r["chunk_id"], r[gate_key] if gate_key in r else score(r)) for r in rows]
@@ -182,7 +184,9 @@ POOLS: list[dict[str, Any]] = []
 
 def main() -> None:
     POOLS.extend(pools())
-    print("candidate pool overlap between the two runs:", round(mean(p["overlap"] for p in POOLS), 4))
+    print(
+        "candidate pool overlap between the two runs:", round(mean(p["overlap"] for p in POOLS), 4)
+    )
     report: dict[str, Any] = {"strategies": {}, "adaptive_k": {}}
     for name in STRATEGIES:
         res = evaluate(name, gate=0.005)

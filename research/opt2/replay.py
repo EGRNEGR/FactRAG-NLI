@@ -165,7 +165,9 @@ def run(
             vanilla_text=drafts[0].raw_text if drafts else None,
             published_text=final.published,
         )
-        results.append(CaseResult(o, thinking, base.missing_repair or final.missing_repair, base, final))
+        results.append(
+            CaseResult(o, thinking, base.missing_repair or final.missing_repair, base, final)
+        )
     return results
 
 
@@ -186,7 +188,10 @@ def main() -> None:
                     c.status.value for c in replayed.claims
                 ] == [c["status"] for c in draft.claims]
     print(f"draft-level agreement with the logged verification: {agree}/{total}")
-    for name, router in (("first-draft LLM refusal", on_first_llm_refusal), ("withheld", on_withheld)):
+    for name, router in (
+        ("first-draft LLM refusal", on_first_llm_refusal),
+        ("withheld", on_withheld),
+    ):
         res = run(records, v, router)
         s = summarize([r.outcome for r in res])
         print(

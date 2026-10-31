@@ -180,6 +180,10 @@ class RAGSettings(BaseSettings):
     rerank_max_length: int = Field(default=512, ge=32, le=8192)
     rerank_candidates: int = Field(default=60, ge=10, le=200)
     model_device: str = Field(default="auto", pattern=r"^(auto|cpu|cuda(?::\d+)?)$")
+    # Device of the bi-encoder alone (None: model_device). "cpu" frees ~1.1 GB of VRAM for the
+    # decision layer's second NLI model next to a 27B LLM on a 24 GB card; with a prebuilt
+    # index only the question is encoded there.
+    embedding_device: str | None = Field(default=None, pattern=r"^(auto|cpu|cuda(?::\d+)?)$")
     model_precision: Literal["auto", "float16", "bfloat16", "float32"] = "auto"
     fallback_dimension: int = Field(default=384, ge=32)
     network_policy: Literal["local_only", "air_gap"] = "local_only"

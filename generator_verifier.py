@@ -607,7 +607,7 @@ class LocalLLMGenerator:
             raise ValueError("query cannot be empty")
         needs_http = thinking or system_note is not None or sampling is not None
         if needs_http and not getattr(self._backend, "supports_thinking", False):
-            raise VerificationError("A thinking or recovery pass requires the HTTP backend")
+            raise VerificationError("A thinking pass or recovery attempt requires the HTTP backend")
         with self._lock:
             if self._closed:
                 raise VerificationError("Generator is closed")

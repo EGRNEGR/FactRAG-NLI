@@ -93,7 +93,10 @@ def scores(p: Sequence[float], y: Sequence[int]) -> dict[str, float]:
     return {
         "ece": e["ece"],
         "brier": e["brier"],
-        "log_loss": -sum(t * math.log(q) + (1 - t) * math.log(1 - q) for q, t in zip(clipped, y, strict=True)) / len(y),
+        "log_loss": -sum(
+            t * math.log(q) + (1 - t) * math.log(1 - q) for q, t in zip(clipped, y, strict=True)
+        )
+        / len(y),
         "roc_auc": float(roc_auc_score(y, p)),
         "n": len(y),
     }
@@ -101,7 +104,9 @@ def scores(p: Sequence[float], y: Sequence[int]) -> dict[str, float]:
 
 def main() -> None:
     records = data.records(("base", "think"))
-    spec = json.loads((data.ROOT / "data" / "nli_judge" / "bge-m3-zeroshot.json").read_text("utf-8"))
+    spec = json.loads(
+        (data.ROOT / "data" / "nli_judge" / "bge-m3-zeroshot.json").read_text("utf-8")
+    )
     judge = ClaimJudge(spec)
     rows = capture("bge-m3-zeroshot", records)
     claims = per_claim(rows, judge)
@@ -115,7 +120,9 @@ def main() -> None:
             for method, fn in calibrators.items()
         }
         for method, s in report["claim_level"][name].items():
-            print(f"claim {name:16s} {method:22s} ECE {s['ece']:.4f} Brier {s['brier']:.4f} AUC {s['roc_auc']:.4f}")
+            print(
+                f"claim {name:16s} {method:22s} ECE {s['ece']:.4f} Brier {s['brier']:.4f} AUC {s['roc_auc']:.4f}"
+            )
     for name in ("none", "bge-m3-zeroshot"):
         cases = run(records, judge_verifier(name), on_withheld)
         points = []
@@ -134,7 +141,9 @@ def main() -> None:
             if method in ("none", "isotonic")
         }
         for method, s in report["answer_level"][name].items():
-            print(f"answer {name:15s} {method:10s} ECE {s['ece']:.4f} Brier {s['brier']:.4f} AUC {s['roc_auc']:.4f} n {s['n']}")
+            print(
+                f"answer {name:15s} {method:10s} ECE {s['ece']:.4f} Brier {s['brier']:.4f} AUC {s['roc_auc']:.4f} n {s['n']}"
+            )
     out = data.OUT / "calibration"
     out.mkdir(parents=True, exist_ok=True)
     (out / "calibration.json").write_text(json.dumps(report, indent=1), encoding="utf-8")

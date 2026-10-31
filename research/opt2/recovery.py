@@ -40,7 +40,9 @@ MODES = {
 
 
 def top_rerank(record: data.CaseRecord) -> float:
-    return max((s.get("rerank_score") or 0.0 for s in record.retrieval.get("sources") or []), default=0.0)
+    return max(
+        (s.get("rerank_score") or 0.0 for s in record.retrieval.get("sources") or []), default=0.0
+    )
 
 
 def top_sources(record: data.CaseRecord, n: int = 2) -> list[str]:
@@ -81,7 +83,9 @@ def prompt(question: str, contexts: dict[str, Any]) -> str:
 def generate(api_base: str) -> None:
     from research.opt2.replay import settings
 
-    s = settings(llm_api_base=api_base, llm_api_timeout=3600, llm_disable_thinking=True, max_tokens=512)
+    s = settings(
+        llm_api_base=api_base, llm_api_timeout=3600, llm_disable_thinking=True, max_tokens=512
+    )
     backend = _HTTPBackend(s)
     system = generation_system_prompt(s)
     store = load_store()
@@ -99,7 +103,9 @@ def generate(api_base: str) -> None:
                         continue
                     started = time.perf_counter()
                     if plan.get("note"):
-                        reply = backend.complete(system + "\n" + recovery_note(top_sources(record)), user)
+                        reply = backend.complete(
+                            system + "\n" + recovery_note(top_sources(record)), user
+                        )
                     else:
                         reply = backend.complete(system, user, sampling=plan)
                     row = {
@@ -112,11 +118,21 @@ def generate(api_base: str) -> None:
                     }
                     handle.write(json.dumps(row, ensure_ascii=False) + "\n")
                     handle.flush()
-                    print(case_id, mode, index, row["seconds"], reply.text[:90].replace("\n", " "), flush=True)
+                    print(
+                        case_id,
+                        mode,
+                        index,
+                        row["seconds"],
+                        reply.text[:90].replace("\n", " "),
+                        flush=True,
+                    )
 
 
 def recovered(
-    v: NLIFactVerifier, record: data.CaseRecord, mode: str, store: dict[tuple[str, str, int], dict[str, Any]]
+    v: NLIFactVerifier,
+    record: data.CaseRecord,
+    mode: str,
+    store: dict[tuple[str, str, int], dict[str, Any]],
 ) -> str | None:
     """Published text of the first accepted recovery draft, or None."""
     first = record.drafts["base"][0]

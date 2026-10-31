@@ -74,7 +74,8 @@ class HFClassifier:
 
     def lengths(self, pairs: Sequence[tuple[str, str]]) -> list[int]:
         return [
-            len(self.tokenizer(p, h, truncation=False, verbose=False)["input_ids"]) for p, h in pairs
+            len(self.tokenizer(p, h, truncation=False, verbose=False)["input_ids"])
+            for p, h in pairs
         ]
 
     def predict(self, pairs: Sequence[tuple[str, str]]) -> list[NLIProbabilities | None]:
@@ -82,7 +83,8 @@ class HFClassifier:
 
         lengths = self.lengths(pairs)
         order = sorted(
-            (i for i, n in enumerate(lengths) if n <= self.spec.max_length), key=lambda i: lengths[i]
+            (i for i, n in enumerate(lengths) if n <= self.spec.max_length),
+            key=lambda i: lengths[i],
         )
         result: list[NLIProbabilities | None] = [None] * len(pairs)
         for start in range(0, len(order), self.spec.batch_size):

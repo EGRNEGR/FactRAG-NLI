@@ -69,10 +69,14 @@ def multi_source_conflict(attempts: Sequence[data.Draft]) -> bool:
     for draft in attempts:
         for claim in draft.claims:
             evidence = evidence_of(claim)
-            if len(evidence) > 1 and any(supports(i) for i in evidence) and any(
-                (i.get("probabilities") or {}).get("p_contradiction", 0) >= CONTRADICTION
-                and not i.get("support")
-                for i in evidence
+            if (
+                len(evidence) > 1
+                and any(supports(i) for i in evidence)
+                and any(
+                    (i.get("probabilities") or {}).get("p_contradiction", 0) >= CONTRADICTION
+                    and not i.get("support")
+                    for i in evidence
+                )
             ):
                 return True
     return False
@@ -171,7 +175,9 @@ def analyse() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
                     {k: round(v, 3) for k, v in (i.get("probabilities") or {}).items()}
                     for i in evidence_of(c)
                 ],
-                "gold": bool({i.get("chunk_id") for i in evidence_of(c)} & set(record.case.gold_chunk_ids)),
+                "gold": bool(
+                    {i.get("chunk_id") for i in evidence_of(c)} & set(record.case.gold_chunk_ids)
+                ),
             }
             for c in (facts(first) if first else [])
             if c["status"] != "verified"
@@ -251,9 +257,7 @@ def report(rows: list[dict[str, Any]], outcomes: list[dict[str, Any]], notes: st
     for q in "ABCD":
         n = quad[q]
         v3 = sum(r["quadrant"] == q and r["dataset"] == "v3" for r in rows)
-        lines.append(
-            f"| {q} | {meaning[q]} | {n} | {100 * n / total:.1f}% | {v3} | {n - v3} |"
-        )
+        lines.append(f"| {q} | {meaning[q]} | {n} | {100 * n / total:.1f}% | {v3} | {n - v3} |")
     for q in "ABCD":
         subset = [r for r in rows if r["quadrant"] == q]
         lines += ["", f"### {q}: {meaning[q]}", ""]
@@ -292,7 +296,13 @@ def report(rows: list[dict[str, Any]], outcomes: list[dict[str, Any]], notes: st
             for r in rows
         ),
     }
-    lines += ["", "## Flags (a case may carry several)", "", "| Flag | Cases | Share |", "|---|---|---|"]
+    lines += [
+        "",
+        "## Flags (a case may carry several)",
+        "",
+        "| Flag | Cases | Share |",
+        "|---|---|---|",
+    ]
     for name, n in flags.items():
         lines.append(f"| {name} | {n} | {100 * n / total:.1f}% |")
     lines += ["", "## Rejected claims of correct drafts by cause (claim level)", ""]
@@ -308,7 +318,13 @@ def report(rows: list[dict[str, Any]], outcomes: list[dict[str, Any]], notes: st
                 if c["status"] != "verified":
                     claim_causes[claim_cause(c, set(record.case.gold_chunk_ids))] += 1
     lines += table(claim_causes, sum(claim_causes.values()) or 1, "Claim cause")
-    lines += ["", "## By dataset and category", "", "| Group | FactRAG | Vanilla | Net | Correction | Damage |", "|---|---|---|---|---|---|"]
+    lines += [
+        "",
+        "## By dataset and category",
+        "",
+        "| Group | FactRAG | Vanilla | Net | Correction | Damage |",
+        "|---|---|---|---|---|---|",
+    ]
     for key in ("dataset", "category"):
         for name, s in by(outcomes, key).items():
             lines.append(

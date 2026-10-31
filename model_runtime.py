@@ -5,11 +5,14 @@ from typing import Any
 from settings import RAGSettings
 
 
-def runtime(settings: RAGSettings, precision: str | None = None) -> tuple[str, Any]:
-    """Device and dtype; `precision` overrides model_precision for one model (CPU is fp32)."""
+def runtime(
+    settings: RAGSettings, precision: str | None = None, device: str | None = None
+) -> tuple[str, Any]:
+    """Device and dtype; `precision` / `device` override model_precision / model_device for one
+    model (CPU is fp32)."""
     import torch
 
-    device = settings.model_device
+    device = device or settings.model_device
     if device == "auto":
         device = "cuda" if torch.cuda.is_available() else "cpu"
     if device.startswith("cuda") and not torch.cuda.is_available():

@@ -124,7 +124,7 @@ class SentenceTransformerEncoder:
         from sentence_transformers import SentenceTransformer
         from model_runtime import runtime
 
-        device, dtype = runtime(settings)
+        device, dtype = runtime(settings, device=settings.embedding_device)
 
         tokenizer_options = {
             "processor_kwargs"
