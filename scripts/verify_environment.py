@@ -75,7 +75,7 @@ def inspect_transformer(path: Path, role: str) -> dict[str, Any]:
             keys.update(state)
     if not keys:
         raise ValueError("Empty checkpoint")
-    if role in {"reranker", "nli"} and not any(
+    if role in {"reranker", "nli", "nli_secondary"} and not any(
         "classifier" in name or "classification_head" in name or name.endswith("score.weight")
         for name in keys
     ):
@@ -84,6 +84,8 @@ def inspect_transformer(path: Path, role: str) -> dict[str, Any]:
         labels = config.get("id2label", {})
         if len(labels) != 3:
             raise ValueError("NLI must declare three labels in id2label")
+    if role == "nli_secondary" and len(config.get("id2label", {})) not in {2, 3}:
+        raise ValueError("The secondary NLI must declare two or three labels in id2label")
     transformers = importlib.import_module("transformers")
     transformers.AutoTokenizer.from_pretrained(
         str(path), local_files_only=True, trust_remote_code=False
@@ -237,6 +239,9 @@ def audit() -> tuple[dict[str, Any], int]:
             ("nli", settings.nli_model_path),
         ):
             check(role, partial(inspect_transformer, path, role))
+        if settings.nli_decision == "judge" and settings.nli_secondary_model_path is not None:
+            secondary = settings.nli_secondary_model_path
+            check("nli_secondary", partial(inspect_transformer, secondary, "nli_secondary"))
         check("llm", lambda: inspect_llm(settings))
         for name, path in (
             ("qdrant_storage", settings.qdrant_storage_path),
