@@ -47,6 +47,18 @@ def refusal_reason(verified: VerifiedGenerationResult) -> str | None:
     return "nli_verification_failed"
 
 
+def revision_payload(verified: VerifiedGenerationResult) -> dict[str, Any]:
+    """The revision block of a repair request: the answer and its rejected claims."""
+    return {
+        "previous_answer": verified.raw_text,
+        "rejected_claims": [
+            {"text": claim.claim, "status": claim.status.value}
+            for claim in verified.claims
+            if claim.status != ClaimStatus.VERIFIED
+        ],
+    }
+
+
 def recovery_due(settings: RAGSettings, reason: str | None, results: list[SearchResult]) -> bool:
     """llm_recovery trigger: an LLM refusal with a confidently relevant best source."""
     if settings.llm_recovery == "off" or reason != "llm_refusal" or not results:
@@ -268,28 +280,22 @@ class RAGPipeline:
         attempts: list[dict[str, Any]],
         *,
         thinking: bool = False,
+        revise: VerifiedGenerationResult | None = None,
     ) -> VerifiedGenerationResult:
-        """Generate, verify and repair; every attempt is appended to attempts."""
+        """Generate, verify and repair; every attempt is appended to attempts.
+
+        revise (llm_think_mode=revise): the first call already revises that withheld answer
+        (previous answer + rejected claims) instead of drafting from scratch.
+        """
         mode: dict[str, Any] = {"thinking": True} if thinking else {}
-        raw = generator.generate(question, results, **mode)
+        first: dict[str, Any] = {"revision": revision_payload(revise)} if revise else {}
+        raw = generator.generate(question, results, **first, **mode)
         verified = verifier.verify(raw)
         attempts.append(verified.model_dump(mode="json"))
         for _ in range(self.settings.generation_repair_attempts):
             if not verified.refused or not verified.claims:
                 break
-            raw = generator.generate(
-                question,
-                results,
-                revision={
-                    "previous_answer": verified.raw_text,
-                    "rejected_claims": [
-                        {"text": claim.claim, "status": claim.status.value}
-                        for claim in verified.claims
-                        if claim.status != ClaimStatus.VERIFIED
-                    ],
-                },
-                **mode,
-            )
+            raw = generator.generate(question, results, revision=revision_payload(verified), **mode)
             verified = verifier.verify(raw)
             attempts.append(verified.model_dump(mode="json"))
         return verified
@@ -390,8 +396,21 @@ class RAGPipeline:
                 generator, verifier = self._generator, self._fact_verifier
                 verified = self._draft(generator, verifier, question, results, attempts)
                 if think_retry(self.settings.llm_think_retry, refusal_reason(verified)):
+                    revise = (
+                        verified
+                        if self.settings.llm_think_mode == "revise"
+                        and refusal_reason(verified) == "nli_verification_failed"
+                        and verified.claims
+                        else None
+                    )
                     verified = self._draft(
-                        generator, verifier, question, results, attempts, thinking=True
+                        generator,
+                        verifier,
+                        question,
+                        results,
+                        attempts,
+                        thinking=True,
+                        revise=revise,
                     )
                 if recovery_due(self.settings, refusal_reason(verified), results):
                     verified = self._recover(

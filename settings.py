@@ -119,6 +119,10 @@ class RAGSettings(BaseSettings):
     # 1101 -> 1174 of 1307 with "refusal" (1166 with "llm_refusal"), hallucination 1 -> 3 of 269.
     llm_think_retry: Literal["off", "llm_refusal", "refusal"] = "off"
     llm_think_max_tokens: int = Field(default=1024, ge=1, le=4096)
+    # "fresh": the thinking pass drafts the answer anew; "revise": after an NLI rejection it
+    # revises the withheld answer instead (its rejected claims in the revision block), after
+    # an LLM refusal it still drafts anew.
+    llm_think_mode: Literal["fresh", "revise"] = "fresh"
     # Recovery after the thinking pass also ended in an LLM refusal while the best source has
     # a reranker score of at least llm_recovery_min_rerank: "evidence_prompt" asks once more
     # (non-thinking, T=0) with a system-prompt note naming the top sources; "sampling" draws
