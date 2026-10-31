@@ -16,7 +16,7 @@ import threading
 import time
 import sys
 from enum import Enum
-from typing import Any, Literal, Mapping, Protocol, Sequence, Self
+from typing import Any, Literal, Mapping, Protocol, Sequence, Self, cast
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -129,6 +129,8 @@ class GenerationMetadata(_Result):
     cpu_retry: bool = False
     fallback_reason: str | None = None
     omitted_sources: tuple[str, ...] = ()
+    # True for the thinking pass of llm_think_retry.
+    thinking: bool = False
 
 
 class RawGenerationResult(_Result):
@@ -252,6 +254,14 @@ class ChatBackend(Protocol):
     def close(self) -> None: ...
 
 
+class ThinkingChatBackend(ChatBackend, Protocol):
+    """A backend that can enable the model's reasoning for one request."""
+
+    supports_thinking: bool
+
+    def complete(self, system_prompt: str, prompt: str, *, thinking: bool = False) -> ChatReply: ...
+
+
 class _LlamaBackend:
     """llama.cpp opens an explicit GGUF path; it has no Hub download API here."""
 
@@ -348,6 +358,8 @@ class _LlamaBackend:
 class _HTTPBackend:
     """OpenAI-compatible loopback client, with proxies and redirects disabled."""
 
+    supports_thinking = True
+
     def __init__(self, settings: RAGSettings) -> None:
         import httpx
 
@@ -377,12 +389,17 @@ class _HTTPBackend:
             return len(tokens)
         return len(text.encode("utf-8"))
 
-    def _template_kwargs(self) -> dict[str, Any]:
+    def _template_kwargs(self, thinking: bool) -> dict[str, Any]:
+        if thinking:
+            return {"chat_template_kwargs": {"enable_thinking": True}}
         if not self.settings.llm_disable_thinking:
             return {}
         return {"chat_template_kwargs": {"enable_thinking": False}}
 
-    def complete(self, system_prompt: str, prompt: str) -> ChatReply:
+    def _max_tokens(self, thinking: bool) -> int:
+        return self.settings.llm_think_max_tokens if thinking else self.settings.llm_max_tokens
+
+    def complete(self, system_prompt: str, prompt: str, *, thinking: bool = False) -> ChatReply:
         if self.model is None:
             response = self.client.get("models")
             response.raise_for_status()
@@ -393,7 +410,7 @@ class _HTTPBackend:
                 )
             self.model = models[0]["id"]
         if self.settings.llm_api_stream:
-            return self._stream(system_prompt, prompt)
+            return self._stream(system_prompt, prompt, thinking)
         response = self.client.post(
             "chat/completions",
             json={
@@ -404,9 +421,9 @@ class _HTTPBackend:
                 ],
                 "temperature": self.settings.llm_temperature,
                 "top_p": self.settings.llm_top_p,
-                "max_tokens": self.settings.llm_max_tokens,
+                "max_tokens": self._max_tokens(thinking),
                 "stream": False,
-                **self._template_kwargs(),
+                **self._template_kwargs(thinking),
             },
         )
         response.raise_for_status()
@@ -426,7 +443,7 @@ class _HTTPBackend:
         except (KeyError, IndexError, TypeError, ValueError) as exc:
             raise VerificationError(f"Invalid HTTP completion: {exc}") from exc
 
-    def _stream(self, system_prompt: str, prompt: str) -> ChatReply:
+    def _stream(self, system_prompt: str, prompt: str, thinking: bool) -> ChatReply:
         """Client-observed first nonempty content delta; includes transport latency."""
         started = time.perf_counter()
         first: float | None = None
@@ -444,10 +461,10 @@ class _HTTPBackend:
                 ],
                 "temperature": self.settings.llm_temperature,
                 "top_p": self.settings.llm_top_p,
-                "max_tokens": self.settings.llm_max_tokens,
+                "max_tokens": self._max_tokens(thinking),
                 "stream": True,
                 "stream_options": {"include_usage": True},
-                **self._template_kwargs(),
+                **self._template_kwargs(thinking),
             },
         ) as response:
             response.raise_for_status()
@@ -521,10 +538,16 @@ class LocalLLMGenerator:
         contexts: Sequence[RetrievedChunk | DocumentChunk],
         *,
         revision: dict[str, Any] | None = None,
+        thinking: bool = False,
     ) -> RawGenerationResult:
-        """Pack complete sources under the context budget; never silently truncate rows."""
+        """Pack complete sources under the context budget; never silently truncate rows.
+
+        thinking: the llm_think_retry pass (HTTP backend only), with llm_think_max_tokens.
+        """
         if not query.strip():
             raise ValueError("query cannot be empty")
+        if thinking and not getattr(self._backend, "supports_thinking", False):
+            raise VerificationError("A thinking pass requires the HTTP generation backend")
         with self._lock:
             if self._closed:
                 raise VerificationError("Generator is closed")
@@ -555,7 +578,10 @@ class LocalLLMGenerator:
                     ensure_ascii=False,
                 )
 
-            budget = self.settings.llm_context_window - self.settings.llm_max_tokens - 128
+            max_tokens = (
+                self.settings.llm_think_max_tokens if thinking else self.settings.llm_max_tokens
+            )
+            budget = self.settings.llm_context_window - max_tokens - 128
             system_prompt = generation_system_prompt(self.settings)
             if self._backend.count_tokens(system_prompt + "\n" + prompt({})) > budget:
                 raise VerificationError("Question and system prompt exceed the LLM context budget")
@@ -590,7 +616,13 @@ class LocalLLMGenerator:
                     ),
                 )
             try:
-                reply = self._backend.complete(system_prompt, prompt(selected))
+                reply = (
+                    cast(ThinkingChatBackend, self._backend).complete(
+                        system_prompt, prompt(selected), thinking=True
+                    )
+                    if thinking
+                    else self._backend.complete(system_prompt, prompt(selected))
+                )
             except Exception as exc:
                 raise VerificationError(f"Local generation failed: {exc}") from exc
             return RawGenerationResult(
@@ -610,6 +642,7 @@ class LocalLLMGenerator:
                     ttft_ms=reply.ttft_ms,
                     cpu_retry=isinstance(self._backend, _LlamaBackend) and self._backend.cpu_retry,
                     omitted_sources=tuple(omitted),
+                    thinking=thinking,
                 ),
             )
 
@@ -718,8 +751,11 @@ class TransformersNLI:
             best = max(range(len(windows)), key=lambda i: (similarity(vectors[i + 1]), -i))
             premise = windows[best]
         self.last_premise = premise
-        # Never erase a late exception/negation by silently truncating the premise.
-        encoded = self.tokenizer(premise, hypothesis, truncation=False, return_tensors="pt")
+        # Never erase a late exception/negation by silently truncating the premise. An overlong
+        # pair returns None (verbose=False: no transformers length warning for it).
+        encoded = self.tokenizer(
+            premise, hypothesis, truncation=False, return_tensors="pt", verbose=False
+        )
         if encoded["input_ids"].shape[-1] > self.max_length:
             return None
         with torch.inference_mode():
@@ -744,7 +780,10 @@ class TransformersNLI:
             )
             for premise, hypothesis in pairs
         ]
-        lengths = [len(self.tokenizer(p, h, truncation=False)["input_ids"]) for p, h in normalized]
+        lengths = [
+            len(self.tokenizer(p, h, truncation=False, verbose=False)["input_ids"])
+            for p, h in normalized
+        ]
         order = sorted(
             (i for i, n in enumerate(lengths) if n <= self.max_length), key=lambda i: lengths[i]
         )

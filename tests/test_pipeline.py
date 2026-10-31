@@ -11,9 +11,17 @@ from pathlib import Path
 import pytest
 
 from baseline_rag import benchmark
-from generator_verifier import ChatReply, HeuristicNLI, LocalLLMGenerator, NLIFactVerifier, REFUSAL
+from document_parser import DocumentChunk
+from generator_verifier import (
+    ChatReply,
+    HeuristicNLI,
+    LocalLLMGenerator,
+    NLIFactVerifier,
+    REFUSAL,
+    VerificationError,
+)
 from hybrid_retriever import HashingEncoder, HybridRetriever, LexicalReranker
-from pipeline import IndexingError, PipelineError, RAGPipeline, RAGResponse
+from pipeline import IndexingError, PipelineError, RAGPipeline, RAGResponse, think_retry
 from settings import RAGSettings
 
 
@@ -281,3 +289,72 @@ def test_gate_scope_decides_which_sources_reach_the_llm(
         response = pipeline.query("Электропроводность алюминия?")
         assert response.refusal_reason == "relevance_threshold_not_met"
         assert chat.source_counts == [sources]
+
+
+class ThinkingChat(RecordedChat):
+    """Answers differently with thinking on; records the mode of every call."""
+
+    supports_thinking = True
+
+    def __init__(self, plain: str) -> None:
+        super().__init__()
+        self.plain = plain
+        self.modes: list[bool] = []
+
+    def complete(self, system_prompt: str, prompt: str, *, thinking: bool = False) -> ChatReply:
+        self.modes.append(thinking)
+        self.answer = "Давление составляет 10 МПа [S1]." if thinking else self.plain
+        return super().complete(system_prompt, prompt)
+
+
+WRONG = "Давление составляет 99 МПа [S1]."
+
+
+@pytest.mark.parametrize(
+    ("mode", "plain", "modes", "reason"),
+    [
+        ("off", REFUSAL, [False], "llm_refusal"),
+        ("llm_refusal", REFUSAL, [False, True], None),
+        ("llm_refusal", WRONG, [False], "nli_verification_failed"),
+        ("refusal", WRONG, [False, True], None),
+    ],
+)
+def test_thinking_pass_replaces_a_withheld_answer(
+    tmp_path: Path, mode: str, plain: str, modes: list[bool], reason: str | None
+) -> None:
+    settings = configured(tmp_path).model_copy(update={"llm_think_retry": mode})
+    chat = ThinkingChat(plain)
+    with make_pipeline(settings, chat) as pipeline:
+        pipeline.index_documents([document(settings)])
+        response = pipeline.query("Какое давление?")
+        assert chat.modes == modes
+        assert response.refusal_reason == reason
+        assert [
+            a["generation_metadata"]["thinking"] for a in response.verification_attempts
+        ] == modes
+        if reason is None:
+            assert response.answer == "Давление составляет 10 МПа [S1]."
+            assert response.generation_metadata is not None
+            assert response.generation_metadata.thinking
+
+
+@pytest.mark.parametrize(
+    ("mode", "reason", "expected"),
+    [
+        ("refusal", None, False),
+        ("refusal", "context_budget_exceeded", False),
+        ("refusal", "generation_incomplete", True),
+        ("llm_refusal", "llm_refusal", True),
+        ("off", "llm_refusal", False),
+    ],
+)
+def test_think_retry_trigger(mode: str, reason: str | None, expected: bool) -> None:
+    assert think_retry(mode, reason) is expected
+
+
+def test_thinking_pass_needs_a_backend_that_supports_it(tmp_path: Path) -> None:
+    settings = configured(tmp_path)
+    generator = LocalLLMGenerator(settings, backend=RecordedChat())
+    chunk = DocumentChunk("one", "10 МПа", "doc", "source.txt", (), None, None, (), 3)
+    with pytest.raises(VerificationError, match="thinking pass"):
+        generator.generate("Давление?", [chunk], thinking=True)

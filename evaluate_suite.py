@@ -684,6 +684,8 @@ def write_config(run_dir: Path, dataset_path: Path, settings: Any, extra: dict[s
                 "temperature": settings.llm_temperature,
                 "top_p": settings.llm_top_p,
                 "max_tokens": settings.llm_max_tokens,
+                "think_retry": settings.llm_think_retry,
+                "think_max_tokens": settings.llm_think_max_tokens,
                 "seed": settings.llm_seed,
                 "context_window": settings.llm_context_window,
             },
@@ -1221,6 +1223,8 @@ def run_e2e(
                         if response.generation_metadata
                         else None,
                     ),
+                    # llm_think_retry: the published answer comes from the thinking pass.
+                    thinking_pass=any(a["generation_metadata"].get("thinking") for a in attempts),
                     execution_stats=response.execution_stats,
                     wall_ms=(time.perf_counter() - started) * 1000,
                 )
@@ -1711,6 +1715,12 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
             "published": sum(not r["refused"] for r in repaired),
             "factrag_correct": sum(bool(r["factrag"]["correct"]) for r in repaired),
             "factrag_hallucinations": sum(bool(r["factrag"]["hallucination"]) for r in repaired),
+        },
+        "thinking_pass": {
+            "attempted": len(thought := [r for r in ok if r.get("thinking_pass")]),
+            "published": sum(not r["refused"] for r in thought),
+            "factrag_correct": sum(bool(r["factrag"]["correct"]) for r in thought),
+            "factrag_hallucinations": sum(bool(r["factrag"]["hallucination"]) for r in thought),
         },
         "latency_ms": {
             "all_queries": {stage: latency_stats(stage_values(warm, stage)) for stage in stages},

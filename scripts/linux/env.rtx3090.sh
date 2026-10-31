@@ -14,9 +14,16 @@ export PROJECT_ROOT
 #             at LLAMA_REASONING_BUDGET tokens and RAG_MAX_TOKENS rises to 1024 (the settings
 #             ceiling). In a laptop test it answered an inverted question ("who lost to X" from
 #             "X beat Y") that the non-thinking mode refused; it costs ~2-3x generation time.
+# qwen38-27b-hybrid  the default and best setup: qwen38-27b answers, and only an answer it
+#             withholds (its refusal or an NLI rejection) is generated once more with thinking
+#             (RAG_LLM_THINK_RETRY=refusal; per request, so the server runs without
+#             --reasoning off and with the thinking budget). Run 20261031T0508Z, computed from the
+#             two logs: correct 84.2% -> 89.8% of 1307, hallucination 1 -> 3 of 269; the thinking
+#             call runs for ~1 query in 3 on v3 and ~1 in 7 on XQuAD.
 # qwen25-14b  the previous model (Qwen2.5-14B-Instruct Q4_K_M, 8.4 GB), fully offloaded:
 #             the same-hardware baseline for the comparison.
-LLM_PROFILE="${LLM_PROFILE:-qwen38-27b}"
+LLM_PROFILE="${LLM_PROFILE:-qwen38-27b-hybrid}"
+LLM_THINK_RETRY=off
 case "$LLM_PROFILE" in
   qwen38-27b)
     LLM_REPO="unsloth/Qwen3.8-27B-GGUF"
@@ -25,6 +32,15 @@ case "$LLM_PROFILE" in
     LLM_THINKING_OFF=true
     LLM_REASONING_BUDGET=-1
     LLM_MAX_TOKENS=512
+    ;;
+  qwen38-27b-hybrid)
+    LLM_REPO="unsloth/Qwen3.8-27B-GGUF"
+    LLM_FILE="Qwen3.8-27B-UD-Q4_K_XL.gguf"
+    LLM_SHA256="3f227079003add2511437e5b1e94812e363385225bf6a9b47b0054a72bc8b01e"
+    LLM_THINKING_OFF=true
+    LLM_REASONING_BUDGET="${LLAMA_REASONING_BUDGET:-640}"
+    LLM_MAX_TOKENS=512
+    LLM_THINK_RETRY="${THINK_RETRY:-refusal}"
     ;;
   qwen38-27b-think)
     LLM_REPO="unsloth/Qwen3.8-27B-GGUF"
@@ -52,13 +68,16 @@ case "$LLM_PROFILE" in
     LLM_MAX_TOKENS=512
     ;;
   *)
-    echo "Unknown LLM_PROFILE=$LLM_PROFILE (qwen38-27b | qwen38-27b-think | qwen38-27b-q5 | qwen25-14b)" >&2
+    echo "Unknown LLM_PROFILE=$LLM_PROFILE (qwen38-27b-hybrid | qwen38-27b | qwen38-27b-think | qwen38-27b-q5 | qwen25-14b)" >&2
     return 1 2>/dev/null || exit 1
     ;;
 esac
 # LLM_REASONING_BUDGET -1 = no --reasoning-budget flag (non-thinking profiles)
-export LLM_PROFILE LLM_REPO LLM_FILE LLM_SHA256 LLM_THINKING_OFF LLM_REASONING_BUDGET
+export LLM_PROFILE LLM_REPO LLM_FILE LLM_SHA256 LLM_THINKING_OFF LLM_REASONING_BUDGET LLM_THINK_RETRY
 export RAG_MAX_TOKENS="$LLM_MAX_TOKENS"
+# The thinking pass of the hybrid profile gets the output budget of qwen38-27b-think.
+export RAG_LLM_THINK_RETRY="$LLM_THINK_RETRY"
+export RAG_LLM_THINK_MAX_TOKENS=1024
 # Derived values are always recomputed: with_profile.sh re-sources this file under another
 # profile inside an environment that already holds the parent's exports.
 export LLM_PATH="models/llm/$LLM_FILE"

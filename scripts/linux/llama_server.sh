@@ -45,7 +45,11 @@ start() {
     -fa on --jinja --cache-ram 0
     --host "$LLAMA_HOST" --port "$LLAMA_PORT"
   )
-  if [[ "$LLM_THINKING_OFF" == "true" ]]; then
+  if [[ "$LLM_THINK_RETRY" != "off" ]]; then
+    # Hybrid: the pipeline switches thinking per request (chat_template_kwargs enable_thinking
+    # false, then true for the second pass), so reasoning stays available on the server.
+    args+=(--reasoning-budget "$LLM_REASONING_BUDGET")
+  elif [[ "$LLM_THINKING_OFF" == "true" ]]; then
     # Server-side default (b12002 deprecates --chat-template-kwargs for this); the pipeline
     # also sends chat_template_kwargs {"enable_thinking": false} with every request.
     args+=(--reasoning off)

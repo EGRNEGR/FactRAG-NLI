@@ -128,7 +128,7 @@ class LocalTokenizer:
         )
 
     def count(self, text: str) -> int:
-        return len(self._tokenizer.encode(text, add_special_tokens=False))
+        return len(self._tokenizer.encode(text, add_special_tokens=False, verbose=False))
 
 
 class RegexTokenCounter:

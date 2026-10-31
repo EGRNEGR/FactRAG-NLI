@@ -7,9 +7,11 @@ several datasets also gets a pooled "all" row (rates over the summed counts). Th
 (RTX 5060 Laptop 8 GB, Qwen2.5-14B, verifier v1) is listed as the reference for v3.
 
 With both qwen38-27b+<reranker> and qwen38-27b-think+<reranker> logged, a "thinking only on
-refusal" row is computed per case from the two logs: a case whose non-thinking first draft
-was a refusal takes the outcome of the thinking configuration (the same retrieval, prompt and
-seed, so its first thinking call is the call such a hybrid would make).
+refusal" row is computed per case from the two logs: a case the non-thinking configuration
+withheld (any refusal except the relevance gate and the context budget, the trigger of
+RAG_LLM_THINK_RETRY=refusal) takes the outcome of the thinking configuration (the same
+retrieval, prompt and seed, so its thinking pass is the one the qwen38-27b-hybrid profile
+makes). A live qwen38-27b-hybrid row reports how often its thinking pass ran.
 
 Usage:  python scripts/compare_runs.py reports/runs/<run_id>
 """
@@ -24,6 +26,8 @@ from typing import Any, Sequence
 ROOT = Path(__file__).resolve().parents[1]
 REFERENCE = ROOT / "reports" / "runs" / "20261026T2139Z_v3" / "e2e_guard_on" / "summary.json"
 DATASETS = ("v3", "xquad", "xquad-full")
+# Refusals that a thinking pass over the same sources cannot change (pipeline.think_retry).
+RETRY_EXEMPT = (None, "relevance_threshold_not_met", "context_budget_exceeded")
 
 
 def load(path: Path) -> dict[str, Any] | None:
@@ -94,7 +98,7 @@ def think_on_refusal(
     rows, triggered = [], 0
     for case_id in shared:
         row = base[case_id]
-        if row.get("refusal_reason") == "llm_refusal" and row.get("attempts") == 1:
+        if row.get("refused") and row.get("refusal_reason") not in RETRY_EXEMPT:
             row, triggered = think[case_id], triggered + 1
         rows.append(row)
     ok = [row for row in rows if row.get("ok")]
@@ -138,6 +142,7 @@ def report(run: Path) -> str:
         lines.append(
             e2e_row("reference: RTX 5060 8 GB, Qwen2.5-14B (2139Z, verifier v1)", "v3", reference)
         )
+    thinking_notes = []
     for config in sorted(p for p in run.iterdir() if p.is_dir() and "+" in p.name):
         found = []
         for dataset in DATASETS:
@@ -145,6 +150,12 @@ def report(run: Path) -> str:
             if summary:
                 lines.append(e2e_row(config.name, dataset, summary))
                 found.append(summary)
+                passes = summary.get("thinking_pass") or {}
+                if passes.get("attempted"):
+                    thinking_notes.append(
+                        f"{config.name} {dataset}: {passes['attempted']} of {summary['cases']} "
+                        f"cases, {passes['factrag_correct']} of them correct after it."
+                    )
         if len(found) > 1:
             lines.append(e2e_row(config.name, "all", pooled(found)))
     hybrid_notes = []
@@ -162,7 +173,7 @@ def report(run: Path) -> str:
                 found.append(summary)
                 hybrid_notes.append(
                     f"{dataset}: thinking call for {triggered} of {summary['cases']} cases "
-                    f"(non-thinking first draft was a refusal)."
+                    f"(the non-thinking answer was withheld)."
                 )
         if len(found) > 1:
             lines.append(e2e_row(label, "all", pooled(found)))
@@ -171,6 +182,8 @@ def report(run: Path) -> str:
             "",
             "Thinking only on refusal, computed from the two logs: " + " ".join(hybrid_notes),
         ]
+    if thinking_notes:
+        lines += ["", "Thinking pass (RAG_LLM_THINK_RETRY) ran for: " + " ".join(thinking_notes)]
     lines += [
         "",
         "Verifier v2 replay of the reference drafts (20261027T0447Z_v3_verifier2): FactRAG 78.6%",

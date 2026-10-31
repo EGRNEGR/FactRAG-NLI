@@ -23,7 +23,7 @@ from generator_verifier import (
     VerifiedClaim,
     VerifiedGenerationResult,
 )
-from hybrid_retriever import HybridRetriever
+from hybrid_retriever import HybridRetriever, SearchResult
 from settings import RAGSettings
 
 
@@ -44,6 +44,16 @@ def refusal_reason(verified: VerifiedGenerationResult) -> str | None:
     if verified.raw_text.strip() == REFUSAL:
         return "llm_refusal"
     return "nli_verification_failed"
+
+
+def think_retry(mode: str, reason: str | None) -> bool:
+    """Whether a non-thinking result is generated once more with thinking (llm_think_retry)."""
+    if mode == "llm_refusal":
+        return reason == "llm_refusal"
+    if mode == "refusal":
+        # The thinking pass sees the same sources: a context budget refusal would repeat.
+        return reason is not None and reason != "context_budget_exceeded"
+    return False
 
 
 class _Result(BaseModel):
@@ -240,6 +250,41 @@ class RAGPipeline:
             raise ValueError("Question contains an instruction-override pattern")
         return normalized
 
+    def _draft(
+        self,
+        generator: LocalLLMGenerator,
+        verifier: NLIFactVerifier,
+        question: str,
+        results: list[SearchResult],
+        attempts: list[dict[str, Any]],
+        *,
+        thinking: bool = False,
+    ) -> VerifiedGenerationResult:
+        """Generate, verify and repair; every attempt is appended to attempts."""
+        mode: dict[str, Any] = {"thinking": True} if thinking else {}
+        raw = generator.generate(question, results, **mode)
+        verified = verifier.verify(raw)
+        attempts.append(verified.model_dump(mode="json"))
+        for _ in range(self.settings.generation_repair_attempts):
+            if not verified.refused or not verified.claims:
+                break
+            raw = generator.generate(
+                question,
+                results,
+                revision={
+                    "previous_answer": verified.raw_text,
+                    "rejected_claims": [
+                        {"text": claim.claim, "status": claim.status.value}
+                        for claim in verified.claims
+                        if claim.status != ClaimStatus.VERIFIED
+                    ],
+                },
+                **mode,
+            )
+            verified = verifier.verify(raw)
+            attempts.append(verified.model_dump(mode="json"))
+        return verified
+
     def query(self, question: str, *, top_k: int | None = None) -> RAGResponse:
         """Retrieve, generate and verify; scores describe raw claims before filtering."""
         question = self._question(question)
@@ -305,26 +350,12 @@ class RAGPipeline:
                         self._generator = None
                         raise
                 stats["model_init_ms"] += (time.perf_counter() - init) * 1000
-                raw = self._generator.generate(question, results)
-                verified = self._fact_verifier.verify(raw)
-                attempts.append(verified.model_dump(mode="json"))
-                for _ in range(self.settings.generation_repair_attempts):
-                    if not verified.refused or not verified.claims:
-                        break
-                    raw = self._generator.generate(
-                        question,
-                        results,
-                        revision={
-                            "previous_answer": verified.raw_text,
-                            "rejected_claims": [
-                                {"text": claim.claim, "status": claim.status.value}
-                                for claim in verified.claims
-                                if claim.status != ClaimStatus.VERIFIED
-                            ],
-                        },
+                generator, verifier = self._generator, self._fact_verifier
+                verified = self._draft(generator, verifier, question, results, attempts)
+                if think_retry(self.settings.llm_think_retry, refusal_reason(verified)):
+                    verified = self._draft(
+                        generator, verifier, question, results, attempts, thinking=True
                     )
-                    verified = self._fact_verifier.verify(raw)
-                    attempts.append(verified.model_dump(mode="json"))
             stats.update(
                 generation_ms=sum(a["generation_metadata"]["generation_ms"] for a in attempts)
                 if attempts

@@ -144,6 +144,25 @@ NUMERAL_FORMS = {
 }
 
 
+# Russian inflectional endings, longest first. The kept prefix never extends into the ending
+# of the gold form: "годов" keeps "год" and matches "годах" ("годо" did not).
+RU_ENDINGS = sorted(
+    "ами ями ого его ому ему ыми ими ой ей ый ий ая яя ое ее ые ие ую юю ов ев ам ям ах ях ом ем "
+    "ы и а я о е у ю ь й".split(),
+    key=len,
+    reverse=True,
+)
+
+
+def ru_stem_length(token: str) -> int:
+    """Length of `token` without its inflectional ending; the stem keeps at least 3 letters."""
+    if re.fullmatch(r"[а-яё]+", token):
+        for ending in RU_ENDINGS:
+            if token.endswith(ending) and len(token) - len(ending) >= 3:
+                return len(token) - len(ending)
+    return len(token)
+
+
 def stem(token: str) -> str:
     """Prefix pattern that survives inflection (четырьмя -> четыре, Элвей -> Элвея).
 
@@ -158,12 +177,16 @@ def stem(token: str) -> str:
         forms = "|".join(re.escape(form) for form in NUMERAL_FORMS[digit])
         return rf"(?:\b{prefix}\w*|\b(?:{forms})\b|(?<!\d){digit}(?!\d))"
     keep = max(4, -(-len(token) * 3 // 5)) if len(token) >= 5 else max(3, len(token) - 1)
+    keep = min(keep, ru_stem_length(token))
     return rf"\b{re.escape(token[:keep])}\w*"
 
 
 def span_pattern(answer: str) -> str:
-    """Order-free conjunction of the stems of the (at most 4 longest) content words."""
-    words = re.findall(r"\w+", normalize(answer))
+    """Order-free conjunction of the stems of the (at most 4 longest) content words.
+
+    Wikipedia markup in the span ("[необходима ссылка]", "[1]") is not part of the answer.
+    """
+    words = re.findall(r"\w+", normalize(re.sub(r"\[[^\]]*\]", " ", answer)))
     # Function words ("the", "of", "в", "год") are skipped unless nothing else is left.
     content = [w for w in words if len(w) > 3 or any(ch.isdigit() for ch in w)] or words
     digits = [w for w in content if any(ch.isdigit() for ch in w)]
