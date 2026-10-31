@@ -47,3 +47,20 @@ register(
         {"nli_keyword_normalization": True},
     )
 )
+
+
+def _judge() -> object:
+    from research.opt2.routing import judge_verifier
+
+    return judge_verifier("bge-m3-zeroshot")
+
+
+register(
+    Variant(
+        "V30_judge_bge-m3-zeroshot",
+        "decision layer: calibrated logistic judge over mDeBERTa + bge-m3-zeroshot, threshold 0.3",
+        single("mdeberta"),
+        models=("mdeberta", "bge-m3-zeroshot"),
+        factory=_judge,
+    )
+)

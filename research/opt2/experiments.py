@@ -81,6 +81,8 @@ class Variant:
     backend: Callable[[], Any]
     overrides: dict[str, Any] = field(default_factory=dict)
     models: tuple[str, ...] = ("mdeberta",)
+    # A complete verifier (e.g. the decision layer); backend/overrides are then unused.
+    factory: Callable[[], Any] | None = None
 
 
 def single(name: str) -> Callable[[], Any]:
@@ -116,8 +118,12 @@ def gpu_info() -> dict[str, Any]:
 
 def evaluate(variant: Variant, records: dict[str, data.CaseRecord]) -> dict[str, Any]:
     started = time.perf_counter()
-    backend = variant.backend()
-    v = verifier(backend, **variant.overrides)
+    if variant.factory is not None:
+        v = variant.factory()
+        backend = v.backend
+    else:
+        backend = variant.backend()
+        v = verifier(backend, **variant.overrides)
     result: dict[str, Any] = {
         "experiment_id": variant.id,
         "description": variant.description,

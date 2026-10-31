@@ -91,49 +91,64 @@ def generate(api_base: str, judge: str) -> None:
     )
     backend = _HTTPBackend(s)
     system = generation_system_prompt(s)
-    store = load_store()
     records = data.records(("base", "think"))
-    todo = []
-    for record in records.values():
-        for config in ("base", "think"):
-            replayed = replay_config(record, config, v)
-            if replayed.missing_repair:
-                todo.append((record, config, replayed))
-    print(f"{len(todo)} repair drafts needed", flush=True)
+
+    def missing(relevant_only: bool) -> list[tuple[data.CaseRecord, str, Any]]:
+        """Missing repairs; relevant = non-thinking ones and thinking ones the router uses."""
+        from research.opt2 import replay
+        from research.opt2.replay import on_withheld
+
+        replay._STORE = None  # re-read the drafts generated so far
+        found = []
+        for record in records.values():
+            base = replay_config(record, "base", v)
+            if base.missing_repair:
+                found.append((record, "base", base))
+            routed = on_withheld(record, base)
+            if relevant_only and (base.missing_repair or not routed):
+                continue  # a thinking repair matters once its routing is known
+            think = replay_config(record, "think", v)
+            if think.missing_repair:
+                found.append((record, "think", think))
+        return found
+
     with STORE.open("a", encoding="utf-8") as handle:
-        for record, config, replayed in todo:
-            last = replayed.drafts[-1]
-            revision = revision_of(last)
-            k = key(record.case.id, config, len(replayed.drafts), revision)
-            if k in store:
+        for relevant_only in (True, True, True, False):
+            todo = missing(relevant_only)
+            print(f"{len(todo)} repair drafts needed (relevant only: {relevant_only})", flush=True)
+            if not todo:
                 continue
-            first = record.drafts[config][0]
-            started = time.perf_counter()
-            reply = backend.complete(
-                system,
-                prompt(question_of(record, config), revision, first.contexts),
-                thinking=config == "think",
-            )
-            row = {
-                "key": k,
-                "id": record.case.id,
-                "config": config,
-                "attempt": len(replayed.drafts),
-                "revision": revision,
-                "raw_text": reply.text,
-                "finish_reason": reply.finish_reason,
-                "seconds": round(time.perf_counter() - started, 1),
-                "api_base": api_base,
-            }
-            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-            handle.flush()
-            print(
-                record.case.id,
-                config,
-                row["seconds"],
-                reply.text[:100].replace("\n", " "),
-                flush=True,
-            )
+            for record, config, replayed in todo:
+                last = replayed.drafts[-1]
+                revision = revision_of(last)
+                k = key(record.case.id, config, len(replayed.drafts), revision)
+                first = record.drafts[config][0]
+                started = time.perf_counter()
+                reply = backend.complete(
+                    system,
+                    prompt(question_of(record, config), revision, first.contexts),
+                    thinking=config == "think",
+                )
+                row = {
+                    "key": k,
+                    "id": record.case.id,
+                    "config": config,
+                    "attempt": len(replayed.drafts),
+                    "revision": revision,
+                    "raw_text": reply.text,
+                    "finish_reason": reply.finish_reason,
+                    "seconds": round(time.perf_counter() - started, 1),
+                    "api_base": api_base,
+                }
+                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+                handle.flush()
+                print(
+                    record.case.id,
+                    config,
+                    row["seconds"],
+                    reply.text[:100].replace("\n", " "),
+                    flush=True,
+                )
 
 
 def question_of(record: data.CaseRecord, config: str) -> str:
