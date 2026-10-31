@@ -1,0 +1,64 @@
+# FactRAG-NLI 2.0: best configuration for one RTX 3090 (24 GB), Linux.
+# Applied by scripts/linux/env.rtx3090.sh with its defaults (LLM_PROFILE=qwen38-27b-hybrid,
+# RERANKER=bge-reranker-v2-m3, VERIFIER=judge); run: PLAN=main bash scripts/linux/run_benchmark.sh
+# Selected on the dev half of run 20261031T0508Z, numbers below are its replay
+# (reports/optimization_2/FINAL_REPORT.md, METRICS_COMPARISON.csv row C4).
+
+name: qwen38-27b-hybrid+bge-reranker-v2-m3+judge
+branch: rtx3090-linux
+
+retrieval:
+  embedding: {model: BAAI/bge-m3, path: models/bge-m3, device: cpu}  # RAG_EMBEDDING_DEVICE
+  sparse: BM25 (rank-bm25 0.2.2)
+  fusion: RRF, 40 candidates, RAG_RERANK_RRF_ALPHA=0.2
+  reranker: {model: BAAI/bge-reranker-v2-m3, path: models/bge-reranker-v2-m3, precision: float16}
+  top_k: 10                                   # RAG_RERANK_TOP_K
+  gate: {scope: top, threshold: 0.005}        # RAG_RERANK_GATE_SCOPE, RAG_RERANK_SCORE_THRESHOLD
+
+generation:
+  llm: {repo: unsloth/Qwen3.8-27B-GGUF, file: Qwen3.8-27B-UD-Q4_K_XL.gguf,
+        sha256: 3f227079003add2511437e5b1e94812e363385225bf6a9b47b0054a72bc8b01e}
+  server: llama.cpp b12002 ubuntu-cuda-12.8-x64, -ngl 999 -c 8192 -np 1 -fa on --jinja
+          --cache-ram 0 --reasoning-budget 640 (no --reasoning off)
+  sampling: {temperature: 0.0, top_p: 0.9, seed: 42, max_tokens: 512}
+  thinking_pass: {trigger: refusal, mode: fresh, max_tokens: 1024}   # RAG_LLM_THINK_RETRY, _MODE, _MAX_TOKENS
+  repair_attempts: 1                          # RAG_GENERATION_REPAIR_ATTEMPTS
+  recovery: {mode: sampling, min_rerank: 0.5, samples: 2, temperature: 0.7, seeds: [1000, 1001]}
+  max_llm_calls_per_question: 6
+
+verification:
+  decision: judge                             # RAG_NLI_DECISION
+  primary_nli: {model: MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7,
+                path: models/mdeberta-nli, precision: float16, max_length: 512,
+                sha256_model_safetensors: 7c8e29f1115986d032e92b0fbaa0bdef1062a46f658b08705f237c05014a8541}
+  secondary_nli: {model: MoritzLaurer/bge-m3-zeroshot-v2.0, path: models/nli-bge-m3-zeroshot,
+                  precision: float16, max_length: 1024, license: MIT,
+                  sha256_model_safetensors: 142bc710004b7552bef46b36a2f749eeb0ca198db2608445841926f78202d12c}
+  judge: {path: data/nli_judge/bge-m3-zeroshot.json,
+          sha256: db5aee3726dd50339f3d66470dc8ed59adf1e3ea77a23953f08171f1dc9ee925,
+          threshold: 0.3, partial_threshold: 0.15, contradiction: 0.5, disagreement: 0.6, veto: 0.9,
+          fitted_on: dev half of run 20261031T0508Z stress claims (research/opt2/judge.py)}
+  rules_kept: {anchor_guard: true, anchor_headings: true, premise_title: true, window_sentences: 2,
+               co_verification: true, strip_verdict_prefix: true, abstention_guard: true}
+  keyword_normalization: false
+  grades: [supported, partially_supported, contradicted, ambiguous, insufficient_evidence]
+
+runtime:
+  torch_device: cuda                          # RAG_MODEL_DEVICE: no silent CPU fallback
+  duty_cycle: {work_minutes: 45, rest_minutes: 5, temp_limit_c: 83}
+  vram_peak_expected_gb: 23.3                 # 0508Z: 23.2 incl. ~3.3 GB desktop
+
+datasets:
+  v3: {path: data/eval_dataset_v3.json, cases: 220}
+  xquad_full: {path: data/xquad_dataset_full.json, cases: 1087}
+  scoring_reference: datasets of run 0508Z (git b058977) for all comparisons
+
+expected_metrics_replay_0508Z:   # 1307 questions; test = held-out half (656)
+  factrag_correct: {all: 0.898, v3: 0.868, xquad_full: 0.904, dev: 0.911, test: 0.886}
+  hallucination: 0.011        # 3/269; 2 of them scorer false positives (manual review)
+  false_refusal: 0.078        # 81/1038
+  vs_baseline_0508Z: {delta_pp_all: 0.84, ci95_all: [0.15, 1.53], mcnemar_p_all: 0.043,
+                      delta_pp_test: 0.46, ci95_test: [-0.61, 1.68], mcnemar_p_test: 0.61}
+  stress_false_acceptance_test: {answer_swap: 0.326, number_swap: 0.079, negation: 0.136, transplant: 0.012}
+  stress_true_acceptance_test: 0.951
+  generation_hours_3090_per_1307: 2.74
