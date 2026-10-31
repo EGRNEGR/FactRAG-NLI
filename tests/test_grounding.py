@@ -61,6 +61,20 @@ def test_sentence_end_after_abbreviation_without_number_still_splits() -> None:
     ]
 
 
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Мост называется «Джон В. Викс» [S1].",
+        "Предприятие основал Э. И. Дюпон де Немур [S1].",
+        "Галерея китайского искусства Т.Т. Цуй открылась в 1991 году [S1].",
+        "Основателем является Джеймс O. Маккинси [S1].",
+    ],
+)
+def test_initials_do_not_end_a_sentence(text: str) -> None:
+    assert segment_claims(text, "v2") == [text]
+    assert cited_claims(text, "v2")[0].text == text
+
+
 def test_citation_inheritance_order() -> None:
     claims = cited_claims("Факт 1. Факт 2 [S1].\nФакт 3.\nФакт 4 [S2]. Факт 5.")
     assert [(c.text, c.source_ids, c.inherited) for c in claims] == [

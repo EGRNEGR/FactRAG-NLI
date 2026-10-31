@@ -41,7 +41,11 @@ from settings import RAGSettings, validate_transformer_directory
 
 LOGGER = logging.getLogger(__name__)
 REFUSAL = "В предоставленной нормативно-технической документации отсутствуют сведения для ответа на поставленный вопрос."
-SYSTEM_PROMPT = f"""Ты анализируешь нормативно-технические документы. Отвечай по-русски.
+# The opening line names no document genre: with "Ты анализируешь нормативно-технические
+# документы." Qwen3.8-27B refused 141 of 853 XQuAD questions whose gold chunk was ranked first
+# (Wikipedia articles are not such documents); a local regeneration on the logged contexts of
+# run 20261030T1814Z answered 8 of 16 of them with this line, and refused all 10 control cases.
+SYSTEM_PROMPT = f"""Ты отвечаешь на вопросы строго по предоставленным источникам. Отвечай по-русски.
 Дай краткий точный ответ на вопрос, без дополнительных фактов и вводных фраз.
 Если вопрос состоит из нескольких частей, ответь на каждую часть отдельным предложением.
 Не конкретизируй общие формулировки источника собственными примерами.
@@ -974,10 +978,7 @@ class NLIFactVerifier:
         anchored = (
             not s.nli_anchor_guard
             or not anchors
-            or anchors_present(
-                anchors,
-                " ".join(clean_premise(contexts[key].text) for key in source_ids),
-            )
+            or anchors_present(anchors, self._anchor_text(contexts, source_ids))
         )
         contradicted = any(
             item.support is None
@@ -1076,6 +1077,16 @@ class NLIFactVerifier:
             citation_inherited=is_inherited,
         )
 
+    def _anchor_text(self, contexts: Mapping[str, SourceContext], keys: Sequence[str]) -> str:
+        """Text the anchors of a claim must occur in: the cited sources, with headings if set."""
+        parts: list[str] = []
+        for key in keys:
+            context = contexts[key]
+            if self.settings.nli_anchor_headings:
+                parts.extend(context.section_path)
+            parts.append(clean_premise(context.text))
+        return " ".join(parts)
+
     def _co_verify(
         self, claims: tuple[VerifiedClaim, ...], contexts: Mapping[str, SourceContext]
     ) -> tuple[VerifiedClaim, ...]:
@@ -1105,7 +1116,9 @@ class NLIFactVerifier:
             ):
                 source = " ".join(clean_premise(contexts[key].text) for key in shared)
                 if (
-                    anchors_present(claim_anchors(claim.hypothesis), source)
+                    anchors_present(
+                        claim_anchors(claim.hypothesis), self._anchor_text(contexts, shared)
+                    )
                     and content_overlap(claim.hypothesis, source)
                     >= self.settings.nli_co_verification_overlap
                 ):

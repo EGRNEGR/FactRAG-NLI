@@ -112,6 +112,7 @@ STEP_NAMES = {
     "document_titles": "+ название документа и раздела в посылке (дополнительный маршрут)",
     "co_verification": "+ совместная проверка утверждений одного источника",
     "verdict_prefix": "+ гипотеза NLI без вводного «Нет,» перед исправлением",
+    "anchor_headings": "+ якоря утверждения ищутся и в заголовке раздела источника",
 }
 # Heuristic: a citation-less claim that is a cut piece of a sentence rather than a whole one.
 FRAGMENT = re.compile(r"(?:\b(?:Rev|No|Sec|Vol|Fig|vs)\.|;)$|^\d")
