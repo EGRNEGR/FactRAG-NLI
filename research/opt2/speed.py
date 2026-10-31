@@ -43,7 +43,9 @@ def sample_pairs() -> tuple[list[tuple[str, str]], list[int]]:
             for key in item.source_ids:
                 if key not in draft.contexts:
                     continue
-                premise, variants = helper._variants(SourceContext.model_validate(draft.contexts[key]))
+                premise, variants = helper._variants(
+                    SourceContext.model_validate(draft.contexts[key])
+                )
                 for text in [premise, *(t for t, _ in variants)]:
                     pairs.append(normalize_pair(text, hypothesis))
                     count += 1
@@ -109,7 +111,9 @@ def main() -> None:
         "bge_m3_query_on_cpu": cpu_encoding(),
     }
     for name, r in report["models"].items():
-        r["ms_per_median_draft"] = 1000 * report["pairs_per_draft"]["median"] / r["pairs_per_second"]
+        r["ms_per_median_draft"] = (
+            1000 * report["pairs_per_draft"]["median"] / r["pairs_per_second"]
+        )
     out = data.OUT / "speed"
     out.mkdir(parents=True, exist_ok=True)
     (out / "speed_laptop.json").write_text(json.dumps(report, indent=1), encoding="utf-8")

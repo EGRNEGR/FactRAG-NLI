@@ -1,0 +1,540 @@
+{
+ "cases": 6,
+ "errors": 0,
+ "vanilla": {
+  "correct": {
+   "k": 5,
+   "n": 6,
+   "rate": 0.8333333333333334,
+   "wilson95": [
+    0.43649056343635395,
+    0.9699474141282697
+   ]
+  },
+  "hallucination": {
+   "k": 0,
+   "n": 2,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.6576280471103807
+   ]
+  },
+  "false_refusal_on_answerable": {
+   "k": 0,
+   "n": 4,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.48990002040399916
+   ]
+  },
+  "key_fact_accuracy_on_answerable": {
+   "k": 3,
+   "n": 4,
+   "rate": 0.75,
+   "wilson95": [
+    0.3006360524426366,
+    0.9544139373553637
+   ]
+  },
+  "by_category": {
+   "single_hop": {
+    "correct": {
+     "k": 3,
+     "n": 4,
+     "rate": 0.75,
+     "wilson95": [
+      0.3006360524426366,
+      0.9544139373553637
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 0,
+     "n": 4,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.48990002040399916
+     ]
+    }
+   },
+   "unanswerable": {
+    "correct": {
+     "k": 2,
+     "n": 2,
+     "rate": 1.0,
+     "wilson95": [
+      0.34237195288961925,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 2,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.6576280471103807
+     ]
+    },
+    "refused": {
+     "k": 2,
+     "n": 2,
+     "rate": 1.0,
+     "wilson95": [
+      0.34237195288961925,
+      1.0
+     ]
+    }
+   }
+  },
+  "by_language": {
+   "en": {
+    "k": 2,
+    "n": 3,
+    "rate": 0.6666666666666666,
+    "wilson95": [
+     0.2076549551264879,
+     0.9385096847238394
+    ]
+   },
+   "ru": {
+    "k": 3,
+    "n": 3,
+    "rate": 1.0,
+    "wilson95": [
+     0.43849391955098227,
+     1.0
+    ]
+   }
+  }
+ },
+ "factrag": {
+  "correct": {
+   "k": 5,
+   "n": 6,
+   "rate": 0.8333333333333334,
+   "wilson95": [
+    0.43649056343635395,
+    0.9699474141282697
+   ]
+  },
+  "hallucination": {
+   "k": 0,
+   "n": 2,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.6576280471103807
+   ]
+  },
+  "false_refusal_on_answerable": {
+   "k": 0,
+   "n": 4,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.48990002040399916
+   ]
+  },
+  "key_fact_accuracy_on_answerable": {
+   "k": 3,
+   "n": 4,
+   "rate": 0.75,
+   "wilson95": [
+    0.3006360524426366,
+    0.9544139373553637
+   ]
+  },
+  "by_category": {
+   "single_hop": {
+    "correct": {
+     "k": 3,
+     "n": 4,
+     "rate": 0.75,
+     "wilson95": [
+      0.3006360524426366,
+      0.9544139373553637
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 0,
+     "n": 4,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.48990002040399916
+     ]
+    }
+   },
+   "unanswerable": {
+    "correct": {
+     "k": 2,
+     "n": 2,
+     "rate": 1.0,
+     "wilson95": [
+      0.34237195288961925,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 2,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.6576280471103807
+     ]
+    },
+    "refused": {
+     "k": 2,
+     "n": 2,
+     "rate": 1.0,
+     "wilson95": [
+      0.34237195288961925,
+      1.0
+     ]
+    }
+   }
+  },
+  "by_language": {
+   "en": {
+    "k": 2,
+    "n": 3,
+    "rate": 0.6666666666666666,
+    "wilson95": [
+     0.2076549551264879,
+     0.9385096847238394
+    ]
+   },
+   "ru": {
+    "k": 3,
+    "n": 3,
+    "rate": 1.0,
+    "wilson95": [
+     0.43849391955098227,
+     1.0
+    ]
+   }
+  }
+ },
+ "paired_correctness": {
+  "vanilla_only_correct": 0,
+  "factrag_only_correct": 0,
+  "mcnemar_exact_p": 1.0,
+  "vanilla_only_correct_by_cause": {}
+ },
+ "hallucination_relative_reduction": null,
+ "by_split": {
+  "dev": {
+   "vanilla": {
+    "correct": {
+     "k": 2,
+     "n": 3,
+     "rate": 0.6666666666666666,
+     "wilson95": [
+      0.2076549551264879,
+      0.9385096847238394
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 0,
+     "n": 2,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.6576280471103807
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    }
+   },
+   "factrag": {
+    "correct": {
+     "k": 2,
+     "n": 3,
+     "rate": 0.6666666666666666,
+     "wilson95": [
+      0.2076549551264879,
+      0.9385096847238394
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 0,
+     "n": 2,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.6576280471103807
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    }
+   }
+  },
+  "test": {
+   "vanilla": {
+    "correct": {
+     "k": 3,
+     "n": 3,
+     "rate": 1.0,
+     "wilson95": [
+      0.43849391955098227,
+      1.0
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 0,
+     "n": 2,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.6576280471103807
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    }
+   },
+   "factrag": {
+    "correct": {
+     "k": 3,
+     "n": 3,
+     "rate": 1.0,
+     "wilson95": [
+      0.43849391955098227,
+      1.0
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 0,
+     "n": 2,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.6576280471103807
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    }
+   }
+  }
+ },
+ "hallucination_ids": {
+  "vanilla_only": [],
+  "factrag_only": [],
+  "both": []
+ },
+ "claims": {
+  "total": 4,
+  "by_status": {
+   "verified": 4
+  },
+  "by_status_reason": {
+   "verified:none": 4
+  },
+  "by_grade": {
+   "supported": 4
+  },
+  "pairs_exceeding_nli_context": 0,
+  "facts": 4,
+  "faithfulness_micro": 1.0,
+  "inherited_citations": 0,
+  "verified_by_support": {
+   "judge": 4
+  }
+ },
+ "refusal_reasons": {
+  "llm_refusal": 1,
+  "relevance_threshold_not_met": 1
+ },
+ "repair": {
+  "attempted": 2,
+  "published": 1,
+  "factrag_correct": 2,
+  "factrag_hallucinations": 0
+ },
+ "thinking_pass": {
+  "attempted": 2,
+  "published": 1,
+  "factrag_correct": 2,
+  "factrag_hallucinations": 0
+ },
+ "recovery_pass": {
+  "attempted": 1,
+  "published": 1,
+  "factrag_correct": 1,
+  "factrag_hallucinations": 0
+ },
+ "latency_ms": {
+  "all_queries": {
+   "search_ms": {
+    "n": 5,
+    "mean": 58.39159999741241,
+    "p50": 61.916199992992915,
+    "p95": 63.36124000372365,
+    "min": 50.38979998789728,
+    "max": 63.400800005183555
+   },
+   "rerank_ms": {
+    "n": 5,
+    "mean": 503.407039999729,
+    "p50": 501.9407000072533,
+    "p95": 511.7478799977107,
+    "min": 493.53370000608265,
+    "max": 512.4829999986105
+   },
+   "generation_ms": {
+    "n": 5,
+    "mean": 100595.28050000372,
+    "p50": 28827.448000010918,
+    "p95": 285013.1280400092,
+    "min": 0.0,
+    "max": 325655.56150001066
+   },
+   "nli_ms": {
+    "n": 5,
+    "mean": 215.46324000228196,
+    "p50": 47.81260000891052,
+    "p95": 558.0529400031082,
+    "min": 0.0,
+    "max": 586.9242000044324
+   },
+   "total_ms": {
+    "n": 5,
+    "mean": 101372.94176000287,
+    "p50": 29825.855000002775,
+    "p95": 286050.2559799992,
+    "min": 563.6855000047944,
+    "max": 326808.8743999979
+   },
+   "llm_ttft_ms": {
+    "n": 0,
+    "mean": null,
+    "p50": null,
+    "p95": null,
+    "min": null,
+    "max": null
+   }
+  },
+  "generated_queries": {
+   "search_ms": {
+    "n": 4,
+    "mean": 57.13929999546963,
+    "p50": 57.4821999980486,
+    "p95": 63.00997999715037,
+    "min": 50.38979998789728,
+    "max": 63.202999997884035
+   },
+   "rerank_ms": {
+    "n": 4,
+    "mean": 504.1912000015145,
+    "p50": 505.3740500006825,
+    "p95": 511.93165999793564,
+    "min": 493.53370000608265,
+    "max": 512.4829999986105
+   },
+   "generation_ms": {
+    "n": 4,
+    "mean": 125744.10062500465,
+    "p50": 75635.42110000708,
+    "p95": 295173.7364050095,
+    "min": 26049.998799993773,
+    "max": 325655.56150001066
+   },
+   "nli_ms": {
+    "n": 4,
+    "mean": 269.32905000285245,
+    "p50": 245.19025000336114,
+    "p95": 565.2707550034393,
+    "min": 0.011500000255182385,
+    "max": 586.9242000044324
+   },
+   "total_ms": {
+    "n": 4,
+    "mean": 126575.25582500239,
+    "p50": 76420.81865000364,
+    "p95": 296239.9105849988,
+    "min": 26650.511600004393,
+    "max": 326808.8743999979
+   },
+   "llm_ttft_ms": {
+    "n": 0,
+    "mean": null,
+    "p50": null,
+    "p95": null,
+    "min": null,
+    "max": null
+   }
+  },
+  "model_init_ms": [
+   4153.439299989259
+  ]
+ },
+ "gold_in_sources": {
+  "k": 4,
+  "n": 4,
+  "rate": 1.0,
+  "wilson95": [
+   0.5100999795960008,
+   1.0
+  ]
+ },
+ "resources": {
+  "samples": 490,
+  "gpu_used_mib": {
+   "peak": 7217.0,
+   "mean": 7138.3
+  },
+  "process_rss_mib": {
+   "peak": 4407.06640625,
+   "mean": 4301.504679528061
+  },
+  "llama_server_rss_mib": {
+   "peak": 17513.93359375,
+   "mean": 17296.5993622449
+  },
+  "torch_max_allocated_mib": 2874.04931640625,
+  "torch_max_reserved_mib": 2952.0
+ }
+}
