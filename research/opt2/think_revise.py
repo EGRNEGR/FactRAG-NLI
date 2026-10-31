@@ -39,13 +39,15 @@ def load_store() -> dict[str, dict[str, Any]]:
     return {row["key"]: row for row in rows}
 
 
-def needed() -> list[tuple[data.CaseRecord, VerifiedGenerationResult]]:
+def needed(
+    verifiers: tuple[str, ...] = ("bge-m3-zeroshot", "none"),
+) -> list[tuple[data.CaseRecord, VerifiedGenerationResult]]:
     from research.opt2.replay import replay_config
     from research.opt2.routing import judge_verifier
 
     records = data.records(("base", "think"))
     seen: dict[str, tuple[data.CaseRecord, VerifiedGenerationResult]] = {}
-    for name in ("none", "bge-m3-zeroshot"):
+    for name in verifiers:
         v = judge_verifier(name)
         for record in records.values():
             base = replay_config(record, "base", v)
@@ -55,7 +57,7 @@ def needed() -> list[tuple[data.CaseRecord, VerifiedGenerationResult]]:
     return list(seen.values())
 
 
-def generate(api_base: str) -> None:
+def generate(api_base: str, verifiers: tuple[str, ...]) -> None:
     from research.opt2.replay import settings
 
     s = settings(
@@ -69,7 +71,7 @@ def generate(api_base: str) -> None:
     backend = _HTTPBackend(s)
     system = generation_system_prompt(s)
     store = load_store()
-    todo = needed()
+    todo = needed(verifiers)
     print(f"{len(todo)} thinking revisions", flush=True)
     with STORE.open("a", encoding="utf-8") as handle:
         for record, verified in todo:
@@ -120,4 +122,8 @@ def revised(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--api-base", required=True)
-    generate(parser.parse_args().api_base)
+    parser.add_argument(
+        "--verifiers", default="bge-m3-zeroshot,none", help="whose rejected answers to revise"
+    )
+    args = parser.parse_args()
+    generate(args.api_base, tuple(args.verifiers.split(",")))
