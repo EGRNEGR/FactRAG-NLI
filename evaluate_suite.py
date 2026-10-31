@@ -692,6 +692,21 @@ def write_config(run_dir: Path, dataset_path: Path, settings: Any, extra: dict[s
             "runtime": {
                 "embedding_batch_size": settings.embedding_batch_size,
                 "rerank_batch_size": settings.rerank_batch_size,
+                "embedding_device": settings.embedding_device or settings.model_device,
+            },
+            "decision": {
+                "nli_decision": settings.nli_decision,
+                "secondary_model": model_fingerprint(settings.nli_secondary_model_path)
+                if settings.nli_secondary_model_path is not None
+                else None,
+                "judge_sha256": sha256_file(settings.nli_judge_path)
+                if settings.nli_judge_path is not None and settings.nli_judge_path.exists()
+                else None,
+                "keyword_normalization": settings.nli_keyword_normalization,
+                "llm_recovery": settings.llm_recovery,
+                "llm_recovery_min_rerank": settings.llm_recovery_min_rerank,
+                "llm_recovery_samples": settings.llm_recovery_samples,
+                "llm_recovery_temperature": settings.llm_recovery_temperature,
             },
             "nli_thresholds": {
                 "entailment": settings.nli_entailment_threshold,
@@ -1035,6 +1050,8 @@ def claim_rows(claims: Sequence[Any]) -> list[dict[str, Any]]:
             "reasons": [e.reason for e in c.evidence],
             "support": [e.support for e in c.evidence],
             "co_verified": c.co_verified,
+            "grade": c.grade,
+            "judge_scores": [e.judge_score for e in c.evidence],
         }
         for c in claims
     ]
@@ -1689,6 +1706,7 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
             "total": len(claims),
             "by_status": dict(statuses),
             "by_status_reason": dict(reasons),
+            "by_grade": dict(Counter(claim.get("grade") or "none" for claim in facts)),
             "pairs_exceeding_nli_context": sum(
                 reason == "pair_exceeds_nli_context"
                 for claim in claims

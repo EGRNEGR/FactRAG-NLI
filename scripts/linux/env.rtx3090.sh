@@ -132,6 +132,37 @@ export RAG_RERANK_TOP_K="${TOP_K:-10}"
 # verified instead of rejected; Qwen2.5 drafts of run 20261026T2139Z unchanged).
 export RAG_NLI_STRIP_VERDICT_PREFIX="${STRIP_VERDICT_PREFIX:-true}"
 
+# ---------------------------------------------------------------- verifier (optimization_2)
+# VERIFIER=judge  decision layer: every cited source is also scored by bge-m3-zeroshot-v2.0
+#                 (MoritzLaurer, MIT, XLM-R large, 2-way NLI) and a claim is published when the
+#                 logistic model fitted on the dev half of run 20261031T0508Z
+#                 (data/nli_judge/bge-m3-zeroshot.json) gives it a support probability >= 0.3.
+#                 Held-out test half of 0508Z: correct claims accepted 94.9% -> 95.1%; synthetic
+#                 false claims accepted 51.5% -> 32.6% (swapped answer), 32.6% -> 13.6%
+#                 (negation), 10.4% -> 7.9% (number), 13.3% -> 1.2% (transplanted claim); see
+#                 reports/optimization_2/NLI_VERIFIER_RESEARCH.md. The second model needs
+#                 ~1.2 GB of VRAM: the query encoder (BGE-M3) moves to the CPU (the retrieval
+#                 stages build the index first; one query costs ~0.1 s there).
+# VERIFIER=rules  verifier v2 (mDeBERTa only), as in run 20261031T0508Z.
+export VERIFIER="${VERIFIER:-judge}"
+case "$VERIFIER" in
+  judge)
+    export RAG_NLI_DECISION=judge
+    export RAG_NLI_SECONDARY_MODEL_PATH=models/nli-bge-m3-zeroshot
+    export RAG_NLI_JUDGE_PATH=data/nli_judge/bge-m3-zeroshot.json
+    export RAG_EMBEDDING_DEVICE="${EMBEDDING_DEVICE:-cpu}"
+    ;;
+  rules)
+    export RAG_NLI_DECISION=rules
+    unset RAG_NLI_SECONDARY_MODEL_PATH RAG_NLI_JUDGE_PATH
+    export RAG_EMBEDDING_DEVICE="${EMBEDDING_DEVICE:-auto}"
+    ;;
+  *)
+    echo "Unknown VERIFIER=$VERIFIER (judge | rules)" >&2
+    return 1 2>/dev/null || exit 1
+    ;;
+esac
+
 # ---------------------------------------------------------------- GPU duty cycle
 export WORK_MINUTES="${WORK_MINUTES:-45}"
 export REST_MINUTES="${REST_MINUTES:-5}"
