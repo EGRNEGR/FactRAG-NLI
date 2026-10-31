@@ -138,15 +138,25 @@ NUMERALS = {
     )
     for form in forms.split()
 }
+NUMERAL_FORMS = {
+    digit: sorted(form for form, value in NUMERALS.items() if value == digit)
+    for digit in set(NUMERALS.values())
+}
 
 
 def stem(token: str) -> str:
-    """Prefix pattern that survives inflection (четырьмя -> четыре, Элвей -> Элвея)."""
+    """Prefix pattern that survives inflection (четырьмя -> четыре, Элвей -> Элвея).
+
+    A number word also accepts every other case form of the same number (пяти -> пять,
+    трех -> три: the 4-letter prefix alone misses them) and the digit.
+    """
     if any(ch.isdigit() for ch in token):
         return rf"(?<!\d){re.escape(token)}(?!\d)"
     if token in NUMERALS:
+        digit = NUMERALS[token]
         prefix = re.escape(token[: min(4, len(token))])
-        return rf"(?:\b{prefix}\w*|(?<!\d){NUMERALS[token]}(?!\d))"
+        forms = "|".join(re.escape(form) for form in NUMERAL_FORMS[digit])
+        return rf"(?:\b{prefix}\w*|\b(?:{forms})\b|(?<!\d){digit}(?!\d))"
     keep = max(4, -(-len(token) * 3 // 5)) if len(token) >= 5 else max(3, len(token) - 1)
     return rf"\b{re.escape(token[:keep])}\w*"
 

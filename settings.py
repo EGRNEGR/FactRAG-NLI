@@ -234,6 +234,10 @@ class RAGSettings(BaseSettings):
     # clause is the statement about the source. Qwen3.8 opens corrections this way and mDeBERTa
     # read the extra negation as a contradiction. The published claim keeps the verdict.
     nli_strip_verdict_prefix: bool = True
+    # Anchors (numbers, codes, identifiers) of a claim are also searched in the section headings
+    # of its cited sources: "AC-7", "Super Bowl 50" or "UUIDv1" name the subject of a chunk in
+    # its heading, which the NLI premise already carries, not in the body text.
+    nli_anchor_headings: bool = True
     abstention_guard: bool = True
     sparse_coverage_weighting: bool = True
     chunk_target_tokens: int = Field(default=420, ge=300, le=600)

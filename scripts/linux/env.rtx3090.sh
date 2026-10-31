@@ -90,14 +90,15 @@ export RERANKER="${RERANKER:-bge-reranker-v2-m3}"
 # it) and the top_k ranked chunks reach the LLM. With "chunk" every source had to pass the
 # threshold, which dropped low-scored gold chunks behind confident distractors.
 export RAG_RERANK_GATE_SCOPE="${GATE_SCOPE:-top}"
-# The threshold depends on the reranker's score scale. v2-m3: 0.02, chosen on the dev halves of
-# eval_dataset_v3 and XQuAD (an answerable question rejected costs a likely correct answer, an
-# unanswerable one passed costs a refusal the LLM gives anyway in ~95% of cases): dev rejects
-# 2 of 164 answerable and 21 of 46 unanswerable, test 0 of 166 and 19 of 42.
+# The threshold depends on the reranker's score scale. v2-m3: 0.005. Run 20261030T1814Z (0.02)
+# rejected 36 of 911 answerable XQuAD questions while Qwen3.8 refused every one of the 10
+# unanswerable ones the gate let through; a local e2e of the 45 XQuAD cases scored between 0.005
+# and 0.02 answered 7 of 23 answerable ones correctly and refused all 22 unanswerable ones.
+# On eval_dataset_v3 only 1 unanswerable question scores below 0.02 (the LLM refuses 47 of 48).
 # bge-reranker-large: 0.05, the production value.
 case "$RERANKER" in
   bge-reranker-large) default_gate=0.05 ;;
-  bge-reranker-v2-m3) default_gate=0.02 ;;
+  bge-reranker-v2-m3) default_gate=0.005 ;;
   *) default_gate=0.05 ;;
 esac
 # GATE_THRESHOLD overrides it for every reranker.

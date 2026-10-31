@@ -31,6 +31,9 @@ _NUMBERED = (
 _PROTECT_V2 = re.compile(
     rf"\b{_ALWAYS}|\b{_NUMBERED}|\betc\.(?=\s*[a-zа-яё0-9,;)])|\.{{3,}}|…", re.I
 )
+# v2: an initial ("Уильям Э. Саймон", "Т.Т. Цуй", "Джеймс O. Маккинси") is one capital letter
+# with a period before another capital; case-sensitive, so "Ответ: no. Далее" still splits.
+_INITIAL = re.compile(r"(?<!\w)[A-ZА-ЯЁ]\.(?=[ \t]*[A-ZА-ЯЁ])")
 _TAIL_V1 = re.compile(r"(?:\s*\[S[^\]\n]*\])+")
 _TAIL_V2 = re.compile(r"(?:\s*,?\s*\[S[^\]\n]*\])+")
 
@@ -40,7 +43,7 @@ def segment_claims(text: str, version: SegmentationVersion = "v1") -> list[str]:
 
     v1 splits on semicolons and protects only Russian abbreviations. v2 keeps a sentence
     with semicolons whole, protects English numbered references ("SP 800-53 Rev. 5"),
-    common abbreviations and ellipses, and attaches comma-separated citations.
+    common abbreviations, initials and ellipses, and attaches comma-separated citations.
     Compound propositions inside one sentence are not semantically atomized.
     """
     text = re.sub(r"^\s*(?:ответ|answer)\s*:\s*", "", text.strip(), flags=re.I)
@@ -52,6 +55,8 @@ def segment_claims(text: str, version: SegmentationVersion = "v1") -> list[str]:
         protected.update(
             i for i in range(match.start(), match.end()) if not legacy or text[i] == "."
         )
+    if not legacy:
+        protected.update(match.end() - 1 for match in _INITIAL.finditer(text))
     breaks = ".!?;\n。！？" if legacy else ".!?\n。！？"
     tail_pattern = _TAIL_V1 if legacy else _TAIL_V2
     pieces: list[str] = []

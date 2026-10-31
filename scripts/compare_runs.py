@@ -6,6 +6,11 @@ prints a Markdown report and writes it to <run>/COMPARISON.md. A configuration e
 several datasets also gets a pooled "all" row (rates over the summed counts). The live laptop run 20261026T2139Z_v3
 (RTX 5060 Laptop 8 GB, Qwen2.5-14B, verifier v1) is listed as the reference for v3.
 
+With both qwen38-27b+<reranker> and qwen38-27b-think+<reranker> logged, a "thinking only on
+refusal" row is computed per case from the two logs: a case whose non-thinking first draft
+was a refusal takes the outcome of the thinking configuration (the same retrieval, prompt and
+seed, so its first thinking call is the call such a hybrid would make).
+
 Usage:  python scripts/compare_runs.py reports/runs/<run_id>
 """
 
@@ -72,6 +77,48 @@ def pooled(summaries: Sequence[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def case_rows(path: Path) -> dict[str, dict[str, Any]]:
+    if not path.exists():
+        return {}
+    rows = (json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line)
+    return {row["id"]: row for row in rows}
+
+
+def think_on_refusal(
+    base: dict[str, dict[str, Any]], think: dict[str, dict[str, Any]]
+) -> tuple[dict[str, Any], int] | None:
+    """Summary of the hybrid over the cases logged by both configurations, and its trigger count."""
+    shared = [case_id for case_id in base if case_id in think]
+    if not shared:
+        return None
+    rows, triggered = [], 0
+    for case_id in shared:
+        row = base[case_id]
+        if row.get("refusal_reason") == "llm_refusal" and row.get("attempts") == 1:
+            row, triggered = think[case_id], triggered + 1
+        rows.append(row)
+    ok = [row for row in rows if row.get("ok")]
+
+    def block(items: Sequence[bool]) -> dict[str, Any]:
+        k, n = sum(bool(x) for x in items), len(items)
+        return {"k": k, "n": n, "rate": k / n if n else None}
+
+    answer = [row for row in ok if row["expected_behavior"] == "answer"]
+    other = [row for row in ok if row["expected_behavior"] != "answer"]
+    summary = {
+        "cases": len(rows),
+        "errors": len(rows) - len(ok),
+        "vanilla": {"correct": block([row["vanilla"]["correct"] for row in ok])},
+        "factrag": {
+            "correct": block([row["factrag"]["correct"] for row in ok]),
+            "hallucination": block([row["factrag"]["hallucination"] for row in other]),
+            "false_refusal_on_answerable": block([row["factrag"]["refused"] for row in answer]),
+        },
+        "latency_ms": {"generated_queries": {}},
+    }
+    return summary, triggered
+
+
 def report(run: Path) -> str:
     lines = [
         f"# FactRAG-NLI on RTX 3090: {run.name}",
@@ -100,6 +147,30 @@ def report(run: Path) -> str:
                 found.append(summary)
         if len(found) > 1:
             lines.append(e2e_row(config.name, "all", pooled(found)))
+    hybrid_notes = []
+    for think_dir in sorted(run.glob("qwen38-27b-think+*")):
+        reranker = think_dir.name.split("+", 1)[1]
+        base_dir = run / f"qwen38-27b+{reranker}"
+        found = []
+        for dataset in DATASETS:
+            log = Path(dataset) / "e2e_guard_on" / "cases.jsonl"
+            result = think_on_refusal(case_rows(base_dir / log), case_rows(think_dir / log))
+            if result:
+                summary, triggered = result
+                label = f"qwen38-27b+{reranker}, thinking only on refusal (computed)"
+                lines.append(e2e_row(label, dataset, summary))
+                found.append(summary)
+                hybrid_notes.append(
+                    f"{dataset}: thinking call for {triggered} of {summary['cases']} cases "
+                    f"(non-thinking first draft was a refusal)."
+                )
+        if len(found) > 1:
+            lines.append(e2e_row(label, "all", pooled(found)))
+    if hybrid_notes:
+        lines += [
+            "",
+            "Thinking only on refusal, computed from the two logs: " + " ".join(hybrid_notes),
+        ]
     lines += [
         "",
         "Verifier v2 replay of the reference drafts (20261027T0447Z_v3_verifier2): FactRAG 78.6%",

@@ -96,6 +96,30 @@ def test_anchor_guard_blocks_number_absent_from_sources() -> None:
     assert result.claims[0].reason == "anchor_not_in_source" and result.refused
 
 
+def test_anchor_in_the_section_heading_counts_as_in_the_source() -> None:
+    chunk = SourceContext(
+        chunk_id="ac7",
+        document_id="sp800-53",
+        text="The system enforces a limit of consecutive invalid logon attempts.",
+        citation="AC-7",
+        section_path=("AC-7 UNSUCCESSFUL LOGON ATTEMPTS",),
+    )
+    claim = "AC-7 ограничивает число неудачных попыток входа [S1]."
+    on = NLIFactVerifier(settings(), backend=Table({}, ENTAILMENT)).verify(
+        raw(claim, {"S1": chunk})
+    )
+    assert on.claims[0].status == ClaimStatus.VERIFIED and not on.refused
+    off = NLIFactVerifier(
+        settings(nli_anchor_headings=False), backend=Table({}, ENTAILMENT)
+    ).verify(raw(claim, {"S1": chunk}))
+    assert off.claims[0].reason == "anchor_not_in_source"
+    # A number found neither in the text nor in the heading is still blocked.
+    other = NLIFactVerifier(settings(), backend=Table({}, ENTAILMENT)).verify(
+        raw("AC-8 ограничивает число неудачных попыток входа [S1].", {"S1": chunk})
+    )
+    assert other.claims[0].reason == "anchor_not_in_source"
+
+
 def test_anchor_window_needs_every_anchor_in_that_window() -> None:
     window = "A server MAY exceed 1200 bytes."
     backend = Table({window: MODERATE}, NEUTRAL)
