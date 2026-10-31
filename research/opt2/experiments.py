@@ -98,7 +98,9 @@ def register(variant: Variant) -> None:
     VARIANTS[variant.id] = variant
 
 
-register(Variant("V00_baseline", "verifier v2 as run in 0508Z (mDeBERTa-v3-base)", single("mdeberta")))
+register(
+    Variant("V00_baseline", "verifier v2 as run in 0508Z (mDeBERTa-v3-base)", single("mdeberta"))
+)
 
 
 def gpu_info() -> dict[str, Any]:
@@ -130,7 +132,10 @@ def evaluate(variant: Variant, records: dict[str, data.CaseRecord]) -> dict[str,
         "errors": [],
     }
     try:
-        for router_name, router in (("withheld", on_withheld), ("first_llm_refusal", on_first_llm_refusal)):
+        for router_name, router in (
+            ("withheld", on_withheld),
+            ("first_llm_refusal", on_first_llm_refusal),
+        ):
             t0 = time.perf_counter()
             cases = run(records, v, router)
             outcomes = [c.outcome for c in cases]
@@ -138,7 +143,10 @@ def evaluate(variant: Variant, records: dict[str, data.CaseRecord]) -> dict[str,
                 "all": summarize(outcomes),
                 "dev": summarize([o for o in outcomes if o["split"] == "dev"]),
                 "test": summarize([o for o in outcomes if o["split"] == "test"]),
-                **{ds: summarize([o for o in outcomes if o["dataset"] == ds]) for ds in data.DATASETS},
+                **{
+                    ds: summarize([o for o in outcomes if o["dataset"] == ds])
+                    for ds in data.DATASETS
+                },
                 "thinking_calls": sum(c.thinking for c in cases),
                 "missing_repair": sum(c.missing_repair for c in cases),
                 "seconds": time.perf_counter() - t0,
@@ -169,7 +177,10 @@ def csv_row(res: dict[str, Any]) -> dict[str, Any]:
         "models": "+".join(res["models"]),
         "overrides": json.dumps(res["overrides"], ensure_ascii=False),
         "seed": res["seed"],
-        "dataset_versions": "v3:" + res["dataset_versions"]["v3"][:12] + " xquad-full:" + res["dataset_versions"]["xquad-full"][:12],
+        "dataset_versions": "v3:"
+        + res["dataset_versions"]["v3"][:12]
+        + " xquad-full:"
+        + res["dataset_versions"]["xquad-full"][:12],
         "hardware": res.get("gpu"),
         "seconds": round(res["seconds"], 1),
         "max_vram_mb": res.get("max_vram_mb"),

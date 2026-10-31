@@ -37,7 +37,10 @@ OUT = ROOT / "reports" / "optimization_2"
 CACHE = ROOT / ".artifacts" / "opt2"
 DATASETS = ("v3", "xquad-full")
 FROZEN = {
-    "v3": ("data/eval_dataset_v3.json", "33cb533ee7cc46adfd3edf81fd9c270ed1fe7399f1c0c0b93f321275b71a44d3"),
+    "v3": (
+        "data/eval_dataset_v3.json",
+        "33cb533ee7cc46adfd3edf81fd9c270ed1fe7399f1c0c0b93f321275b71a44d3",
+    ),
     "xquad-full": (
         "data/xquad_dataset_full.json",
         "53b3db2531977f9232e450b484b5e8b93b5c61a6621e01b1ee72e5f029997edb",

@@ -139,7 +139,9 @@ def main() -> None:
         "|---|---|---|",
     ]
     for name, res in results.items():
-        lines.append(f"| {name} | {pct(res['dev']['factrag_correct'])} | {pct(res['test']['factrag_correct'])} |")
+        lines.append(
+            f"| {name} | {pct(res['dev']['factrag_correct'])} | {pct(res['test']['factrag_correct'])} |"
+        )
     lines += [
         "",
         "## Paired against the baseline (FactRAG correct, same 1307 cases)",

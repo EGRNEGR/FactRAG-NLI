@@ -64,7 +64,9 @@ def judge_verifier(secondary: str, judge: ClaimJudge, **overrides: Any) -> NLIFa
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as handle:
         json.dump(judge.spec, handle)
     s = settings(nli_decision="judge", nli_judge_path=handle.name, **overrides)
-    v = NLIFactVerifier(s, backend=CachedNLI("mdeberta"), secondary=CachedNLI(secondary), judge=judge)
+    v = NLIFactVerifier(
+        s, backend=CachedNLI("mdeberta"), secondary=CachedNLI(secondary), judge=judge
+    )
     Path(handle.name).unlink()
     return v
 
@@ -108,16 +110,22 @@ def fit(rows: list[dict[str, Any]]) -> tuple[list[float], float, dict[str, Any]]
     for c in (0.01, 0.03, 0.1, 0.3, 1.0, 3.0):
         model = LogisticRegression(C=c, class_weight="balanced", max_iter=5000)
         scores[c] = float(
-            cross_val_score(model, x, y, cv=GroupKFold(5), groups=groups, scoring="neg_log_loss").mean()
+            cross_val_score(
+                model, x, y, cv=GroupKFold(5), groups=groups, scoring="neg_log_loss"
+            ).mean()
         )
     best_c = max(scores, key=lambda c: scores[c])
     model = LogisticRegression(C=best_c, class_weight="balanced", max_iter=5000).fit(x, y)
-    return list(map(float, model.coef_[0])), float(model.intercept_[0]), {
-        "cv_neg_log_loss": scores,
-        "C": best_c,
-        "dev_rows": len(dev),
-        "dev_label_counts": dict(Counter(int(v) for v in y)),
-    }
+    return (
+        list(map(float, model.coef_[0])),
+        float(model.intercept_[0]),
+        {
+            "cv_neg_log_loss": scores,
+            "C": best_c,
+            "dev_rows": len(dev),
+            "dev_label_counts": dict(Counter(int(v) for v in y)),
+        },
+    )
 
 
 def main(secondary: str) -> None:
@@ -179,7 +187,9 @@ def main(secondary: str) -> None:
     out.mkdir(parents=True, exist_ok=True)
     (out / f"{secondary}.json").write_text(json.dumps({"spec": spec, **record}, indent=1), "utf-8")
     print("chosen", chosen, "C", record["C"])
-    print("coef", dict(zip(FEATURES, [round(c, 3) for c in coef])), "intercept", round(intercept, 3))
+    print(
+        "coef", dict(zip(FEATURES, [round(c, 3) for c in coef])), "intercept", round(intercept, 3)
+    )
     print("ECE dev", round(record["calibration_dev"]["ece"], 4), "logit", math.isfinite(intercept))
 
 

@@ -63,7 +63,9 @@ def prompt(question: str, revision: dict[str, Any], contexts: dict[str, Any]) ->
             "question": question.strip(),
             "revision": revision,
             "sources": {
-                k: SourceContext.model_validate(v).model_dump(mode="json", exclude={"document_title"})
+                k: SourceContext.model_validate(v).model_dump(
+                    mode="json", exclude={"document_title"}
+                )
                 for k, v in contexts.items()
             },
         },
@@ -125,7 +127,13 @@ def generate(api_base: str, judge: str) -> None:
             }
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
             handle.flush()
-            print(record.case.id, config, row["seconds"], reply.text[:100].replace("\n", " "), flush=True)
+            print(
+                record.case.id,
+                config,
+                row["seconds"],
+                reply.text[:100].replace("\n", " "),
+                flush=True,
+            )
 
 
 def question_of(record: data.CaseRecord, config: str) -> str:

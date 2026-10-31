@@ -109,7 +109,10 @@ ROUTERS: dict[str, tuple[str, Callable[[float], Router] | Router, list[float] | 
     "C_withheld_or_conflict": (
         "withheld, or a claim graded contradicted/ambiguous/partial (dropped from the answer)",
         lambda c: withheld(c)
-        or (not c.base.refused and bool(c.grades & {"contradicted", "ambiguous", "partially_supported"})),
+        or (
+            not c.base.refused
+            and bool(c.grades & {"contradicted", "ambiguous", "partially_supported"})
+        ),
         None,
     ),
     "D_withheld_or_low_confidence": (
@@ -230,8 +233,12 @@ def main(judge_name: str) -> dict[str, Any]:
             )
     oracle = sum(
         bool(
-            outcome(c.record, vanilla_text=None, published_text=c.base.published)["factrag"]["correct"]
-            or outcome(c.record, vanilla_text=None, published_text=c.think.published)["factrag"]["correct"]
+            outcome(c.record, vanilla_text=None, published_text=c.base.published)["factrag"][
+                "correct"
+            ]
+            or outcome(c.record, vanilla_text=None, published_text=c.think.published)["factrag"][
+                "correct"
+            ]
         )
         for c in cases
     )
@@ -239,7 +246,9 @@ def main(judge_name: str) -> dict[str, Any]:
     print("oracle best of two:", oracle)
     out = data.OUT / "routing"
     out.mkdir(parents=True, exist_ok=True)
-    (out / f"routing_{judge_name}.json").write_text(json.dumps(report, indent=1, ensure_ascii=False), "utf-8")
+    (out / f"routing_{judge_name}.json").write_text(
+        json.dumps(report, indent=1, ensure_ascii=False), "utf-8"
+    )
     return report
 
 

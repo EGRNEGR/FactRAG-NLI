@@ -106,7 +106,10 @@ def build() -> list[dict[str, Any]]:
         seen.add(key)
         base = {"id": record.case.id, "config": config, "split": record.split}
         items.append({**base, "kind": "positive", "text": claim["claim"], "source": claim["claim"]})
-        variants = {"number_swap": _number_swap(claim["claim"]), "negation": _negate(claim["claim"])}
+        variants = {
+            "number_swap": _number_swap(claim["claim"]),
+            "negation": _negate(claim["claim"]),
+        }
         if record.case.id.startswith("V3-XQF"):
             answer = record.case.ground_truth_answer.strip(' "«»')
             others = sorted(
@@ -116,8 +119,13 @@ def build() -> list[dict[str, Any]]:
                     if r.case.id != record.case.id and r.case.expected_behavior == "answer"
                 }
             )
-            others = [o for o in others if normalize(o) != normalize(answer)
-                      and normalize(answer) not in normalize(o) and normalize(o) not in normalize(answer)]
+            others = [
+                o
+                for o in others
+                if normalize(o) != normalize(answer)
+                and normalize(answer) not in normalize(o)
+                and normalize(o) not in normalize(answer)
+            ]
             numeric = bool(re.search(r"\d", answer))
             others = sorted(
                 (o for o in others if bool(re.search(r"\d", o)) == numeric),
@@ -136,8 +144,14 @@ def build() -> list[dict[str, Any]]:
                 markers = "".join(re.findall(r"\[S\d+\]", claim["claim"])) or "[S1]"
                 text = _CITE.sub("", other_claim["claim"]).rstrip(". ") + " " + markers + "."
                 items.append(
-                    {"id": record.case.id, "config": config, "split": record.split,
-                     "kind": "transplant", "text": text, "source": claim["claim"]}
+                    {
+                        "id": record.case.id,
+                        "config": config,
+                        "split": record.split,
+                        "kind": "transplant",
+                        "text": text,
+                        "source": claim["claim"],
+                    }
                 )
                 break
     unique = {(i["id"], i["config"], i["kind"], i["text"]): i for i in items}
@@ -177,7 +191,11 @@ def evaluate(
             hits[(item["kind"], split)] += ok
     result: dict[str, dict[str, Any]] = {}
     for (kind, split), n in sorted(counts.items()):
-        result.setdefault(kind, {})[split] = {"k": hits[(kind, split)], "n": n, "rate": hits[(kind, split)] / n}
+        result.setdefault(kind, {})[split] = {
+            "k": hits[(kind, split)],
+            "n": n,
+            "rate": hits[(kind, split)] / n,
+        }
     return result
 
 

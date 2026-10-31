@@ -26,7 +26,11 @@ for model in ("bge-m3-zeroshot", "xlmr-large-xnli", "xlmr-large-xnli-anli"):
 
 # Single switches of verifier v2 (mDeBERTa).
 for name, overrides, text in (
-    ("V01_no_title_route", {"nli_premise_title": False}, "without the 'Title. Section.' premise route"),
+    (
+        "V01_no_title_route",
+        {"nli_premise_title": False},
+        "without the 'Title. Section.' premise route",
+    ),
     ("V01_no_anchor_windows", {"nli_anchor_windows": False}, "without the anchored-window route"),
     ("V01_no_code_span", {"nli_code_span_min_chars": 0}, "without the verbatim code-span route"),
     ("V01_no_anchor_guard", {"nli_anchor_guard": False}, "without the anchor guard"),
