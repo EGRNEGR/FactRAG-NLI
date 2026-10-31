@@ -96,7 +96,7 @@ q() { printf '%q ' "$@"; }
 add "xquad-dataset" "$(q "$PYTHON" -X utf8 scripts/build_xquad_dataset.py "${XQ_BUILD[@]}" --check)"
 # Index-building stages run before any llama-server and keep the encoder on the GPU; the
 # decision layer (VERIFIER=judge) moves it to the CPU only for the e2e stages.
-IDX=(env EMBEDDING_DEVICE=auto RAG_EMBEDDING_DEVICE=auto)
+IDX=(env EMBEDDING_DEVICE="$RAG_MODEL_DEVICE" RAG_EMBEDDING_DEVICE="$RAG_MODEL_DEVICE")
 add "xquad-nli" "$(q "${IDX[@]}" "${XQ[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${XQ_DATA[@]}" --run-dir "$RUN_ROOT/nli/$XQ_DIR" "${LIMIT[@]}" nli)"
 done_retrieval=" "
 for config in $CONFIGS; do

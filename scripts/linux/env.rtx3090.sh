@@ -93,6 +93,9 @@ export LLAMA_PORT="${LLAMA_PORT:-8080}"
 export LLAMA_CTX="${LLAMA_CTX:-8192}"
 export LLAMA_GPU_LAYERS="${LLAMA_GPU_LAYERS:-999}"
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
+# PyTorch models on CUDA explicitly: "auto" would quietly fall back to the CPU if the driver or
+# CUDA failed, and a benchmark would run for hours at CPU speed. Now that is an error.
+export RAG_MODEL_DEVICE="${MODEL_DEVICE:-cuda}"
 
 # ---------------------------------------------------------------- retrieval runtime
 # The 8 GB laptop needed batch 2 next to llama-server; 24 GB takes 16/8 (code defaults).
@@ -155,7 +158,7 @@ case "$VERIFIER" in
   rules)
     export RAG_NLI_DECISION=rules
     unset RAG_NLI_SECONDARY_MODEL_PATH RAG_NLI_JUDGE_PATH
-    export RAG_EMBEDDING_DEVICE="${EMBEDDING_DEVICE:-auto}"
+    export RAG_EMBEDDING_DEVICE="${EMBEDDING_DEVICE:-$RAG_MODEL_DEVICE}"
     ;;
   *)
     echo "Unknown VERIFIER=$VERIFIER (judge | rules)" >&2

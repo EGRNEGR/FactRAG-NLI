@@ -20,6 +20,13 @@ def explicit_development_mode(
     monkeypatch.setenv("RAG_RERANK_SCORE_THRESHOLD", "0.5")
     # The RTX 3090 .env gates on the top chunk only; the retrieval tests expect per-chunk gating.
     monkeypatch.setenv("RAG_RERANK_GATE_SCOPE", "chunk")
+    # setup.sh runs the tests under env.rtx3090.sh: its decision layer, recovery and CUDA-only
+    # device choice belong to the deployment, not to the unit tests.
+    monkeypatch.setenv("RAG_NLI_DECISION", "rules")
+    monkeypatch.setenv("RAG_LLM_RECOVERY", "off")
+    monkeypatch.setenv("RAG_MODEL_DEVICE", "auto")
+    for name in ("RAG_NLI_SECONDARY_MODEL_PATH", "RAG_NLI_JUDGE_PATH", "RAG_EMBEDDING_DEVICE"):
+        monkeypatch.delenv(name, raising=False)
     for name in ("EMBEDDING", "RERANKER", "NLI", "LLM"):
         monkeypatch.setenv(f"RAG_{name}_MODEL_PATH", str(tmp_path / f"missing-{name}"))
     if request.path.name != "test_settings.py":
