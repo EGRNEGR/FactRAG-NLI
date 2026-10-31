@@ -22,6 +22,7 @@ from generator_verifier import (
     REFUSAL,
     VerifiedClaim,
     VerifiedGenerationResult,
+    recovery_note,
 )
 from hybrid_retriever import HybridRetriever, SearchResult
 from settings import RAGSettings
@@ -44,6 +45,14 @@ def refusal_reason(verified: VerifiedGenerationResult) -> str | None:
     if verified.raw_text.strip() == REFUSAL:
         return "llm_refusal"
     return "nli_verification_failed"
+
+
+def recovery_due(settings: RAGSettings, reason: str | None, results: list[SearchResult]) -> bool:
+    """llm_recovery trigger: an LLM refusal with a confidently relevant best source."""
+    if settings.llm_recovery == "off" or reason != "llm_refusal" or not results:
+        return False
+    best = max((hit.rerank_score or 0.0) for hit in results)
+    return best >= settings.llm_recovery_min_rerank
 
 
 def think_retry(mode: str, reason: str | None) -> bool:
@@ -285,6 +294,34 @@ class RAGPipeline:
             attempts.append(verified.model_dump(mode="json"))
         return verified
 
+    def _recover(
+        self,
+        generator: LocalLLMGenerator,
+        verifier: NLIFactVerifier,
+        question: str,
+        results: list[SearchResult],
+        attempts: list[dict[str, Any]],
+        refused: VerifiedGenerationResult,
+    ) -> VerifiedGenerationResult:
+        """llm_recovery: bounded extra non-thinking drafts; the first published one wins."""
+        s = self.settings
+        if s.llm_recovery == "evidence_prompt":
+            ranked = sorted(range(len(results)), key=lambda i: -(results[i].rerank_score or 0.0))
+            top = [f"S{i + 1}" for i in ranked[:2]]
+            plans: list[dict[str, Any]] = [{"system_note": recovery_note(top)}]
+        else:
+            plans = [
+                {"sampling": {"temperature": s.llm_recovery_temperature, "seed": 1000 + i}}
+                for i in range(s.llm_recovery_samples)
+            ]
+        for plan in plans:
+            raw = generator.generate(question, results, **plan)
+            verified = verifier.verify(raw)
+            attempts.append(verified.model_dump(mode="json"))
+            if not verified.refused:
+                return verified
+        return refused
+
     def query(self, question: str, *, top_k: int | None = None) -> RAGResponse:
         """Retrieve, generate and verify; scores describe raw claims before filtering."""
         question = self._question(question)
@@ -355,6 +392,10 @@ class RAGPipeline:
                 if think_retry(self.settings.llm_think_retry, refusal_reason(verified)):
                     verified = self._draft(
                         generator, verifier, question, results, attempts, thinking=True
+                    )
+                if recovery_due(self.settings, refusal_reason(verified), results):
+                    verified = self._recover(
+                        generator, verifier, question, results, attempts, verified
                     )
             stats.update(
                 generation_ms=sum(a["generation_metadata"]["generation_ms"] for a in attempts)

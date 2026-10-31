@@ -365,3 +365,14 @@ def strip_verdict_prefix(hypothesis: str, min_words: int = 4) -> str:
 
 def has_negation(text: str) -> bool:
     return bool(_NEGATION.search(text))
+
+
+_RFC2119 = re.compile(
+    r"\b(?:MUST NOT|MUST|SHALL NOT|SHALL|SHOULD NOT|SHOULD|NOT RECOMMENDED|RECOMMENDED|"
+    r"REQUIRED|MAY|OPTIONAL)\b"
+)
+
+
+def normalize_keywords(text: str) -> str:
+    """Lower-case upper-case RFC 2119 keywords ("SHALL NOT" -> "shall not") for the NLI model."""
+    return _RFC2119.sub(lambda match: match.group(0).lower(), text)
