@@ -81,9 +81,23 @@ source scripts/linux/env.rtx3090.sh
 ## 6. Замер качества
 
 ```bash
-PLAN=main bash scripts/linux/run_benchmark.sh   # лучшая конфигурация, 1307 вопросов, ~3.5 ч
-bash scripts/linux/run_benchmark.sh             # полный план с абляциями, ~10.5 ч (нужна Qwen2.5)
+PLAN=main bash scripts/linux/run_benchmark.sh     # лучшая конфигурация, 1307 вопросов, ~3.5 ч
+PLAN=compare bash scripts/linux/run_benchmark.sh  # она же с judge и с rules, ~7 ч
+bash scripts/linux/run_benchmark.sh               # полный план с абляциями, ~10.5 ч (нужна Qwen2.5)
 ```
+
+`VERIFIER` выбирает, как проверяются утверждения ответа:
+
+* `judge` (по умолчанию) - слой решений: каждое утверждение оценивают mDeBERTa и
+  bge-m3-zeroshot-v2.0, решение принимает логистическая модель; ложные утверждения
+  пропускаются в 1.3-11 раз реже, нужно ~1.2 ГБ видеопамяти на вторую модель;
+* `rules` - верификатор v2 прогона 0508Z: только mDeBERTa и пороговые правила; по повтору
+  0508Z верных ответов столько же (90.0% против 89.8%), но подменённый ответ или отрицание
+  он пропускает заметно чаще (51.5% против 32.6%, 32.6% против 13.6%).
+
+`VERIFIER=rules PLAN=main` - один прогон лучшей конфигурации с верификатором v2.
+`PLAN=compare` - обе строки в одном `COMPARISON.md`: `qwen38-27b-hybrid+bge-reranker-v2-m3+judge`
+и `qwen38-27b-hybrid+bge-reranker-v2-m3` (rules); Qwen2.5 не нужна.
 
 Каждые 45 минут видеокарта отдыхает 5 минут; прогон идёт в фоне, терминал и AnyDesk можно
 закрыть (Ctrl+C только прекращает показ лога).

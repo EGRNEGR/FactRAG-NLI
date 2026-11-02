@@ -184,6 +184,7 @@ PyTorch). Вторая NLI-модель добавляет ~1.2 ГБ, перен
 bash scripts/linux/update.sh                         # если проект уже установлен
 LLM_PROFILES=qwen38-27b-hybrid bash scripts/linux/setup.sh   # докачает bge-m3-zeroshot (~1.1 ГБ)
 PLAN=main bash scripts/linux/run_benchmark.sh        # лучшая конфигурация, ~3.5 ч
+PLAN=compare bash scripts/linux/run_benchmark.sh     # она же с VERIFIER=judge и rules, ~7 ч
 bash scripts/linux/run_benchmark.sh                  # полный план с абляциями, ~10.5 ч
 ```
 
