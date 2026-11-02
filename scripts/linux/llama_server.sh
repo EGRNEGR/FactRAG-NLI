@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # llama-server for FactRAG-NLI on the RTX 3090:  llama_server.sh start|stop|status|restart|ensure
 #   ensure  start or restart only if the server of this profile is not answering (watchdog of
-#           evaluate_suite.py); prints the server log tail and memory state first.
+#           evaluate_suite.py); after a crash or hang it prints the server log tail and
+#           memory state first.
 # The log is appended across restarts (.artifacts/llama/server.log), so a crash stays visible.
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/env.rtx3090.sh"
@@ -96,6 +97,12 @@ stop() {
 ensure() {
   if pid="$(running_pid)" && [[ "$(cat "$STATE_DIR/model" 2>/dev/null)" == "$LLM_PROFILE" ]] && ready; then
     echo "llama-server is answering (PID $pid, $LLM_PROFILE)"
+    return 0
+  fi
+  if [[ ! -f "$PID_FILE" ]]; then
+    # Stopped by `stop` (it removes the PID file) or never started: nothing crashed, and the
+    # log tail would only show the previous run.
+    start
     return 0
   fi
   echo "llama-server ($LLM_PROFILE) is down or not answering; diagnostics:" >&2
