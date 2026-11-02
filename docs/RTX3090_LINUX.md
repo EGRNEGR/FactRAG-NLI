@@ -460,6 +460,8 @@ bge-m3-zeroshot-v2.0 для слоя решений, Qwen3.8-27B и Qwen2.5-14B 
 ```bash
 bash scripts/linux/run_benchmark.sh                 # PLAN=full, XQUAD=full (~10.5 ч с отдыхом)
 PLAN=main bash scripts/linux/run_benchmark.sh       # только лучшая конфигурация (~3.5 ч)
+PLAN=compare bash scripts/linux/run_benchmark.sh    # лучшая с judge и с rules (~7 ч)
+VERIFIER=rules PLAN=main bash scripts/linux/run_benchmark.sh  # лучшая с верификатором v2
 PLAN=quick bash scripts/linux/run_benchmark.sh      # 10 кейсов на датасет, проверка за ~15 мин
 bash scripts/linux/run_benchmark.sh --resume        # продолжить после остановки или перезагрузки
 bash scripts/linux/stop_benchmark.sh                # остановить прогон и llama-server
@@ -471,7 +473,10 @@ XQUAD=standard bash scripts/linux/run_benchmark.sh  # прежние 198 воп�
 1307 вопросов на конфигурацию. `XQUAD=standard` - выборка из 198 вопросов (по 4 на статью
 корпуса и по 5 отказов на исключённую статью), набор прогона 20261030T1420Z. Результаты полного
 набора пишутся в подкаталоги `xquad-full`, а `COMPARISON.md` добавляет строку `all` с долями по
-сумме вопросов. Вместе с `--resume` переменные `PLAN` и `XQUAD` переключают уже идущий прогон:
+сумме вопросов. `PLAN=compare` - первые две строки `full` (гибрид со слоем решений и с
+верификатором v2) без Qwen2.5; `VERIFIER` выбирает верификатор планов `main` и `quick` и
+запоминается для `--resume`. Вместе с `--resume` переменные `PLAN`, `XQUAD` и `VERIFIER`
+переключают уже идущий прогон:
 готовые кейсы сохраняются, оставшиеся стадии идут по новому выбору. После смены настроек поиска
 (разделы 5-8) начинайте новый прогон, а не `--resume` старого: иначе в одной папке окажутся кейсы
 с разными настройками.

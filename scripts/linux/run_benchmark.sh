@@ -3,6 +3,7 @@
 #
 #   bash scripts/linux/run_benchmark.sh              # PLAN=full, XQUAD=full, detached, shows the log
 #   PLAN=main bash scripts/linux/run_benchmark.sh    # best configuration only, ~3.5 h
+#   PLAN=compare bash scripts/linux/run_benchmark.sh # best configuration, judge vs rules, ~7 h
 #   PLAN=quick bash scripts/linux/run_benchmark.sh   # 10 cases per dataset, ~15 min smoke test
 #   bash scripts/linux/run_benchmark.sh --resume     # continue the last run after a stop/reboot
 #   bash scripts/linux/run_benchmark.sh --foreground # stay attached to the terminal
@@ -16,7 +17,10 @@
 #          matters most); ~10.5 h. After run 20261031T0508Z (reports/optimization_2) the plan
 #          dropped bge-reranker-large (75.2% against 84.2%) and qwen38-27b-think (always thinking:
 #          87.8% against 89.8% for the hybrid at 2.6x the generation time).
-#   main   qwen38-27b-hybrid+bge-reranker-v2-m3+judge only
+#   compare  qwen38-27b-hybrid+bge-reranker-v2-m3 with the decision layer (+judge) and with
+#          verifier v2: the first two rows of full, no Qwen2.5 download; ~7 h
+#   main   qwen38-27b-hybrid+bge-reranker-v2-m3+$VERIFIER only (default judge;
+#          VERIFIER=rules runs verifier v2 without the second NLI model)
 #   quick  main with 10 cases per dataset
 #   XQUAD  full (all 1087 eligible questions, default: 1307 questions with v3)
 #          | standard (198 sampled questions, the set of run 20261030T1420Z)
@@ -24,6 +28,7 @@
 # The run is detached (setsid + nohup): closing the AnyDesk session or the terminal does not
 # stop it. Ctrl+C only stops watching the log. Stop the run: bash scripts/linux/stop_benchmark.sh
 set -euo pipefail
+verifier_now="${VERIFIER:-}"  # env.rtx3090.sh fills in the default (judge)
 source "$(dirname "${BASH_SOURCE[0]}")/env.rtx3090.sh"
 cd "$PROJECT_ROOT"
 
@@ -41,18 +46,20 @@ STATE=.artifacts/benchmark
 mkdir -p "$STATE"
 if [[ "$RESUME" == "1" ]]; then
   [[ -f "$STATE/last_run" ]] || { echo "Nothing to resume" >&2; exit 1; }
-  # RUN_ID, PLAN and XQUAD of the interrupted run; PLAN/XQUAD given now take precedence
+  # RUN_ID, PLAN, XQUAD and VERIFIER of the interrupted run; values given now take precedence
   # (finished cases are kept, the remaining stages follow the new choice).
   plan_now="${PLAN:-}" xquad_now="${XQUAD:-}"
+  VERIFIER=judge  # runs before VERIFIER was recorded
   source "$STATE/last_run"
   PLAN="${plan_now:-$PLAN}"
   XQUAD="${xquad_now:-${XQUAD:-standard}}"  # runs before XQUAD existed used the standard set
+  VERIFIER="${verifier_now:-$VERIFIER}"
 else
   PLAN="${PLAN:-full}"
   XQUAD="${XQUAD:-full}"
   RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%MZ)_rtx3090_$PLAN}"
 fi
-printf 'RUN_ID=%q\nPLAN=%q\nXQUAD=%q\n' "$RUN_ID" "$PLAN" "$XQUAD" >"$STATE/last_run"
+printf 'RUN_ID=%q\nPLAN=%q\nXQUAD=%q\nVERIFIER=%q\n' "$RUN_ID" "$PLAN" "$XQUAD" "$VERIFIER" >"$STATE/last_run"
 RUN_ROOT="reports/runs/$RUN_ID"
 LOG="$RUN_ROOT/benchmark.log"
 mkdir -p "$RUN_ROOT"
@@ -64,7 +71,7 @@ if [[ "$FOREGROUND" == "0" && -z "${FACTRAG_DETACHED:-}" ]]; then
   fi
   args=(--foreground)
   [[ "$RESUME" == "1" ]] && args+=(--resume)
-  FACTRAG_DETACHED=1 RUN_ID="$RUN_ID" PLAN="$PLAN" XQUAD="$XQUAD" setsid nohup bash "$0" "${args[@]}" >>"$LOG" 2>&1 </dev/null &
+  FACTRAG_DETACHED=1 RUN_ID="$RUN_ID" PLAN="$PLAN" XQUAD="$XQUAD" VERIFIER="$VERIFIER" setsid nohup bash "$0" "${args[@]}" >>"$LOG" 2>&1 </dev/null &
   echo $! >"$STATE/pid"
   echo "$LOG" >"$STATE/log"
   echo "Benchmark $RUN_ID started in the background (PID $!)."
@@ -76,8 +83,9 @@ fi
 
 case "$PLAN" in
   full) CONFIGS="qwen38-27b-hybrid:bge-reranker-v2-m3:judge qwen38-27b-hybrid:bge-reranker-v2-m3:rules qwen38-27b:bge-reranker-v2-m3:rules qwen25-14b:bge-reranker-v2-m3:judge" ;;
-  main | quick) CONFIGS="qwen38-27b-hybrid:bge-reranker-v2-m3:judge" ;;
-  *) echo "Unknown PLAN=$PLAN (full | main | quick)" >&2; exit 2 ;;
+  compare) CONFIGS="qwen38-27b-hybrid:bge-reranker-v2-m3:judge qwen38-27b-hybrid:bge-reranker-v2-m3:rules" ;;
+  main | quick) CONFIGS="qwen38-27b-hybrid:bge-reranker-v2-m3:$VERIFIER" ;;
+  *) echo "Unknown PLAN=$PLAN (full | compare | main | quick)" >&2; exit 2 ;;
 esac
 LIMIT=()
 [[ "$PLAN" == "quick" ]] && LIMIT=(--limit 10)
