@@ -154,12 +154,53 @@ _MARKUP = re.compile(
 )
 
 
-def clean_premise(text: str, *, strip_markup: bool = True) -> str:
-    """Drop the parser header, HTML markup and entities; collapse whitespace."""
+def clean_premise(text: str, *, strip_markup: bool = True, unwrap_tables: bool = False) -> str:
+    """Drop the parser header, HTML markup and entities; collapse whitespace.
+
+    unwrap_tables: one-column Markdown tables become running text first (unwrap_single_column).
+    """
     text = _HEADER.sub("", text)
+    if unwrap_tables:
+        text = unwrap_single_column(text)
     if strip_markup:
         text = html.unescape(_MARKUP.sub(" ", text))
     return " ".join(text.split())
+
+
+_TABLE_ROW = re.compile(r"^\s*\|([^|\n]*)\|\s*$")
+_TABLE_RULE = re.compile(r"^\s*\|\s*:?-{3,}:?\s*\|\s*$")
+_EMPHASIS = re.compile(r"(\*{1,2})([^*\n]+)\1")
+
+
+def unwrap_single_column(text: str) -> str:
+    """Rewrite one-column Markdown tables as running text.
+
+    The parser renders a boxed note as a table of one column whose rows are the wrapped lines
+    of a paragraph ("| *Note:* For historical reasons, a user agent MAY change the |",
+    "| --- |", "| request method from POST to GET ... |"); NLI then reads the pipes as
+    structure (RFC 9110, 302 note: P(contradiction) 0.98 for a true claim). A block of two or
+    more one-cell rows with a rule line is joined back into text; wider tables are kept.
+    """
+    lines = text.split("\n")
+    out: list[str] = []
+    i = 0
+    while i < len(lines):
+        j = i
+        while j < len(lines) and (_TABLE_ROW.match(lines[j]) or _TABLE_RULE.match(lines[j])):
+            j += 1
+        block = lines[i:j]
+        if len(block) >= 2 and any(_TABLE_RULE.match(line) for line in block):
+            cells = [
+                m.group(1).strip()
+                for line in block
+                if not _TABLE_RULE.match(line) and (m := _TABLE_ROW.match(line))
+            ]
+            out.append(_EMPHASIS.sub(r"\2", " ".join(c for c in cells if c)))
+            i = j
+            continue
+        out.append(lines[i])
+        i += 1
+    return "\n".join(out)
 
 
 def premise_windows(premise: str, max_sentences: int = 2) -> list[str]:
@@ -272,11 +313,36 @@ def _ungroup(text: str) -> str:
     return _GROUPED.sub(lambda m: _SEPARATOR.sub("", m.group(0)), text)
 
 
-def claim_anchors(text: str) -> frozenset[str]:
-    """Numbers, literals and code identifiers that a supporting text must contain."""
+# A control enhancement designator: base control and enhancement number ("AC-7(4)", "CA-8(2)").
+_ENHANCEMENT = re.compile(r"(?<![\w-])[A-Za-z]{1,4}-\d+\s?\(\d+\)")
+
+
+def claim_anchors(text: str, *, enhancements: bool = False) -> frozenset[str]:
+    """Numbers, literals and code identifiers that a supporting text must contain.
+
+    enhancements: "AC-7(4)" is one identifier anchor, not the identifier "AC-7" and the
+    number "4" (used by the document anchor scope, where only identifiers may come from
+    another chunk of the same document).
+    """
     text = _DESIGNATOR.sub(" ", _ANY_CITATION.sub(" ", text))
-    found = {_ungroup(m.group(0)).casefold().rstrip(".,") for m in _ANCHOR.finditer(text)}
+    found: set[str] = set()
+    if enhancements:
+        found = {m.group(0).replace(" ", "").casefold() for m in _ENHANCEMENT.finditer(text)}
+        text = _ENHANCEMENT.sub(" ", text)
+    found |= {_ungroup(m.group(0)).casefold().rstrip(".,") for m in _ANCHOR.finditer(text)}
     return frozenset(found - {""})
+
+
+def is_identifier_anchor(anchor: str) -> bool:
+    """A designator of letters and digits (AC-7, ac-7(4), UUIDv7, IPv6), not a number,
+    a hex or binary literal, a flag or a key=value literal."""
+    return (
+        any(ch.isalpha() for ch in anchor)
+        and any(ch.isdigit() for ch in anchor)
+        and not re.fullmatch(r"0x[0-9a-f]+|0b[01]+", anchor)
+        and not anchor.startswith("--")
+        and not any(ch in anchor for ch in "_=/+")
+    )
 
 
 def anchors_present(anchors: frozenset[str], text: str) -> bool:

@@ -1,0 +1,32 @@
+{
+ "think_on_trim": {
+  "cases": 16,
+  "classes": {
+   "ok": 11,
+   "verifier_trimmed_correct": 2,
+   "published_wrong": 2,
+   "no_correct_draft": 1
+  },
+  "think_outcome": {
+   "already_correct": 7,
+   "still_wrong": 5,
+   "fixed": 4
+  }
+ },
+ "xquad_refusals": {
+  "cases": 52,
+  "classes": {
+   "llm_refusal_only": 52
+  }
+ },
+ "v3_errors": {
+  "cases": 20,
+  "classes": {
+   "verifier_trimmed_correct": 1,
+   "no_correct_draft": 1,
+   "llm_refusal_only": 5,
+   "published_wrong": 10,
+   "unanswerable_answered": 3
+  }
+ }
+}

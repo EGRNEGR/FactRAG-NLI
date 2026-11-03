@@ -1771,6 +1771,22 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
 # --------------------------------------------------------------------------- CLI
 
 
+def select_cases(dataset: EvalDatasetV3, ids: str | None) -> EvalDatasetV3:
+    """The dataset restricted to `ids` (comma/whitespace list, or @file with one per line).
+
+    Ids of the other dataset are ignored (one list can name v3 and XQuAD cases); an id found
+    in neither is an error only if nothing of the list is in this dataset.
+    """
+    if not ids:
+        return dataset
+    raw = Path(ids[1:]).read_text(encoding="utf-8") if ids.startswith("@") else ids
+    wanted = {x for x in re.split(r"[,\s]+", raw) if x}
+    cases = [case for case in dataset.cases if case.id in wanted]
+    if not cases:
+        raise SystemExit(f"none of the {len(wanted)} requested ids is in this dataset")
+    return dataset.model_copy(update={"cases": cases})
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     cli = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
@@ -1779,6 +1795,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     cli.add_argument("--run-dir", type=Path, required=True)
     cli.add_argument(
         "--limit", type=int, default=None, help="Evaluate only the first N cases (smoke test)"
+    )
+    cli.add_argument(
+        "--ids",
+        default=None,
+        help="Evaluate only these case ids (comma list or @file); the dataset file, its "
+        "documents and sha256 stay the original ones",
     )
     sub = cli.add_subparsers(dest="mode", required=True)
     sub.add_parser("retrieval")
@@ -1803,7 +1825,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     args = cli.parse_args(argv)
     dataset_path = args.dataset.resolve()
-    dataset = load_dataset(dataset_path)
+    dataset = select_cases(load_dataset(dataset_path), args.ids)
     run_dir = args.run_dir if args.run_dir.is_absolute() else ROOT / args.run_dir
     run_dir.mkdir(parents=True, exist_ok=True)
     if args.mode == "retrieval":

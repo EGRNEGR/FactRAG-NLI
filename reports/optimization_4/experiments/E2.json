@@ -1,0 +1,143 @@
+{
+ "experiment": "E2",
+ "hypothesis": "H3",
+ "text": "one-column Markdown tables of a premise joined into running text before NLI",
+ "overrides": {
+  "nli_premise_unwrap_tables": true
+ },
+ "baseline": "run 20261103T1310Z, judge, logged",
+ "seconds": 13.7,
+ "missing": [],
+ "all": {
+  "correct": "90.6% (1184/1307)",
+  "correct_k": 1184,
+  "hallucination": "1.1% (3/269)",
+  "hallucination_k": 3,
+  "false_refusal": "7.6% (79/1038)",
+  "false_refusal_k": 79,
+  "selective_accuracy": "95.7% (918/959)",
+  "paired": {
+   "n": 1307,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "v3": {
+  "correct": "88.6% (195/220)",
+  "correct_k": 195,
+  "hallucination": "3.2% (3/93)",
+  "hallucination_k": 3,
+  "false_refusal": "5.5% (7/127)",
+  "false_refusal_k": 7,
+  "selective_accuracy": "87.5% (105/120)",
+  "paired": {
+   "n": 220,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "xquad-full": {
+  "correct": "91.0% (989/1087)",
+  "correct_k": 989,
+  "hallucination": "0.0% (0/176)",
+  "hallucination_k": 0,
+  "false_refusal": "7.9% (72/911)",
+  "false_refusal_k": 72,
+  "selective_accuracy": "96.9% (813/839)",
+  "paired": {
+   "n": 1087,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "dev": {
+  "correct": "91.7% (597/651)",
+  "correct_k": 597,
+  "hallucination": "0.0% (0/136)",
+  "hallucination_k": 0,
+  "false_refusal": "6.6% (34/515)",
+  "false_refusal_k": 34,
+  "selective_accuracy": "95.8% (461/481)",
+  "paired": {
+   "n": 651,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "test": {
+  "correct": "89.5% (587/656)",
+  "correct_k": 587,
+  "hallucination": "2.3% (3/133)",
+  "hallucination_k": 3,
+  "false_refusal": "8.6% (45/523)",
+  "false_refusal_k": 45,
+  "selective_accuracy": "95.6% (457/478)",
+  "paired": {
+   "n": 656,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "completeness": {
+  "variant": {
+   "compound_questions": 84,
+   "complete": 69,
+   "mean_fact_share": 0.8837
+  },
+  "baseline": {
+   "compound_questions": 84,
+   "complete": 69,
+   "mean_fact_share": 0.8837
+  }
+ },
+ "regressions": {
+  "lost": [],
+  "new_hallucinations": []
+ },
+ "changed": [
+  {
+   "id": "V3-ADV-006",
+   "split": "dev",
+   "baseline": {
+    "correct": true,
+    "published": "Клиент НЕ ДОЛЖЕН (SHOULD NOT) автоматически повторять запрос с неидемпотентным методом, если у него нет средств узнать, что семантика запроса фактически идемпотентна, или средств обнаружить, что исходный запрос не был применён [S1]."
+   },
+   "variant": {
+    "correct": true,
+    "path": "draft+think+think_repair",
+    "missing": null,
+    "published": "Нет, RFC 9110 не требует от клиентов автоматически повторять запросы с неидемпотентными методами после сбоя соединения [S1][S2].\nКлиент SHOULD NOT automatically retry a request with a non-idempotent method unless it has some means to know that the request semantics are actually idempotent, regardless of the method, or some means to detect that the original request was never applied [S1][S2]."
+   }
+  }
+ ]
+}

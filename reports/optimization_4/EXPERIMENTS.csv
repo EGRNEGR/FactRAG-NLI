@@ -1,0 +1,4 @@
+﻿experiment,kind,hypothesis,text,overrides,correct,baseline_correct,gained,lost,mcnemar_p,dev_gained_lost,test_gained_lost,hallucination,new_hallucinations,false_refusal,complete_compound,baseline_complete_compound,changed_texts,missing,seconds
+B00,offline replay,-,"replay of the run, current code, no override",{},1184,1184,0,0,1.0,0/0,0/0,3,0,79,69/84,69/84,1,0,2.5
+E1,offline replay,H2,control enhancement as one identifier; identifiers may come from a same-document chunk,"{""nli_anchor_scope"": ""document""}",1185,1184,1,0,1.0,0/0,1/0,3,0,79,70/84,69/84,3,0,2.4
+E2,offline replay,H3,one-column Markdown tables of a premise joined into running text before NLI,"{""nli_premise_unwrap_tables"": true}",1184,1184,0,0,1.0,0/0,0/0,3,0,79,69/84,69/84,1,0,13.7
