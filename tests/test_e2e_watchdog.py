@@ -37,6 +37,7 @@ class FakePipeline:
             sources=[],
             generation_metadata=None,
             execution_stats={},
+            translation=None,
             model_dump=lambda mode: {},
         )
 

@@ -4,6 +4,8 @@
 evaluate_suite.py --ids:
   E1   questions where a logged claim was withheld for a missing anchor
        (anchor_not_in_source, any attempt) - the only ones nli_anchor_scope=document can change
+  G3   gate or LLM refusals of a question in another script than its best sources - the only
+       ones query_translation=refusal can change (the trigger of research.opt4.steps G3)
   controls  a fixed sample of 20 questions untouched by every variant (determinism of e2e)
 
 `run <dir>` compares <dir>/<dataset>/e2e_guard_on/cases.jsonl with the baseline's cases on
@@ -60,7 +62,13 @@ def controls(n: int = 20) -> list[str]:
     return picked
 
 
-POPULATIONS = {"E1": anchor_population, "controls": controls}
+def translation_population() -> list[str]:
+    from research.opt4 import steps  # loads the run's index for the sources' script only
+
+    return [r.id for r in data.records().values() if steps.g3_trigger(r, None)]
+
+
+POPULATIONS = {"E1": anchor_population, "G3": translation_population, "controls": controls}
 
 
 def outcome(record: data.CaseRecord, text: str | None, first: str | None) -> dict[str, Any]:
@@ -108,6 +116,11 @@ def compare(run_dir: Path) -> dict[str, Any]:
         "questions": len(ids),
         "identical_published": len(ids) - len(changed),
         "all": metrics.block(variant, base),
+        **{
+            part: metrics.block([variant[i] for i in idx], [base[i] for i in idx])
+            for part in ("dev", "test")
+            if (idx := [i for i, o in enumerate(variant) if o["split"] == part])
+        },
         "completeness": {
             "variant": metrics.completeness(
                 {cid: None if rows[cid]["refused"] else rows[cid]["answer"] for cid in ids}
@@ -139,6 +152,11 @@ def main(argv: list[str]) -> int:
               f"hallucination {result['all']['hallucination']}, "
               f"false refusal {result['all']['false_refusal']}, "
               f"regressions {result['regressions']}, {result['seconds']} s")
+        for part in ("dev", "test"):
+            if part in result:
+                q = result[part]["paired"]
+                print(f"  {part}: +{q['gained']} -{q['lost']}, "
+                      f"hallucination {result[part]['hallucination']}")
         for c in result["changed"]:
             print("  ", c["id"], c["correct_before"], "->", c["correct_after"])
         reg = result["regressions"]

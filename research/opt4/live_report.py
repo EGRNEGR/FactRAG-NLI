@@ -84,6 +84,15 @@ def main(out: Path) -> int:
     ]
     if projected:
         lines += ["", "Projected on all questions (baseline 1184/1307):", *projected]
+    if e1 and any(part in e1 for part in ("dev", "test")):
+        lines += ["", "e2e by split:"]
+        lines += [
+            f"- {part}: +{e1[part]['paired']['gained']} / -{e1[part]['paired']['lost']}, "
+            f"correct {e1[part]['correct']}, hallucination {e1[part]['hallucination']}, "
+            f"false refusal {e1[part]['false_refusal']}"
+            for part in ("dev", "test")
+            if part in e1
+        ]
     if e1 and e1.get("changed"):
         lines += ["", "e2e changed answers:"]
         lines += [f"- {c['id']}: {c['correct_before']} -> {c['correct_after']}" for c in e1["changed"]]

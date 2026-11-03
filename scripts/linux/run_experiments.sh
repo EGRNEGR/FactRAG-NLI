@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # optimization_4: fast experiment loop on the RTX 3090 against the baseline run 1310Z.
 #
-#   bash scripts/linux/run_experiments.sh              # PLAN=quick: D0, G3, G4 (~18 min estimate)
+#   bash scripts/linux/run_experiments.sh              # PLAN=quick: D0, G3, G4 (13 min measured)
 #   PLAN=all bash scripts/linux/run_experiments.sh     # + e2e of E1 with 20 controls, G2 (~30 min)
+#   PLAN=g3 bash scripts/linux/run_experiments.sh      # e2e of query_translation on the G3
+#                                                      # population + 20 controls (~31 min)
 #   PLAN=e2e IDS=V3-MH-024,V3-TC-020 FLAGS="RAG_NLI_ANCHOR_SCOPE=document" \
 #     bash scripts/linux/run_experiments.sh            # real pipeline on these questions only
 #   IDS=V3-MH-024,V3-XQFEN-130 bash scripts/linux/run_experiments.sh   # steps on these only
@@ -15,6 +17,9 @@
 #           baseline (research.opt4.compare). PLAN=all: RAG_NLI_ANCHOR_SCOPE=document (E1) on the
 #           9 questions where a claim was withheld for a missing anchor + 20 untouched controls
 #           (E1 itself is decided exactly by the offline replay; this confirms it live).
+#           PLAN=g3: RAG_QUERY_TRANSLATION=refusal (G3 in the pipeline) on the 151 questions its
+#           trigger selects + the 20 controls; the time is the sum of the logged 1310Z times of
+#           these questions and of the G3 steps of run 20261103T1801Z, not a measurement.
 #           PLAN=e2e: the questions of IDS with the RAG_* settings of FLAGS.
 #   steps   research.opt4.steps from the logged state, in priority order (a run stopped early
 #           keeps the finished experiments): D0 determinism, G3 translation and re-retrieval
@@ -43,10 +48,12 @@ case "$PLAN" in
   all)
     EXPERIMENTS="${EXPERIMENTS:-D0,G3,G4,G2}"; POPULATIONS="E1 controls"
     FLAGS="RAG_NLI_ANCHOR_SCOPE=document" ;;
+  g3)
+    EXPERIMENTS=""; POPULATIONS="G3 controls"; FLAGS="RAG_QUERY_TRANSLATION=refusal" ;;
   e2e)
     [[ -n "${IDS:-}" ]] || { echo "PLAN=e2e needs IDS=..." >&2; exit 2; }
     EXPERIMENTS=""; POPULATIONS="ids"; FLAGS="${FLAGS:-}" ;;
-  *) echo "Unknown PLAN=$PLAN (quick | all | e2e)" >&2; exit 2 ;;
+  *) echo "Unknown PLAN=$PLAN (quick | all | g3 | e2e)" >&2; exit 2 ;;
 esac
 export OPT4_RUN="${OPT4_RUN:-$PROJECT_ROOT/reports/runs/20261103T1310Z_rtx3090_main}"
 BASE_CONFIG="$OPT4_RUN/qwen38-27b-hybrid+bge-reranker-v2-m3+judge"

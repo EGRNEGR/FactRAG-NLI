@@ -715,6 +715,25 @@ class LocalLLMGenerator:
                 ),
             )
 
+    def rewrite(self, system_prompt: str, text: str) -> ChatReply | None:
+        """One completion of `text` under `system_prompt`, without sources and without
+        thinking (query_translation); None when the development fallback has no LLM."""
+        if not text.strip():
+            raise ValueError("text cannot be empty")
+        with self._lock:
+            if self._closed:
+                raise VerificationError("Generator is closed")
+            if self._backend is None:
+                return None
+            try:
+                if getattr(self._backend, "supports_thinking", False):
+                    return cast(ThinkingChatBackend, self._backend).complete(
+                        system_prompt, text, thinking=False
+                    )
+                return self._backend.complete(system_prompt, text)
+            except Exception as exc:
+                raise VerificationError(f"Local generation failed: {exc}") from exc
+
     def close(self) -> None:
         with self._lock:
             if not self._closed and self._backend is not None:

@@ -53,6 +53,7 @@ from typing import Any
 import research.opt4  # noqa: F401 - selects the baseline run
 from evaluate_suite import score_answer
 from grounding import is_absence_statement
+from query_translation import GATE_CANDIDATES, parse_rewrite, text_script, translation_prompt
 from settings import RAGSettings
 
 from research.opt3 import data
@@ -61,17 +62,9 @@ from research.opt4.diagnose import OUT
 
 CONFIG = "judge"
 LIVE = OUT / "live"
-_CYRILLIC = re.compile(r"[а-яё]", re.I)
-_LATIN = re.compile(r"[a-z]", re.I)
 _SENTENCE_END = re.compile(r"[.!?:;»\")\]|]\s*$")
 MAX_NEIGHBOURS = 3  # ~1000 tokens: the context stays inside the 8192-token window
 
-TRANSLATE = (
-    "Переведи вопрос пользователя на {language}. Сохрани смысл и все предпосылки вопроса, "
-    "имена, числа, коды и идентификаторы. Ничего не добавляй и не отвечай на вопрос. "
-    "Верни только перевод вопроса одной строкой."
-)
-LANGUAGE = {"ru": "русский язык", "en": "английский язык"}
 NORMALIZE = (
     "Перепиши вопрос пользователя грамотно на том же языке, чтобы он читался однозначно. "
     "Сохрани смысл и все предпосылки вопроса, имена, числа, коды и идентификаторы; не "
@@ -83,11 +76,7 @@ NORMALIZE = (
 # ----------------------------------------------------------------------------- baseline
 
 
-def script(text: str) -> str | None:
-    cyr, lat = len(_CYRILLIC.findall(text)), len(_LATIN.findall(text))
-    if not cyr and not lat:
-        return None
-    return "ru" if cyr >= lat else "en"
+script = text_script
 
 
 def final_claims(case_id: str) -> list[dict[str, Any]]:
@@ -206,12 +195,11 @@ def ordinals(dataset: str) -> dict[tuple[str, int], str]:
 
 def rewrite(rt: Runtime, system: str, question: str) -> dict[str, Any]:
     started = time.perf_counter()
-    reply = rt.generator._backend.complete(system, question, thinking=False)
-    line = next((x.strip() for x in reply.text.splitlines() if x.strip()), "")
-    line = line.strip("«»\"' ")
-    ok = bool(line) and len(line) <= 3 * len(question) + 40
+    reply = rt.generator.rewrite(system, question)
+    if reply is None:  # run_settings forbids the fallback: the LLM is always there
+        raise RuntimeError("the generator has no LLM backend")
     return {
-        "text": line if ok else None,
+        "text": parse_rewrite(reply.text, question),
         "raw": reply.text,
         "seconds": round(time.perf_counter() - started, 2),
         "completion_tokens": reply.completion_tokens,
@@ -310,7 +298,7 @@ def sources_script(record: data.CaseRecord, api_base: str | None) -> str | None:
         ranked = sorted(
             record.retrieval[CONFIG]["diagnostics"], key=lambda d: -(d.get("rerank_score") or 0)
         )
-        texts = [c.text for d in ranked[:5] if (c := retriever.get_chunk(d["chunk_id"]))]
+        texts = [c.text for d in ranked[:GATE_CANDIDATES] if (c := retriever.get_chunk(d["chunk_id"]))]
     return script(" ".join(texts))
 
 
@@ -327,7 +315,7 @@ def g3_act(record: data.CaseRecord, api_base: str | None) -> dict[str, Any]:
     rt = runtime(dataset, api_base)
     question = record.retrieval[CONFIG]["query"] or record.case.question
     target = sources_script(record, api_base) or "ru"
-    translated = rewrite(rt, TRANSLATE.format(language=LANGUAGE[target]), question)
+    translated = rewrite(rt, translation_prompt(target), question)
     result: dict[str, Any] = {"translation": translated, "replace": False,
                               "text": baseline_text(record)}
     if not translated["text"]:
@@ -518,13 +506,14 @@ def medians() -> dict[str, float]:
     return {k: statistics.median(v) for k, v in times.items()}
 
 
-def plan(ids: set[str] | None, api_base: str | None) -> dict[str, Any]:
+def plan(ids: set[str] | None, api_base: str | None, names: list[str]) -> dict[str, Any]:
+    """Estimated minutes of the experiments `names` (only those: the run executes no other)."""
     m = medians()
     # A rewrite is a short non-thinking reply (~20-40 tokens): a quarter of a draft at most.
     cost = {"draft": m["draft"] + m["nli"], "rewrite": m["draft"] / 4, "retrieval": m["retrieval"]}
     result: dict[str, Any] = {"medians_s": {k: round(v, 2) for k, v in m.items()}}
-    total = 6 * m["draft"]  # D0
-    for e in EXPERIMENTS.values():
+    total = 6 * m["draft"] if "D0" in names else 0.0
+    for e in (EXPERIMENTS[name] for name in names if name in EXPERIMENTS):
         population = [
             r.id for r in data.records().values()
             if (ids is None or r.id in ids) and e.trigger(r, api_base)
@@ -558,7 +547,7 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit(f"unknown case ids: {sorted(unknown)[:5]}")
     names = [x.strip() for x in args.experiments.split(",") if x.strip()]
     if args.command == "plan":
-        print(json.dumps(plan(ids, args.api_base), ensure_ascii=False, indent=1))
+        print(json.dumps(plan(ids, args.api_base, names), ensure_ascii=False, indent=1))
         return 0
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%MZ")
     out = args.out or LIVE / stamp

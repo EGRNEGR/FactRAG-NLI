@@ -1,0 +1,105 @@
+{
+ "population": 140,
+ "replaced": 0,
+ "all": {
+  "correct": "55.7% (78/140)",
+  "correct_k": 78,
+  "hallucination": "0.0% (0/78)",
+  "hallucination_k": 0,
+  "false_refusal": "100.0% (62/62)",
+  "false_refusal_k": 62,
+  "selective_accuracy": "-",
+  "paired": {
+   "n": 140,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "dev": {
+  "correct": "58.1% (36/62)",
+  "correct_k": 36,
+  "hallucination": "0.0% (0/36)",
+  "hallucination_k": 0,
+  "false_refusal": "100.0% (26/26)",
+  "false_refusal_k": 26,
+  "selective_accuracy": "-",
+  "paired": {
+   "n": 62,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "test": {
+  "correct": "53.8% (42/78)",
+  "correct_k": 42,
+  "hallucination": "0.0% (0/42)",
+  "hallucination_k": 0,
+  "false_refusal": "100.0% (36/36)",
+  "false_refusal_k": 36,
+  "selective_accuracy": "-",
+  "paired": {
+   "n": 78,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "completeness": {
+  "variant": {
+   "compound_questions": 4,
+   "complete": 0,
+   "mean_fact_share": 0.0
+  },
+  "baseline": {
+   "compound_questions": 4,
+   "complete": 0,
+   "mean_fact_share": 0.0
+  }
+ },
+ "regressions": {
+  "lost": [],
+  "new_hallucinations": []
+ },
+ "projected_all": {
+  "correct": "90.6% (1184/1307)",
+  "correct_k": 1184,
+  "hallucination": "1.1% (3/269)",
+  "hallucination_k": 3,
+  "false_refusal": "7.6% (79/1038)",
+  "false_refusal_k": 79,
+  "selective_accuracy": "95.7% (918/959)",
+  "paired": {
+   "n": 1307,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "experiment": "G4",
+ "hypothesis": "H1",
+ "text": "question normalization after an LLM refusal",
+ "minutes": 5.16,
+ "errors": 0
+}
