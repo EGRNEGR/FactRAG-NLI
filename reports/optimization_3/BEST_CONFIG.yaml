@@ -1,0 +1,33 @@
+# Best confirmed configuration after optimization_3 (replay of run 20261102T0749Z).
+# Run on the RTX 3090:  PLAN=main bash scripts/linux/run_benchmark.sh
+profile: qwen38-27b-hybrid
+llm:
+  model: Qwen3.8-27B-UD-Q4_K_XL.gguf
+  temperature: 0.0
+  seed: 42
+  max_tokens: 512
+  reasoning_budget: 640
+  think_retry: refusal          # RAG_LLM_THINK_RETRY
+  think_on_trim: true           # RAG_LLM_THINK_ON_TRIM (new): thinking pass after a trimmed answer
+  think_max_tokens: 1024
+  recovery: sampling            # 2 drafts at T=0.7 when the best rerank score >= 0.5
+retrieval:
+  reranker: bge-reranker-v2-m3
+  rerank_top_k: 10
+  rerank_score_threshold: 0.005
+  embedding_device: cpu         # both verifiers (the compare columns differ by the verifier only)
+verifier:
+  decision: judge               # VERIFIER=judge
+  judge: data/nli_judge/bge-m3-zeroshot.json
+  judge_threshold: 0.3          # re-checked on the dev half of 0749Z
+  anchor_grouping_fix: true     # grounding._ungroup (code, no setting)
+expected_metrics:               # replay of 0749Z, judge column
+  correct: 0.905                # 1183 / 1307 (baseline 1179)
+  correct_v3: 0.882             # 194 / 220 (baseline 190)
+  correct_xquad: 0.910          # 989 / 1087 (unchanged)
+  hallucination: 3 / 269        # 1 real (V3-ADV-029), 2 scorer misses
+  false_refusal: 79 / 1038
+  selective_accuracy: 0.956
+  generation_hours_3090: 2.9
+candidates_not_enabled:
+  recovery_without_premise_rule: +2 test, 0 dev, no new hallucination on ~85 controls
