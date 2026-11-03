@@ -1,0 +1,31 @@
+{
+ "run": "20261103T1839Z_opt4_g3",
+ "steps_run": "20261103T1801Z_opt4_quick",
+ "G3_e2e": {
+  "questions": 171,
+  "translated": 151,
+  "translated_equals_steps_population": true,
+  "translation_text_as_steps": 151,
+  "translated_outcome": {
+   "llm_refusal": 71,
+   "published": 5,
+   "relevance_threshold_not_met": 75
+  },
+  "published": [
+   "V3-XQFEN-031",
+   "V3-XQFEN-065",
+   "V3-XQFEN-245",
+   "V3-XQFEN-291",
+   "V3-XQFEN-320"
+  ],
+  "published_text_as_steps": 5,
+  "controls_unchanged": 20,
+  "controls": 20,
+  "minutes_e2e": 30.6,
+  "minutes_baseline_same_questions": 23.4,
+  "extra_seconds_per_translated_question": {
+   "median": 4.1,
+   "max": 8.4
+  }
+ }
+}

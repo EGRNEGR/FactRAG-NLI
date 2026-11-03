@@ -52,8 +52,13 @@ def main(out: Path) -> int:
         "",
         "Baseline: run 20261103T1310Z_rtx3090_main (judge), paired per question on the same ids.",
         "Population = questions the experiment's trigger selects; untriggered questions keep",
-        "the baseline answer by construction. Estimate from the per-call medians of 1310Z:",
-        f"{plan.get('estimate_total_min', '-')} min for the steps.",
+        "the baseline answer by construction.",
+        *(
+            [f"Estimate from the per-call medians of 1310Z: {plan['estimate_total_min']} min "
+             "for the steps."]
+            if "estimate_total_min" in plan
+            else []
+        ),
         "",
         "| Experiment | Questions | Replaced | Paired | McNemar p | Hallucination | False refusal "
         "| Complete compound | Lost | New hallucinations | Minutes | Verdict |",

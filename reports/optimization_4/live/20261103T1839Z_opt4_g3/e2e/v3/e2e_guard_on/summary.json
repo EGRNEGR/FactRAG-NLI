@@ -1,0 +1,768 @@
+{
+ "cases": 46,
+ "errors": 0,
+ "vanilla": {
+  "correct": {
+   "k": 44,
+   "n": 46,
+   "rate": 0.9565217391304348,
+   "wilson95": [
+    0.8546747708094659,
+    0.9879948064111691
+   ]
+  },
+  "hallucination": {
+   "k": 0,
+   "n": 31,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.11025900073475385
+   ]
+  },
+  "false_refusal_on_answerable": {
+   "k": 1,
+   "n": 15,
+   "rate": 0.06666666666666667,
+   "wilson95": [
+    0.011866588606194856,
+    0.2981707755242399
+   ]
+  },
+  "key_fact_accuracy_on_answerable": {
+   "k": 13,
+   "n": 15,
+   "rate": 0.8666666666666667,
+   "wilson95": [
+    0.6211750079348376,
+    0.9626395301086407
+   ]
+  },
+  "by_category": {
+   "adversarial": {
+    "correct": {
+     "k": 6,
+     "n": 6,
+     "rate": 1.0,
+     "wilson95": [
+      0.6096569663469354,
+      0.9999999999999999
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 6,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.3903430336530645
+     ]
+    },
+    "refused": {
+     "k": 0,
+     "n": 6,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.3903430336530645
+     ]
+    }
+   },
+   "lexical_trap": {
+    "correct": {
+     "k": 8,
+     "n": 8,
+     "rate": 1.0,
+     "wilson95": [
+      0.6755843804891231,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 5,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.43449149475208104
+     ]
+    },
+    "refused": {
+     "k": 5,
+     "n": 8,
+     "rate": 0.625,
+     "wilson95": [
+      0.30573785458380187,
+      0.863158240538479
+     ]
+    }
+   },
+   "multi_hop": {
+    "correct": {
+     "k": 3,
+     "n": 3,
+     "rate": 1.0,
+     "wilson95": [
+      0.43849391955098227,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 0,
+     "n": 3,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.5615060804490177
+     ]
+    }
+   },
+   "single_hop": {
+    "correct": {
+     "k": 4,
+     "n": 4,
+     "rate": 1.0,
+     "wilson95": [
+      0.5100999795960008,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 0,
+     "n": 4,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.48990002040399916
+     ]
+    }
+   },
+   "tabular_code": {
+    "correct": {
+     "k": 3,
+     "n": 5,
+     "rate": 0.6,
+     "wilson95": [
+      0.23071993220883708,
+      0.8823817688407467
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 1,
+     "n": 5,
+     "rate": 0.2,
+     "wilson95": [
+      0.03622316096978745,
+      0.6244717358814613
+     ]
+    }
+   },
+   "unanswerable": {
+    "correct": {
+     "k": 20,
+     "n": 20,
+     "rate": 1.0,
+     "wilson95": [
+      0.8388698745050667,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 20,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.16113012549493322
+     ]
+    },
+    "refused": {
+     "k": 20,
+     "n": 20,
+     "rate": 1.0,
+     "wilson95": [
+      0.8388698745050667,
+      1.0
+     ]
+    }
+   }
+  },
+  "by_language": {
+   "en": {
+    "k": 10,
+    "n": 10,
+    "rate": 1.0,
+    "wilson95": [
+     0.7224598312333834,
+     1.0
+    ]
+   },
+   "ru": {
+    "k": 34,
+    "n": 36,
+    "rate": 0.9444444444444444,
+    "wilson95": [
+     0.8185502589238878,
+     0.9846303362329332
+    ]
+   }
+  }
+ },
+ "factrag": {
+  "correct": {
+   "k": 44,
+   "n": 46,
+   "rate": 0.9565217391304348,
+   "wilson95": [
+    0.8546747708094659,
+    0.9879948064111691
+   ]
+  },
+  "hallucination": {
+   "k": 0,
+   "n": 31,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.11025900073475385
+   ]
+  },
+  "false_refusal_on_answerable": {
+   "k": 1,
+   "n": 15,
+   "rate": 0.06666666666666667,
+   "wilson95": [
+    0.011866588606194856,
+    0.2981707755242399
+   ]
+  },
+  "key_fact_accuracy_on_answerable": {
+   "k": 13,
+   "n": 15,
+   "rate": 0.8666666666666667,
+   "wilson95": [
+    0.6211750079348376,
+    0.9626395301086407
+   ]
+  },
+  "by_category": {
+   "adversarial": {
+    "correct": {
+     "k": 6,
+     "n": 6,
+     "rate": 1.0,
+     "wilson95": [
+      0.6096569663469354,
+      0.9999999999999999
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 6,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.3903430336530645
+     ]
+    },
+    "refused": {
+     "k": 0,
+     "n": 6,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.3903430336530645
+     ]
+    }
+   },
+   "lexical_trap": {
+    "correct": {
+     "k": 8,
+     "n": 8,
+     "rate": 1.0,
+     "wilson95": [
+      0.6755843804891231,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 5,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.43449149475208104
+     ]
+    },
+    "refused": {
+     "k": 5,
+     "n": 8,
+     "rate": 0.625,
+     "wilson95": [
+      0.30573785458380187,
+      0.863158240538479
+     ]
+    }
+   },
+   "multi_hop": {
+    "correct": {
+     "k": 3,
+     "n": 3,
+     "rate": 1.0,
+     "wilson95": [
+      0.43849391955098227,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 0,
+     "n": 3,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.5615060804490177
+     ]
+    }
+   },
+   "single_hop": {
+    "correct": {
+     "k": 4,
+     "n": 4,
+     "rate": 1.0,
+     "wilson95": [
+      0.5100999795960008,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 0,
+     "n": 4,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.48990002040399916
+     ]
+    }
+   },
+   "tabular_code": {
+    "correct": {
+     "k": 3,
+     "n": 5,
+     "rate": 0.6,
+     "wilson95": [
+      0.23071993220883708,
+      0.8823817688407467
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 1,
+     "n": 5,
+     "rate": 0.2,
+     "wilson95": [
+      0.03622316096978745,
+      0.6244717358814613
+     ]
+    }
+   },
+   "unanswerable": {
+    "correct": {
+     "k": 20,
+     "n": 20,
+     "rate": 1.0,
+     "wilson95": [
+      0.8388698745050667,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 20,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.16113012549493322
+     ]
+    },
+    "refused": {
+     "k": 20,
+     "n": 20,
+     "rate": 1.0,
+     "wilson95": [
+      0.8388698745050667,
+      1.0
+     ]
+    }
+   }
+  },
+  "by_language": {
+   "en": {
+    "k": 10,
+    "n": 10,
+    "rate": 1.0,
+    "wilson95": [
+     0.7224598312333834,
+     1.0
+    ]
+   },
+   "ru": {
+    "k": 34,
+    "n": 36,
+    "rate": 0.9444444444444444,
+    "wilson95": [
+     0.8185502589238878,
+     0.9846303362329332
+    ]
+   }
+  }
+ },
+ "paired_correctness": {
+  "vanilla_only_correct": 0,
+  "factrag_only_correct": 0,
+  "mcnemar_exact_p": 1.0,
+  "vanilla_only_correct_by_cause": {}
+ },
+ "hallucination_relative_reduction": null,
+ "by_split": {
+  "dev": {
+   "vanilla": {
+    "correct": {
+     "k": 23,
+     "n": 24,
+     "rate": 0.9583333333333334,
+     "wilson95": [
+      0.7975777375115778,
+      0.992606734645195
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 0,
+     "n": 9,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.2991527535509594
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 15,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.20388926630434784
+     ]
+    }
+   },
+   "factrag": {
+    "correct": {
+     "k": 23,
+     "n": 24,
+     "rate": 0.9583333333333334,
+     "wilson95": [
+      0.7975777375115778,
+      0.992606734645195
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 0,
+     "n": 9,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.2991527535509594
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 15,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.20388926630434784
+     ]
+    }
+   }
+  },
+  "test": {
+   "vanilla": {
+    "correct": {
+     "k": 21,
+     "n": 22,
+     "rate": 0.9545454545454546,
+     "wilson95": [
+      0.7820151050048196,
+      0.9919307806988522
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 1,
+     "n": 6,
+     "rate": 0.16666666666666666,
+     "wilson95": [
+      0.03005258587173032,
+      0.563509436563646
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 16,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.19361341827271994
+     ]
+    }
+   },
+   "factrag": {
+    "correct": {
+     "k": 21,
+     "n": 22,
+     "rate": 0.9545454545454546,
+     "wilson95": [
+      0.7820151050048196,
+      0.9919307806988522
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 1,
+     "n": 6,
+     "rate": 0.16666666666666666,
+     "wilson95": [
+      0.03005258587173032,
+      0.563509436563646
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 16,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.19361341827271994
+     ]
+    }
+   }
+  }
+ },
+ "hallucination_ids": {
+  "vanilla_only": [],
+  "factrag_only": [],
+  "both": []
+ },
+ "claims": {
+  "total": 38,
+  "by_status": {
+   "verified": 38
+  },
+  "by_status_reason": {
+   "verified:none": 38
+  },
+  "by_grade": {
+   "supported": 38
+  },
+  "pairs_exceeding_nli_context": 0,
+  "facts": 38,
+  "faithfulness_micro": 1.0,
+  "inherited_citations": 1,
+  "verified_by_support": {
+   "judge": 38
+  }
+ },
+ "refusal_reasons": {
+  "llm_refusal": 26
+ },
+ "repair": {
+  "attempted": 26,
+  "published": 0,
+  "factrag_correct": 25,
+  "factrag_hallucinations": 0
+ },
+ "thinking_pass": {
+  "attempted": 26,
+  "published": 0,
+  "factrag_correct": 25,
+  "factrag_hallucinations": 0
+ },
+ "recovery_pass": {
+  "attempted": 8,
+  "answerable": 1,
+  "answerable_correct": 0,
+  "published": 0,
+  "factrag_correct": 7,
+  "factrag_hallucinations": 0
+ },
+ "translation_pass": {
+  "attempted": 26,
+  "answerable": 1,
+  "answerable_correct": 0,
+  "published": 0,
+  "factrag_hallucinations": 0
+ },
+ "latency_ms": {
+  "all_queries": {
+   "search_ms": {
+    "n": 45,
+    "mean": 116.7792171291593,
+    "p50": 136.83532481081784,
+    "p95": 156.11865031532943,
+    "min": 59.71691804006696,
+    "max": 166.57962184399366
+   },
+   "rerank_ms": {
+    "n": 45,
+    "mean": 339.32715291674765,
+    "p50": 369.10428781993687,
+    "p95": 490.4619120527059,
+    "min": 160.22953484207392,
+    "max": 506.36349502019584
+   },
+   "generation_ms": {
+    "n": 45,
+    "mean": 14322.343834122228,
+    "p50": 16107.361505972221,
+    "p95": 29380.768946744494,
+    "min": 3397.697253152728,
+    "max": 32441.347216721624
+   },
+   "nli_ms": {
+    "n": 45,
+    "mean": 80.69547830253012,
+    "p50": 0.02099713310599327,
+    "p95": 256.65007675997913,
+    "min": 0.011960277333855629,
+    "max": 442.2953000757843
+   },
+   "total_ms": {
+    "n": 45,
+    "mean": 15325.691788177937,
+    "p50": 17285.98419413902,
+    "p95": 31113.483673660077,
+    "min": 3759.2341019771993,
+    "max": 33521.08588023111
+   },
+   "llm_ttft_ms": {
+    "n": 0,
+    "mean": null,
+    "p50": null,
+    "p95": null,
+    "min": null,
+    "max": null
+   }
+  },
+  "generated_queries": {
+   "search_ms": {
+    "n": 45,
+    "mean": 116.7792171291593,
+    "p50": 136.83532481081784,
+    "p95": 156.11865031532943,
+    "min": 59.71691804006696,
+    "max": 166.57962184399366
+   },
+   "rerank_ms": {
+    "n": 45,
+    "mean": 339.32715291674765,
+    "p50": 369.10428781993687,
+    "p95": 490.4619120527059,
+    "min": 160.22953484207392,
+    "max": 506.36349502019584
+   },
+   "generation_ms": {
+    "n": 45,
+    "mean": 14322.343834122228,
+    "p50": 16107.361505972221,
+    "p95": 29380.768946744494,
+    "min": 3397.697253152728,
+    "max": 32441.347216721624
+   },
+   "nli_ms": {
+    "n": 45,
+    "mean": 80.69547830253012,
+    "p50": 0.02099713310599327,
+    "p95": 256.65007675997913,
+    "min": 0.011960277333855629,
+    "max": 442.2953000757843
+   },
+   "total_ms": {
+    "n": 45,
+    "mean": 15325.691788177937,
+    "p50": 17285.98419413902,
+    "p95": 31113.483673660077,
+    "min": 3759.2341019771993,
+    "max": 33521.08588023111
+   },
+   "llm_ttft_ms": {
+    "n": 0,
+    "mean": null,
+    "p50": null,
+    "p95": null,
+    "min": null,
+    "max": null
+   }
+  },
+  "model_init_ms": [
+   2464.357536053285
+  ]
+ },
+ "gold_in_sources": {
+  "k": 19,
+  "n": 21,
+  "rate": 0.9047619047619048,
+  "wilson95": [
+   0.7108541613925933,
+   0.9734817912030528
+  ]
+ },
+ "resources": {
+  "samples": 681,
+  "gpu_used_mib": {
+   "peak": 21150.0,
+   "mean": 21067.497797356828
+  },
+  "process_rss_mib": {
+   "peak": 4621.73828125,
+   "mean": 4560.4251904368575
+  },
+  "llama_server_rss_mib": {
+   "peak": 1828.796875,
+   "mean": 1664.2318568740823
+  },
+  "torch_max_allocated_mib": 3255.59326171875,
+  "torch_max_reserved_mib": 3294.0
+ }
+}

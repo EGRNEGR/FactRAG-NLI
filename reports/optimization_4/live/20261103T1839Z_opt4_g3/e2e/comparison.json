@@ -1,0 +1,120 @@
+{
+ "run": "reports/optimization_4/live/20261103T1839Z_opt4_g3/e2e",
+ "baseline": "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/reports/runs/20261103T1310Z_rtx3090_main",
+ "questions": 171,
+ "identical_published": 166,
+ "all": {
+  "correct": "79.5% (136/171)",
+  "correct_k": 136,
+  "hallucination": "0.0% (0/119)",
+  "hallucination_k": 0,
+  "false_refusal": "63.5% (33/52)",
+  "false_refusal_k": 33,
+  "selective_accuracy": "89.5% (17/19)",
+  "paired": {
+   "n": 171,
+   "gained": 4,
+   "lost": 0,
+   "delta_pp": 2.3391812865497075,
+   "ci95_pp": [
+    0.5847953216374269,
+    4.678362573099415
+   ],
+   "mcnemar_p": 0.125
+  }
+ },
+ "dev": {
+  "correct": "83.3% (65/78)",
+  "correct_k": 65,
+  "hallucination": "0.0% (0/59)",
+  "hallucination_k": 0,
+  "false_refusal": "57.9% (11/19)",
+  "false_refusal_k": 11,
+  "selective_accuracy": "75.0% (6/8)",
+  "paired": {
+   "n": 78,
+   "gained": 2,
+   "lost": 0,
+   "delta_pp": 2.5641025641025643,
+   "ci95_pp": [
+    0.0,
+    6.41025641025641
+   ],
+   "mcnemar_p": 0.5
+  }
+ },
+ "test": {
+  "correct": "76.3% (71/93)",
+  "correct_k": 71,
+  "hallucination": "0.0% (0/60)",
+  "hallucination_k": 0,
+  "false_refusal": "66.7% (22/33)",
+  "false_refusal_k": 22,
+  "selective_accuracy": "100.0% (11/11)",
+  "paired": {
+   "n": 93,
+   "gained": 2,
+   "lost": 0,
+   "delta_pp": 2.150537634408602,
+   "ci95_pp": [
+    0.0,
+    5.376344086021505
+   ],
+   "mcnemar_p": 0.5
+  }
+ },
+ "completeness": {
+  "variant": {
+   "compound_questions": 9,
+   "complete": 8,
+   "mean_fact_share": 0.8889
+  },
+  "baseline": {
+   "compound_questions": 9,
+   "complete": 8,
+   "mean_fact_share": 0.8889
+  }
+ },
+ "regressions": {
+  "lost": [],
+  "new_hallucinations": []
+ },
+ "changed": [
+  {
+   "id": "V3-XQFEN-031",
+   "before": null,
+   "after": "Миллер забрал мяч у Ньютона [S1].",
+   "correct_before": false,
+   "correct_after": true
+  },
+  {
+   "id": "V3-XQFEN-065",
+   "before": null,
+   "after": "Гуру управляют своими послушниками [S1].",
+   "correct_before": false,
+   "correct_after": true
+  },
+  {
+   "id": "V3-XQFEN-245",
+   "before": null,
+   "after": "Примитивными челюстноротыми являются миноги и миксины [S1].",
+   "correct_before": false,
+   "correct_after": true
+  },
+  {
+   "id": "V3-XQFEN-291",
+   "before": null,
+   "after": "Движение за прекращение инвестирования в ЮАР произошло в конце 1980-х годов [S1].",
+   "correct_before": false,
+   "correct_after": true
+  },
+  {
+   "id": "V3-XQFEN-320",
+   "before": null,
+   "after": "Более длительные периоды роста тесно связаны с большим уровнем равенства при распределении доходов [S1].",
+   "correct_before": false,
+   "correct_after": false
+  }
+ ],
+ "seconds": 1837.6
+}

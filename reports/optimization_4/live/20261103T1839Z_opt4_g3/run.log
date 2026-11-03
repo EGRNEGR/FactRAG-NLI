@@ -1,0 +1,270 @@
+
+=== 21:39:44 FactRAG-NLI optimization_4 experiments 20261103T1839Z_opt4_g3 (plan g3) on artem-System-Product-Name
+baseline: /home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/reports/runs/20261103T1310Z_rtx3090_main
+commit: unknown
+NVIDIA GeForce RTX 3090, 657 MiB, 24576 MiB, 29
+
+=== 21:39:44 llama-server (qwen38-27b-hybrid)
+Starting llama-server b12002: Qwen3.8-27B-UD-Q4_K_XL.gguf, ctx 8192, ngl 999
+llama-server ready: http://127.0.0.1:8080/v1 (PID 1353063)
+VRAM used, total: 17507 MiB, 24576 MiB
+    stage time: 3 s
+
+=== 21:39:47 e2e on selected questions, settings: RAG_QUERY_TRANSLATION=refusal
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 61792.50it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 15467.26it/s]
+Exception ignored in: <function QdrantClient.__del__ at 0x70e8d3c7ca40>
+Traceback (most recent call last):
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 169, in __del__
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 178, in close
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/local/qdrant_local.py", line 85, in close
+ImportError: sys.meta_path is None, Python is likely shutting down
+Exception ignored in: <function QdrantClient.__del__ at 0x70e8d3c7ca40>
+Traceback (most recent call last):
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 169, in __del__
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 178, in close
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/local/qdrant_local.py", line 85, in close
+ImportError: sys.meta_path is None, Python is likely shutting down
+171 questions
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 106298.47it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 18064.63it/s]
+Index ready: 5358 chunks
+[e2e:guard_on] V3-SH-016 (1/46)
+Loading weights:   0%|          | 0/202 [00:00<?, ?it/s]Loading weights: 100%|██████████| 202/202 [00:00<00:00, 9384.69it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 8973.56it/s]
+[e2e:guard_on] V3-ADV-023 (2/46)
+[e2e:guard_on] V3-UNA-019 (3/46)
+[e2e:guard_on] V3-UNA-021 (4/46)
+[e2e:guard_on] V3-UNA-023 (5/46)
+[e2e:guard_on] V3-SH-013 (6/46)
+[e2e:guard_on] V3-TC-014 (7/46)
+[e2e:guard_on] V3-TC-015 (8/46)
+[e2e:guard_on] V3-ADV-020 (9/46)
+[e2e:guard_on] V3-UNA-014 (10/46)
+[e2e:guard_on] V3-UNA-016 (11/46)
+[e2e:guard_on] V3-UNA-018 (12/46)
+[e2e:guard_on] V3-LEX-014 (13/46)
+[e2e:guard_on] V3-SH-025 (14/46)
+[e2e:guard_on] V3-ADV-040 (15/46)
+[e2e:guard_on] V3-UNA-032 (16/46)
+[e2e:guard_on] V3-UNA-034 (17/46)
+[e2e:guard_on] V3-UNA-036 (18/46)
+[e2e:guard_on] V3-SH-024 (19/46)
+[e2e:guard_on] V3-TC-027 (20/46)
+[e2e:guard_on] V3-UNA-028 (21/46)
+[e2e:guard_on] V3-MH-010 (22/46)
+[e2e:guard_on] V3-TC-009 (23/46)
+[e2e:guard_on] V3-ADV-014 (24/46)
+[e2e:guard_on] V3-UNA-010 (25/46)
+[e2e:guard_on] V3-UNA-012 (26/46)
+[e2e:guard_on] V3-LEX-010 (27/46)
+[e2e:guard_on] V3-MH-001 (28/46)
+[e2e:guard_on] V3-MH-004 (29/46)
+[e2e:guard_on] V3-TC-003 (30/46)
+[e2e:guard_on] V3-ADV-007 (31/46)
+[e2e:guard_on] V3-UNA-001 (32/46)
+[e2e:guard_on] V3-UNA-003 (33/46)
+[e2e:guard_on] V3-UNA-005 (34/46)
+[e2e:guard_on] V3-UNA-007 (35/46)
+[e2e:guard_on] V3-LEX-001 (36/46)
+[e2e:guard_on] V3-LEX-006 (37/46)
+[e2e:guard_on] V3-UNA-038 (38/46)
+[e2e:guard_on] V3-LEX-028 (39/46)
+[e2e:guard_on] V3-UNA-040 (40/46)
+[e2e:guard_on] V3-LEX-029 (41/46)
+[e2e:guard_on] V3-LEX-030 (42/46)
+[e2e:guard_on] V3-ADV-031 (43/46)
+[e2e:guard_on] V3-UNA-024 (44/46)
+[e2e:guard_on] V3-UNA-026 (45/46)
+[e2e:guard_on] V3-LEX-018 (46/46)
+{
+ "cases": 46,
+ "errors": 0,
+ "paired_correctness": {
+  "vanilla_only_correct": 0,
+  "factrag_only_correct": 0,
+  "mcnemar_exact_p": 1.0,
+  "vanilla_only_correct_by_cause": {}
+ }
+}
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 35713.69it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 18983.56it/s]
+Index ready: 194 chunks
+[e2e:guard_on] V3-XQFEN-007 (1/125)
+Loading weights:   0%|          | 0/202 [00:00<?, ?it/s]Loading weights: 100%|██████████| 202/202 [00:00<00:00, 9796.94it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 14642.34it/s]
+[e2e:guard_on] V3-XQFEN-018 (2/125)
+[e2e:guard_on] V3-XQFEN-019 (3/125)
+[e2e:guard_on] V3-XQFEN-031 (4/125)
+[e2e:guard_on] V3-XQFEN-038 (5/125)
+[e2e:guard_on] V3-XQFEN-060 (6/125)
+[e2e:guard_on] V3-XQFEN-065 (7/125)
+[e2e:guard_on] V3-XQFEN-088 (8/125)
+[e2e:guard_on] V3-XQFEN-108 (9/125)
+[e2e:guard_on] V3-XQFEN-111 (10/125)
+[e2e:guard_on] V3-XQFEN-123 (11/125)
+[e2e:guard_on] V3-XQFEN-130 (12/125)
+[e2e:guard_on] V3-XQFEN-154 (13/125)
+[e2e:guard_on] V3-XQFEN-171 (14/125)
+[e2e:guard_on] V3-XQFEN-172 (15/125)
+[e2e:guard_on] V3-XQFEN-236 (16/125)
+[e2e:guard_on] V3-XQFEN-245 (17/125)
+[e2e:guard_on] V3-XQFEN-255 (18/125)
+[e2e:guard_on] V3-XQFEN-261 (19/125)
+[e2e:guard_on] V3-XQFEN-266 (20/125)
+[e2e:guard_on] V3-XQFEN-267 (21/125)
+[e2e:guard_on] V3-XQFEN-268 (22/125)
+[e2e:guard_on] V3-XQFEN-291 (23/125)
+[e2e:guard_on] V3-XQFEN-320 (24/125)
+[e2e:guard_on] V3-XQFEN-343 (25/125)
+[e2e:guard_on] V3-XQFEN-349 (26/125)
+[e2e:guard_on] V3-XQFEN-352 (27/125)
+[e2e:guard_on] V3-XQFEN-358 (28/125)
+[e2e:guard_on] V3-XQFEN-366 (29/125)
+[e2e:guard_on] V3-XQFEN-367 (30/125)
+[e2e:guard_on] V3-XQFEN-374 (31/125)
+[e2e:guard_on] V3-XQFEN-397 (32/125)
+[e2e:guard_on] V3-XQFEN-401 (33/125)
+[e2e:guard_on] V3-XQFEN-405 (34/125)
+[e2e:guard_on] V3-XQFEN-426 (35/125)
+[e2e:guard_on] V3-XQFEN-448 (36/125)
+[e2e:guard_on] V3-XQFEN-449 (37/125)
+[e2e:guard_on] V3-XQFNA-002 (38/125)
+[e2e:guard_on] V3-XQFNA-004 (39/125)
+[e2e:guard_on] V3-XQFNA-006 (40/125)
+[e2e:guard_on] V3-XQFNA-008 (41/125)
+[e2e:guard_on] V3-XQFNA-010 (42/125)
+[e2e:guard_on] V3-XQFNA-012 (43/125)
+[e2e:guard_on] V3-XQFNA-014 (44/125)
+[e2e:guard_on] V3-XQFNA-016 (45/125)
+[e2e:guard_on] V3-XQFNA-018 (46/125)
+[e2e:guard_on] V3-XQFNA-020 (47/125)
+[e2e:guard_on] V3-XQFNA-022 (48/125)
+[e2e:guard_on] V3-XQFNA-024 (49/125)
+[e2e:guard_on] V3-XQFNA-026 (50/125)
+[e2e:guard_on] V3-XQFNA-028 (51/125)
+[e2e:guard_on] V3-XQFNA-030 (52/125)
+[e2e:guard_on] V3-XQFNA-032 (53/125)
+[e2e:guard_on] V3-XQFNA-034 (54/125)
+[e2e:guard_on] V3-XQFNA-036 (55/125)
+[e2e:guard_on] V3-XQFNA-038 (56/125)
+[e2e:guard_on] V3-XQFNA-040 (57/125)
+[e2e:guard_on] V3-XQFNA-042 (58/125)
+[e2e:guard_on] V3-XQFNA-044 (59/125)
+[e2e:guard_on] V3-XQFNA-046 (60/125)
+[e2e:guard_on] V3-XQFNA-048 (61/125)
+[e2e:guard_on] V3-XQFNA-050 (62/125)
+[e2e:guard_on] V3-XQFNA-052 (63/125)
+[e2e:guard_on] V3-XQFNA-054 (64/125)
+[e2e:guard_on] V3-XQFNA-056 (65/125)
+[e2e:guard_on] V3-XQFNA-058 (66/125)
+[e2e:guard_on] V3-XQFNA-060 (67/125)
+[e2e:guard_on] V3-XQFNA-062 (68/125)
+[e2e:guard_on] V3-XQFNA-064 (69/125)
+[e2e:guard_on] V3-XQFNA-066 (70/125)
+[e2e:guard_on] V3-XQFNA-068 (71/125)
+[e2e:guard_on] V3-XQFNA-070 (72/125)
+[e2e:guard_on] V3-XQFNA-072 (73/125)
+[e2e:guard_on] V3-XQFNA-074 (74/125)
+[e2e:guard_on] V3-XQFNA-076 (75/125)
+[e2e:guard_on] V3-XQFNA-078 (76/125)
+[e2e:guard_on] V3-XQFNA-080 (77/125)
+[e2e:guard_on] V3-XQFNA-082 (78/125)
+[e2e:guard_on] V3-XQFNA-084 (79/125)
+[e2e:guard_on] V3-XQFNA-086 (80/125)
+[e2e:guard_on] V3-XQFNA-088 (81/125)
+[e2e:guard_on] V3-XQFNA-090 (82/125)
+[e2e:guard_on] V3-XQFNA-092 (83/125)
+[e2e:guard_on] V3-XQFNA-094 (84/125)
+[e2e:guard_on] V3-XQFNA-096 (85/125)
+[e2e:guard_on] V3-XQFNA-098 (86/125)
+[e2e:guard_on] V3-XQFNA-100 (87/125)
+[e2e:guard_on] V3-XQFNA-102 (88/125)
+[e2e:guard_on] V3-XQFNA-104 (89/125)
+[e2e:guard_on] V3-XQFNA-106 (90/125)
+[e2e:guard_on] V3-XQFNA-108 (91/125)
+[e2e:guard_on] V3-XQFNA-110 (92/125)
+[e2e:guard_on] V3-XQFNA-112 (93/125)
+[e2e:guard_on] V3-XQFNA-114 (94/125)
+[e2e:guard_on] V3-XQFNA-116 (95/125)
+[e2e:guard_on] V3-XQFNA-118 (96/125)
+[e2e:guard_on] V3-XQFNA-120 (97/125)
+[e2e:guard_on] V3-XQFNA-122 (98/125)
+[e2e:guard_on] V3-XQFNA-124 (99/125)
+[e2e:guard_on] V3-XQFNA-126 (100/125)
+[e2e:guard_on] V3-XQFNA-128 (101/125)
+[e2e:guard_on] V3-XQFNA-130 (102/125)
+[e2e:guard_on] V3-XQFNA-132 (103/125)
+[e2e:guard_on] V3-XQFNA-134 (104/125)
+[e2e:guard_on] V3-XQFNA-136 (105/125)
+[e2e:guard_on] V3-XQFNA-138 (106/125)
+[e2e:guard_on] V3-XQFNA-142 (107/125)
+[e2e:guard_on] V3-XQFNA-144 (108/125)
+[e2e:guard_on] V3-XQFNA-146 (109/125)
+[e2e:guard_on] V3-XQFNA-148 (110/125)
+[e2e:guard_on] V3-XQFNA-150 (111/125)
+[e2e:guard_on] V3-XQFNA-152 (112/125)
+[e2e:guard_on] V3-XQFNA-154 (113/125)
+[e2e:guard_on] V3-XQFNA-156 (114/125)
+[e2e:guard_on] V3-XQFNA-158 (115/125)
+[e2e:guard_on] V3-XQFNA-160 (116/125)
+[e2e:guard_on] V3-XQFNA-162 (117/125)
+[e2e:guard_on] V3-XQFNA-164 (118/125)
+[e2e:guard_on] V3-XQFNA-166 (119/125)
+[e2e:guard_on] V3-XQFNA-168 (120/125)
+[e2e:guard_on] V3-XQFNA-170 (121/125)
+[e2e:guard_on] V3-XQFNA-172 (122/125)
+[e2e:guard_on] V3-XQFNA-174 (123/125)
+[e2e:guard_on] V3-XQFNA-176 (124/125)
+[e2e:guard_on] V3-XQFNA-178 (125/125)
+{
+ "cases": 125,
+ "errors": 0,
+ "paired_correctness": {
+  "vanilla_only_correct": 2,
+  "factrag_only_correct": 2,
+  "mcnemar_exact_p": 1.0,
+  "vanilla_only_correct_by_cause": {
+   "llm_refusal": 2
+  }
+ }
+}
+171 questions, identical answers 166, correct 79.5% (136/171) (+4 -0), hallucination 0.0% (0/119), false refusal 63.5% (33/52), regressions {'lost': [], 'new_hallucinations': []}, 1837.6 s
+  dev: +2 -0, hallucination 0.0% (0/59)
+  test: +2 -0, hallucination 0.0% (0/60)
+   V3-XQFEN-031 False -> True
+   V3-XQFEN-065 False -> True
+   V3-XQFEN-245 False -> True
+   V3-XQFEN-291 False -> True
+   V3-XQFEN-320 False -> False
+    stage time: 1866 s
+
+=== 22:10:53 llama-server stop
+llama-server stopped (PID 1353063)
+# Experiments 20261103T1839Z_opt4_g3
+
+Baseline: run 20261103T1310Z_rtx3090_main (judge), paired per question on the same ids.
+Population = questions the experiment's trigger selects; untriggered questions keep
+the baseline answer by construction. Estimate from the per-call medians of 1310Z:
+- min for the steps.
+
+| Experiment | Questions | Replaced | Paired | McNemar p | Hallucination | False refusal | Complete compound | Lost | New hallucinations | Minutes | Verdict |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| e2e, RAG_QUERY_TRANSLATION=refusal (real pipeline) | 171 | - | +4 / -0 | 0.125 | 0.0% (0/119) | 63.5% (33/52) | 8 -> 8 of 9 | - | - | 30.6 | ok |
+
+e2e by split:
+- dev: +2 / -0, correct 83.3% (65/78), hallucination 0.0% (0/59), false refusal 57.9% (11/19)
+- test: +2 / -0, correct 76.3% (71/93), hallucination 0.0% (0/60), false refusal 66.7% (22/33)
+
+e2e changed answers:
+- V3-XQFEN-031: False -> True
+- V3-XQFEN-065: False -> True
+- V3-XQFEN-245: False -> True
+- V3-XQFEN-291: False -> True
+- V3-XQFEN-320: False -> False
+
+Per-question results: e2e/*/e2e_guard_on, steps/<experiment>/cases.jsonl.
+
+
+=== 22:10:54 finished in 31 min, exit code 0
+Results: /home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/reports/optimization_4/live/20261103T1839Z_opt4_g3/SUMMARY.md
