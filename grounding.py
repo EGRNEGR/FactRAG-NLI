@@ -262,18 +262,25 @@ _ANCHOR = re.compile(
     r"|[a-z]+[A-Z]\w*"  # camelCase: traceId
     r")(?![\w])"
 )
-_GROUPED = re.compile(r"(?<=\d)[ ,  ](?=\d{3}\b)")
+# A number written with group separators ("65 535", "1,000,000"). The first group must stand
+# alone: in "15.4.3 302 Found" (a section number, then a status code) nothing is grouped.
+_GROUPED = re.compile(r"(?<![\d.,])\d{1,3}(?:[ ,  ]\d{3})+(?!\d)")
+_SEPARATOR = re.compile(r"[ ,  ]")
+
+
+def _ungroup(text: str) -> str:
+    return _GROUPED.sub(lambda m: _SEPARATOR.sub("", m.group(0)), text)
 
 
 def claim_anchors(text: str) -> frozenset[str]:
     """Numbers, literals and code identifiers that a supporting text must contain."""
     text = _DESIGNATOR.sub(" ", _ANY_CITATION.sub(" ", text))
-    found = {_GROUPED.sub("", m.group(0)).casefold().rstrip(".,") for m in _ANCHOR.finditer(text)}
+    found = {_ungroup(m.group(0)).casefold().rstrip(".,") for m in _ANCHOR.finditer(text)}
     return frozenset(found - {""})
 
 
 def anchors_present(anchors: frozenset[str], text: str) -> bool:
-    haystack = _GROUPED.sub("", text).casefold()
+    haystack = _ungroup(text).casefold()
     for anchor in anchors:
         if anchor.replace(".", "").isdigit():
             if not re.search(rf"(?<![\w.]){re.escape(anchor)}(?!\w)", haystack):
@@ -281,6 +288,11 @@ def anchors_present(anchors: frozenset[str], text: str) -> bool:
         elif anchor not in haystack:
             return False
     return True
+
+
+def is_identifier_anchor(anchor: str) -> bool:
+    """An anchor naming something (AC-7, uuidv7, max_ack_delay), not a number or literal."""
+    return any(c.isalpha() for c in anchor) and not re.fullmatch(r"0x[0-9a-f]+|0b[01]+", anchor)
 
 
 # ----------------------------------------------------------------------------- code spans

@@ -1,0 +1,7 @@
+﻿experiment,text,verifier,source,overrides,correct,baseline_correct,dev_delta,test_delta,gained,lost,mcnemar_p,ci95_pp,hallucination,baseline_hallucination,false_refusal,baseline_false_refusal,missing,seconds
+X00_rules_replay,"rules verifier, rules drafts, current code",rules,rules,{},1178,1177,0,1,1,0,1.0,+0.00 .. +0.23,3,3,80,80,0,1.2
+X00_judge_replay,"judge verifier, judge drafts, current code",judge,judge,{},1180,1179,0,1,1,0,1.0,+0.00 .. +0.23,3,3,79,79,0,2.5
+X01_judge_on_rules,judge verifier on the rules drafts,judge,rules,{},1167,1177,-3,-7,6,16,0.0525,-1.45 .. -0.08,3,3,93,80,16,2.4
+X01_rules_on_judge,rules verifier on the judge drafts,rules,judge,{},1169,1179,-7,-3,6,16,0.0525,-1.45 .. -0.08,4,3,92,79,17,1.2
+X02_judge_anchor_document,identifier anchors may come from a same-document retrieved chunk,judge,judge,"{""nli_anchor_scope"": ""document""}",1180,1179,0,1,1,0,1.0,+0.00 .. +0.23,3,3,79,79,0,2.4
+X02_rules_anchor_document,identifier anchors may come from a same-document retrieved chunk,rules,rules,"{""nli_anchor_scope"": ""document""}",1178,1177,0,1,1,0,1.0,+0.00 .. +0.23,3,3,80,80,0,1.2
