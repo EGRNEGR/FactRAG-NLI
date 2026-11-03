@@ -270,6 +270,17 @@ class RAGSettings(BaseSettings):
     # of its cited sources: "AC-7", "Super Bowl 50" or "UUIDv1" name the subject of a chunk in
     # its heading, which the NLI premise already carries, not in the body text.
     nli_anchor_headings: bool = True
+    # Where a claim's anchors must occur. "cited": in its cited sources (with headings).
+    # "document" (optimization_4, experiment E1): a control enhancement is one identifier
+    # ("AC-7(4)", not "AC-7" and "4"), and an identifier missing from the cited chunk may occur
+    # in another retrieved chunk of the same document; numbers and literals stay bound to the
+    # cited sources. The parser often chunks an enhancement body away from its label
+    # (run 20261103T1310Z, V3-MH-024: judge 0.64, withheld for the missing "AC-7(4)").
+    nli_anchor_scope: Literal["cited", "document"] = "cited"
+    # One-column Markdown tables in a premise are joined back into running text before NLI
+    # (optimization_4, experiment E2): the parser renders boxed notes that way, and mDeBERTa
+    # read the RFC 9110 302 note as a contradiction of a true claim (0.98).
+    nli_premise_unwrap_tables: bool = False
     # Upper-case RFC 2119 keywords ("SHALL NOT", "MUST") are lower-cased in both NLI inputs:
     # mDeBERTa reads them as evidence of entailment even against an unrelated premise
     # (P(entailment) 0.73 vs 0.01 for the same sentence in lower case).

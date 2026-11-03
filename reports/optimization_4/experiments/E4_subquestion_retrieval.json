@@ -1,0 +1,521 @@
+{
+ "summary": {
+  "compound_questions_split": 39,
+  "all_units_before": 29,
+  "all_units_after": 30,
+  "gained_unit": [
+   "V3-MH-037"
+  ],
+  "gained_unit_on_wrong": [],
+  "mean_added_chunks": 1.21
+ },
+ "rows": [
+  {
+   "id": "V3-MH-022",
+   "question": "На сколько семейств разделены контроли SP 800-53 Rev. 5, сколько из них соответствуют минимальным требованиям FIPS 200 и какие семейства к ним не относятся?",
+   "parts": [
+    "На сколько семейств разделены контроли SP 800-53 Rev. 5, сколько из них соответствуют минимальным требованиям FIPS 200?",
+    "какие семейства к ним не относятся?"
+   ],
+   "units": 2,
+   "covered_before": 1,
+   "covered_after": 1,
+   "added_chunks": 1,
+   "correct": false
+  },
+  {
+   "id": "V3-MH-023",
+   "question": "What does AC-7 require regarding consecutive invalid logon attempts, and what does its discussion say about automatic lockouts?",
+   "parts": [
+    "What does AC-7 require regarding consecutive invalid logon attempts?",
+    "what does its discussion say about automatic lockouts?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 2,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-024",
+   "question": "Какое ограничение вводит базовый контроль AC-7 и что делает его усиление, использующее альтернативные факторы аутентификации?",
+   "parts": [
+    "Какое ограничение вводит базовый контроль AC-7?",
+    "что делает его усиление, использующее альтернативные факторы аутентификации?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 2,
+   "correct": false
+  },
+  {
+   "id": "V3-MH-025",
+   "question": "Which control families in SP 800-53 Rev. 5 contain controls directed at developers, and how is the System and Services Acquisition family listed in Table 1?",
+   "parts": [
+    "Which control families in SP 800-53 Rev. 5 contain controls directed at developers?",
+    "how is the System and Services Acquisition family listed in Table 1?"
+   ],
+   "units": 2,
+   "covered_before": 1,
+   "covered_after": 1,
+   "added_chunks": 1,
+   "correct": false
+  },
+  {
+   "id": "V3-MH-015",
+   "question": "What minimum length does SP 800-63B-4 require for single-factor passwords and what maximum length should verifiers permit at least?",
+   "parts": [
+    "What minimum length does SP 800-63B-4 require for single-factor passwords?",
+    "what maximum length should verifiers permit at least?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-018",
+   "question": "Как SP 800-63B-4 требует проверять новый пароль при установке или смене и допускает ли он требования к составу символов?",
+   "parts": [
+    "Как SP 800-63B-4 требует проверять новый пароль при установке или смене?",
+    "допускает ли он требования к составу символов?"
+   ],
+   "units": 2,
+   "covered_before": 1,
+   "covered_after": 1,
+   "added_chunks": 3,
+   "correct": false
+  },
+  {
+   "id": "V3-MH-019",
+   "question": "When must a verifier of out-of-band authentication secrets implement rate limiting, and what is the default cap on consecutive failed attempts per authenticator in SP 800-63B-4?",
+   "parts": [
+    "When must a verifier of out-of-band authentication secrets implement rate limiting?",
+    "what is the default cap on consecutive failed attempts per authenticator in SP 800-63B-4?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 0,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-020",
+   "question": "В каком качестве SP 800-63B-4 допускает биометрию и что в документе понимается под FMR?",
+   "parts": [
+    "В каком качестве SP 800-63B-4 допускает биометрию?",
+    "что в документе понимается под FMR?"
+   ],
+   "units": 2,
+   "covered_before": 1,
+   "covered_after": 1,
+   "added_chunks": 0,
+   "correct": false
+  },
+  {
+   "id": "V3-TC-015",
+   "question": "In the authenticator types table of SP 800-63B-4, how are one-time passcodes (OTP) defined and which sections specify them?",
+   "parts": [
+    "In the authenticator types table of SP 800-63B-4, how are one-time passcodes (OTP) defined?",
+    "which sections specify them?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 3,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-035",
+   "question": "Какие три техники подсчёта ссылок использует PEP 703, чем смещённый подсчёт лучше атомарного и что происходит с Py_INCREF и Py_DECREF для бессмертных объектов?",
+   "parts": [
+    "Какие три техники подсчёта ссылок использует PEP 703, чем смещённый подсчёт лучше атомарного?",
+    "что происходит с Py_INCREF и Py_DECREF для бессмертных объектов?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-036",
+   "question": "Which macro and ABI tag letter does a --disable-gil build of CPython get, and how can the GIL still be forced on at runtime?",
+   "parts": [
+    "Which macro and ABI tag letter does a --disable-gil build of CPython get?",
+    "how can the GIL still be forced on at runtime?"
+   ],
+   "units": 2,
+   "covered_before": 1,
+   "covered_after": 1,
+   "added_chunks": 0,
+   "correct": false
+  },
+  {
+   "id": "V3-MH-037",
+   "question": "Что хранит поле ob_tid в заголовке объекта по PEP 703 и какой механизм использует поля ob_tid, ob_ref_local и ob_ref_shared?",
+   "parts": [
+    "Что хранит поле ob_tid в заголовке объекта по PEP 703?",
+    "какой механизм использует поля ob_tid, ob_ref_local и ob_ref_shared?"
+   ],
+   "units": 2,
+   "covered_before": 1,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-038",
+   "question": "Are the critical section macros of PEP 703 part of the limited C API, and what does Py_BEGIN_CRITICAL_SECTION do if the object is already locked?",
+   "parts": [
+    "Are the critical section macros of PEP 703 part of the limited C API?",
+    "what does Py_BEGIN_CRITICAL_SECTION do if the object is already locked?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-032",
+   "question": "Какой вариант генерируемого столбца используется в PostgreSQL 18 по умолчанию и переносит ли LIKE ... INCLUDING GENERATED выбор между STORED и VIRTUAL?",
+   "parts": [
+    "Какой вариант генерируемого столбца используется в PostgreSQL 18 по умолчанию?",
+    "переносит ли LIKE ... INCLUDING GENERATED выбор между STORED и VIRTUAL?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 0,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-033",
+   "question": "How do ALWAYS and BY DEFAULT identity columns treat a user-specified value in INSERT, and what happens to identity columns when a table is created with LIKE ... INCLUDING IDENTITY?",
+   "parts": [
+    "How do ALWAYS and BY DEFAULT identity columns treat a user-specified value in INSERT?",
+    "what happens to identity columns when a table is created with LIKE ... INCLUDING IDENTITY?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 0,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-034",
+   "question": "Какие значения допускает fillfactor таблицы в PostgreSQL 18, какое значение по умолчанию и можно ли задавать такие параметры хранения для секционированной таблицы?",
+   "parts": [
+    "Какие значения допускает fillfactor таблицы в PostgreSQL 18, какое значение по умолчанию?",
+    "можно ли задавать такие параметры хранения для секционированной таблицы?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": true
+  },
+  {
+   "id": "V3-TC-027",
+   "question": "Which ON COMMIT options does the CREATE TABLE synopsis list, and which one is the default behavior?",
+   "parts": [
+    "Which ON COMMIT options does the CREATE TABLE synopsis list?",
+    "which one is the default behavior?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 0,
+   "correct": true
+  },
+  {
+   "id": "V3-TC-031",
+   "question": "What type does the fillfactor storage parameter have in CREATE TABLE and what range is allowed for tables?",
+   "parts": [
+    "What type does the fillfactor storage parameter have in CREATE TABLE?",
+    "what range is allowed for tables?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 2,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-009",
+   "question": "Какой тип потока в RFC 9000 соответствует младшим битам 0x01 и какое общее правило о чётности идентификаторов потоков клиента и сервера это отражает?",
+   "parts": [
+    "Какой тип потока в RFC 9000 соответствует младшим битам 0x01?",
+    "какое общее правило о чётности идентификаторов потоков клиента и сервера это отражает?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-010",
+   "question": "How is the effective QUIC idle timeout determined, and what lower bound must endpoints enforce on the idle timeout period?",
+   "parts": [
+    "How is the effective QUIC idle timeout determined?",
+    "what lower bound must endpoints enforce on the idle timeout period?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 0,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-012",
+   "question": "May a QUIC client send NEW_TOKEN or HANDSHAKE_DONE frames, and how must a server treat receipt of such a frame?",
+   "parts": [
+    "May a QUIC client send NEW_TOKEN or HANDSHAKE_DONE frames?",
+    "how must a server treat receipt of such a frame?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 0,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-013",
+   "question": "Какую максимальную длину имеет идентификатор соединения в QUIC версии 1 и каково минимально допустимое значение active_connection_id_limit?",
+   "parts": [
+    "Какую максимальную длину имеет идентификатор соединения в QUIC версии 1?",
+    "каково минимально допустимое значение active_connection_id_limit?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 0,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-014",
+   "question": "What is the default max_udp_payload_size in QUIC, which values are invalid, and how does this relate to the size required for datagrams carrying Initial packets?",
+   "parts": [
+    "What is the default max_udp_payload_size in QUIC, which values are invalid?",
+    "how does this relate to the size required for datagrams carrying Initial packets?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": true
+  },
+  {
+   "id": "V3-TC-007",
+   "question": "Какой тип потока соответствует значению младших битов 0x02 в таблице типов потоков RFC 9000 и что кодирует второй младший бит?",
+   "parts": [
+    "Какой тип потока соответствует значению младших битов 0x02 в таблице типов потоков RFC 9000?",
+    "что кодирует второй младший бит?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 2,
+   "correct": true
+  },
+  {
+   "id": "V3-TC-009",
+   "question": "Сколько байт занимает целое число переменной длины QUIC с префиксом 11 и какой у него диапазон значений?",
+   "parts": [
+    "Сколько байт занимает целое число переменной длины QUIC с префиксом 11?",
+    "какой у него диапазон значений?"
+   ],
+   "units": 2,
+   "covered_before": 0,
+   "covered_after": 0,
+   "added_chunks": 3,
+   "correct": false
+  },
+  {
+   "id": "V3-TC-010",
+   "question": "Which frame type has the type value 0x1e in the QUIC frame types table, and which endpoint may send it?",
+   "parts": [
+    "Which frame type has the type value 0x1e in the QUIC frame types table?",
+    "which endpoint may send it?"
+   ],
+   "units": 2,
+   "covered_before": 1,
+   "covered_after": 1,
+   "added_chunks": 3,
+   "correct": true
+  },
+  {
+   "id": "V3-TC-012",
+   "question": "What defaults does RFC 9000 define for the ack_delay_exponent and max_ack_delay transport parameters, and which values of each are invalid?",
+   "parts": [
+    "What defaults does RFC 9000 define for the ack_delay_exponent and max_ack_delay transport parameters?",
+    "which values of each are invalid?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 2,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-001",
+   "question": "Что RFC 9110 говорит о смене метода POST на GET при ответе 301 и какой код рекомендует использовать, если такая смена нежелательна? Что означает этот альтернативный код?",
+   "parts": [
+    "Что RFC 9110 говорит о смене метода POST на GET при ответе 301?",
+    "какой код рекомендует использовать, если такая смена нежелательна? Что означает этот альтернативный код?"
+   ],
+   "units": 2,
+   "covered_before": 1,
+   "covered_after": 1,
+   "added_chunks": 1,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-004",
+   "question": "Which challenge header field must accompany a 401 response and which one must accompany a 407 response according to RFC 9110?",
+   "parts": [
+    "Which challenge header field must accompany a 401 response?",
+    "which one must accompany a 407 response according to RFC 9110?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 0,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-006",
+   "question": "When a server rejects a byte-range request with 416, what does the status mean and which header field and value should accompany it?",
+   "parts": [
+    "When a server rejects a byte-range request with 416, what does the status mean?",
+    "which header field and value should accompany it?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 3,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-007",
+   "question": "Что означает код 405 в RFC 9110 и кем и когда определяется набор методов, перечисляемых в поле Allow?",
+   "parts": [
+    "Что означает код 405 в RFC 9110 и кем?",
+    "когда определяется набор методов, перечисляемых в поле Allow?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-008",
+   "question": "What does the TRACE method do, and how must an intermediary handle a Max-Forwards header field in a TRACE request?",
+   "parts": [
+    "What does the TRACE method do?",
+    "how must an intermediary handle a Max-Forwards header field in a TRACE request?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": true
+  },
+  {
+   "id": "V3-TC-002",
+   "question": "Как в ABNF RFC 9110 определено поле Allow и какой пример его использования приведён?",
+   "parts": [
+    "Как в ABNF RFC 9110 определено поле Allow?",
+    "какой пример его использования приведён?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 3,
+   "correct": true
+  },
+  {
+   "id": "V3-TC-006",
+   "question": "Как определено поле Content-Length в ABNF RFC 9110 и какое числовое значение приведено в примере?",
+   "parts": [
+    "Как определено поле Content-Length в ABNF RFC 9110?",
+    "какое числовое значение приведено в примере?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 3,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-039",
+   "question": "Может ли член status объекта problem details расходиться с фактическим кодом HTTP-ответа и должен ли title меняться от одного возникновения проблемы к другому?",
+   "parts": [
+    "Может ли член status объекта problem details расходиться с фактическим кодом HTTP-ответа?",
+    "должен ли title меняться от одного возникновения проблемы к другому?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": false
+  },
+  {
+   "id": "V3-TC-035",
+   "question": "Какие JSON-типы имеют члены status и instance объекта problem details и что содержит instance?",
+   "parts": [
+    "Какие JSON-типы имеют члены status и instance объекта problem details?",
+    "что содержит instance?"
+   ],
+   "units": 2,
+   "covered_before": 1,
+   "covered_after": 1,
+   "added_chunks": 1,
+   "correct": false
+  },
+  {
+   "id": "V3-MH-026",
+   "question": "Чем UUIDv6 отличается от UUIDv1 и какую версию RFC 9562 рекомендует использовать вместо UUIDv1 и UUIDv6?",
+   "parts": [
+    "Чем UUIDv6 отличается от UUIDv1?",
+    "какую версию RFC 9562 рекомендует использовать вместо UUIDv1 и UUIDv6?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 0,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-029",
+   "question": "Which bits of a UUIDv7 hold the Unix millisecond timestamp, and how many bits does the rand_b field contain?",
+   "parts": [
+    "Which bits of a UUIDv7 hold the Unix millisecond timestamp?",
+    "how many bits does the rand_b field contain?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": true
+  },
+  {
+   "id": "V3-MH-030",
+   "question": "Какое значение имеет Namespace ID для DNS в RFC 9562 и как выделяются последующие Namespace ID?",
+   "parts": [
+    "Какое значение имеет Namespace ID для DNS в RFC 9562?",
+    "как выделяются последующие Namespace ID?"
+   ],
+   "units": 2,
+   "covered_before": 2,
+   "covered_after": 2,
+   "added_chunks": 1,
+   "correct": true
+  }
+ ]
+}

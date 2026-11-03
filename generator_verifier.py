@@ -29,6 +29,7 @@ from grounding import (
     clean_premise,
     has_negation,
     is_absence_statement,
+    is_identifier_anchor,
     is_verdict_marker,
     normalize_keywords,
     premise_header,
@@ -1078,7 +1079,7 @@ class NLIFactVerifier:
     def _variants(self, context: SourceContext) -> tuple[str, list[tuple[str, str]]]:
         """The cleaned chunk and its scored (text, source text) variants, as in _evidence."""
         s = self.settings
-        premise = clean_premise(context.text) if s.nli_premise_cleanup else context.text
+        premise = self._premise(context)
         windows = premise_windows(premise, s.nli_window_sentences) if s.nli_window_scoring else []
         header = (
             premise_header(context.document_title, context.section_path)
@@ -1167,12 +1168,7 @@ class NLIFactVerifier:
             self._judge_source(key, contexts[key], hypothesis, contexts) for key in source_ids
         ]
         scores = [judge.probability(f) for _, f in scored]
-        anchors = claim_anchors(hypothesis)
-        anchored = (
-            not self.settings.nli_anchor_guard
-            or not anchors
-            or anchors_present(anchors, self._anchor_text(contexts, source_ids))
-        )
+        anchored = self._anchored(hypothesis, contexts, source_ids)
         supporting = [anchored and score >= judge.threshold for score in scores]
 
         def contradicts(f: Mapping[str, float], level: float) -> bool:
@@ -1242,7 +1238,7 @@ class NLIFactVerifier:
         supports the claim; otherwise the whole-chunk probabilities decide.
         """
         s = self.settings
-        premise = clean_premise(context.text) if s.nli_premise_cleanup else context.text
+        premise = self._premise(context)
         windows = premise_windows(premise, s.nli_window_sentences) if s.nli_window_scoring else []
         # With a document title, every window (and the chunk) is scored a second time framed by
         # "Title. Section." as an additional route: a claim naming its document can then be
@@ -1392,12 +1388,7 @@ class NLIFactVerifier:
         probabilities_list = [
             item.probabilities for item in evidence if item.probabilities is not None
         ]
-        anchors = claim_anchors(hypothesis)
-        anchored = (
-            not s.nli_anchor_guard
-            or not anchors
-            or anchors_present(anchors, self._anchor_text(contexts, source_ids))
-        )
+        anchored = self._anchored(hypothesis, contexts, source_ids)
         contradicted = any(
             item.support is None
             and item.probabilities is not None
@@ -1495,6 +1486,44 @@ class NLIFactVerifier:
             citation_inherited=is_inherited,
             grade=_grade(status),
         )
+
+    def _premise(self, context: SourceContext) -> str:
+        """The NLI premise of a source (nli_premise_cleanup, nli_premise_unwrap_tables)."""
+        s = self.settings
+        if not s.nli_premise_cleanup:
+            return context.text
+        return clean_premise(context.text, unwrap_tables=s.nli_premise_unwrap_tables)
+
+    def _anchored(
+        self, hypothesis: str, contexts: Mapping[str, SourceContext], source_ids: Sequence[str]
+    ) -> bool:
+        """Anchor guard: every number, literal and identifier of the claim is in its sources.
+
+        With nli_anchor_scope "document" a control enhancement counts as one identifier
+        ("AC-7(4)") and an identifier missing from the cited sources may occur in another
+        retrieved chunk of the same document; numbers and literals never may.
+        """
+        if not self.settings.nli_anchor_guard:
+            return True
+        anchors = claim_anchors(hypothesis)
+        cited = self._anchor_text(contexts, source_ids)
+        # The document scope only adds a route: whatever passes in the cited sources still does
+        # ("AC-2(10)" passes where the chunk has "AC-2" and "(10)" apart).
+        if not anchors or anchors_present(anchors, cited):
+            return True
+        if self.settings.nli_anchor_scope != "document":
+            return False
+        anchors = claim_anchors(hypothesis, enhancements=True)
+        missing = frozenset(a for a in anchors if not anchors_present(frozenset({a}), cited))
+        if not all(is_identifier_anchor(a) for a in missing):
+            return False
+        documents = {contexts[key].document_id for key in source_ids}
+        same = [
+            key
+            for key, context in contexts.items()
+            if context.document_id in documents and key not in source_ids
+        ]
+        return bool(same) and anchors_present(missing, self._anchor_text(contexts, same))
 
     def _anchor_text(self, contexts: Mapping[str, SourceContext], keys: Sequence[str]) -> str:
         """Text the anchors of a claim must occur in: the cited sources, with headings if set."""

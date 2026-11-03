@@ -42,14 +42,15 @@ RUN = Path(
 OUT = ROOT / "reports" / "optimization_3"
 CACHE = ROOT / ".artifacts" / "opt3"
 DATASETS = opt2.DATASETS
-CONFIGS = {
+_COLUMNS = {
     "rules": "qwen38-27b-hybrid+bge-reranker-v2-m3",
     "judge": "qwen38-27b-hybrid+bge-reranker-v2-m3+judge",
 }
+# The columns the run has (PLAN=compare: both; PLAN=main, e.g. 20261103T1310Z: judge only).
+CONFIGS = {name: folder for name, folder in _COLUMNS.items() if (RUN / folder).is_dir()}
 RUN_ROOT = "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux"
 
 RUN_COMMIT = "816c1de"
-split = opt2.split
 dataset_of = opt2.dataset_of
 
 
@@ -60,8 +61,12 @@ def run_config(config: str, dataset: str = "v3") -> dict[str, Any]:
 
 @cache
 def dataset(name: str) -> EvalDatasetV3:
-    """The dataset file of the run (restored from RUN_COMMIT, checked by its sha256)."""
+    """The dataset file of the run, checked by its sha256: the checked-out file when it is
+    that version (the RTX 3090 copy has no git), else restored from RUN_COMMIT."""
     logged = run_config("judge", name)["dataset"]
+    current = ROOT / logged["path"]
+    if current.exists() and hashlib.sha256(current.read_bytes()).hexdigest() == logged["sha256"]:
+        return load_dataset(current)
     path = CACHE / "datasets" / Path(logged["path"]).name
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -81,6 +86,27 @@ def dataset(name: str) -> EvalDatasetV3:
 @cache
 def cases() -> dict[str, EvalCase]:
     return {case.id: case for name in DATASETS for case in dataset(name).cases}
+
+
+@cache
+def split() -> dict[str, str]:
+    """The dev/test split of optimization_2 (research.opt2.data.split: stratified by dataset
+    and category, grouped by XQuAD paragraph, SHA-1 order), computed on the run's datasets.
+
+    Ids, categories and gold chunks of these files are those of the frozen opt2 files, so the
+    split is the same (tests/test_research_split.py); computing it here needs no git.
+    """
+    strata: dict[tuple[str, str], dict[str, list[str]]] = {}
+    for case in cases().values():
+        key = (dataset_of(case.id), case.category)
+        strata.setdefault(key, {}).setdefault(opt2.split_group(case), []).append(case.id)
+    result: dict[str, str] = {}
+    for groups in strata.values():
+        ordered = sorted(groups, key=lambda g: hashlib.sha1(g.encode()).hexdigest())
+        for index, group in enumerate(ordered):
+            for case_id in groups[group]:
+                result[case_id] = "dev" if index % 2 == 0 else "test"
+    return result
 
 
 def settings(config: str, **overrides: Any) -> RAGSettings:
