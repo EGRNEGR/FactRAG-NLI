@@ -9,7 +9,12 @@ Reads <run>/steps/<experiment>/cases.jsonl and writes <run>/analysis.json:
       were refused again
 Both: the overlap with the 52 persistent XQuAD refusals of DIAGNOSTIC_REPORT.md.
 
+With --steps, <run> is an e2e run of PLAN=g3 (query_translation in the pipeline) and is
+checked against the G3 steps of <steps run>: the same translated population and texts, the
+same published answers, unchanged controls, measured time.
+
 Usage:  python -m research.opt4.live_analysis reports/optimization_4/live/<run>
+        python -m research.opt4.live_analysis live/<g3 run> --steps live/<quick run>
 """
 
 from __future__ import annotations
@@ -105,9 +110,80 @@ def g4(run: Path, persistent: set[str]) -> dict[str, Any]:
     }
 
 
-def main(run: Path) -> int:
-    persistent = persistent_refusals()
-    result = {"run": run.name, "G3": g3(run, persistent), "G4": g4(run, persistent)}
+def jsonl(path: Path) -> list[dict[str, Any]]:
+    with path.open(encoding="utf-8") as handle:
+        return [json.loads(line) for line in handle if line.strip()]
+
+
+def e2e_vs_steps(run: Path, steps_run: Path) -> dict[str, Any]:
+    """The e2e G3 run (query_translation in the pipeline) against the G3 steps of steps_run:
+    the same translations, the same published texts, unchanged controls, the extra time."""
+    from research.opt4.compare import controls
+
+    cases: dict[str, dict[str, Any]] = {}
+    responses: dict[str, dict[str, Any]] = {}
+    for folder in sorted((run / "e2e").glob("*/e2e_guard_on")):
+        cases.update((r["id"], r) for r in jsonl(folder / "cases.jsonl") if r.get("ok"))
+        responses.update(
+            (r["id"], r["response"]) for r in jsonl(folder.parent / "full" / "e2e_guard_on.jsonl")
+        )
+    logged = data.case_rows(steps.CONFIG)
+    full = data.responses(steps.CONFIG)
+    step = {r["id"]: r for r in rows(steps_run, "G3")}
+    translated = [cid for cid, r in cases.items() if r.get("translation_pass")]
+    published = [cid for cid in translated if not cases[cid]["refused"]]
+    ctrl = controls()
+    extra = sorted(
+        (responses[cid]["execution_stats"]["total_ms"] - full[cid]["execution_stats"]["total_ms"])
+        / 1000
+        for cid in translated
+    )
+    return {
+        "questions": len(cases),
+        "translated": len(translated),
+        "translated_equals_steps_population": set(translated) == set(step),
+        "translation_text_as_steps": sum(
+            (responses[cid].get("translation") or {}).get("question")
+            == step[cid]["translation"]["text"]
+            for cid in translated if cid in step
+        ),
+        "translated_outcome": dict(Counter(
+            (responses[cid].get("translation") or {}).get("refusal_reason") or "published"
+            for cid in translated
+        )),
+        "published": published,
+        "published_text_as_steps": sum(
+            step.get(cid, {}).get("replace") and cases[cid]["answer"] == step[cid]["text"]
+            for cid in published
+        ),
+        "controls_unchanged": sum(
+            (cases[c]["answer"], cases[c]["refused"]) == (logged[c]["answer"], logged[c]["refused"])
+            for c in ctrl if c in cases
+        ),
+        "controls": len([c for c in ctrl if c in cases]),
+        "minutes_e2e": round(sum(r["wall_ms"] for r in cases.values()) / 60000, 1),
+        "minutes_baseline_same_questions": round(
+            sum(full[cid]["execution_stats"]["total_ms"] for cid in cases) / 60000, 1
+        ),
+        "extra_seconds_per_translated_question": {
+            "median": round(extra[len(extra) // 2], 1) if extra else None,
+            "max": round(extra[-1], 1) if extra else None,
+        },
+    }
+
+
+def main(argv: list[str]) -> int:
+    if len(argv) == 1:
+        run = Path(argv[0])
+        persistent = persistent_refusals()
+        result = {"run": run.name, "G3": g3(run, persistent), "G4": g4(run, persistent)}
+    elif len(argv) == 3 and argv[1] == "--steps":
+        run = Path(argv[0])
+        result = {"run": run.name, "steps_run": Path(argv[2]).name,
+                  "G3_e2e": e2e_vs_steps(run, Path(argv[2]))}
+    else:
+        print(__doc__)
+        return 2
     (run / "analysis.json").write_text(
         json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8"
     )
@@ -116,7 +192,4 @@ def main(run: Path) -> int:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print(__doc__)
-        raise SystemExit(2)
-    raise SystemExit(main(Path(sys.argv[1])))
+    raise SystemExit(main(sys.argv[1:]))

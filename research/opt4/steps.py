@@ -36,6 +36,7 @@ Usage (from scripts/linux/run_experiments.sh, llama-server running):
 from __future__ import annotations
 
 import argparse
+import atexit
 import hashlib
 import json
 import os
@@ -139,17 +140,22 @@ def run_settings(dataset: str, api_base: str | None) -> RAGSettings:
 
 @cache
 def index(dataset: str) -> Any:
-    """The run's index of a dataset (loaded once; read only)."""
+    """The run's index of a dataset (loaded once; read only; closed at exit)."""
     from hybrid_retriever import HybridRetriever
 
     if dataset == "v3":
-        return HybridRetriever(settings=run_settings(dataset, None))
-    # The XQuAD index shares the encoder and reranker of the v3 index (one reranker in VRAM
-    # next to llama-server). Injected adapters need allow_fallback, which here only permits
-    # the injection: with both adapters given, nothing can fall back.
-    first = index("v3")
-    s = run_settings(dataset, None).model_copy(update={"allow_fallback": True})
-    return HybridRetriever(settings=s, encoder=first.encoder, reranker=first.reranker)
+        retriever = HybridRetriever(settings=run_settings(dataset, None))
+    else:
+        # The XQuAD index shares the encoder and reranker of the v3 index (one reranker in
+        # VRAM next to llama-server). Injected adapters need allow_fallback, which here only
+        # permits the injection: with both adapters given, nothing can fall back.
+        first = index("v3")
+        s = run_settings(dataset, None).model_copy(update={"allow_fallback": True})
+        retriever = HybridRetriever(settings=s, encoder=first.encoder, reranker=first.reranker)
+    # Closed before interpreter shutdown: QdrantClient.__del__ at shutdown prints an ignored
+    # ImportError ("sys.meta_path is None") into the run log.
+    atexit.register(retriever.close)
+    return retriever
 
 
 @cache

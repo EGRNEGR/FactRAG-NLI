@@ -1,0 +1,42 @@
+# Best confirmed configuration after optimization_4 (baseline: live run 20261103T1310Z).
+# = reports/optimization_3/BEST_CONFIG.yaml + question translation after a refusal (G3).
+# Run on the RTX 3090:  PLAN=main bash scripts/linux/run_benchmark.sh
+profile: qwen38-27b-hybrid
+llm:
+  model: Qwen3.8-27B-UD-Q4_K_XL.gguf
+  temperature: 0.0
+  seed: 42
+  max_tokens: 512
+  reasoning_budget: 640
+  think_retry: refusal          # RAG_LLM_THINK_RETRY
+  think_on_trim: true           # RAG_LLM_THINK_ON_TRIM
+  think_max_tokens: 1024
+  recovery: sampling            # 2 drafts at T=0.7 when the best rerank score >= 0.5
+  query_translation: refusal    # new, RAG_QUERY_TRANSLATION (QUERY_TRANSLATION=off disables it)
+retrieval:
+  reranker: bge-reranker-v2-m3
+  rerank_top_k: 10
+  rerank_score_threshold: 0.005
+  embedding_device: cpu
+verifier:
+  decision: judge               # VERIFIER=judge
+  judge: data/nli_judge/bge-m3-zeroshot.json
+  judge_threshold: 0.3
+  anchor_grouping_fix: true     # grounding._ungroup (code, no setting)
+evidence:
+  steps: reports/optimization_4/live/20261103T1801Z_opt4_quick    # G3 from the logged state
+  e2e: reports/optimization_4/live/20261103T1839Z_opt4_g3         # G3 in the pipeline
+  e2e_result: "171 questions (151 G3 + 20 controls): +4 / -0 (dev +2, test +2), 0 / 119
+    unanswerable published, 166 answers identical, 20 / 20 controls unchanged; the same 151
+    translations and 5 published texts as the steps run"
+expected_metrics:               # 1310Z + the e2e changes (untriggered questions do not change)
+  correct: 0.909                # 1188 / 1307 (baseline 1184); 1189 counting V3-XQFEN-320
+  correct_v3: 0.886             # 195 / 220 (unchanged)
+  correct_xquad: 0.914          # 993 / 1087 (baseline 989)
+  hallucination: 3 / 269        # unchanged; 1 real (V3-ADV-029)
+  false_refusal: 74 / 1038      # baseline 79
+  selective_accuracy: 0.956     # 922 / 964
+  extra_minutes_3090: 7.2       # one translation call on 151 of 1307 questions + 76 drafts
+candidates_not_enabled:
+  nli_anchor_scope_document: +1 test (V3-MH-024), 0 dev, on 1310Z and 0749Z
+  recovery_without_premise_rule: +2 test, 0 dev (optimization_3)

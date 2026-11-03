@@ -4,7 +4,7 @@
 #   bash scripts/linux/run_experiments.sh              # PLAN=quick: D0, G3, G4 (13 min measured)
 #   PLAN=all bash scripts/linux/run_experiments.sh     # + e2e of E1 with 20 controls, G2 (~30 min)
 #   PLAN=g3 bash scripts/linux/run_experiments.sh      # e2e of query_translation on the G3
-#                                                      # population + 20 controls (~31 min)
+#                                                      # population + 20 controls (31 min)
 #   PLAN=e2e IDS=V3-MH-024,V3-TC-020 FLAGS="RAG_NLI_ANCHOR_SCOPE=document" \
 #     bash scripts/linux/run_experiments.sh            # real pipeline on these questions only
 #   IDS=V3-MH-024,V3-XQFEN-130 bash scripts/linux/run_experiments.sh   # steps on these only
@@ -17,10 +17,12 @@
 #           baseline (research.opt4.compare). PLAN=all: RAG_NLI_ANCHOR_SCOPE=document (E1) on the
 #           9 questions where a claim was withheld for a missing anchor + 20 untouched controls
 #           (E1 itself is decided exactly by the offline replay; this confirms it live).
-#           PLAN=g3: RAG_QUERY_TRANSLATION=refusal (G3 in the pipeline) on the 151 questions its
-#           trigger selects + the 20 controls; the time is the sum of the logged 1310Z times of
-#           these questions and of the G3 steps of run 20261103T1801Z, not a measurement.
-#           PLAN=e2e: the questions of IDS with the RAG_* settings of FLAGS.
+#           PLAN=g3: QUERY_TRANSLATION=refusal (G3 in the pipeline) on the 151 questions its
+#           trigger selects + the 20 controls (run 20261103T1839Z: 31 min measured).
+#           PLAN=e2e: the questions of IDS with the settings of FLAGS.
+#           The baseline 1310Z ran without question translation, so every e2e stage runs
+#           with QUERY_TRANSLATION=off unless FLAGS set it (QUERY_TRANSLATION, not
+#           RAG_QUERY_TRANSLATION: env.rtx3090.sh derives the RAG_ variable from it).
 #   steps   research.opt4.steps from the logged state, in priority order (a run stopped early
 #           keeps the finished experiments): D0 determinism, G3 translation and re-retrieval
 #           after a refusal, G4 question normalization after an LLM refusal (PLAN=all: + G2
@@ -49,7 +51,7 @@ case "$PLAN" in
     EXPERIMENTS="${EXPERIMENTS:-D0,G3,G4,G2}"; POPULATIONS="E1 controls"
     FLAGS="RAG_NLI_ANCHOR_SCOPE=document" ;;
   g3)
-    EXPERIMENTS=""; POPULATIONS="G3 controls"; FLAGS="RAG_QUERY_TRANSLATION=refusal" ;;
+    EXPERIMENTS=""; POPULATIONS="G3 controls"; FLAGS="QUERY_TRANSLATION=refusal" ;;
   e2e)
     [[ -n "${IDS:-}" ]] || { echo "PLAN=e2e needs IDS=..." >&2; exit 2; }
     EXPERIMENTS=""; POPULATIONS="ids"; FLAGS="${FLAGS:-}" ;;
@@ -114,9 +116,10 @@ if [[ -n "$POPULATIONS" ]]; then
   done
   echo "$FLAGS" >"$OUT/e2e/flags.txt"
   echo "$(wc -l <"$OUT/e2e/ids.txt") questions"
-  # FLAGS are RAG_* settings of the variant (empty: the baseline configuration itself).
+  # FLAGS are the settings of the variant (empty: the baseline configuration itself);
+  # the last assignment wins, so FLAGS override the baseline's QUERY_TRANSLATION=off.
   read -r -a flags <<<"$FLAGS"
-  E2E=(env "${flags[@]}" FACTRAG_LLM_RECOVER_CMD="bash scripts/linux/llama_server.sh ensure")
+  E2E=(env QUERY_TRANSLATION=off "${flags[@]}" FACTRAG_LLM_RECOVER_CMD="bash scripts/linux/llama_server.sh ensure")
   if grep -qv '^V3-XQF' "$OUT/e2e/ids.txt"; then
     "${E2E[@]}" "${WITH[@]}" "$PYTHON" -X utf8 evaluate_suite.py --run-dir "$OUT/e2e/v3" \
       --ids "@$OUT/e2e/ids.txt" e2e --profile guard_on || failed=1

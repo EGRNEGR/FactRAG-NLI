@@ -26,6 +26,7 @@ LLM_PROFILE="${LLM_PROFILE:-qwen38-27b-hybrid}"
 LLM_THINK_RETRY=off
 LLM_THINK_ON_TRIM=false
 LLM_RECOVERY=off
+LLM_QUERY_TRANSLATION=off
 case "$LLM_PROFILE" in
   qwen38-27b)
     LLM_REPO="unsloth/Qwen3.8-27B-GGUF"
@@ -53,6 +54,12 @@ case "$LLM_PROFILE" in
     # it only when every claim is verified (replay of 0749Z: +3 judge / +5 rules, none lost,
     # 16-20 calls per 1307 questions). THINK_ON_TRIM=false disables it.
     LLM_THINK_ON_TRIM="${THINK_ON_TRIM:-true}"
+    # optimization_4 (G3): a question refused by the gate or the LLM and written in another
+    # script than its best sources is translated into their language, retrieved again and
+    # drafted once (e2e of run 20261103T1839Z on its 151 questions + 20 controls: +4 / -0 by
+    # the scorer, one more correct answer the scorer misses, 0 of 119 unanswerable published,
+    # controls unchanged). QUERY_TRANSLATION=off disables it.
+    LLM_QUERY_TRANSLATION="${QUERY_TRANSLATION:-refusal}"
     ;;
   qwen38-27b-think)
     LLM_REPO="unsloth/Qwen3.8-27B-GGUF"
@@ -85,8 +92,9 @@ case "$LLM_PROFILE" in
     ;;
 esac
 # LLM_REASONING_BUDGET -1 = no --reasoning-budget flag (non-thinking profiles)
-export LLM_PROFILE LLM_REPO LLM_FILE LLM_SHA256 LLM_THINKING_OFF LLM_REASONING_BUDGET LLM_THINK_RETRY LLM_THINK_ON_TRIM LLM_RECOVERY
+export LLM_PROFILE LLM_REPO LLM_FILE LLM_SHA256 LLM_THINKING_OFF LLM_REASONING_BUDGET LLM_THINK_RETRY LLM_THINK_ON_TRIM LLM_RECOVERY LLM_QUERY_TRANSLATION
 export RAG_MAX_TOKENS="$LLM_MAX_TOKENS"
+export RAG_QUERY_TRANSLATION="$LLM_QUERY_TRANSLATION"
 # The thinking pass of the hybrid profile gets the output budget of qwen38-27b-think.
 export RAG_LLM_THINK_RETRY="$LLM_THINK_RETRY"
 export RAG_LLM_THINK_ON_TRIM="$LLM_THINK_ON_TRIM"
