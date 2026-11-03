@@ -26,6 +26,10 @@ verifier:
 evidence:
   steps: reports/optimization_4/live/20261103T1801Z_opt4_quick    # G3 from the logged state
   e2e: reports/optimization_4/live/20261103T1839Z_opt4_g3         # G3 in the pipeline
+  full_run: reports/optimization_4/live/20261103T1929Z_rtx3090_main   # PLAN=main, 0a70b04
+  full_run_result: "1188 / 1307 (v3 195, XQuAD 993), hallucination 3 / 269, false refusal
+    74 / 1038, +4 / -0 vs 1310Z (dev +2, test +2), 1302 answers identical, 3.03 h of work
+    (+7 min); matches expected_metrics"
   e2e_result: "171 questions (151 G3 + 20 controls): +4 / -0 (dev +2, test +2), 0 / 119
     unanswerable published, 166 answers identical, 20 / 20 controls unchanged; the same 151
     translations and 5 published texts as the steps run"
