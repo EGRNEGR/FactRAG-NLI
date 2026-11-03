@@ -49,20 +49,6 @@ register(
     Experiment("X00_judge_replay", "judge verifier, judge drafts, current code", "judge", "judge"),
     Experiment("X01_judge_on_rules", "judge verifier on the rules drafts", "judge", "rules"),
     Experiment("X01_rules_on_judge", "rules verifier on the judge drafts", "rules", "judge"),
-    Experiment(
-        "X02_judge_anchor_document",
-        "identifier anchors may come from a same-document retrieved chunk",
-        "judge",
-        "judge",
-        {"nli_anchor_scope": "document"},
-    ),
-    Experiment(
-        "X02_rules_anchor_document",
-        "identifier anchors may come from a same-document retrieved chunk",
-        "rules",
-        "rules",
-        {"nli_anchor_scope": "document"},
-    ),
 )
 
 

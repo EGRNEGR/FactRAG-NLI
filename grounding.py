@@ -290,11 +290,6 @@ def anchors_present(anchors: frozenset[str], text: str) -> bool:
     return True
 
 
-def is_identifier_anchor(anchor: str) -> bool:
-    """An anchor naming something (AC-7, uuidv7, max_ack_delay), not a number or literal."""
-    return any(c.isalpha() for c in anchor) and not re.fullmatch(r"0x[0-9a-f]+|0b[01]+", anchor)
-
-
 # ----------------------------------------------------------------------------- code spans
 
 _QUOTES = str.maketrans({"“": '"', "”": '"', "«": '"', "»": '"', "‘": "'", "’": "'", "\\": ""})
