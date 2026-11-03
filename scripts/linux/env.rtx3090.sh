@@ -24,6 +24,7 @@ export PROJECT_ROOT
 #             the same-hardware baseline for the comparison.
 LLM_PROFILE="${LLM_PROFILE:-qwen38-27b-hybrid}"
 LLM_THINK_RETRY=off
+LLM_THINK_ON_TRIM=false
 LLM_RECOVERY=off
 case "$LLM_PROFILE" in
   qwen38-27b)
@@ -47,6 +48,11 @@ case "$LLM_PROFILE" in
     # one the verifier accepts is published (replay of 0508Z: +3-4 answers, no new
     # hallucination on 44 unanswerable control questions). RECOVERY=off disables it.
     LLM_RECOVERY="${RECOVERY:-sampling}"
+    # optimization_3: an answer published with a claim cut by the verifier (in v3 mostly one
+    # part of a multi-part question) gets the thinking pass too; the thinking answer replaces
+    # it only when every claim is verified (replay of 0749Z: +3 judge / +5 rules, none lost,
+    # 16-20 calls per 1307 questions). THINK_ON_TRIM=false disables it.
+    LLM_THINK_ON_TRIM="${THINK_ON_TRIM:-true}"
     ;;
   qwen38-27b-think)
     LLM_REPO="unsloth/Qwen3.8-27B-GGUF"
@@ -79,10 +85,11 @@ case "$LLM_PROFILE" in
     ;;
 esac
 # LLM_REASONING_BUDGET -1 = no --reasoning-budget flag (non-thinking profiles)
-export LLM_PROFILE LLM_REPO LLM_FILE LLM_SHA256 LLM_THINKING_OFF LLM_REASONING_BUDGET LLM_THINK_RETRY LLM_RECOVERY
+export LLM_PROFILE LLM_REPO LLM_FILE LLM_SHA256 LLM_THINKING_OFF LLM_REASONING_BUDGET LLM_THINK_RETRY LLM_THINK_ON_TRIM LLM_RECOVERY
 export RAG_MAX_TOKENS="$LLM_MAX_TOKENS"
 # The thinking pass of the hybrid profile gets the output budget of qwen38-27b-think.
 export RAG_LLM_THINK_RETRY="$LLM_THINK_RETRY"
+export RAG_LLM_THINK_ON_TRIM="$LLM_THINK_ON_TRIM"
 export RAG_LLM_THINK_MAX_TOKENS=1024
 # fresh: the thinking pass drafts anew; revise: after an NLI rejection it revises the withheld
 # answer (reports/optimization_2/SELECTIVE_THINKING_RESEARCH.md).
@@ -160,18 +167,21 @@ export RAG_NLI_STRIP_VERDICT_PREFIX="${STRIP_VERDICT_PREFIX:-true}"
 #                 ~1.2 GB of VRAM: the query encoder (BGE-M3) moves to the CPU (the retrieval
 #                 stages build the index first; one query costs ~60 ms on a laptop CPU).
 # VERIFIER=rules  verifier v2 (mDeBERTa only), as in run 20261031T0508Z.
+# The query encoder runs on the CPU with either verifier: in run 20261102T0749Z (PLAN=compare)
+# the rules column encoded queries on the GPU and the judge column on the CPU, the dense
+# ranking differed in the last digits and 233 of 1148 questions got a different context order,
+# hence different drafts; the two columns must differ by the verifier only.
 export VERIFIER="${VERIFIER:-judge}"
+export RAG_EMBEDDING_DEVICE="${EMBEDDING_DEVICE:-cpu}"
 case "$VERIFIER" in
   judge)
     export RAG_NLI_DECISION=judge
     export RAG_NLI_SECONDARY_MODEL_PATH=models/nli-bge-m3-zeroshot
     export RAG_NLI_JUDGE_PATH=data/nli_judge/bge-m3-zeroshot.json
-    export RAG_EMBEDDING_DEVICE="${EMBEDDING_DEVICE:-cpu}"
     ;;
   rules)
     export RAG_NLI_DECISION=rules
     unset RAG_NLI_SECONDARY_MODEL_PATH RAG_NLI_JUDGE_PATH
-    export RAG_EMBEDDING_DEVICE="${EMBEDDING_DEVICE:-$RAG_MODEL_DEVICE}"
     ;;
   *)
     echo "Unknown VERIFIER=$VERIFIER (judge | rules)" >&2

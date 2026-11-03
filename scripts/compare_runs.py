@@ -159,9 +159,17 @@ def report(run: Path) -> str:
                     )
                 recovery = summary.get("recovery_pass") or {}
                 if recovery.get("attempted"):
+                    answerable = recovery.get("answerable")
+                    split = (
+                        f" ({answerable} answerable: {recovery['answerable_correct']} answered "
+                        f"correctly; {recovery['attempted'] - answerable} unanswerable)"
+                        if answerable is not None
+                        else ""
+                    )
                     recovery_notes.append(
-                        f"{config.name} {dataset}: {recovery['attempted']} cases, "
-                        f"{recovery['published']} published, {recovery['factrag_correct']} correct, "
+                        f"{config.name} {dataset}: {recovery['attempted']} cases{split}, "
+                        f"{recovery['published']} published, {recovery['factrag_correct']} correct "
+                        f"(a refusal is correct on an unanswerable question), "
                         f"{recovery['factrag_hallucinations']} hallucinations."
                     )
         if len(found) > 1:
@@ -191,7 +199,7 @@ def report(run: Path) -> str:
             "Thinking only on refusal, computed from the two logs: " + " ".join(hybrid_notes),
         ]
     if thinking_notes:
-        lines += ["", "Thinking pass (RAG_LLM_THINK_RETRY) ran for: " + " ".join(thinking_notes)]
+        lines += ["", "Thinking pass (RAG_LLM_THINK_RETRY, RAG_LLM_THINK_ON_TRIM) ran for: " + " ".join(thinking_notes)]
     if recovery_notes:
         lines += ["", "Recovery pass (RAG_LLM_RECOVERY) ran for: " + " ".join(recovery_notes)]
     lines += [

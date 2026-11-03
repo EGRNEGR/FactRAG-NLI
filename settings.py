@@ -123,6 +123,13 @@ class RAGSettings(BaseSettings):
     # revises the withheld answer instead (its rejected claims in the revision block), after
     # an LLM refusal it still drafts anew.
     llm_think_mode: Literal["fresh", "revise"] = "fresh"
+    # A published non-thinking answer from which the verifier withheld a claim ("trimmed": in
+    # v3 usually the answer to one part of a multi-part question) is generated once more with
+    # thinking; the thinking answer replaces it only when every one of its claims is verified,
+    # otherwise the trimmed answer stays. Replay of run 20261102T0749Z (reports/optimization_3):
+    # 16-20 extra thinking calls per 1307 questions, correct +3 (judge) / +5 (rules), no answer
+    # lost, no new hallucination.
+    llm_think_on_trim: bool = False
     # Recovery after the thinking pass also ended in an LLM refusal while the best source has
     # a reranker score of at least llm_recovery_min_rerank: "evidence_prompt" asks once more
     # (non-thinking, T=0) with a system-prompt note naming the top sources; "sampling" draws
@@ -370,7 +377,7 @@ class RAGSettings(BaseSettings):
         if self.llm_max_tokens + 128 >= self.llm_context_window:
             raise ValueError("LLM context must exceed output budget plus 128 template tokens")
         if (
-            self.llm_think_retry != "off"
+            (self.llm_think_retry != "off" or self.llm_think_on_trim)
             and self.llm_think_max_tokens + 128 >= self.llm_context_window
         ):
             raise ValueError("LLM context must exceed thinking budget plus 128 template tokens")

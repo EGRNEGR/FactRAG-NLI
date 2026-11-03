@@ -1,0 +1,442 @@
+{
+ "rules": {
+  "all": {
+   "correct": 1183,
+   "correct_rate": 0.9051262433052792,
+   "hallucination": 3,
+   "false_refusal": 80,
+   "coverage": 0.9229287090558767,
+   "selective_accuracy": 0.9572025052192067,
+   "damage": 8,
+   "correction": 66,
+   "paired": {
+    "n": 1307,
+    "gained": 6,
+    "lost": 0,
+    "delta_pp": 0.4590665646518745,
+    "ci95_pp": [
+     0.1530221882172915,
+     0.8416220351951033
+    ],
+    "mcnemar_p": 0.03125
+   }
+  },
+  "dev": {
+   "correct": 595,
+   "correct_rate": 0.9139784946236559,
+   "hallucination": 0,
+   "false_refusal": 36,
+   "coverage": 0.9300970873786408,
+   "selective_accuracy": 0.9582463465553236,
+   "damage": 4,
+   "correction": 36,
+   "paired": {
+    "n": 651,
+    "gained": 2,
+    "lost": 0,
+    "delta_pp": 0.30721966205837176,
+    "ci95_pp": [
+     0.0,
+     0.7680491551459293
+    ],
+    "mcnemar_p": 0.5
+   }
+  },
+  "test": {
+   "correct": 588,
+   "correct_rate": 0.8963414634146342,
+   "hallucination": 3,
+   "false_refusal": 44,
+   "coverage": 0.9158699808795411,
+   "selective_accuracy": 0.9561586638830898,
+   "damage": 4,
+   "correction": 30,
+   "paired": {
+    "n": 656,
+    "gained": 4,
+    "lost": 0,
+    "delta_pp": 0.6097560975609756,
+    "ci95_pp": [
+     0.1524390243902439,
+     1.2195121951219512
+    ],
+    "mcnemar_p": 0.125
+   }
+  },
+  "think_calls": 20,
+  "changed": [
+   {
+    "id": "V3-MH-023",
+    "split": "dev",
+    "before": false,
+    "after": false,
+    "hallucination": null,
+    "path": "draft+think+think_repair"
+   },
+   {
+    "id": "V3-MH-024",
+    "split": "test",
+    "before": false,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-TC-020",
+    "split": "test",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think+think_repair"
+   },
+   {
+    "id": "V3-ADV-025",
+    "split": "test",
+    "before": true,
+    "after": true,
+    "hallucination": false,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-021",
+    "split": "test",
+    "before": false,
+    "after": false,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-TC-013",
+    "split": "dev",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-TC-015",
+    "split": "test",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-ADV-021",
+    "split": "dev",
+    "before": true,
+    "after": true,
+    "hallucination": false,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-035",
+    "split": "dev",
+    "before": false,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-032",
+    "split": "dev",
+    "before": false,
+    "after": false,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-TC-029",
+    "split": "dev",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-TC-012",
+    "split": "dev",
+    "before": false,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-001",
+    "split": "test",
+    "before": false,
+    "after": true,
+    "hallucination": null,
+    "path": "draft"
+   },
+   {
+    "id": "V3-MH-002",
+    "split": "dev",
+    "before": false,
+    "after": false,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-006",
+    "split": "test",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-TC-002",
+    "split": "test",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-TC-005",
+    "split": "test",
+    "before": false,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-028",
+    "split": "dev",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-TC-021",
+    "split": "test",
+    "before": false,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-XQFEN-099",
+    "split": "test",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-XQFEN-163",
+    "split": "dev",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   }
+  ]
+ },
+ "judge": {
+  "all": {
+   "correct": 1183,
+   "correct_rate": 0.9051262433052792,
+   "hallucination": 3,
+   "false_refusal": 79,
+   "coverage": 0.9238921001926782,
+   "selective_accuracy": 0.9562043795620438,
+   "damage": 10,
+   "correction": 69,
+   "paired": {
+    "n": 1307,
+    "gained": 4,
+    "lost": 0,
+    "delta_pp": 0.306044376434583,
+    "ci95_pp": [
+     0.07651109410864575,
+     0.612088752869166
+    ],
+    "mcnemar_p": 0.125
+   }
+  },
+  "dev": {
+   "correct": 596,
+   "correct_rate": 0.9155145929339478,
+   "hallucination": 0,
+   "false_refusal": 34,
+   "coverage": 0.9339805825242719,
+   "selective_accuracy": 0.9563409563409564,
+   "damage": 3,
+   "correction": 36,
+   "paired": {
+    "n": 651,
+    "gained": 0,
+    "lost": 0,
+    "delta_pp": 0.0,
+    "ci95_pp": [
+     0.0,
+     0.0
+    ],
+    "mcnemar_p": 1.0
+   }
+  },
+  "test": {
+   "correct": 587,
+   "correct_rate": 0.8948170731707317,
+   "hallucination": 3,
+   "false_refusal": 45,
+   "coverage": 0.9139579349904398,
+   "selective_accuracy": 0.9560669456066946,
+   "damage": 7,
+   "correction": 33,
+   "paired": {
+    "n": 656,
+    "gained": 4,
+    "lost": 0,
+    "delta_pp": 0.6097560975609756,
+    "ci95_pp": [
+     0.1524390243902439,
+     1.2195121951219512
+    ],
+    "mcnemar_p": 0.125
+   }
+  },
+  "think_calls": 16,
+  "changed": [
+   {
+    "id": "V3-MH-023",
+    "split": "dev",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think+think_repair"
+   },
+   {
+    "id": "V3-MH-024",
+    "split": "test",
+    "before": false,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-TC-020",
+    "split": "test",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think+think_repair"
+   },
+   {
+    "id": "V3-ADV-025",
+    "split": "test",
+    "before": true,
+    "after": true,
+    "hallucination": false,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-018",
+    "split": "test",
+    "before": false,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-021",
+    "split": "test",
+    "before": false,
+    "after": false,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-TC-016",
+    "split": "test",
+    "before": false,
+    "after": false,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-ADV-021",
+    "split": "dev",
+    "before": true,
+    "after": true,
+    "hallucination": false,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-036",
+    "split": "test",
+    "before": false,
+    "after": false,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-037",
+    "split": "test",
+    "before": false,
+    "after": false,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-032",
+    "split": "dev",
+    "before": false,
+    "after": false,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-009",
+    "split": "dev",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-MH-001",
+    "split": "test",
+    "before": false,
+    "after": true,
+    "hallucination": null,
+    "path": "draft"
+   },
+   {
+    "id": "V3-MH-002",
+    "split": "dev",
+    "before": false,
+    "after": false,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-ADV-006",
+    "split": "dev",
+    "before": true,
+    "after": true,
+    "hallucination": false,
+    "path": "draft+think+think_repair"
+   },
+   {
+    "id": "V3-TC-021",
+    "split": "test",
+    "before": false,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   },
+   {
+    "id": "V3-XQFEN-163",
+    "split": "dev",
+    "before": true,
+    "after": true,
+    "hallucination": null,
+    "path": "draft+think"
+   }
+  ]
+ }
+}

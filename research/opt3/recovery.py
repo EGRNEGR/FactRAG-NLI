@@ -118,14 +118,130 @@ def generate(api_base: str, modes: list[str]) -> None:
                           flush=True)
 
 
+def drafts_of(
+    mode: str, store: dict[tuple[str, str, int], dict[str, Any]], source: str, keep_logged: bool
+):
+    """recovery_drafts callback of research.opt3.replay.replay for one variant.
+
+    The generated drafts (contexts of the judge column) are used only where the source
+    column saw the same contexts; keep_logged appends the run's own recovery samples.
+    """
+
+    def callback(record: data.CaseRecord) -> list[data.Attempt] | None:
+        rows = [store.get((record.id, mode, i)) for i in range(len(MODES[mode]["plans"]))]
+        if any(row is None for row in rows):
+            return None
+        first = record.attempts[source][0]
+        if first.contexts != record.attempts["judge"][0].contexts:
+            return None
+        generated = [
+            data.Attempt(
+                role="recovery",
+                index=-1,
+                raw_text=row["raw_text"],
+                cleaned_text="",
+                refused=False,
+                claims=[],
+                contexts=first.contexts,
+                metadata={
+                    **first.metadata,
+                    "finish_reason": row["finish_reason"],
+                    "recovery": True,
+                    "thinking": False,
+                },
+            )
+            for row in rows
+            if row is not None
+        ]
+        logged = [a for a in record.attempts[source] if a.role == "recovery"]
+        return generated + (logged if keep_logged else [])
+
+    return callback
+
+
+THRESHOLDS = (0.0, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.5)
+
+
+def evaluate(modes: list[str]) -> dict[str, Any]:
+    """Every variant x trigger threshold, both verifiers; threshold chosen on dev only."""
+    from research.opt2.metrics import paired, summarize
+    from research.opt3.experiments import headline
+    from research.opt3.replay import logged, replay, scored, verifier
+
+    store = load_store()
+    records = data.records()
+    report: dict[str, Any] = {}
+    for config in data.CONFIGS:
+        v = verifier(config)
+        base = [logged(r, config) for r in records.values()]
+        variants: list[tuple[str, Any]] = [("logged_sampling", None)]
+        for mode in modes:
+            variants.append((mode, drafts_of(mode, store, config, keep_logged=False)))
+            variants.append((mode + "+logged_sampling", drafts_of(mode, store, config, True)))
+        for name, callback in variants:
+            grid = {}
+            for threshold in THRESHOLDS:
+                outcomes = [
+                    scored(
+                        r,
+                        replay(r, v, source=config, recovery_min_rerank=threshold,
+                               recovery_drafts=callback),
+                        config,
+                    )
+                    for r in records.values()
+                ]
+                grid[threshold] = outcomes
+
+            def dev_key(threshold: float) -> tuple[int, int, float]:
+                dev = [o for o in grid[threshold] if o["split"] == "dev"]
+                s = summarize(dev)
+                return (-s["hallucination"]["k"], s["factrag_correct"]["k"], threshold)
+
+            chosen = max(THRESHOLDS, key=dev_key)
+            entry: dict[str, Any] = {"threshold": chosen, "grid": {}}
+            for threshold, outcomes in grid.items():
+                row: dict[str, Any] = {}
+                for part in ("all", "dev", "test"):
+                    keep = [i for i, o in enumerate(outcomes) if part == "all" or o["split"] == part]
+                    row[part] = headline(summarize([outcomes[i] for i in keep]))
+                    row[part]["paired"] = paired([base[i] for i in keep], [outcomes[i] for i in keep])
+                row["published_wrong_answerable"] = sum(
+                    o["expected"] == "answer" and o["published"] and not o["factrag"]["correct"]
+                    for o in outcomes
+                )
+                row["changed"] = [
+                    {"id": o["id"], "split": o["split"], "correct": o["factrag"]["correct"],
+                     "hallucination": o["factrag"]["hallucination"], "path": o["path"]}
+                    for o, b in zip(outcomes, base, strict=True)
+                    if o["published"] != b["published"] or o["factrag"]["correct"] != b["factrag"]["correct"]
+                ]
+                entry["grid"][str(threshold)] = row
+            report.setdefault(config, {})[name] = entry
+            r = entry["grid"][str(chosen)]
+            print(
+                config, name, "threshold", chosen, "| all", r["all"]["correct"],
+                "halluc", r["all"]["hallucination"], "FR", r["all"]["false_refusal"],
+                "pub_wrong", r["published_wrong_answerable"],
+                "| test +%d -%d" % (r["test"]["paired"]["gained"], r["test"]["paired"]["lost"]),
+                "| dev +%d -%d" % (r["dev"]["paired"]["gained"], r["dev"]["paired"]["lost"]),
+                flush=True,
+            )
+    out = data.OUT / "experiments" / "recovery.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
+    return report
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=["generate", "population"])
+    parser.add_argument("action", choices=["generate", "population", "evaluate"])
     parser.add_argument("--api-base", default="http://127.0.0.1:8093/v1")
     parser.add_argument("--modes", nargs="+", default=["relaxed"])
     args = parser.parse_args()
     if args.action == "generate":
         generate(args.api_base, args.modes)
+    elif args.action == "evaluate":
+        evaluate(args.modes)
     else:
         ids = population()
         print(len(ids), ids)

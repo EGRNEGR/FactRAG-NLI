@@ -18,12 +18,14 @@ from __future__ import annotations
 
 import json
 import tempfile
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 from generator_verifier import (
     ClaimJudge,
+    ClaimStatus,
     NLIFactVerifier,
     RawGenerationResult,
     VerifiedGenerationResult,
@@ -35,12 +37,15 @@ from research.opt2.nli_models import CachedNLI
 from research.opt3 import data
 
 
-def verifier(config: str, **overrides: Any) -> NLIFactVerifier:
-    """The verifier of `config` ("rules" | "judge") with the run's settings and `overrides`."""
+def verifier(
+    config: str, judge: dict[str, Any] | None = None, **overrides: Any
+) -> NLIFactVerifier:
+    """The verifier of `config` ("rules" | "judge") with the run's settings and `overrides`;
+    `judge` overrides fields of the decision layer spec (threshold, partial_threshold, ...)."""
     s = data.settings(config, **overrides)
     if s.nli_decision != "judge":
         return NLIFactVerifier(s, backend=CachedNLI("mdeberta"))
-    spec = json.loads(Path(s.nli_judge_path).read_text("utf-8"))
+    spec = {**json.loads(Path(s.nli_judge_path).read_text("utf-8")), **(judge or {})}
     judge = ClaimJudge(spec)
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as handle:
         json.dump(spec, handle)
@@ -60,6 +65,11 @@ def verify(v: NLIFactVerifier, attempt: data.Attempt) -> VerifiedGenerationResul
         {"text": attempt.raw_text, "contexts": attempt.contexts, "metadata": attempt.metadata}
     )
     return v.verify(raw)
+
+
+def trimmed(verified: VerifiedGenerationResult) -> bool:
+    """Published, but at least one claim was withheld."""
+    return not verified.refused and any(c.status != ClaimStatus.VERIFIED for c in verified.claims)
 
 
 @dataclass
@@ -121,7 +131,13 @@ def replay(
     think_mode: str = "refusal",
     recovery: bool = True,
     recovery_min_rerank: float = 0.5,
+    recovery_drafts: Callable[[data.CaseRecord], list[data.Attempt] | None] | None = None,
+    trim_drafts: Callable[[data.CaseRecord], list[data.Attempt] | None] | None = None,
 ) -> Replayed:
+    """Replay one case; `recovery_drafts` (a recovery variant) returns the drafts that replace
+    the logged recovery samples (None: the case has none, keep the logged ones).
+    `trim_drafts` (trigger "trimmed"): thinking drafts for a published non-thinking answer
+    with a withheld claim; they replace it only if published with every claim verified."""
     if not record.attempts[source]:
         return Replayed(None, missing=None)
     s = v.settings
@@ -131,13 +147,24 @@ def replay(
         thought = walk.draft("think", "think_repair", s.generation_repair_attempts)
         if thought is not None:
             verified = thought
+    elif trim_drafts is not None and verified is not None and trimmed(verified):
+        replacement = trim_drafts(record)
+        if replacement:
+            walk.pool["think"] = [a for a in replacement if a.role == "think"]
+            walk.pool["think_repair"] = [a for a in replacement if a.role == "think_repair"]
+            thought = walk.draft("think", "think_repair", s.generation_repair_attempts)
+            if thought is not None and not thought.refused and not trimmed(thought):
+                verified = thought
     if (
         verified is not None
         and recovery
         and refusal_reason(verified) == "llm_refusal"
         and record.top_rerank(source) >= recovery_min_rerank
     ):
-        for _ in range(s.llm_recovery_samples):
+        replacement = recovery_drafts(record) if recovery_drafts else None
+        if replacement is not None:
+            walk.pool["recovery"] = list(replacement)
+        for _ in range(len(walk.pool.get("recovery") or []) or s.llm_recovery_samples):
             sample = walk.take("recovery")
             if sample is None:
                 break

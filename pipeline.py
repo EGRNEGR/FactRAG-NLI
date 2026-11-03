@@ -67,6 +67,17 @@ def recovery_due(settings: RAGSettings, reason: str | None, results: list[Search
     return best >= settings.llm_recovery_min_rerank
 
 
+def trimmed(verified: VerifiedGenerationResult) -> bool:
+    """Published, but the verifier withheld at least one of its claims (llm_think_on_trim)."""
+    return not verified.refused and any(
+        claim.status != ClaimStatus.VERIFIED for claim in verified.claims
+    )
+
+
+def fully_verified(verified: VerifiedGenerationResult) -> bool:
+    return not verified.refused and not trimmed(verified)
+
+
 def think_retry(mode: str, reason: str | None) -> bool:
     """Whether a non-thinking result is generated once more with thinking (llm_think_retry)."""
     if mode == "llm_refusal":
@@ -412,6 +423,12 @@ class RAGPipeline:
                         thinking=True,
                         revise=revise,
                     )
+                elif self.settings.llm_think_on_trim and trimmed(verified):
+                    thought = self._draft(
+                        generator, verifier, question, results, attempts, thinking=True
+                    )
+                    if fully_verified(thought):
+                        verified = thought
                 if recovery_due(self.settings, refusal_reason(verified), results):
                     verified = self._recover(
                         generator, verifier, question, results, attempts, verified
