@@ -685,6 +685,7 @@ def write_config(run_dir: Path, dataset_path: Path, settings: Any, extra: dict[s
                 "top_p": settings.llm_top_p,
                 "max_tokens": settings.llm_max_tokens,
                 "think_retry": settings.llm_think_retry,
+                "think_on_trim": settings.llm_think_on_trim,
                 "think_max_tokens": settings.llm_think_max_tokens,
                 "seed": settings.llm_seed,
                 "context_window": settings.llm_context_window,
@@ -1240,7 +1241,8 @@ def run_e2e(
                         if response.generation_metadata
                         else None,
                     ),
-                    # llm_think_retry: the published answer comes from the thinking pass.
+                    # A thinking pass ran (llm_think_retry after a refusal, or llm_think_on_trim
+                    # after a trimmed answer, whose thinking draft may be discarded).
                     thinking_pass=any(a["generation_metadata"].get("thinking") for a in attempts),
                     # llm_recovery: a recovery draft was requested after a refused thinking pass.
                     recovery_pass=any(a["generation_metadata"].get("recovery") for a in attempts),
@@ -1744,6 +1746,9 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
         },
         "recovery_pass": {
             "attempted": len(rec := [r for r in ok if r.get("recovery_pass")]),
+            # Recovery also runs on unanswerable questions, where "correct" is the refusal.
+            "answerable": len(rec_ans := [r for r in rec if r["expected_behavior"] == "answer"]),
+            "answerable_correct": sum(bool(r["factrag"]["correct"]) for r in rec_ans),
             "published": sum(not r["refused"] for r in rec),
             "factrag_correct": sum(bool(r["factrag"]["correct"]) for r in rec),
             "factrag_hallucinations": sum(bool(r["factrag"]["hallucination"]) for r in rec),

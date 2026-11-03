@@ -24,6 +24,7 @@ def explicit_development_mode(
     # device choice belong to the deployment, not to the unit tests.
     monkeypatch.setenv("RAG_NLI_DECISION", "rules")
     monkeypatch.setenv("RAG_LLM_RECOVERY", "off")
+    monkeypatch.setenv("RAG_LLM_THINK_ON_TRIM", "false")
     monkeypatch.setenv("RAG_MODEL_DEVICE", "auto")
     for name in ("RAG_NLI_SECONDARY_MODEL_PATH", "RAG_NLI_JUDGE_PATH", "RAG_EMBEDDING_DEVICE"):
         monkeypatch.delenv(name, raising=False)

@@ -265,6 +265,82 @@ def test_recovery_after_a_refused_thinking_pass(
         ]
 
 
+class TrimmingChat:
+    """Non-thinking draft: one claim with a wrong number (cut by the verifier); thinking draft:
+    both claims right, or (thought_trimmed) again with the wrong number."""
+
+    supports_thinking = True
+
+    def __init__(self, thought_trimmed: bool = False) -> None:
+        self.thought_trimmed = thought_trimmed
+        self.calls: list[bool] = []
+
+    def count_tokens(self, text: str) -> int:
+        return len(text.encode("utf-8"))
+
+    def complete(
+        self,
+        system_prompt: str,
+        prompt: str,
+        *,
+        thinking: bool = False,
+        sampling: dict[str, object] | None = None,
+    ) -> ChatReply:
+        self.calls.append(thinking)
+        degrees = 999 if not thinking or self.thought_trimmed else 300
+        text = f"Давление составляет 10 МПа [S1]. Температура составляет {degrees} градусов [S1]."
+        return ChatReply(text=text, finish_reason="stop", prompt_tokens=10, completion_tokens=5)
+
+    def close(self) -> None:
+        pass
+
+
+@pytest.mark.parametrize(
+    ("on_trim", "thought_trimmed", "thinking_calls", "degrees"),
+    [
+        (False, False, 0, None),  # the trimmed answer is published as before
+        (True, False, 1, "300"),  # the fully verified thinking answer replaces it
+        (True, True, 1, None),  # a thinking answer trimmed as well is discarded
+    ],
+)
+def test_thinking_pass_after_a_trimmed_answer(
+    tmp_path: Path, on_trim: bool, thought_trimmed: bool, thinking_calls: int, degrees: str | None
+) -> None:
+    root = tmp_path / "documents"
+    root.mkdir()
+    (root / "standard.md").write_text(
+        "# ГОСТ\n## 4.2 Режим\nДавление составляет 10 МПа. Температура составляет 300 градусов.",
+        encoding="utf-8",
+    )
+    settings = RAGSettings(
+        mode="development",
+        allow_fallback=True,
+        document_root=root,
+        qdrant_path=tmp_path / "db",
+        rerank_score_threshold=0.1,
+        llm_think_retry="refusal",
+        llm_think_on_trim=on_trim,
+    )
+    chat = TrimmingChat(thought_trimmed)
+    pipeline = RAGPipeline(
+        settings,
+        retriever=HybridRetriever(HashingEncoder(64), LexicalReranker(), settings=settings),
+        generator=LocalLLMGenerator(settings, backend=chat),
+        fact_verifier=NLIFactVerifier(settings, backend=HeuristicNLI()),
+    )
+    pipeline.index_documents([root / "standard.md"])
+    with pipeline as p:
+        response = p.query("Какие давление и температура?")
+    assert sum(chat.calls) == thinking_calls
+    assert response.refusal_reason is None
+    assert "10 МПа" in response.answer
+    if degrees is None:
+        assert "градусов" not in response.answer
+    else:
+        assert f"{degrees} градусов" in response.answer
+        assert all(c.status.value == "verified" for c in response.claims)
+
+
 def test_recovery_needs_a_relevant_source(tmp_path: Path) -> None:
     chat = RecoveringChat("note")
     with recovery_pipeline(
