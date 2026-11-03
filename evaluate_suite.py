@@ -686,6 +686,7 @@ def write_config(run_dir: Path, dataset_path: Path, settings: Any, extra: dict[s
                 "max_tokens": settings.llm_max_tokens,
                 "think_retry": settings.llm_think_retry,
                 "think_on_trim": settings.llm_think_on_trim,
+                "query_translation": settings.query_translation,
                 "think_max_tokens": settings.llm_think_max_tokens,
                 "seed": settings.llm_seed,
                 "context_window": settings.llm_context_window,
@@ -1246,6 +1247,9 @@ def run_e2e(
                     thinking_pass=any(a["generation_metadata"].get("thinking") for a in attempts),
                     # llm_recovery: a recovery draft was requested after a refused thinking pass.
                     recovery_pass=any(a["generation_metadata"].get("recovery") for a in attempts),
+                    # query_translation: the question was translated after a refusal (the
+                    # translated question and its outcome: "translation" of the full response).
+                    translation_pass=response.translation is not None,
                     execution_stats=response.execution_stats,
                     wall_ms=(time.perf_counter() - started) * 1000,
                 )
@@ -1752,6 +1756,14 @@ def summarize_e2e(rows: Sequence[dict[str, Any]], by_id: dict[str, EvalCase]) ->
             "published": sum(not r["refused"] for r in rec),
             "factrag_correct": sum(bool(r["factrag"]["correct"]) for r in rec),
             "factrag_hallucinations": sum(bool(r["factrag"]["hallucination"]) for r in rec),
+        },
+        "translation_pass": {
+            "attempted": len(tr := [r for r in ok if r.get("translation_pass")]),
+            # Translation also runs on unanswerable questions, where "correct" is the refusal.
+            "answerable": len(tr_ans := [r for r in tr if r["expected_behavior"] == "answer"]),
+            "answerable_correct": sum(bool(r["factrag"]["correct"]) for r in tr_ans),
+            "published": sum(not r["refused"] for r in tr),
+            "factrag_hallucinations": sum(bool(r["factrag"]["hallucination"]) for r in tr),
         },
         "latency_ms": {
             "all_queries": {stage: latency_stats(stage_values(warm, stage)) for stage in stages},

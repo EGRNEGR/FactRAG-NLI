@@ -1,0 +1,96 @@
+{
+ "run": "20261103T1801Z_opt4_quick",
+ "G3": {
+  "population": 151,
+  "trigger": {
+   "llm_refusal": 61,
+   "relevance_threshold_not_met": 90
+  },
+  "dataset": {
+   "v3": 26,
+   "xquad-full": 125
+  },
+  "persistent_refusals": 24,
+  "outcome": {
+   "answer: LLM refused": 29,
+   "answer: gate refused": 4,
+   "answer: published": 5,
+   "refusal: LLM refused": 42,
+   "refusal: gate refused": 71
+  },
+  "replaced": [
+   {
+    "id": "V3-XQFEN-031",
+    "split": "test",
+    "trigger": "llm_refusal",
+    "persistent_refusal": false,
+    "question": "Who stripped the ball from Newton on a 3rd and nine?",
+    "translation": "Кто выбил мяч у Ньютона на 3-м дауне с 9 ярдами до первой отметки?",
+    "answer": "Миллер забрал мяч у Ньютона [S1].",
+    "gold": "Миллер",
+    "correct": true,
+    "gold_mixed_script": []
+   },
+   {
+    "id": "V3-XQFEN-065",
+    "split": "test",
+    "trigger": "llm_refusal",
+    "persistent_refusal": true,
+    "question": "Who do gurus control?",
+    "translation": "Кем управляют гуру?",
+    "answer": "Гуру управляют своими послушниками [S1].",
+    "gold": "своих послушников",
+    "correct": true,
+    "gold_mixed_script": []
+   },
+   {
+    "id": "V3-XQFEN-245",
+    "split": "dev",
+    "trigger": "llm_refusal",
+    "persistent_refusal": true,
+    "question": "What are two examples of primitive jawless vertebrates?",
+    "translation": "Каковы два примера примитивных челюстных позвоночных?",
+    "answer": "Примитивными челюстноротыми являются миноги и миксины [S1].",
+    "gold": "миноги и миксины",
+    "correct": true,
+    "gold_mixed_script": []
+   },
+   {
+    "id": "V3-XQFEN-291",
+    "split": "dev",
+    "trigger": "relevance_threshold_not_met",
+    "persistent_refusal": false,
+    "question": "When was the divestment from South Africa movement?",
+    "translation": "Когда произошло движение за вывод инвестиций из Южно-Африканской Республики?",
+    "answer": "Движение за прекращение инвестирования в ЮАР произошло в конце 1980-х годов [S1].",
+    "gold": "конце 1980-х годов",
+    "correct": true,
+    "gold_mixed_script": []
+   },
+   {
+    "id": "V3-XQFEN-320",
+    "split": "dev",
+    "trigger": "relevance_threshold_not_met",
+    "persistent_refusal": false,
+    "question": "What are longer growth spells associated with?",
+    "translation": "С чем связаны более длительные периоды роста?",
+    "answer": "Более длительные периоды роста тесно связаны с большим уровнем равенства при распределении доходов [S1].",
+    "gold": "бoльшим уровнем равенства при распределении доходов",
+    "correct": false,
+    "gold_mixed_script": [
+     "бoльшим"
+    ]
+   }
+  ],
+  "seconds": 434.4
+ },
+ "G4": {
+  "population": 140,
+  "persistent_refusals": 52,
+  "unchanged_question": 85,
+  "changed_question": 55,
+  "changed_refused_again": 55,
+  "replaced": [],
+  "seconds": 309.0
+ }
+}

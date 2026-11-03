@@ -140,6 +140,12 @@ class RAGSettings(BaseSettings):
     llm_recovery_min_rerank: float = Field(default=0.2, ge=0, le=1)
     llm_recovery_samples: int = Field(default=2, ge=1, le=4)
     llm_recovery_temperature: float = Field(default=0.7, ge=0, le=2)
+    # Question translation after a refusal (query_translation.py; optimization_4, G3): after a
+    # relevance-gate or LLM refusal of a question written in another script than its best
+    # sources, the LLM translates the question into the sources' language, retrieval and the
+    # gate run again and one non-thinking draft (with its repairs) is verified as usual. It
+    # replaces the refusal only when published; one extra LLM call, two when it drafts.
+    query_translation: Literal["off", "refusal"] = "off"
     generation_language: Literal["ru", "source"] = "ru"
     generation_repair_attempts: int = Field(default=0, ge=0, le=2)
     premise_guard: bool = True

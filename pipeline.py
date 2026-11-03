@@ -25,6 +25,13 @@ from generator_verifier import (
     recovery_note,
 )
 from hybrid_retriever import HybridRetriever, SearchResult
+from query_translation import (
+    GATE_CANDIDATES,
+    TRIGGERS,
+    parse_rewrite,
+    text_script,
+    translation_prompt,
+)
 from settings import RAGSettings
 
 
@@ -156,6 +163,10 @@ class RAGResponse(_Result):
     refusal_reason: str | None = None
     retrieval_diagnostics: list[dict[str, Any]] = Field(default_factory=list)
     verification_attempts: list[dict[str, Any]] = Field(default_factory=list)
+    # query_translation: the translated question, its target script, the raw reply, its time
+    # and the refusal reason of the translated answer; the answer and the sources are its own
+    # when it was published, else the refusal's.
+    translation: dict[str, Any] | None = None
 
 
 QueryResponse = RAGResponse
@@ -339,160 +350,239 @@ class RAGPipeline:
                 return verified
         return refused
 
+    def _passes(
+        self,
+        generator: LocalLLMGenerator,
+        verifier: NLIFactVerifier,
+        question: str,
+        results: list[SearchResult],
+        attempts: list[dict[str, Any]],
+        verified: VerifiedGenerationResult,
+    ) -> VerifiedGenerationResult:
+        """The passes after the draft: thinking after a refusal (llm_think_retry) or after a
+        trimmed answer (llm_think_on_trim), then recovery after an LLM refusal."""
+        if think_retry(self.settings.llm_think_retry, refusal_reason(verified)):
+            revise = (
+                verified
+                if self.settings.llm_think_mode == "revise"
+                and refusal_reason(verified) == "nli_verification_failed"
+                and verified.claims
+                else None
+            )
+            verified = self._draft(
+                generator, verifier, question, results, attempts, thinking=True, revise=revise
+            )
+        elif self.settings.llm_think_on_trim and trimmed(verified):
+            thought = self._draft(generator, verifier, question, results, attempts, thinking=True)
+            if fully_verified(thought):
+                verified = thought
+        if recovery_due(self.settings, refusal_reason(verified), results):
+            verified = self._recover(generator, verifier, question, results, attempts, verified)
+        return verified
+
+    def _models(self, retriever: HybridRetriever) -> tuple[LocalLLMGenerator, NLIFactVerifier]:
+        """The generator and the fact verifier, loaded on first use."""
+        if self._generator is None:
+            self._generator = LocalLLMGenerator(self.settings)
+        if self._fact_verifier is None:
+            try:
+                self._fact_verifier = NLIFactVerifier(
+                    self.settings, evidence_encoder=retriever.encoder
+                )
+            except Exception:
+                self._generator.close()
+                self._generator = None
+                raise
+        return self._generator, self._fact_verifier
+
     def query(self, question: str, *, top_k: int | None = None) -> RAGResponse:
         """Retrieve, generate and verify; scores describe raw claims before filtering."""
         question = self._question(question)
         with self._lock:
             self._ready()
-            started = time.perf_counter()
-            stats = {
-                "search_ms": 0.0,
-                "rerank_ms": 0.0,
-                "generation_ms": 0.0,
-                "nli_ms": 0.0,
-                "model_init_ms": 0.0,
-                "total_ms": 0.0,
-            }
-            init = time.perf_counter()
-            retriever = self.retriever
-            stats["model_init_ms"] += (time.perf_counter() - init) * 1000
-            results, timing, hybrid_ids, diagnostics = retriever.search_trace(question, top_k=top_k)
-            lists: dict[str, list[str]] = getattr(retriever, "candidate_lists", dict)()
-            dense_ids, sparse_ids = lists.get("dense", []), lists.get("sparse", [])
-            stats.update(timing)
-            passing = [
-                hit
-                for hit in results
-                if hit.rerank_score is not None
-                and hit.rerank_score >= self.settings.rerank_score_threshold
-            ]
-            if self.settings.rerank_gate_scope == "chunk":
-                results = passing
-            elif not passing:  # "top": the best chunk is the gate, the ranked rest is context
-                results = []
-            if not results:
-                stats["total_ms"] = (time.perf_counter() - started) * 1000
-                return RAGResponse(
-                    query=question,
-                    answer=REFUSAL,
-                    sources=[],
-                    claims=[],
-                    faithfulness_score=0,
-                    execution_stats=stats,
-                    refused=True,
-                    is_reliable=False,
-                    hybrid_candidate_ids=hybrid_ids,
-                    refusal_reason="relevance_threshold_not_met",
-                    retrieval_diagnostics=diagnostics,
-                    dense_candidate_ids=dense_ids,
-                    sparse_candidate_ids=sparse_ids,
-                )
-            attempts: list[dict[str, Any]] = []
-            if self._legacy_verifier is not None:
-                verified = self._legacy_verifier.answer(question, results)
-            else:
-                init = time.perf_counter()
-                if self._generator is None:
-                    self._generator = LocalLLMGenerator(self.settings)
-                if self._fact_verifier is None:
-                    try:
-                        self._fact_verifier = NLIFactVerifier(
-                            self.settings, evidence_encoder=retriever.encoder
-                        )
-                    except Exception:
-                        self._generator.close()
-                        self._generator = None
-                        raise
-                stats["model_init_ms"] += (time.perf_counter() - init) * 1000
-                generator, verifier = self._generator, self._fact_verifier
-                verified = self._draft(generator, verifier, question, results, attempts)
-                if think_retry(self.settings.llm_think_retry, refusal_reason(verified)):
-                    revise = (
-                        verified
-                        if self.settings.llm_think_mode == "revise"
-                        and refusal_reason(verified) == "nli_verification_failed"
-                        and verified.claims
-                        else None
-                    )
-                    verified = self._draft(
-                        generator,
-                        verifier,
-                        question,
-                        results,
-                        attempts,
-                        thinking=True,
-                        revise=revise,
-                    )
-                elif self.settings.llm_think_on_trim and trimmed(verified):
-                    thought = self._draft(
-                        generator, verifier, question, results, attempts, thinking=True
-                    )
-                    if fully_verified(thought):
-                        verified = thought
-                if recovery_due(self.settings, refusal_reason(verified), results):
-                    verified = self._recover(
-                        generator, verifier, question, results, attempts, verified
-                    )
-            stats.update(
-                generation_ms=sum(a["generation_metadata"]["generation_ms"] for a in attempts)
-                if attempts
-                else verified.generation_ms,
-                nli_ms=sum(a["verification_ms"] for a in attempts)
-                if attempts
-                else verified.verification_ms,
-            )
-            if verified.generation_metadata.ttft_ms is not None:
-                stats["llm_ttft_ms"] = verified.generation_metadata.ttft_ms
-            sources: list[SourceCitation] = []
-            for index, hit in enumerate(results, 1):
-                source_id = f"S{index}"
-                context = verified.contexts.get(source_id)
-                if context is None:
-                    continue
-                chunk = hit.chunk
-                if context.chunk_id != chunk.chunk_id or context.text != chunk.text:
-                    raise PipelineError("Generator context map does not match retrieved evidence")
-                sources.append(
-                    SourceCitation(
-                        source_id=source_id,
-                        chunk_id=chunk.chunk_id,
-                        document_id=chunk.document_id,
-                        source=chunk.source,
-                        section_path=chunk.section_path,
-                        page_start=chunk.page_start,
-                        page_end=chunk.page_end,
-                        citation=chunk.citation,
-                        text=context.text,
-                        score=hit.score,
-                        rrf_score=hit.rrf_score,
-                        dense_score=hit.dense_score,
-                        sparse_score=hit.sparse_score,
-                        rerank_score=hit.rerank_score,
-                        final_score=hit.final_score,
-                        metadata=dict(chunk.metadata),
-                    )
-                )
-            supported = sum(claim.status == ClaimStatus.VERIFIED for claim in verified.claims)
+            response = self._answer(question, top_k)
+            if self.settings.query_translation == "refusal":
+                response = self._translated(question, top_k, response)
+            return response
+
+    def _source_texts(self, response: RAGResponse) -> list[str]:
+        """The sources the LLM saw; after a gate refusal, the best-reranked candidates."""
+        texts = [source.text for source in response.sources]
+        if texts:
+            return texts
+        ranked = sorted(
+            response.retrieval_diagnostics, key=lambda d: -(d.get("rerank_score") or 0.0)
+        )
+        chunks = (self.retriever.get_chunk(d["chunk_id"]) for d in ranked[:GATE_CANDIDATES])
+        return [chunk.text for chunk in chunks if chunk is not None]
+
+    def _translated(
+        self, question: str, top_k: int | None, refused: RAGResponse
+    ) -> RAGResponse:
+        """query_translation: after a gate or LLM refusal of a question in another script
+        than its sources, answer it once more translated into the sources' language."""
+        if refused.refusal_reason not in TRIGGERS or self._legacy_verifier is not None:
+            return refused
+        asked = text_script(question)
+        target = text_script(" ".join(self._source_texts(refused)))
+        if asked is None or target is None or asked == target:
+            return refused
+        started = time.perf_counter()
+        generator, _ = self._models(self.retriever)
+        reply = generator.rewrite(translation_prompt(target), question)
+        translated = parse_rewrite(reply.text, question) if reply is not None else None
+        if translated is not None:
+            try:
+                translated = self._question(translated)
+            except ValueError:
+                translated = None
+        record: dict[str, Any] = {
+            "target": target,
+            "question": translated,
+            "raw": reply.text if reply is not None else None,
+            "ms": (time.perf_counter() - started) * 1000,
+        }
+        if translated is None:
+            stats = {**refused.execution_stats, "translation_ms": record["ms"]}
+            stats["total_ms"] += record["ms"]
+            return refused.model_copy(update={"translation": record, "execution_stats": stats})
+        second = self._answer(translated, top_k, draft_only=True)
+        record["refusal_reason"] = second.refusal_reason
+        stats = dict(refused.execution_stats)
+        for key, value in second.execution_stats.items():
+            stats[key] = value if key == "llm_ttft_ms" else stats.get(key, 0.0) + value
+        stats["translation_ms"] = record["ms"]
+        stats["total_ms"] += record["ms"]
+        attempts = refused.verification_attempts + second.verification_attempts
+        update: dict[str, Any] = {
+            "translation": record,
+            "execution_stats": stats,
+            "verification_attempts": attempts,
+        }
+        if second.refused:
+            return refused.model_copy(update=update)
+        return second.model_copy(update={**update, "query": question})
+
+    def _answer(
+        self, question: str, top_k: int | None, *, draft_only: bool = False
+    ) -> RAGResponse:
+        """One retrieval and answer. draft_only (query_translation): the draft with its
+        repairs, without the thinking, think-on-trim and recovery passes."""
+        started = time.perf_counter()
+        stats = {
+            "search_ms": 0.0,
+            "rerank_ms": 0.0,
+            "generation_ms": 0.0,
+            "nli_ms": 0.0,
+            "model_init_ms": 0.0,
+            "total_ms": 0.0,
+        }
+        init = time.perf_counter()
+        retriever = self.retriever
+        stats["model_init_ms"] += (time.perf_counter() - init) * 1000
+        results, timing, hybrid_ids, diagnostics = retriever.search_trace(question, top_k=top_k)
+        lists: dict[str, list[str]] = getattr(retriever, "candidate_lists", dict)()
+        dense_ids, sparse_ids = lists.get("dense", []), lists.get("sparse", [])
+        stats.update(timing)
+        passing = [
+            hit
+            for hit in results
+            if hit.rerank_score is not None
+            and hit.rerank_score >= self.settings.rerank_score_threshold
+        ]
+        if self.settings.rerank_gate_scope == "chunk":
+            results = passing
+        elif not passing:  # "top": the best chunk is the gate, the ranked rest is context
+            results = []
+        if not results:
             stats["total_ms"] = (time.perf_counter() - started) * 1000
             return RAGResponse(
                 query=question,
-                answer=verified.cleaned_text,
-                sources=sources,
-                claims=list(verified.claims),
-                faithfulness_score=supported / len(verified.claims) if verified.claims else 0,
+                answer=REFUSAL,
+                sources=[],
+                claims=[],
+                faithfulness_score=0,
                 execution_stats=stats,
-                refused=verified.refused,
-                is_reliable=verified.is_reliable,
+                refused=True,
+                is_reliable=False,
                 hybrid_candidate_ids=hybrid_ids,
-                reranked_candidate_ids=[hit.chunk.chunk_id for hit in results],
+                refusal_reason="relevance_threshold_not_met",
+                retrieval_diagnostics=diagnostics,
                 dense_candidate_ids=dense_ids,
                 sparse_candidate_ids=sparse_ids,
-                generation_metadata=verified.generation_metadata,
-                raw_answer=verified.raw_text,
-                retrieval_diagnostics=diagnostics,
-                verification_attempts=attempts,
-                refusal_reason=refusal_reason(verified),
             )
+        attempts: list[dict[str, Any]] = []
+        if self._legacy_verifier is not None:
+            verified = self._legacy_verifier.answer(question, results)
+        else:
+            init = time.perf_counter()
+            generator, verifier = self._models(retriever)
+            stats["model_init_ms"] += (time.perf_counter() - init) * 1000
+            verified = self._draft(generator, verifier, question, results, attempts)
+            if not draft_only:
+                verified = self._passes(
+                    generator, verifier, question, results, attempts, verified
+                )
+        stats.update(
+            generation_ms=sum(a["generation_metadata"]["generation_ms"] for a in attempts)
+            if attempts
+            else verified.generation_ms,
+            nli_ms=sum(a["verification_ms"] for a in attempts)
+            if attempts
+            else verified.verification_ms,
+        )
+        if verified.generation_metadata.ttft_ms is not None:
+            stats["llm_ttft_ms"] = verified.generation_metadata.ttft_ms
+        sources: list[SourceCitation] = []
+        for index, hit in enumerate(results, 1):
+            source_id = f"S{index}"
+            context = verified.contexts.get(source_id)
+            if context is None:
+                continue
+            chunk = hit.chunk
+            if context.chunk_id != chunk.chunk_id or context.text != chunk.text:
+                raise PipelineError("Generator context map does not match retrieved evidence")
+            sources.append(
+                SourceCitation(
+                    source_id=source_id,
+                    chunk_id=chunk.chunk_id,
+                    document_id=chunk.document_id,
+                    source=chunk.source,
+                    section_path=chunk.section_path,
+                    page_start=chunk.page_start,
+                    page_end=chunk.page_end,
+                    citation=chunk.citation,
+                    text=context.text,
+                    score=hit.score,
+                    rrf_score=hit.rrf_score,
+                    dense_score=hit.dense_score,
+                    sparse_score=hit.sparse_score,
+                    rerank_score=hit.rerank_score,
+                    final_score=hit.final_score,
+                    metadata=dict(chunk.metadata),
+                )
+            )
+        supported = sum(claim.status == ClaimStatus.VERIFIED for claim in verified.claims)
+        stats["total_ms"] = (time.perf_counter() - started) * 1000
+        return RAGResponse(
+            query=question,
+            answer=verified.cleaned_text,
+            sources=sources,
+            claims=list(verified.claims),
+            faithfulness_score=supported / len(verified.claims) if verified.claims else 0,
+            execution_stats=stats,
+            refused=verified.refused,
+            is_reliable=verified.is_reliable,
+            hybrid_candidate_ids=hybrid_ids,
+            reranked_candidate_ids=[hit.chunk.chunk_id for hit in results],
+            dense_candidate_ids=dense_ids,
+            sparse_candidate_ids=sparse_ids,
+            generation_metadata=verified.generation_metadata,
+            raw_answer=verified.raw_text,
+            retrieval_diagnostics=diagnostics,
+            verification_attempts=attempts,
+            refusal_reason=refusal_reason(verified),
+        )
 
     def close(self) -> None:
         """Attempt every cleanup even when another component fails to close."""

@@ -1,0 +1,24 @@
+{
+ "medians_s": {
+  "draft": 3.9,
+  "retrieval": 0.25,
+  "nli": 0.1,
+  "think": 19.09,
+  "think_repair": 19.29,
+  "recovery": 3.23,
+  "repair": 3.78
+ },
+ "G2": {
+  "questions": 62,
+  "estimate_min": 4.6
+ },
+ "G3": {
+  "questions": 151,
+  "estimate_min": 8.1
+ },
+ "G4": {
+  "questions": 140,
+  "estimate_min": 7.9
+ },
+ "estimate_total_min": 22.5
+}

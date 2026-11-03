@@ -1,0 +1,391 @@
+
+=== 21:01:45 FactRAG-NLI optimization_4 experiments 20261103T1801Z_opt4_quick (plan quick) on artem-System-Product-Name
+baseline: /home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/reports/runs/20261103T1310Z_rtx3090_main
+commit: unknown
+NVIDIA GeForce RTX 3090, 649 MiB, 24576 MiB, 28
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 49067.20it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 15633.32it/s]
+{
+ "medians_s": {
+  "draft": 3.9,
+  "retrieval": 0.25,
+  "nli": 0.1,
+  "think": 19.09,
+  "think_repair": 19.29,
+  "recovery": 3.23,
+  "repair": 3.78
+ },
+ "G2": {
+  "questions": 62,
+  "estimate_min": 4.6
+ },
+ "G3": {
+  "questions": 151,
+  "estimate_min": 8.1
+ },
+ "G4": {
+  "questions": 140,
+  "estimate_min": 7.9
+ },
+ "estimate_total_min": 22.5
+}
+Exception ignored in: <function QdrantClient.__del__ at 0x76d970774d60>
+Traceback (most recent call last):
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 169, in __del__
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 178, in close
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/local/qdrant_local.py", line 85, in close
+ImportError: sys.meta_path is None, Python is likely shutting down
+Exception ignored in: <function QdrantClient.__del__ at 0x76d970774d60>
+Traceback (most recent call last):
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 169, in __del__
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 178, in close
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/local/qdrant_local.py", line 85, in close
+ImportError: sys.meta_path is None, Python is likely shutting down
+
+=== 21:01:55 llama-server (qwen38-27b-hybrid)
+Starting llama-server b12002: Qwen3.8-27B-UD-Q4_K_XL.gguf, ctx 8192, ngl 999
+llama-server ready: http://127.0.0.1:8080/v1 (PID 1349731)
+VRAM used, total: 17499 MiB, 24576 MiB
+    stage time: 3 s
+
+=== 21:01:58 steps: D0,G3,G4
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 104085.61it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 17801.84it/s]
+Loading weights:   0%|          | 0/202 [00:00<?, ?it/s]Loading weights: 100%|██████████| 202/202 [00:00<00:00, 13343.77it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 19454.74it/s]
+[D0] {'checked': 6, 'identical': 6}
+[G3] 151 questions
+[G3] 1/151 V3-UNA-019 replace=False 6.08 s, eta 15.2 min
+[G3] 2/151 V3-UNA-021 replace=False 5.82 s, eta 14.8 min
+[G3] 3/151 V3-UNA-023 replace=False 5.14 s, eta 14.0 min
+[G3] 4/151 V3-UNA-014 replace=False 5.17 s, eta 13.6 min
+[G3] 5/151 V3-UNA-016 replace=False 5.25 s, eta 13.4 min
+[G3] 6/151 V3-UNA-018 replace=False 5.61 s, eta 13.3 min
+[G3] 7/151 V3-LEX-014 replace=False 5.09 s, eta 13.1 min
+[G3] 8/151 V3-UNA-032 replace=False 5.02 s, eta 12.9 min
+[G3] 9/151 V3-UNA-034 replace=False 4.94 s, eta 12.7 min
+[G3] 10/151 V3-UNA-036 replace=False 5.39 s, eta 12.6 min
+[G3] 11/151 V3-UNA-028 replace=False 4.61 s, eta 12.3 min
+[G3] 12/151 V3-TC-009 replace=False 5.09 s, eta 12.2 min
+[G3] 13/151 V3-UNA-010 replace=False 4.92 s, eta 12.1 min
+[G3] 14/151 V3-UNA-012 replace=False 4.93 s, eta 11.9 min
+[G3] 15/151 V3-LEX-010 replace=False 4.93 s, eta 11.8 min
+[G3] 16/151 V3-UNA-001 replace=False 4.96 s, eta 11.7 min
+[G3] 17/151 V3-UNA-003 replace=False 5.22 s, eta 11.6 min
+[G3] 18/151 V3-UNA-005 replace=False 4.74 s, eta 11.4 min
+[G3] 19/151 V3-UNA-007 replace=False 5.66 s, eta 11.4 min
+[G3] 20/151 V3-LEX-006 replace=False 5.17 s, eta 11.3 min
+[G3] 21/151 V3-UNA-038 replace=False 4.94 s, eta 11.2 min
+[G3] 22/151 V3-LEX-028 replace=False 4.75 s, eta 11.1 min
+[G3] 23/151 V3-UNA-040 replace=False 4.43 s, eta 10.9 min
+[G3] 24/151 V3-LEX-030 replace=False 4.72 s, eta 10.8 min
+[G3] 25/151 V3-UNA-024 replace=False 4.26 s, eta 10.7 min
+[G3] 26/151 V3-UNA-026 replace=False 4.94 s, eta 10.6 min
+[G3] 27/151 V3-XQFEN-007 replace=False 4.98 s, eta 10.5 min
+[G3] 28/151 V3-XQFEN-018 replace=False 4.82 s, eta 10.4 min
+[G3] 29/151 V3-XQFEN-019 replace=False 4.87 s, eta 10.3 min
+[G3] 30/151 V3-XQFEN-031 replace=True 5.56 s, eta 10.2 min
+[G3] 31/151 V3-XQFEN-038 replace=False 4.78 s, eta 10.1 min
+[G3] 32/151 V3-XQFEN-060 replace=False 4.35 s, eta 10.0 min
+[G3] 33/151 V3-XQFEN-065 replace=True 4.5 s, eta 9.9 min
+[G3] 34/151 V3-XQFEN-088 replace=False 4.83 s, eta 9.8 min
+[G3] 35/151 V3-XQFEN-108 replace=False 4.99 s, eta 9.7 min
+[G3] 36/151 V3-XQFEN-111 replace=False 0.84 s, eta 9.4 min
+[G3] 37/151 V3-XQFEN-123 replace=False 4.88 s, eta 9.3 min
+[G3] 38/151 V3-XQFEN-130 replace=False 4.78 s, eta 9.2 min
+[G3] 39/151 V3-XQFEN-154 replace=False 5.02 s, eta 9.1 min
+[G3] 40/151 V3-XQFEN-171 replace=False 4.53 s, eta 9.0 min
+[G3] 41/151 V3-XQFEN-172 replace=False 4.64 s, eta 9.0 min
+[G3] 42/151 V3-XQFEN-236 replace=False 0.68 s, eta 8.7 min
+[G3] 43/151 V3-XQFEN-245 replace=True 4.95 s, eta 8.6 min
+[G3] 44/151 V3-XQFEN-255 replace=False 4.87 s, eta 8.5 min
+[G3] 45/151 V3-XQFEN-261 replace=False 4.41 s, eta 8.4 min
+[G3] 46/151 V3-XQFEN-266 replace=False 4.37 s, eta 8.3 min
+[G3] 47/151 V3-XQFEN-267 replace=False 4.45 s, eta 8.3 min
+[G3] 48/151 V3-XQFEN-268 replace=False 4.36 s, eta 8.2 min
+[G3] 49/151 V3-XQFEN-291 replace=True 5.05 s, eta 8.1 min
+[G3] 50/151 V3-XQFEN-320 replace=True 4.73 s, eta 8.0 min
+[G3] 51/151 V3-XQFEN-343 replace=False 5.04 s, eta 7.9 min
+[G3] 52/151 V3-XQFEN-349 replace=False 4.65 s, eta 7.9 min
+[G3] 53/151 V3-XQFEN-352 replace=False 0.93 s, eta 7.7 min
+[G3] 54/151 V3-XQFEN-358 replace=False 4.51 s, eta 7.6 min
+[G3] 55/151 V3-XQFEN-366 replace=False 8.33 s, eta 7.6 min
+[G3] 56/151 V3-XQFEN-367 replace=False 4.81 s, eta 7.5 min
+[G3] 57/151 V3-XQFEN-374 replace=False 4.43 s, eta 7.4 min
+[G3] 58/151 V3-XQFEN-397 replace=False 0.89 s, eta 7.3 min
+[G3] 59/151 V3-XQFEN-401 replace=False 4.61 s, eta 7.2 min
+[G3] 60/151 V3-XQFEN-405 replace=False 4.92 s, eta 7.1 min
+[G3] 61/151 V3-XQFEN-426 replace=False 4.44 s, eta 7.0 min
+[G3] 62/151 V3-XQFEN-448 replace=False 4.51 s, eta 6.9 min
+[G3] 63/151 V3-XQFEN-449 replace=False 4.58 s, eta 6.9 min
+[G3] 64/151 V3-XQFNA-002 replace=False 0.96 s, eta 6.7 min
+[G3] 65/151 V3-XQFNA-004 replace=False 0.75 s, eta 6.5 min
+[G3] 66/151 V3-XQFNA-006 replace=False 1.0 s, eta 6.4 min
+[G3] 67/151 V3-XQFNA-008 replace=False 1.07 s, eta 6.2 min
+[G3] 68/151 V3-XQFNA-010 replace=False 0.96 s, eta 6.1 min
+[G3] 69/151 V3-XQFNA-012 replace=False 1.07 s, eta 6.0 min
+[G3] 70/151 V3-XQFNA-014 replace=False 0.95 s, eta 5.8 min
+[G3] 71/151 V3-XQFNA-016 replace=False 0.77 s, eta 5.7 min
+[G3] 72/151 V3-XQFNA-018 replace=False 4.79 s, eta 5.6 min
+[G3] 73/151 V3-XQFNA-020 replace=False 1.05 s, eta 5.5 min
+[G3] 74/151 V3-XQFNA-022 replace=False 0.75 s, eta 5.4 min
+[G3] 75/151 V3-XQFNA-024 replace=False 0.84 s, eta 5.2 min
+[G3] 76/151 V3-XQFNA-026 replace=False 0.72 s, eta 5.1 min
+[G3] 77/151 V3-XQFNA-028 replace=False 0.71 s, eta 5.0 min
+[G3] 78/151 V3-XQFNA-030 replace=False 5.01 s, eta 4.9 min
+[G3] 79/151 V3-XQFNA-032 replace=False 0.86 s, eta 4.8 min
+[G3] 80/151 V3-XQFNA-034 replace=False 4.6 s, eta 4.8 min
+[G3] 81/151 V3-XQFNA-036 replace=False 0.8 s, eta 4.6 min
+[G3] 82/151 V3-XQFNA-038 replace=False 0.76 s, eta 4.5 min
+[G3] 83/151 V3-XQFNA-040 replace=False 0.59 s, eta 4.4 min
+[G3] 84/151 V3-XQFNA-042 replace=False 0.82 s, eta 4.3 min
+[G3] 85/151 V3-XQFNA-044 replace=False 0.86 s, eta 4.2 min
+[G3] 86/151 V3-XQFNA-046 replace=False 4.65 s, eta 4.2 min
+[G3] 87/151 V3-XQFNA-048 replace=False 0.81 s, eta 4.1 min
+[G3] 88/151 V3-XQFNA-050 replace=False 0.89 s, eta 4.0 min
+[G3] 89/151 V3-XQFNA-052 replace=False 1.01 s, eta 3.9 min
+[G3] 90/151 V3-XQFNA-054 replace=False 4.4 s, eta 3.8 min
+[G3] 91/151 V3-XQFNA-056 replace=False 1.17 s, eta 3.7 min
+[G3] 92/151 V3-XQFNA-058 replace=False 0.75 s, eta 3.6 min
+[G3] 93/151 V3-XQFNA-060 replace=False 0.97 s, eta 3.5 min
+[G3] 94/151 V3-XQFNA-062 replace=False 0.82 s, eta 3.4 min
+[G3] 95/151 V3-XQFNA-064 replace=False 0.83 s, eta 3.4 min
+[G3] 96/151 V3-XQFNA-066 replace=False 0.8 s, eta 3.3 min
+[G3] 97/151 V3-XQFNA-068 replace=False 0.88 s, eta 3.2 min
+[G3] 98/151 V3-XQFNA-070 replace=False 4.77 s, eta 3.1 min
+[G3] 99/151 V3-XQFNA-072 replace=False 0.89 s, eta 3.1 min
+[G3] 100/151 V3-XQFNA-074 replace=False 0.88 s, eta 3.0 min
+[G3] 101/151 V3-XQFNA-076 replace=False 4.49 s, eta 2.9 min
+[G3] 102/151 V3-XQFNA-078 replace=False 0.71 s, eta 2.8 min
+[G3] 103/151 V3-XQFNA-080 replace=False 0.73 s, eta 2.8 min
+[G3] 104/151 V3-XQFNA-082 replace=False 0.69 s, eta 2.7 min
+[G3] 105/151 V3-XQFNA-084 replace=False 0.83 s, eta 2.6 min
+[G3] 106/151 V3-XQFNA-086 replace=False 5.06 s, eta 2.6 min
+[G3] 107/151 V3-XQFNA-088 replace=False 0.81 s, eta 2.5 min
+[G3] 108/151 V3-XQFNA-090 replace=False 4.95 s, eta 2.4 min
+[G3] 109/151 V3-XQFNA-092 replace=False 4.65 s, eta 2.4 min
+[G3] 110/151 V3-XQFNA-094 replace=False 4.68 s, eta 2.3 min
+[G3] 111/151 V3-XQFNA-096 replace=False 0.81 s, eta 2.3 min
+[G3] 112/151 V3-XQFNA-098 replace=False 4.39 s, eta 2.2 min
+[G3] 113/151 V3-XQFNA-100 replace=False 1.08 s, eta 2.2 min
+[G3] 114/151 V3-XQFNA-102 replace=False 0.63 s, eta 2.1 min
+[G3] 115/151 V3-XQFNA-104 replace=False 0.72 s, eta 2.0 min
+[G3] 116/151 V3-XQFNA-106 replace=False 0.83 s, eta 1.9 min
+[G3] 117/151 V3-XQFNA-108 replace=False 0.71 s, eta 1.9 min
+[G3] 118/151 V3-XQFNA-110 replace=False 0.92 s, eta 1.8 min
+[G3] 119/151 V3-XQFNA-112 replace=False 0.56 s, eta 1.7 min
+[G3] 120/151 V3-XQFNA-114 replace=False 0.86 s, eta 1.7 min
+[G3] 121/151 V3-XQFNA-116 replace=False 4.44 s, eta 1.6 min
+[G3] 122/151 V3-XQFNA-118 replace=False 4.51 s, eta 1.6 min
+[G3] 123/151 V3-XQFNA-120 replace=False 0.88 s, eta 1.5 min
+[G3] 124/151 V3-XQFNA-122 replace=False 0.86 s, eta 1.5 min
+[G3] 125/151 V3-XQFNA-124 replace=False 4.58 s, eta 1.4 min
+[G3] 126/151 V3-XQFNA-126 replace=False 0.96 s, eta 1.3 min
+[G3] 127/151 V3-XQFNA-128 replace=False 0.85 s, eta 1.3 min
+[G3] 128/151 V3-XQFNA-130 replace=False 0.81 s, eta 1.2 min
+[G3] 129/151 V3-XQFNA-132 replace=False 0.7 s, eta 1.2 min
+[G3] 130/151 V3-XQFNA-134 replace=False 0.73 s, eta 1.1 min
+[G3] 131/151 V3-XQFNA-136 replace=False 0.94 s, eta 1.0 min
+[G3] 132/151 V3-XQFNA-138 replace=False 0.88 s, eta 1.0 min
+[G3] 133/151 V3-XQFNA-142 replace=False 0.95 s, eta 0.9 min
+[G3] 134/151 V3-XQFNA-144 replace=False 0.93 s, eta 0.9 min
+[G3] 135/151 V3-XQFNA-146 replace=False 4.58 s, eta 0.8 min
+[G3] 136/151 V3-XQFNA-148 replace=False 0.94 s, eta 0.8 min
+[G3] 137/151 V3-XQFNA-150 replace=False 1.07 s, eta 0.7 min
+[G3] 138/151 V3-XQFNA-152 replace=False 4.58 s, eta 0.7 min
+[G3] 139/151 V3-XQFNA-154 replace=False 0.74 s, eta 0.6 min
+[G3] 140/151 V3-XQFNA-156 replace=False 1.36 s, eta 0.6 min
+[G3] 141/151 V3-XQFNA-158 replace=False 0.83 s, eta 0.5 min
+[G3] 142/151 V3-XQFNA-160 replace=False 0.74 s, eta 0.5 min
+[G3] 143/151 V3-XQFNA-162 replace=False 1.06 s, eta 0.4 min
+[G3] 144/151 V3-XQFNA-164 replace=False 0.96 s, eta 0.3 min
+[G3] 145/151 V3-XQFNA-166 replace=False 0.81 s, eta 0.3 min
+[G3] 146/151 V3-XQFNA-168 replace=False 0.64 s, eta 0.2 min
+[G3] 147/151 V3-XQFNA-170 replace=False 0.98 s, eta 0.2 min
+[G3] 148/151 V3-XQFNA-172 replace=False 0.72 s, eta 0.1 min
+[G3] 149/151 V3-XQFNA-174 replace=False 0.76 s, eta 0.1 min
+[G3] 150/151 V3-XQFNA-176 replace=False 0.79 s, eta 0.0 min
+[G3] 151/151 V3-XQFNA-178 replace=False 0.81 s, eta 0.0 min
+[G3] done in 7.25 min: replaced 5, paired {'n': 151, 'gained': 4, 'lost': 0, 'delta_pp': 2.6490066225165565, 'ci95_pp': [0.6622516556291391, 5.298013245033113], 'mcnemar_p': 0.125}, regressions {'lost': [], 'new_hallucinations': []}
+[G4] 140 questions
+[G4] 1/140 V3-TC-017 replace=False 0.89 s, eta 2.1 min
+[G4] 2/140 V3-TC-018 replace=False 5.37 s, eta 7.2 min
+[G4] 3/140 V3-UNA-019 replace=False 1.01 s, eta 5.5 min
+[G4] 4/140 V3-UNA-020 replace=False 0.73 s, eta 4.5 min
+[G4] 5/140 V3-UNA-021 replace=False 0.86 s, eta 4.0 min
+[G4] 6/140 V3-UNA-022 replace=False 0.84 s, eta 3.6 min
+[G4] 7/140 V3-UNA-023 replace=False 5.08 s, eta 4.7 min
+[G4] 8/140 V3-LEX-017 replace=False 0.87 s, eta 4.3 min
+[G4] 9/140 V3-UNA-013 replace=False 0.88 s, eta 4.0 min
+[G4] 10/140 V3-UNA-014 replace=False 5.01 s, eta 4.7 min
+[G4] 11/140 V3-UNA-015 replace=False 4.78 s, eta 5.1 min
+[G4] 12/140 V3-UNA-016 replace=False 4.92 s, eta 5.6 min
+[G4] 13/140 V3-UNA-017 replace=False 0.8 s, eta 5.2 min
+[G4] 14/140 V3-UNA-018 replace=False 5.38 s, eta 5.6 min
+[G4] 15/140 V3-LEX-014 replace=False 4.9 s, eta 5.9 min
+[G4] 16/140 V3-UNA-032 replace=False 0.85 s, eta 5.6 min
+[G4] 17/140 V3-UNA-033 replace=False 5.1 s, eta 5.8 min
+[G4] 18/140 V3-UNA-034 replace=False 0.63 s, eta 5.5 min
+[G4] 19/140 V3-UNA-035 replace=False 0.85 s, eta 5.3 min
+[G4] 20/140 V3-UNA-036 replace=False 4.93 s, eta 5.5 min
+[G4] 21/140 V3-LEX-026 replace=False 0.8 s, eta 5.2 min
+[G4] 22/140 V3-UNA-028 replace=False 4.29 s, eta 5.3 min
+[G4] 23/140 V3-UNA-029 replace=False 3.88 s, eta 5.4 min
+[G4] 24/140 V3-UNA-030 replace=False 3.94 s, eta 5.4 min
+[G4] 25/140 V3-UNA-031 replace=False 0.8 s, eta 5.2 min
+[G4] 26/140 V3-LEX-023 replace=False 0.68 s, eta 5.0 min
+[G4] 27/140 V3-TC-008 replace=False 0.92 s, eta 4.9 min
+[G4] 28/140 V3-TC-009 replace=False 4.82 s, eta 5.0 min
+[G4] 29/140 V3-ADV-011 replace=False 3.92 s, eta 5.0 min
+[G4] 30/140 V3-UNA-009 replace=False 0.73 s, eta 4.9 min
+[G4] 31/140 V3-UNA-010 replace=False 0.86 s, eta 4.7 min
+[G4] 32/140 V3-UNA-011 replace=False 0.76 s, eta 4.6 min
+[G4] 33/140 V3-UNA-012 replace=False 0.71 s, eta 4.4 min
+[G4] 34/140 V3-LEX-010 replace=False 0.69 s, eta 4.3 min
+[G4] 35/140 V3-UNA-001 replace=False 5.07 s, eta 4.4 min
+[G4] 36/140 V3-UNA-002 replace=False 0.8 s, eta 4.3 min
+[G4] 37/140 V3-UNA-003 replace=False 0.78 s, eta 4.1 min
+[G4] 38/140 V3-UNA-004 replace=False 5.08 s, eta 4.2 min
+[G4] 39/140 V3-UNA-005 replace=False 5.15 s, eta 4.3 min
+[G4] 40/140 V3-UNA-006 replace=False 0.75 s, eta 4.2 min
+[G4] 41/140 V3-UNA-007 replace=False 0.81 s, eta 4.1 min
+[G4] 42/140 V3-LEX-006 replace=False 0.9 s, eta 4.0 min
+[G4] 43/140 V3-UNA-037 replace=False 0.68 s, eta 3.9 min
+[G4] 44/140 V3-UNA-038 replace=False 0.66 s, eta 3.8 min
+[G4] 45/140 V3-UNA-039 replace=False 0.61 s, eta 3.7 min
+[G4] 46/140 V3-LEX-028 replace=False 0.78 s, eta 3.6 min
+[G4] 47/140 V3-UNA-040 replace=False 0.87 s, eta 3.5 min
+[G4] 48/140 V3-LEX-030 replace=False 0.83 s, eta 3.4 min
+[G4] 49/140 V3-UNA-024 replace=False 4.21 s, eta 3.4 min
+[G4] 50/140 V3-UNA-025 replace=False 0.75 s, eta 3.3 min
+[G4] 51/140 V3-UNA-026 replace=False 0.56 s, eta 3.3 min
+[G4] 52/140 V3-UNA-027 replace=False 4.89 s, eta 3.3 min
+[G4] 53/140 V3-LEX-020 replace=False 0.6 s, eta 3.2 min
+[G4] 54/140 V3-XQFRU-002 replace=False 4.32 s, eta 3.2 min
+[G4] 55/140 V3-XQFEN-007 replace=False 0.7 s, eta 3.1 min
+[G4] 56/140 V3-XQFRU-016 replace=False 4.9 s, eta 3.2 min
+[G4] 57/140 V3-XQFRU-018 replace=False 4.67 s, eta 3.2 min
+[G4] 58/140 V3-XQFEN-018 replace=False 4.36 s, eta 3.2 min
+[G4] 59/140 V3-XQFEN-019 replace=False 0.48 s, eta 3.1 min
+[G4] 60/140 V3-XQFRU-024 replace=False 0.7 s, eta 3.1 min
+[G4] 61/140 V3-XQFEN-031 replace=False 0.51 s, eta 3.0 min
+[G4] 62/140 V3-XQFEN-038 replace=False 4.52 s, eta 3.0 min
+[G4] 63/140 V3-XQFRU-047 replace=False 4.6 s, eta 3.0 min
+[G4] 64/140 V3-XQFRU-056 replace=False 4.4 s, eta 3.0 min
+[G4] 65/140 V3-XQFEN-060 replace=False 0.63 s, eta 2.9 min
+[G4] 66/140 V3-XQFEN-065 replace=False 0.32 s, eta 2.8 min
+[G4] 67/140 V3-XQFEN-088 replace=False 4.22 s, eta 2.8 min
+[G4] 68/140 V3-XQFRU-097 replace=False 0.46 s, eta 2.8 min
+[G4] 69/140 V3-XQFEN-108 replace=False 0.4 s, eta 2.7 min
+[G4] 70/140 V3-XQFEN-111 replace=False 4.36 s, eta 2.7 min
+[G4] 71/140 V3-XQFEN-123 replace=False 0.46 s, eta 2.6 min
+[G4] 72/140 V3-XQFRU-134 replace=False 0.66 s, eta 2.6 min
+[G4] 73/140 V3-XQFEN-130 replace=False 4.63 s, eta 2.6 min
+[G4] 74/140 V3-XQFEN-154 replace=False 0.46 s, eta 2.5 min
+[G4] 75/140 V3-XQFRU-171 replace=False 0.56 s, eta 2.4 min
+[G4] 76/140 V3-XQFEN-171 replace=False 0.46 s, eta 2.4 min
+[G4] 77/140 V3-XQFEN-172 replace=False 4.53 s, eta 2.4 min
+[G4] 78/140 V3-XQFRU-179 replace=False 4.45 s, eta 2.4 min
+[G4] 79/140 V3-XQFRU-230 replace=False 4.45 s, eta 2.3 min
+[G4] 80/140 V3-XQFRU-242 replace=False 0.56 s, eta 2.3 min
+[G4] 81/140 V3-XQFEN-245 replace=False 0.44 s, eta 2.2 min
+[G4] 82/140 V3-XQFEN-255 replace=False 4.64 s, eta 2.2 min
+[G4] 83/140 V3-XQFEN-261 replace=False 0.51 s, eta 2.2 min
+[G4] 84/140 V3-XQFRU-272 replace=False 4.85 s, eta 2.1 min
+[G4] 85/140 V3-XQFRU-273 replace=False 4.25 s, eta 2.1 min
+[G4] 86/140 V3-XQFRU-274 replace=False 4.36 s, eta 2.1 min
+[G4] 87/140 V3-XQFEN-268 replace=False 0.46 s, eta 2.1 min
+[G4] 88/140 V3-XQFRU-279 replace=False 0.4 s, eta 2.0 min
+[G4] 89/140 V3-XQFRU-304 replace=False 0.37 s, eta 1.9 min
+[G4] 90/140 V3-XQFRU-314 replace=False 0.73 s, eta 1.9 min
+[G4] 91/140 V3-XQFRU-318 replace=False 0.68 s, eta 1.8 min
+[G4] 92/140 V3-XQFRU-352 replace=False 0.51 s, eta 1.8 min
+[G4] 93/140 V3-XQFEN-343 replace=False 4.38 s, eta 1.8 min
+[G4] 94/140 V3-XQFRU-359 replace=False 0.49 s, eta 1.7 min
+[G4] 95/140 V3-XQFEN-349 replace=False 0.42 s, eta 1.7 min
+[G4] 96/140 V3-XQFEN-352 replace=False 4.26 s, eta 1.6 min
+[G4] 97/140 V3-XQFEN-358 replace=False 0.53 s, eta 1.6 min
+[G4] 98/140 V3-XQFRU-374 replace=False 4.1 s, eta 1.6 min
+[G4] 99/140 V3-XQFEN-366 replace=False 8.02 s, eta 1.6 min
+[G4] 100/140 V3-XQFEN-367 replace=False 4.33 s, eta 1.5 min
+[G4] 101/140 V3-XQFRU-382 replace=False 0.53 s, eta 1.5 min
+[G4] 102/140 V3-XQFEN-374 replace=False 4.23 s, eta 1.5 min
+[G4] 103/140 V3-XQFRU-400 replace=False 0.63 s, eta 1.4 min
+[G4] 104/140 V3-XQFEN-401 replace=False 0.39 s, eta 1.4 min
+[G4] 105/140 V3-XQFRU-418 replace=False 4.06 s, eta 1.3 min
+[G4] 106/140 V3-XQFRU-434 replace=False 0.48 s, eta 1.3 min
+[G4] 107/140 V3-XQFRU-440 replace=False 0.46 s, eta 1.2 min
+[G4] 108/140 V3-XQFEN-426 replace=False 0.42 s, eta 1.2 min
+[G4] 109/140 V3-XQFRU-456 replace=False 4.35 s, eta 1.2 min
+[G4] 110/140 V3-XQFRU-465 replace=False 0.65 s, eta 1.1 min
+[G4] 111/140 V3-XQFNA-001 replace=False 0.82 s, eta 1.1 min
+[G4] 112/140 V3-XQFNA-013 replace=False 0.68 s, eta 1.0 min
+[G4] 113/140 V3-XQFNA-019 replace=False 4.49 s, eta 1.0 min
+[G4] 114/140 V3-XQFNA-033 replace=False 0.75 s, eta 1.0 min
+[G4] 115/140 V3-XQFNA-034 replace=False 4.36 s, eta 0.9 min
+[G4] 116/140 V3-XQFNA-039 replace=False 0.58 s, eta 0.9 min
+[G4] 117/140 V3-XQFNA-046 replace=False 0.46 s, eta 0.9 min
+[G4] 118/140 V3-XQFNA-049 replace=False 0.44 s, eta 0.8 min
+[G4] 119/140 V3-XQFNA-054 replace=False 4.19 s, eta 0.8 min
+[G4] 120/140 V3-XQFNA-067 replace=False 0.77 s, eta 0.7 min
+[G4] 121/140 V3-XQFNA-070 replace=False 0.39 s, eta 0.7 min
+[G4] 122/140 V3-XQFNA-078 replace=False 0.42 s, eta 0.7 min
+[G4] 123/140 V3-XQFNA-081 replace=False 4.31 s, eta 0.6 min
+[G4] 124/140 V3-XQFNA-083 replace=False 1.28 s, eta 0.6 min
+[G4] 125/140 V3-XQFNA-085 replace=False 0.56 s, eta 0.5 min
+[G4] 126/140 V3-XQFNA-097 replace=False 0.78 s, eta 0.5 min
+[G4] 127/140 V3-XQFNA-099 replace=False 0.58 s, eta 0.5 min
+[G4] 128/140 V3-XQFNA-101 replace=False 0.51 s, eta 0.4 min
+[G4] 129/140 V3-XQFNA-103 replace=False 4.54 s, eta 0.4 min
+[G4] 130/140 V3-XQFNA-107 replace=False 4.56 s, eta 0.4 min
+[G4] 131/140 V3-XQFNA-109 replace=False 4.19 s, eta 0.3 min
+[G4] 132/140 V3-XQFNA-111 replace=False 4.92 s, eta 0.3 min
+[G4] 133/140 V3-XQFNA-115 replace=False 4.49 s, eta 0.3 min
+[G4] 134/140 V3-XQFNA-135 replace=False 0.7 s, eta 0.2 min
+[G4] 135/140 V3-XQFNA-143 replace=False 0.72 s, eta 0.2 min
+[G4] 136/140 V3-XQFNA-146 replace=False 0.37 s, eta 0.1 min
+[G4] 137/140 V3-XQFNA-152 replace=False 4.3 s, eta 0.1 min
+[G4] 138/140 V3-XQFNA-153 replace=False 4.71 s, eta 0.1 min
+[G4] 139/140 V3-XQFNA-157 replace=False 0.6 s, eta 0.0 min
+[G4] 140/140 V3-XQFNA-159 replace=False 0.61 s, eta 0.0 min
+[G4] done in 5.16 min: replaced 0, paired {'n': 140, 'gained': 0, 'lost': 0, 'delta_pp': 0.0, 'ci95_pp': [0.0, 0.0], 'mcnemar_p': 1.0}, regressions {'lost': [], 'new_hallucinations': []}
+Results: reports/optimization_4/live/20261103T1801Z_opt4_quick/steps
+Exception ignored in: <function QdrantClient.__del__ at 0x79a56bd5fa60>
+Traceback (most recent call last):
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 169, in __del__
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 178, in close
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/local/qdrant_local.py", line 85, in close
+ImportError: sys.meta_path is None, Python is likely shutting down
+Exception ignored in: <function QdrantClient.__del__ at 0x79a56bd5fa60>
+Traceback (most recent call last):
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 169, in __del__
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/qdrant_client.py", line 178, in close
+  File "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/.venv/lib/python3.12/site-packages/qdrant_client/local/qdrant_local.py", line 85, in close
+ImportError: sys.meta_path is None, Python is likely shutting down
+    stage time: 780 s
+
+=== 21:14:58 llama-server stop
+llama-server stopped (PID 1349731)
+# Experiments 20261103T1801Z_opt4_quick
+
+Baseline: run 20261103T1310Z_rtx3090_main (judge), paired per question on the same ids.
+Population = questions the experiment's trigger selects; untriggered questions keep
+the baseline answer by construction. Estimate from the per-call medians of 1310Z:
+22.5 min for the steps.
+
+| Experiment | Questions | Replaced | Paired | McNemar p | Hallucination | False refusal | Complete compound | Lost | New hallucinations | Minutes | Verdict |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| G3 (H3+H5) | 151 | 5 | +4 / -0 | 0.125 | 0.0% (0/113) | 86.8% (33/38) | 0 -> 0 of 1 | - | - | 7.25 | ok |
+| G4 (H1) | 140 | 0 | +0 / -0 | 1.000 | 0.0% (0/78) | 100.0% (62/62) | 0 -> 0 of 4 | - | - | 5.16 | ok |
+
+D0 determinism: 6 of 6 first drafts identical to the log.
+
+Projected on all questions (baseline 1184/1307):
+- G3: all 1307 questions 90.9% (1188/1307) (+4 / -0), hallucination 1.1% (3/269), false refusal 7.1% (74/1038)
+- G4: all 1307 questions 90.6% (1184/1307) (+0 / -0), hallucination 1.1% (3/269), false refusal 7.6% (79/1038)
+
+Per-question results: e2e/*/e2e_guard_on, steps/<experiment>/cases.jsonl.
+
+
+=== 21:14:59 finished in 13 min, exit code 0
+Results: /home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/reports/optimization_4/live/20261103T1801Z_opt4_quick/SUMMARY.md
