@@ -23,6 +23,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from document_parser import DocumentChunk, document_title
 from grounding import (
     anchors_present,
+    is_identifier_anchor,
     cited_claims,
     content_overlap,
     claim_anchors,
@@ -1167,12 +1168,7 @@ class NLIFactVerifier:
             self._judge_source(key, contexts[key], hypothesis, contexts) for key in source_ids
         ]
         scores = [judge.probability(f) for _, f in scored]
-        anchors = claim_anchors(hypothesis)
-        anchored = (
-            not self.settings.nli_anchor_guard
-            or not anchors
-            or anchors_present(anchors, self._anchor_text(contexts, source_ids))
-        )
+        anchored = self._anchored(hypothesis, contexts, source_ids)
         supporting = [anchored and score >= judge.threshold for score in scores]
 
         def contradicts(f: Mapping[str, float], level: float) -> bool:
@@ -1392,12 +1388,7 @@ class NLIFactVerifier:
         probabilities_list = [
             item.probabilities for item in evidence if item.probabilities is not None
         ]
-        anchors = claim_anchors(hypothesis)
-        anchored = (
-            not s.nli_anchor_guard
-            or not anchors
-            or anchors_present(anchors, self._anchor_text(contexts, source_ids))
-        )
+        anchored = self._anchored(hypothesis, contexts, source_ids)
         contradicted = any(
             item.support is None
             and item.probabilities is not None
@@ -1495,6 +1486,35 @@ class NLIFactVerifier:
             citation_inherited=is_inherited,
             grade=_grade(status),
         )
+
+    def _anchored(
+        self, hypothesis: str, contexts: Mapping[str, SourceContext], source_ids: Sequence[str]
+    ) -> bool:
+        """Anchor guard: every number, literal and identifier of the claim occurs in its sources.
+
+        With nli_anchor_scope "document" an identifier missing from the cited sources may
+        occur in another retrieved chunk of the same document; numbers never may.
+        """
+        if not self.settings.nli_anchor_guard:
+            return True
+        anchors = claim_anchors(hypothesis)
+        if not anchors:
+            return True
+        cited = self._anchor_text(contexts, source_ids)
+        missing = frozenset(a for a in anchors if not anchors_present(frozenset({a}), cited))
+        if not missing:
+            return True
+        if self.settings.nli_anchor_scope != "document" or not all(
+            is_identifier_anchor(a) for a in missing
+        ):
+            return False
+        documents = {contexts[key].document_id for key in source_ids}
+        same = [
+            key
+            for key, context in contexts.items()
+            if context.document_id in documents and key not in source_ids
+        ]
+        return bool(same) and anchors_present(missing, self._anchor_text(contexts, same))
 
     def _anchor_text(self, contexts: Mapping[str, SourceContext], keys: Sequence[str]) -> str:
         """Text the anchors of a claim must occur in: the cited sources, with headings if set."""

@@ -263,6 +263,13 @@ class RAGSettings(BaseSettings):
     # of its cited sources: "AC-7", "Super Bowl 50" or "UUIDv1" name the subject of a chunk in
     # its heading, which the NLI premise already carries, not in the body text.
     nli_anchor_headings: bool = True
+    # Where a claim's anchors must occur. "cited": in its cited sources (with headings).
+    # "document": an identifier (letters and digits: AC-7, UUIDv7, CA-8) missing from the cited
+    # chunk may occur in another retrieved chunk of the same document instead; numbers and
+    # literals stay bound to the cited sources. A control enhancement or a table row is often
+    # chunked away from the label that names its subject (run 20261102T0749Z: the correction
+    # "rand_b in UUIDv7 holds 62 bits" was withheld three times for the missing "UUIDv7").
+    nli_anchor_scope: Literal["cited", "document"] = "cited"
     # Upper-case RFC 2119 keywords ("SHALL NOT", "MUST") are lower-cased in both NLI inputs:
     # mDeBERTa reads them as evidence of entailment even against an unrelated premise
     # (P(entailment) 0.73 vs 0.01 for the same sentence in lower case).
