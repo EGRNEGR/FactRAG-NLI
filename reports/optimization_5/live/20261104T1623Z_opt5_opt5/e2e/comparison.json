@@ -1,0 +1,92 @@
+{
+ "run": "reports/optimization_5/live/20261104T1623Z_opt5_opt5/e2e",
+ "baseline": "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/reports/runs/20261104T1222Z_rtx3090_main",
+ "questions": 30,
+ "identical_published": 29,
+ "all": {
+  "correct": "86.7% (26/30)",
+  "correct_k": 26,
+  "hallucination": "0.0% (0/10)",
+  "hallucination_k": 0,
+  "false_refusal": "5.0% (1/20)",
+  "false_refusal_k": 1,
+  "selective_accuracy": "84.2% (16/19)",
+  "paired": {
+   "n": 30,
+   "gained": 1,
+   "lost": 0,
+   "delta_pp": 3.3333333333333335,
+   "ci95_pp": [
+    0.0,
+    10.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "dev": {
+  "correct": "81.2% (13/16)",
+  "correct_k": 13,
+  "hallucination": "0.0% (0/6)",
+  "hallucination_k": 0,
+  "false_refusal": "10.0% (1/10)",
+  "false_refusal_k": 1,
+  "selective_accuracy": "77.8% (7/9)",
+  "paired": {
+   "n": 16,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "test": {
+  "correct": "92.9% (13/14)",
+  "correct_k": 13,
+  "hallucination": "0.0% (0/4)",
+  "hallucination_k": 0,
+  "false_refusal": "0.0% (0/10)",
+  "false_refusal_k": 0,
+  "selective_accuracy": "90.0% (9/10)",
+  "paired": {
+   "n": 14,
+   "gained": 1,
+   "lost": 0,
+   "delta_pp": 7.142857142857143,
+   "ci95_pp": [
+    0.0,
+    21.428571428571427
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "completeness": {
+  "variant": {
+   "compound_questions": 13,
+   "complete": 11,
+   "mean_fact_share": 0.9231
+  },
+  "baseline": {
+   "compound_questions": 13,
+   "complete": 10,
+   "mean_fact_share": 0.8846
+  }
+ },
+ "regressions": {
+  "lost": [],
+  "new_hallucinations": []
+ },
+ "changed": [
+  {
+   "id": "V3-TC-022",
+   "before": "Поле clock_seq в UUIDv1 занимает 14 бит и расположено в битах 66 through 79 (octets 8-9) [S1].",
+   "after": "Поле clock_seq в UUIDv1 занимает 14 бит и расположено в битах 66 through 79 (octets 8-9) [S1].\nПоле node в UUIDv1 занимает 48 бит и расположено в битах 80 through 127 (octets 10-15) [S9].",
+   "correct_before": false,
+   "correct_after": true
+  }
+ ],
+ "seconds": 401.3
+}

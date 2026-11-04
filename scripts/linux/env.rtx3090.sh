@@ -109,10 +109,12 @@ export RAG_LLM_RECOVERY_TEMPERATURE=0.7
 # Derived values are always recomputed: with_profile.sh re-sources this file under another
 # profile inside an environment that already holds the parent's exports.
 export LLM_PATH="models/llm/$LLM_FILE"
-# Document parser (optimization_5): PARSER=v2 reads English table captions, RFC grid tables
-# and control headings; the v3 stages then use their own index and dataset binding
-# (run_benchmark.sh). v1 = the parser of every run up to optimization_4.
-export PARSER="${PARSER:-v1}"
+# Document parser (optimization_5): v2 reads English table captions, RFC grid tables and
+# control headings; the v3 stages then use their own index and dataset binding
+# (run_benchmark.sh). Run 20261104T1222Z: 1193 / 1307 against 1188 with v1, +11 / -6
+# (p = 0.33), XQuAD unchanged (reports/optimization_5). PARSER=v1 = every run up to
+# optimization_4 (an interrupted v1 run resumes with v1).
+export PARSER="${PARSER:-v2}"
 export RAG_PARSER_VERSION="$PARSER"
 
 # ---------------------------------------------------------------- llama.cpp

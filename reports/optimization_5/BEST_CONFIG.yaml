@@ -1,0 +1,51 @@
+# Best confirmed configuration after optimization_5 (baseline: live run 20261103T1929Z).
+# = reports/optimization_4/BEST_CONFIG.yaml + document parser v2. E1 and G2 not included.
+# Run on the RTX 3090:  PLAN=main bash scripts/linux/run_benchmark.sh   (PARSER=v2 by default)
+profile: qwen38-27b-hybrid
+llm:
+  model: Qwen3.8-27B-UD-Q4_K_XL.gguf
+  temperature: 0.0
+  seed: 42
+  max_tokens: 512
+  reasoning_budget: 640
+  think_retry: refusal          # RAG_LLM_THINK_RETRY
+  think_on_trim: true           # RAG_LLM_THINK_ON_TRIM
+  think_max_tokens: 1024
+  recovery: sampling            # 2 drafts at T=0.7 when the best rerank score >= 0.5
+  query_translation: refusal    # RAG_QUERY_TRANSLATION (optimization_4, G3)
+documents:
+  parser_version: v2            # new: RAG_PARSER_VERSION / PARSER (v1 = up to optimization_4)
+  html: MarkdownExtractor       # data/test_docs/derived_v2 (v1: TextExtractor, derived/)
+  v3_dataset: data/eval_dataset_v3_parser_v2.json   # same 220 questions, chunks of v2
+  v3_index: .artifacts/eval-v3-index-parser-v2
+  chunking: {target: 320, max: 384, overlap: 50}    # unchanged
+retrieval:
+  reranker: bge-reranker-v2-m3
+  rerank_top_k: 10
+  rerank_score_threshold: 0.005
+  embedding_device: cpu
+verifier:                       # unchanged NLI and judge safety rules
+  decision: judge               # VERIFIER=judge
+  judge: data/nli_judge/bge-m3-zeroshot.json
+  judge_threshold: 0.3
+  anchor_grouping_fix: true
+  nli_anchor_scope: cited       # E1 (document) not enabled
+evidence:
+  retrieval: reports/optimization_5/retrieval/retrieval_v1_v2.json
+  full_run: reports/optimization_5/live/20261104T1222Z_rtx3090_main   # PARSER=v2 PLAN=main
+  full_run_result: "1193 / 1307 (v3 200, XQuAD 993), hallucination 2 / 269, false refusal
+    70 / 1038; against 1929Z +11 / -6, exact McNemar p = 0.33 (dev +6 / -2, test +5 / -4);
+    all 1087 XQuAD answers identical; 3.05 h of work"
+  experiments: reports/optimization_5/live/20261104T1623Z_opt5_opt5
+measured_metrics:               # run 20261104T1222Z
+  correct: 0.913                # 1193 / 1307 (optimization_4: 1188)
+  correct_v3: 0.909             # 200 / 220 (195)
+  correct_xquad: 0.914          # 993 / 1087 (993)
+  hallucination: 2 / 269        # 3; V3-ADV-029 fixed, V3-UNA-028 new by the scorer
+  false_refusal: 70 / 1038      # 74
+  complete_compound: 71 / 84    # 69
+candidates_not_enabled:         # safe (no loss, no new hallucination), no gain on dev
+  nli_anchor_scope_document: "E1: +1 test (V3-TC-022), 0 dev; offline replay and live e2e"
+  neighbour_chunk_g2: "G2: +1 test (V3-MH-036), 0 dev; steps only"
+  g2_plus_e1: "+2 test, 0 dev; steps"
+  recovery_without_premise_rule: "+2 test, 0 dev (optimization_3)"

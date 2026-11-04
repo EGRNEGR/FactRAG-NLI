@@ -1,0 +1,105 @@
+{
+ "population": 58,
+ "replaced": 1,
+ "all": {
+  "correct": "74.1% (43/58)",
+  "correct_k": 43,
+  "hallucination": "0.0% (0/42)",
+  "hallucination_k": 0,
+  "false_refusal": "81.2% (13/16)",
+  "false_refusal_k": 13,
+  "selective_accuracy": "33.3% (1/3)",
+  "paired": {
+   "n": 58,
+   "gained": 1,
+   "lost": 0,
+   "delta_pp": 1.7241379310344827,
+   "ci95_pp": [
+    0.0,
+    5.172413793103448
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "dev": {
+  "correct": "84.0% (21/25)",
+  "correct_k": 21,
+  "hallucination": "0.0% (0/21)",
+  "hallucination_k": 0,
+  "false_refusal": "75.0% (3/4)",
+  "false_refusal_k": 3,
+  "selective_accuracy": "0.0% (0/1)",
+  "paired": {
+   "n": 25,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "test": {
+  "correct": "66.7% (22/33)",
+  "correct_k": 22,
+  "hallucination": "0.0% (0/21)",
+  "hallucination_k": 0,
+  "false_refusal": "83.3% (10/12)",
+  "false_refusal_k": 10,
+  "selective_accuracy": "50.0% (1/2)",
+  "paired": {
+   "n": 33,
+   "gained": 1,
+   "lost": 0,
+   "delta_pp": 3.0303030303030303,
+   "ci95_pp": [
+    0.0,
+    9.090909090909092
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "completeness": {
+  "variant": {
+   "compound_questions": 4,
+   "complete": 1,
+   "mean_fact_share": 0.5
+  },
+  "baseline": {
+   "compound_questions": 4,
+   "complete": 0,
+   "mean_fact_share": 0.375
+  }
+ },
+ "regressions": {
+  "lost": [],
+  "new_hallucinations": []
+ },
+ "projected_all": {
+  "correct": "91.4% (1194/1307)",
+  "correct_k": 1194,
+  "hallucination": "0.7% (2/269)",
+  "hallucination_k": 2,
+  "false_refusal": "6.7% (70/1038)",
+  "false_refusal_k": 70,
+  "selective_accuracy": "95.8% (927/968)",
+  "paired": {
+   "n": 1307,
+   "gained": 1,
+   "lost": 0,
+   "delta_pp": 0.07651109410864575,
+   "ci95_pp": [
+    0.0,
+    0.22953328232593728
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "experiment": "G2",
+ "hypothesis": "H5",
+ "text": "neighbour chunk after a chunk cut mid-sentence (partial answer or LLM refusal)",
+ "minutes": 4.37,
+ "errors": 0
+}

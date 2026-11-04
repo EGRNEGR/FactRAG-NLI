@@ -1,0 +1,270 @@
+
+=== 19:23:55 FactRAG-NLI optimization_4 experiments 20261104T1623Z_opt5_opt5 (plan opt5) on artem-System-Product-Name
+baseline: /home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/reports/runs/20261104T1222Z_rtx3090_main
+commit: unknown
+NVIDIA GeForce RTX 3090, 627 MiB, 24576 MiB, 26
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 60186.91it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 17217.06it/s]
+{
+ "medians_s": {
+  "draft": 3.89,
+  "retrieval": 0.26,
+  "nli": 0.1,
+  "think": 19.13,
+  "think_repair": 19.25,
+  "recovery": 3.21,
+  "repair": 3.86
+ },
+ "G2": {
+  "questions": 58,
+  "estimate_min": 4.2
+ },
+ "estimate_total_min": 6.1
+}
+
+=== 19:24:05 llama-server (qwen38-27b-hybrid)
+Starting llama-server b12002: Qwen3.8-27B-UD-Q4_K_XL.gguf, ctx 8192, ngl 999
+llama-server ready: http://127.0.0.1:8080/v1 (PID 1501012)
+VRAM used, total: 17477 MiB, 24576 MiB
+    stage time: 3 s
+
+=== 19:24:08 e2e on selected questions, settings: RAG_NLI_ANCHOR_SCOPE=document
+30 questions
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 45828.50it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 18472.55it/s]
+Index ready: 4122 chunks
+[e2e:guard_on] V3-SH-016 (1/28)
+Loading weights:   0%|          | 0/202 [00:00<?, ?it/s]Loading weights: 100%|██████████| 202/202 [00:00<00:00, 13542.99it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 11086.12it/s]
+[e2e:guard_on] V3-MH-023 (2/28)
+[e2e:guard_on] V3-ADV-023 (3/28)
+[e2e:guard_on] V3-SH-013 (4/28)
+[e2e:guard_on] V3-MH-020 (5/28)
+[e2e:guard_on] V3-TC-014 (6/28)
+[e2e:guard_on] V3-TC-015 (7/28)
+[e2e:guard_on] V3-ADV-016 (8/28)
+[e2e:guard_on] V3-ADV-020 (9/28)
+[e2e:guard_on] V3-ADV-021 (10/28)
+[e2e:guard_on] V3-SH-025 (11/28)
+[e2e:guard_on] V3-ADV-040 (12/28)
+[e2e:guard_on] V3-SH-024 (13/28)
+[e2e:guard_on] V3-TC-027 (14/28)
+[e2e:guard_on] V3-UNA-030 (15/28)
+[e2e:guard_on] V3-MH-010 (16/28)
+[e2e:guard_on] V3-ADV-010 (17/28)
+[e2e:guard_on] V3-MH-001 (18/28)
+[e2e:guard_on] V3-MH-004 (19/28)
+[e2e:guard_on] V3-TC-003 (20/28)
+[e2e:guard_on] V3-LEX-001 (21/28)
+[e2e:guard_on] V3-ADV-043 (22/28)
+[e2e:guard_on] V3-LEX-029 (23/28)
+[e2e:guard_on] V3-SH-019 (24/28)
+[e2e:guard_on] V3-TC-022 (25/28)
+[e2e:guard_on] V3-TC-025 (26/28)
+[e2e:guard_on] V3-ADV-031 (27/28)
+[e2e:guard_on] V3-UNA-026 (28/28)
+{
+ "cases": 28,
+ "errors": 0,
+ "paired_correctness": {
+  "vanilla_only_correct": 1,
+  "factrag_only_correct": 0,
+  "mcnemar_exact_p": 1.0,
+  "vanilla_only_correct_by_cause": {
+   "filtered_answer": 1
+  }
+ }
+}
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 102568.82it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 15168.37it/s]
+Index ready: 194 chunks
+[e2e:guard_on] V3-XQFEN-124 (1/2)
+Loading weights:   0%|          | 0/202 [00:00<?, ?it/s]Loading weights: 100%|██████████| 202/202 [00:00<00:00, 9627.29it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 15168.92it/s]
+[e2e:guard_on] V3-XQFRU-163 (2/2)
+{
+ "cases": 2,
+ "errors": 0,
+ "paired_correctness": {
+  "vanilla_only_correct": 0,
+  "factrag_only_correct": 0,
+  "mcnemar_exact_p": 1.0,
+  "vanilla_only_correct_by_cause": {}
+ }
+}
+30 questions, identical answers 29, correct 86.7% (26/30) (+1 -0), hallucination 0.0% (0/10), false refusal 5.0% (1/20), regressions {'lost': [], 'new_hallucinations': []}, 401.3 s
+  dev: +0 -0, hallucination 0.0% (0/6)
+  test: +1 -0, hallucination 0.0% (0/4)
+   V3-TC-022 False -> True
+    stage time: 419 s
+
+=== 19:31:07 steps: D0,G2
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 75238.47it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 17791.08it/s]
+Loading weights:   0%|          | 0/202 [00:00<?, ?it/s]Loading weights: 100%|██████████| 202/202 [00:00<00:00, 18251.03it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 17541.73it/s]
+[D0] {'checked': 6, 'identical': 6}
+[G2] 58 questions
+[G2] 1/58 V3-TC-018 replace=False 4.45 s, eta 4.2 min
+[G2] 2/58 V3-UNA-019 replace=False 5.08 s, eta 4.4 min
+[G2] 3/58 V3-UNA-020 replace=False 4.42 s, eta 4.3 min
+[G2] 4/58 V3-UNA-021 replace=False 5.23 s, eta 4.3 min
+[G2] 5/58 V3-UNA-022 replace=False 4.82 s, eta 4.2 min
+[G2] 6/58 V3-LEX-015 replace=False 6.15 s, eta 4.4 min
+[G2] 7/58 V3-LEX-017 replace=False 4.16 s, eta 4.2 min
+[G2] 8/58 V3-MH-021 replace=False 7.16 s, eta 4.3 min
+[G2] 9/58 V3-UNA-015 replace=False 3.87 s, eta 4.1 min
+[G2] 10/58 V3-UNA-017 replace=False 3.74 s, eta 3.9 min
+[G2] 11/58 V3-UNA-018 replace=False 3.58 s, eta 3.8 min
+[G2] 12/58 V3-LEX-014 replace=False 3.93 s, eta 3.6 min
+[G2] 13/58 V3-MH-036 replace=True 6.07 s, eta 3.6 min
+[G2] 14/58 V3-UNA-032 replace=False 4.53 s, eta 3.5 min
+[G2] 15/58 V3-UNA-033 replace=False 4.59 s, eta 3.4 min
+[G2] 16/58 V3-UNA-034 replace=False 4.5 s, eta 3.3 min
+[G2] 17/58 V3-UNA-035 replace=False 4.94 s, eta 3.3 min
+[G2] 18/58 V3-UNA-036 replace=False 4.62 s, eta 3.2 min
+[G2] 19/58 V3-LEX-026 replace=False 4.25 s, eta 3.1 min
+[G2] 20/58 V3-LEX-023 replace=False 3.19 s, eta 3.0 min
+[G2] 21/58 V3-ADV-010 replace=False 8.89 s, eta 3.0 min
+[G2] 22/58 V3-UNA-011 replace=False 4.12 s, eta 2.9 min
+[G2] 23/58 V3-UNA-001 replace=False 4.29 s, eta 2.8 min
+[G2] 24/58 V3-UNA-002 replace=False 4.23 s, eta 2.7 min
+[G2] 25/58 V3-UNA-003 replace=False 4.69 s, eta 2.6 min
+[G2] 26/58 V3-UNA-004 replace=False 4.34 s, eta 2.5 min
+[G2] 27/58 V3-UNA-005 replace=False 4.08 s, eta 2.4 min
+[G2] 28/58 V3-UNA-006 replace=False 4.56 s, eta 2.4 min
+[G2] 29/58 V3-UNA-007 replace=False 4.81 s, eta 2.3 min
+[G2] 30/58 V3-LEX-006 replace=False 4.53 s, eta 2.2 min
+[G2] 31/58 V3-UNA-037 replace=False 3.98 s, eta 2.1 min
+[G2] 32/58 V3-UNA-039 replace=False 4.44 s, eta 2.0 min
+[G2] 33/58 V3-LEX-028 replace=False 4.1 s, eta 1.9 min
+[G2] 34/58 V3-LEX-030 replace=False 4.45 s, eta 1.9 min
+[G2] 35/58 V3-TC-022 replace=False 6.13 s, eta 1.8 min
+[G2] 36/58 V3-UNA-024 replace=False 4.65 s, eta 1.7 min
+[G2] 37/58 V3-UNA-025 replace=False 4.69 s, eta 1.6 min
+[G2] 38/58 V3-UNA-026 replace=False 4.69 s, eta 1.6 min
+[G2] 39/58 V3-UNA-027 replace=False 4.1 s, eta 1.5 min
+[G2] 40/58 V3-LEX-020 replace=False 4.11 s, eta 1.4 min
+[G2] 41/58 V3-XQFRU-016 replace=False 4.01 s, eta 1.3 min
+[G2] 42/58 V3-XQFEN-111 replace=False 3.8 s, eta 1.2 min
+[G2] 43/58 V3-XQFEN-130 replace=False 4.12 s, eta 1.2 min
+[G2] 44/58 V3-XQFEN-171 replace=False 8.41 s, eta 1.1 min
+[G2] 45/58 V3-XQFRU-179 replace=False 3.78 s, eta 1.0 min
+[G2] 46/58 V3-XQFRU-352 replace=False 3.97 s, eta 0.9 min
+[G2] 47/58 V3-XQFEN-343 replace=False 3.68 s, eta 0.9 min
+[G2] 48/58 V3-XQFRU-359 replace=False 3.93 s, eta 0.8 min
+[G2] 49/58 V3-XQFEN-349 replace=False 4.03 s, eta 0.7 min
+[G2] 50/58 V3-XQFEN-367 replace=False 3.83 s, eta 0.6 min
+[G2] 51/58 V3-XQFNA-001 replace=False 3.86 s, eta 0.5 min
+[G2] 52/58 V3-XQFNA-033 replace=False 3.83 s, eta 0.5 min
+[G2] 53/58 V3-XQFNA-039 replace=False 3.93 s, eta 0.4 min
+[G2] 54/58 V3-XQFNA-046 replace=False 3.78 s, eta 0.3 min
+[G2] 55/58 V3-XQFNA-070 replace=False 4.01 s, eta 0.2 min
+[G2] 56/58 V3-XQFNA-081 replace=False 3.68 s, eta 0.2 min
+[G2] 57/58 V3-XQFNA-111 replace=False 3.82 s, eta 0.1 min
+[G2] 58/58 V3-XQFNA-157 replace=False 3.92 s, eta 0.0 min
+[G2] done in 4.37 min: replaced 1, paired {'n': 58, 'gained': 1, 'lost': 0, 'delta_pp': 1.7241379310344827, 'ci95_pp': [0.0, 5.172413793103448], 'mcnemar_p': 1.0}, regressions {'lost': [], 'new_hallucinations': []}
+Results: reports/optimization_5/live/20261104T1623Z_opt5_opt5/steps
+    stage time: 297 s
+
+=== 19:36:04 steps: G2 with nli_anchor_scope=document
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 103507.50it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 13963.60it/s]
+[G2] 58 questions
+Loading weights:   0%|          | 0/202 [00:00<?, ?it/s]Loading weights: 100%|██████████| 202/202 [00:00<00:00, 17511.30it/s]
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 19350.83it/s]
+[G2] 1/58 V3-TC-018 replace=False 6.36 s, eta 6.0 min
+[G2] 2/58 V3-UNA-019 replace=False 5.04 s, eta 5.3 min
+[G2] 3/58 V3-UNA-020 replace=False 4.41 s, eta 4.8 min
+[G2] 4/58 V3-UNA-021 replace=False 5.21 s, eta 4.7 min
+[G2] 5/58 V3-UNA-022 replace=False 4.8 s, eta 4.6 min
+[G2] 6/58 V3-LEX-015 replace=False 6.14 s, eta 4.6 min
+[G2] 7/58 V3-LEX-017 replace=False 4.15 s, eta 4.4 min
+[G2] 8/58 V3-MH-021 replace=False 7.14 s, eta 4.5 min
+[G2] 9/58 V3-UNA-015 replace=False 3.87 s, eta 4.3 min
+[G2] 10/58 V3-UNA-017 replace=False 3.72 s, eta 4.1 min
+[G2] 11/58 V3-UNA-018 replace=False 3.58 s, eta 3.9 min
+[G2] 12/58 V3-LEX-014 replace=False 3.93 s, eta 3.7 min
+[G2] 13/58 V3-MH-036 replace=True 6.08 s, eta 3.7 min
+[G2] 14/58 V3-UNA-032 replace=False 4.52 s, eta 3.6 min
+[G2] 15/58 V3-UNA-033 replace=False 4.58 s, eta 3.5 min
+[G2] 16/58 V3-UNA-034 replace=False 4.5 s, eta 3.4 min
+[G2] 17/58 V3-UNA-035 replace=False 4.93 s, eta 3.3 min
+[G2] 18/58 V3-UNA-036 replace=False 4.62 s, eta 3.2 min
+[G2] 19/58 V3-LEX-026 replace=False 4.25 s, eta 3.1 min
+[G2] 20/58 V3-LEX-023 replace=False 3.19 s, eta 3.0 min
+[G2] 21/58 V3-ADV-010 replace=False 8.89 s, eta 3.1 min
+[G2] 22/58 V3-UNA-011 replace=False 4.12 s, eta 2.9 min
+[G2] 23/58 V3-UNA-001 replace=False 4.29 s, eta 2.8 min
+[G2] 24/58 V3-UNA-002 replace=False 4.23 s, eta 2.8 min
+[G2] 25/58 V3-UNA-003 replace=False 4.69 s, eta 2.7 min
+[G2] 26/58 V3-UNA-004 replace=False 4.34 s, eta 2.6 min
+[G2] 27/58 V3-UNA-005 replace=False 4.08 s, eta 2.5 min
+[G2] 28/58 V3-UNA-006 replace=False 4.56 s, eta 2.4 min
+[G2] 29/58 V3-UNA-007 replace=False 4.82 s, eta 2.3 min
+[G2] 30/58 V3-LEX-006 replace=False 4.53 s, eta 2.2 min
+[G2] 31/58 V3-UNA-037 replace=False 3.98 s, eta 2.1 min
+[G2] 32/58 V3-UNA-039 replace=False 4.44 s, eta 2.1 min
+[G2] 33/58 V3-LEX-028 replace=False 4.1 s, eta 2.0 min
+[G2] 34/58 V3-LEX-030 replace=False 4.45 s, eta 1.9 min
+[G2] 35/58 V3-TC-022 replace=True 6.13 s, eta 1.8 min
+[G2] 36/58 V3-UNA-024 replace=False 4.65 s, eta 1.7 min
+[G2] 37/58 V3-UNA-025 replace=False 4.69 s, eta 1.7 min
+[G2] 38/58 V3-UNA-026 replace=False 4.69 s, eta 1.6 min
+[G2] 39/58 V3-UNA-027 replace=False 4.1 s, eta 1.5 min
+[G2] 40/58 V3-LEX-020 replace=False 4.11 s, eta 1.4 min
+[G2] 41/58 V3-XQFRU-016 replace=False 4.01 s, eta 1.3 min
+[G2] 42/58 V3-XQFEN-111 replace=False 3.79 s, eta 1.2 min
+[G2] 43/58 V3-XQFEN-130 replace=False 4.11 s, eta 1.2 min
+[G2] 44/58 V3-XQFEN-171 replace=False 8.41 s, eta 1.1 min
+[G2] 45/58 V3-XQFRU-179 replace=False 3.78 s, eta 1.0 min
+[G2] 46/58 V3-XQFRU-352 replace=False 3.96 s, eta 0.9 min
+[G2] 47/58 V3-XQFEN-343 replace=False 3.68 s, eta 0.9 min
+[G2] 48/58 V3-XQFRU-359 replace=False 3.92 s, eta 0.8 min
+[G2] 49/58 V3-XQFEN-349 replace=False 4.03 s, eta 0.7 min
+[G2] 50/58 V3-XQFEN-367 replace=False 3.83 s, eta 0.6 min
+[G2] 51/58 V3-XQFNA-001 replace=False 3.86 s, eta 0.5 min
+[G2] 52/58 V3-XQFNA-033 replace=False 3.82 s, eta 0.5 min
+[G2] 53/58 V3-XQFNA-039 replace=False 3.92 s, eta 0.4 min
+[G2] 54/58 V3-XQFNA-046 replace=False 3.78 s, eta 0.3 min
+[G2] 55/58 V3-XQFNA-070 replace=False 4.01 s, eta 0.2 min
+[G2] 56/58 V3-XQFNA-081 replace=False 3.68 s, eta 0.2 min
+[G2] 57/58 V3-XQFNA-111 replace=False 3.81 s, eta 0.1 min
+[G2] 58/58 V3-XQFNA-157 replace=False 3.92 s, eta 0.0 min
+[G2] done in 4.4 min: replaced 2, paired {'n': 58, 'gained': 2, 'lost': 0, 'delta_pp': 3.4482758620689653, 'ci95_pp': [0.0, 8.620689655172415], 'mcnemar_p': 0.5}, regressions {'lost': [], 'new_hallucinations': []}
+Results: reports/optimization_5/live/20261104T1623Z_opt5_opt5/steps_g2_e1
+    stage time: 274 s
+
+=== 19:40:38 llama-server stop
+llama-server stopped (PID 1501012)
+# Experiments 20261104T1623Z_opt5_opt5
+
+Baseline: run 20261104T1222Z_rtx3090_main (judge), paired per question on the same ids.
+Population = questions the experiment's trigger selects; untriggered questions keep
+the baseline answer by construction.
+Estimate from the per-call medians of 1310Z: 6.1 min for the steps.
+
+| Experiment | Questions | Replaced | Paired | McNemar p | Hallucination | False refusal | Complete compound | Lost | New hallucinations | Minutes | Verdict |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| e2e, RAG_NLI_ANCHOR_SCOPE=document (real pipeline) | 30 | - | +1 / -0 | 1.000 | 0.0% (0/10) | 5.0% (1/20) | 10 -> 11 of 13 | - | - | 6.7 | ok |
+| G2 (H5) | 58 | 1 | +1 / -0 | 1.000 | 0.0% (0/42) | 81.2% (13/16) | 0 -> 1 of 4 | - | - | 4.37 | ok |
+| G2 + E1 (H5 + H2, nli_anchor_scope=document) | 58 | 2 | +2 / -0 | 0.500 | 0.0% (0/42) | 81.2% (13/16) | 0 -> 2 of 4 | - | - | 4.4 | ok |
+
+D0 determinism: 6 of 6 first drafts identical to the log.
+
+Projected on all questions (baseline 20261104T1222Z_rtx3090_main):
+- G2: all 1307 questions 91.4% (1194/1307) (+1 / -0), hallucination 0.7% (2/269), false refusal 6.7% (70/1038)
+- G2 + E1: all 1307 questions 91.4% (1195/1307) (+2 / -0), hallucination 0.7% (2/269), false refusal 6.7% (70/1038)
+
+e2e by split:
+- dev: +0 / -0, correct 81.2% (13/16), hallucination 0.0% (0/6), false refusal 10.0% (1/10)
+- test: +1 / -0, correct 92.9% (13/14), hallucination 0.0% (0/4), false refusal 0.0% (0/10)
+
+e2e changed answers:
+- V3-TC-022: False -> True
+
+Per-question results: e2e/*/e2e_guard_on, steps/<experiment>/cases.jsonl.
+
+
+=== 19:40:39 finished in 16 min, exit code 0
+Results: /home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/reports/optimization_5/live/20261104T1623Z_opt5_opt5/SUMMARY.md
