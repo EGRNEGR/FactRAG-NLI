@@ -29,6 +29,7 @@
 # stop it. Ctrl+C only stops watching the log. Stop the run: bash scripts/linux/stop_benchmark.sh
 set -euo pipefail
 verifier_now="${VERIFIER:-}"  # env.rtx3090.sh fills in the default (judge)
+parser_now="${PARSER:-}"      # and the default parser (v1)
 source "$(dirname "${BASH_SOURCE[0]}")/env.rtx3090.sh"
 cd "$PROJECT_ROOT"
 
@@ -50,16 +51,19 @@ if [[ "$RESUME" == "1" ]]; then
   # (finished cases are kept, the remaining stages follow the new choice).
   plan_now="${PLAN:-}" xquad_now="${XQUAD:-}"
   VERIFIER=judge  # runs before VERIFIER was recorded
+  PARSER=v1       # runs before PARSER was recorded
   source "$STATE/last_run"
   PLAN="${plan_now:-$PLAN}"
   XQUAD="${xquad_now:-${XQUAD:-standard}}"  # runs before XQUAD existed used the standard set
   VERIFIER="${verifier_now:-$VERIFIER}"
+  PARSER="${parser_now:-$PARSER}"
+  export PARSER RAG_PARSER_VERSION="$PARSER"
 else
   PLAN="${PLAN:-full}"
   XQUAD="${XQUAD:-full}"
   RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%MZ)_rtx3090_$PLAN}"
 fi
-printf 'RUN_ID=%q\nPLAN=%q\nXQUAD=%q\nVERIFIER=%q\n' "$RUN_ID" "$PLAN" "$XQUAD" "$VERIFIER" >"$STATE/last_run"
+printf 'RUN_ID=%q\nPLAN=%q\nXQUAD=%q\nVERIFIER=%q\nPARSER=%q\n' "$RUN_ID" "$PLAN" "$XQUAD" "$VERIFIER" "$PARSER" >"$STATE/last_run"
 RUN_ROOT="reports/runs/$RUN_ID"
 LOG="$RUN_ROOT/benchmark.log"
 mkdir -p "$RUN_ROOT"
@@ -71,7 +75,7 @@ if [[ "$FOREGROUND" == "0" && -z "${FACTRAG_DETACHED:-}" ]]; then
   fi
   args=(--foreground)
   [[ "$RESUME" == "1" ]] && args+=(--resume)
-  FACTRAG_DETACHED=1 RUN_ID="$RUN_ID" PLAN="$PLAN" XQUAD="$XQUAD" VERIFIER="$VERIFIER" setsid nohup bash "$0" "${args[@]}" >>"$LOG" 2>&1 </dev/null &
+  FACTRAG_DETACHED=1 RUN_ID="$RUN_ID" PLAN="$PLAN" XQUAD="$XQUAD" VERIFIER="$VERIFIER" PARSER="$PARSER" setsid nohup bash "$0" "${args[@]}" >>"$LOG" 2>&1 </dev/null &
   echo $! >"$STATE/pid"
   echo "$LOG" >"$STATE/log"
   echo "Benchmark $RUN_ID started in the background (PID $!)."
@@ -90,7 +94,7 @@ esac
 LIMIT=()
 [[ "$PLAN" == "quick" ]] && LIMIT=(--limit 10)
 
-echo "=== FactRAG-NLI benchmark $RUN_ID (plan $PLAN, XQuAD $XQUAD) on $(hostname), $(date)"
+echo "=== FactRAG-NLI benchmark $RUN_ID (plan $PLAN, XQuAD $XQUAD, parser $RAG_PARSER_VERSION) on $(hostname), $(date)"
 nvidia-smi --query-gpu=name,memory.used,memory.total,driver_version,temperature.gpu --format=csv,noheader
 
 XQ=(env FACTRAG_INDEX=.artifacts/xquad-index FACTRAG_PARSE_CACHE=.artifacts/xquad_parse_cache)
@@ -100,6 +104,15 @@ case "$XQUAD" in
   full) XQ_DATA=(--dataset data/xquad_dataset_full.json); XQ_BUILD=(--full); XQ_DIR=xquad-full ;;
   *) echo "Unknown XQUAD=$XQUAD (standard | full)" >&2; exit 2 ;;
 esac
+# PARSER=v2 (optimization_5): the v3 stages index the corpus with parser v2 into their own
+# index and use the v2 binding of the same 220 questions (data/eval_dataset_v3_parser_v2.json);
+# XQuAD chunks are identical in v1 and v2, so its index and stages stay as they are.
+V3=()
+V3_DATA=()
+if [[ "$RAG_PARSER_VERSION" == "v2" ]]; then
+  V3=(env FACTRAG_INDEX=.artifacts/eval-v3-index-parser-v2 FACTRAG_PARSE_CACHE=.artifacts/eval_v3_parse_cache_parser_v2)
+  V3_DATA=(--dataset data/eval_dataset_v3_parser_v2.json)
+fi
 stages=()
 add() { stages+=(--stage "$1=$2"); }
 q() { printf '%q ' "$@"; }
@@ -118,16 +131,16 @@ for config in $CONFIGS; do
   [[ "$verifier" != "rules" ]] && dir+="+$verifier"
   with=(env RERANKER="$reranker" VERIFIER="$verifier" bash scripts/linux/with_profile.sh "$profile")
   if [[ "$done_retrieval" != *" $reranker "* ]]; then
-    add "v3-retrieval[$reranker]" "$(q "${IDX[@]}" "${with[@]}" "$PYTHON" -X utf8 evaluate_suite.py --run-dir "$RUN_ROOT/retrieval/v3+$reranker" "${LIMIT[@]}" retrieval)"
+    add "v3-retrieval[$reranker]" "$(q "${IDX[@]}" "${with[@]}" "${V3[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${V3_DATA[@]}" --run-dir "$RUN_ROOT/retrieval/v3+$reranker" "${LIMIT[@]}" retrieval)"
     add "xquad-retrieval[$reranker]" "$(q "${IDX[@]}" "${with[@]}" "${XQ[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${XQ_DATA[@]}" --run-dir "$RUN_ROOT/retrieval/$XQ_DIR+$reranker" "${LIMIT[@]}" retrieval)"
     done_retrieval+="$reranker "
   fi
   # ensure: a server already answering with this profile (e.g. on --resume) is kept.
   add "llama-server[$profile]" "$(q "${with[@]}" bash scripts/linux/llama_server.sh ensure)"
-  add "v3-e2e[$config]" "$(q "${with[@]}" "$PYTHON" -X utf8 evaluate_suite.py --run-dir "$dir/v3" "${LIMIT[@]}" e2e --profile guard_on)"
+  add "v3-e2e[$config]" "$(q "${with[@]}" "${V3[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${V3_DATA[@]}" --run-dir "$dir/v3" "${LIMIT[@]}" e2e --profile guard_on)"
   add "xquad-e2e[$config]" "$(q "${with[@]}" "${XQ[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${XQ_DATA[@]}" --run-dir "$dir/$XQ_DIR" "${LIMIT[@]}" e2e --profile guard_on)"
   # Cases that failed on infrastructure (timeouts) run once more; logged answers are kept.
-  add "v3-retry[$config]" "$(q "${with[@]}" "$PYTHON" -X utf8 evaluate_suite.py --run-dir "$dir/v3" "${LIMIT[@]}" e2e --profile guard_on --retry-errors)"
+  add "v3-retry[$config]" "$(q "${with[@]}" "${V3[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${V3_DATA[@]}" --run-dir "$dir/v3" "${LIMIT[@]}" e2e --profile guard_on --retry-errors)"
   add "xquad-retry[$config]" "$(q "${with[@]}" "${XQ[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${XQ_DATA[@]}" --run-dir "$dir/$XQ_DIR" "${LIMIT[@]}" e2e --profile guard_on --retry-errors)"
 done
 if [[ "${KEEP_SERVER:-0}" != "1" ]]; then

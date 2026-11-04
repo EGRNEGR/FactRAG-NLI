@@ -11,6 +11,7 @@ Usage:  python -m research.opt4.live_report reports/optimization_4/live/<run>
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -47,10 +48,15 @@ def main(out: Path) -> int:
     flags_file = out / "e2e" / "flags.txt"
     flags = flags_file.read_text(encoding="utf-8").strip() if flags_file.exists() else ""
     steps = load(out / "steps" / "summary.json") or {}
+    # optimization_5: G2 once more with the verifier of E1 (steps_g2_e1/).
+    combined = (load(out / "steps_g2_e1" / "summary.json") or {}).get("G2")
+    if combined:
+        steps["G2 + E1"] = {**combined, "hypothesis": "H5 + H2, nli_anchor_scope=document"}
+    baseline = Path(os.environ.get("OPT4_RUN", "20261103T1310Z_rtx3090_main")).name
     lines = [
         f"# Experiments {out.name}",
         "",
-        "Baseline: run 20261103T1310Z_rtx3090_main (judge), paired per question on the same ids.",
+        f"Baseline: run {baseline} (judge), paired per question on the same ids.",
         "Population = questions the experiment's trigger selects; untriggered questions keep",
         "the baseline answer by construction.",
         *(
@@ -88,7 +94,7 @@ def main(out: Path) -> int:
         if name != "D0" and s.get("projected_all")
     ]
     if projected:
-        lines += ["", "Projected on all questions (baseline 1184/1307):", *projected]
+        lines += ["", f"Projected on all questions (baseline {baseline}):", *projected]
     if e1 and any(part in e1 for part in ("dev", "test")):
         lines += ["", "e2e by split:"]
         lines += [

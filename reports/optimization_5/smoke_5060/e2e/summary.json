@@ -1,0 +1,540 @@
+{
+ "cases": 3,
+ "errors": 0,
+ "vanilla": {
+  "correct": {
+   "k": 3,
+   "n": 3,
+   "rate": 1.0,
+   "wilson95": [
+    0.43849391955098227,
+    1.0
+   ]
+  },
+  "hallucination": {
+   "k": 0,
+   "n": 1,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.7934567085261071
+   ]
+  },
+  "false_refusal_on_answerable": {
+   "k": 0,
+   "n": 2,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.6576280471103807
+   ]
+  },
+  "key_fact_accuracy_on_answerable": {
+   "k": 2,
+   "n": 2,
+   "rate": 1.0,
+   "wilson95": [
+    0.34237195288961925,
+    1.0
+   ]
+  },
+  "by_category": {
+   "multi_hop": {
+    "correct": {
+     "k": 1,
+     "n": 1,
+     "rate": 1.0,
+     "wilson95": [
+      0.20654329147389294,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    }
+   },
+   "tabular_code": {
+    "correct": {
+     "k": 1,
+     "n": 1,
+     "rate": 1.0,
+     "wilson95": [
+      0.20654329147389294,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    }
+   },
+   "unanswerable": {
+    "correct": {
+     "k": 1,
+     "n": 1,
+     "rate": 1.0,
+     "wilson95": [
+      0.20654329147389294,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    },
+    "refused": {
+     "k": 1,
+     "n": 1,
+     "rate": 1.0,
+     "wilson95": [
+      0.20654329147389294,
+      1.0
+     ]
+    }
+   }
+  },
+  "by_language": {
+   "en": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "wilson95": [
+     0.34237195288961925,
+     1.0
+    ]
+   },
+   "ru": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "wilson95": [
+     0.20654329147389294,
+     1.0
+    ]
+   }
+  }
+ },
+ "factrag": {
+  "correct": {
+   "k": 3,
+   "n": 3,
+   "rate": 1.0,
+   "wilson95": [
+    0.43849391955098227,
+    1.0
+   ]
+  },
+  "hallucination": {
+   "k": 0,
+   "n": 1,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.7934567085261071
+   ]
+  },
+  "false_refusal_on_answerable": {
+   "k": 0,
+   "n": 2,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.6576280471103807
+   ]
+  },
+  "key_fact_accuracy_on_answerable": {
+   "k": 2,
+   "n": 2,
+   "rate": 1.0,
+   "wilson95": [
+    0.34237195288961925,
+    1.0
+   ]
+  },
+  "by_category": {
+   "multi_hop": {
+    "correct": {
+     "k": 1,
+     "n": 1,
+     "rate": 1.0,
+     "wilson95": [
+      0.20654329147389294,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    }
+   },
+   "tabular_code": {
+    "correct": {
+     "k": 1,
+     "n": 1,
+     "rate": 1.0,
+     "wilson95": [
+      0.20654329147389294,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    }
+   },
+   "unanswerable": {
+    "correct": {
+     "k": 1,
+     "n": 1,
+     "rate": 1.0,
+     "wilson95": [
+      0.20654329147389294,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    },
+    "refused": {
+     "k": 1,
+     "n": 1,
+     "rate": 1.0,
+     "wilson95": [
+      0.20654329147389294,
+      1.0
+     ]
+    }
+   }
+  },
+  "by_language": {
+   "en": {
+    "k": 2,
+    "n": 2,
+    "rate": 1.0,
+    "wilson95": [
+     0.34237195288961925,
+     1.0
+    ]
+   },
+   "ru": {
+    "k": 1,
+    "n": 1,
+    "rate": 1.0,
+    "wilson95": [
+     0.20654329147389294,
+     1.0
+    ]
+   }
+  }
+ },
+ "paired_correctness": {
+  "vanilla_only_correct": 0,
+  "factrag_only_correct": 0,
+  "mcnemar_exact_p": 1.0,
+  "vanilla_only_correct_by_cause": {}
+ },
+ "hallucination_relative_reduction": null,
+ "by_split": {
+  "dev": {
+   "vanilla": {
+    "correct": {
+     "k": 3,
+     "n": 3,
+     "rate": 1.0,
+     "wilson95": [
+      0.43849391955098227,
+      1.0
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 0,
+     "n": 2,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.6576280471103807
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    }
+   },
+   "factrag": {
+    "correct": {
+     "k": 3,
+     "n": 3,
+     "rate": 1.0,
+     "wilson95": [
+      0.43849391955098227,
+      1.0
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 0,
+     "n": 2,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.6576280471103807
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    }
+   }
+  }
+ },
+ "hallucination_ids": {
+  "vanilla_only": [],
+  "factrag_only": [],
+  "both": []
+ },
+ "claims": {
+  "total": 4,
+  "by_status": {
+   "verified": 4
+  },
+  "by_status_reason": {
+   "verified:none": 4
+  },
+  "by_grade": {
+   "supported": 4
+  },
+  "pairs_exceeding_nli_context": 0,
+  "facts": 4,
+  "faithfulness_micro": 1.0,
+  "inherited_citations": 0,
+  "verified_by_support": {
+   "judge": 4
+  }
+ },
+ "refusal_reasons": {
+  "llm_refusal": 1
+ },
+ "repair": {
+  "attempted": 1,
+  "published": 0,
+  "factrag_correct": 1,
+  "factrag_hallucinations": 0
+ },
+ "thinking_pass": {
+  "attempted": 1,
+  "published": 0,
+  "factrag_correct": 1,
+  "factrag_hallucinations": 0
+ },
+ "recovery_pass": {
+  "attempted": 0,
+  "answerable": 0,
+  "answerable_correct": 0,
+  "published": 0,
+  "factrag_correct": 0,
+  "factrag_hallucinations": 0
+ },
+ "translation_pass": {
+  "attempted": 1,
+  "answerable": 0,
+  "answerable_correct": 0,
+  "published": 0,
+  "factrag_hallucinations": 0
+ },
+ "latency_ms": {
+  "all_queries": {
+   "search_ms": {
+    "n": 2,
+    "mean": 157.9798000457231,
+    "p50": 157.9798000457231,
+    "p95": 200.818810108467,
+    "min": 110.38089997600764,
+    "max": 205.57870011543855
+   },
+   "rerank_ms": {
+    "n": 2,
+    "mean": 25853.188649984077,
+    "p50": 25853.188649984077,
+    "p95": 32660.425814957125,
+    "min": 18289.591800014023,
+    "max": 33416.78549995413
+   },
+   "generation_ms": {
+    "n": 2,
+    "mean": 55417.4341999169,
+    "p50": 55417.4341999169,
+    "p95": 88402.0101198781,
+    "min": 18767.90539996,
+    "max": 92066.9629998738
+   },
+   "nli_ms": {
+    "n": 2,
+    "mean": 938.8409000239335,
+    "p50": 938.8409000239335,
+    "p95": 1783.780430018669,
+    "min": 0.019200029782950878,
+    "max": 1877.662600018084
+   },
+   "total_ms": {
+    "n": 2,
+    "mean": 86577.37815001747,
+    "p50": 86577.37815001747,
+    "p95": 129355.74304506299,
+    "min": 39045.861599966884,
+    "max": 134108.89470006805
+   },
+   "llm_ttft_ms": {
+    "n": 0,
+    "mean": null,
+    "p50": null,
+    "p95": null,
+    "min": null,
+    "max": null
+   }
+  },
+  "generated_queries": {
+   "search_ms": {
+    "n": 2,
+    "mean": 157.9798000457231,
+    "p50": 157.9798000457231,
+    "p95": 200.818810108467,
+    "min": 110.38089997600764,
+    "max": 205.57870011543855
+   },
+   "rerank_ms": {
+    "n": 2,
+    "mean": 25853.188649984077,
+    "p50": 25853.188649984077,
+    "p95": 32660.425814957125,
+    "min": 18289.591800014023,
+    "max": 33416.78549995413
+   },
+   "generation_ms": {
+    "n": 2,
+    "mean": 55417.4341999169,
+    "p50": 55417.4341999169,
+    "p95": 88402.0101198781,
+    "min": 18767.90539996,
+    "max": 92066.9629998738
+   },
+   "nli_ms": {
+    "n": 2,
+    "mean": 938.8409000239335,
+    "p50": 938.8409000239335,
+    "p95": 1783.780430018669,
+    "min": 0.019200029782950878,
+    "max": 1877.662600018084
+   },
+   "total_ms": {
+    "n": 2,
+    "mean": 86577.37815001747,
+    "p50": 86577.37815001747,
+    "p95": 129355.74304506299,
+    "min": 39045.861599966884,
+    "max": 134108.89470006805
+   },
+   "llm_ttft_ms": {
+    "n": 0,
+    "mean": null,
+    "p50": null,
+    "p95": null,
+    "min": null,
+    "max": null
+   }
+  },
+  "model_init_ms": [
+   4449.384099978488
+  ]
+ },
+ "gold_in_sources": {
+  "k": 2,
+  "n": 2,
+  "rate": 1.0,
+  "wilson95": [
+   0.34237195288961925,
+   1.0
+  ]
+ },
+ "resources": {
+  "samples": 216,
+  "gpu_used_mib": {
+   "peak": 5213.0,
+   "mean": 5207.9537037037035
+  },
+  "process_rss_mib": {
+   "peak": 8659.50390625,
+   "mean": 7859.439869068287
+  },
+  "llama_server_rss_mib": {
+   "peak": 17449.09765625,
+   "mean": 17195.52737991898
+  },
+  "torch_max_allocated_mib": 0.0,
+  "torch_max_reserved_mib": 0.0
+ }
+}
