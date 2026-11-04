@@ -1,0 +1,3 @@
+﻿experiment,kind,hypothesis,text,overrides,correct,baseline_correct,gained,lost,mcnemar_p,dev_gained_lost,test_gained_lost,hallucination,new_hallucinations,false_refusal,complete_compound,baseline_complete_compound,changed_texts,missing,seconds
+B00,offline replay,-,"replay of the run, current code, no override",{},1190,1193,0,3,0.25,0/1,0/2,2,0,75,71/84,71/84,5,17,609.4
+E1,offline replay,H2,control enhancement as one identifier; identifiers may come from a same-document chunk,"{""nli_anchor_scope"": ""document""}",1191,1193,1,3,0.625,0/1,1/2,2,0,75,72/84,71/84,6,17,3.4

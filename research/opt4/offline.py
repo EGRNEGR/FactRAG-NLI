@@ -21,9 +21,11 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import sys
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 import research.opt4  # noqa: F401 - selects the baseline run
@@ -33,6 +35,8 @@ from research.opt4 import metrics
 from research.opt4.diagnose import OUT
 
 CONFIG = "judge"
+# Results of another baseline (optimization_5) go elsewhere: OPT4_EXPERIMENTS_OUT.
+RESULTS = Path(os.environ.get("OPT4_EXPERIMENTS_OUT") or OUT)
 
 
 @dataclass(frozen=True)
@@ -92,7 +96,7 @@ def run(e: Experiment) -> dict[str, Any]:
         "hypothesis": e.hypothesis,
         "text": e.text,
         "overrides": e.overrides,
-        "baseline": "run 20261103T1310Z, judge, logged",
+        "baseline": f"run {data.RUN.name}, judge, logged",
         "seconds": round(time.perf_counter() - started, 1),
         "missing": missing,
     }
@@ -127,12 +131,12 @@ def run(e: Experiment) -> dict[str, Any]:
 
 
 def save(result: dict[str, Any]) -> None:
-    out = OUT / "experiments"
+    out = RESULTS / "experiments"
     out.mkdir(parents=True, exist_ok=True)
     (out / f"{result['experiment']}.json").write_text(
         json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8"
     )
-    path = OUT / "EXPERIMENTS.csv"
+    path = RESULTS / "EXPERIMENTS.csv"
     rows: dict[str, dict[str, Any]] = {}
     if path.exists():
         with path.open(encoding="utf-8-sig", newline="") as handle:
