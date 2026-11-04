@@ -1,0 +1,80 @@
+{
+ "T1": {
+  "gained": [
+   "V3-TC-021"
+  ],
+  "lost": [],
+  "text_changed": [
+   "V3-ADV-025",
+   "V3-MH-009"
+  ],
+  "rows": [
+   {
+    "id": "V3-ADV-025",
+    "split": "test",
+    "b00": true,
+    "variant": true,
+    "b00_published": "Нет, в SP 800-53 Rev. 5 идентификатор PT обозначает семейство PII Processing and Transparency [S3][S8].\nСемейство Physical and Environmental Protection обозначено идентификатором PE [S3][S8].",
+    "variant_published": "Нет, в SP 800-53 Rev. 5 идентификатор PT обозначает семейство PII Processing and Transparency [S3].\nСемейство Physical and Environmental Protection обозначается идентификатором PE [S3]."
+   },
+   {
+    "id": "V3-MH-009",
+    "split": "dev",
+    "b00": true,
+    "variant": true,
+    "b00_published": "Потоки, инициированные клиентом, имеют чётные идентификаторы (бит 0x01 установлен в 0), а потоки, инициированные сервером, имеют нечётные идентификаторы (бит 0x01 установлен в 1) [S1].",
+    "variant_published": "Младшим битам 0x01 соответствует тип потока Server-Initiated, Bidirectional [S2].\nЭто отражает правило, что потоки, инициированные клиентом, имеют чётные идентификаторы, а потоки, инициированные сервером, имеют нечётные идентификаторы [S1]."
+   },
+   {
+    "id": "V3-TC-021",
+    "split": "test",
+    "b00": false,
+    "variant": true,
+    "b00_published": "Для версии 7 битовый паттерн в битах 48–51 установлен как 0b0111 (7) [S2].",
+    "variant_published": "Для версии 7 битовый паттерн в битах 48–51 установлен как 0b0111 (7) [S2].\nОписанием версии 7 в таблице IANA UUID Subtypes является \"Unix Time-based\" [S9]."
+   }
+  ]
+ },
+ "T2": {
+  "gained": [],
+  "lost": [],
+  "text_changed": [],
+  "rows": []
+ },
+ "T12": {
+  "gained": [
+   "V3-TC-021"
+  ],
+  "lost": [],
+  "text_changed": [
+   "V3-ADV-025",
+   "V3-MH-009"
+  ],
+  "rows": [
+   {
+    "id": "V3-ADV-025",
+    "split": "test",
+    "b00": true,
+    "variant": true,
+    "b00_published": "Нет, в SP 800-53 Rev. 5 идентификатор PT обозначает семейство PII Processing and Transparency [S3][S8].\nСемейство Physical and Environmental Protection обозначено идентификатором PE [S3][S8].",
+    "variant_published": "Нет, в SP 800-53 Rev. 5 идентификатор PT обозначает семейство PII Processing and Transparency [S3].\nСемейство Physical and Environmental Protection обозначается идентификатором PE [S3]."
+   },
+   {
+    "id": "V3-MH-009",
+    "split": "dev",
+    "b00": true,
+    "variant": true,
+    "b00_published": "Потоки, инициированные клиентом, имеют чётные идентификаторы (бит 0x01 установлен в 0), а потоки, инициированные сервером, имеют нечётные идентификаторы (бит 0x01 установлен в 1) [S1].",
+    "variant_published": "Младшим битам 0x01 соответствует тип потока Server-Initiated, Bidirectional [S2].\nЭто отражает правило, что потоки, инициированные клиентом, имеют чётные идентификаторы, а потоки, инициированные сервером, имеют нечётные идентификаторы [S1]."
+   },
+   {
+    "id": "V3-TC-021",
+    "split": "test",
+    "b00": false,
+    "variant": true,
+    "b00_published": "Для версии 7 битовый паттерн в битах 48–51 установлен как 0b0111 (7) [S2].",
+    "variant_published": "Для версии 7 битовый паттерн в битах 48–51 установлен как 0b0111 (7) [S2].\nОписанием версии 7 в таблице IANA UUID Subtypes является \"Unix Time-based\" [S9]."
+   }
+  ]
+ }
+}

@@ -1,0 +1,5 @@
+﻿experiment,kind,hypothesis,text,overrides,correct,baseline_correct,gained,lost,mcnemar_p,dev_gained_lost,test_gained_lost,hallucination,new_hallucinations,false_refusal,complete_compound,baseline_complete_compound,changed_texts,missing,seconds
+B00,offline replay,-,"replay of run 1222Z, current code, no override",{},1190,1193,0,3,0.25,0/1,0/2,2,0,75,71/84,71/84,5,17,2.1
+T1,offline replay,H7,one NLI window per table row with its column headers,"{""nli_table_row_windows"": true}",1191,1193,1,3,0.625,0/1,1/2,2,0,75,72/84,71/84,8,17,17.2
+T2,offline replay,H7,bit patterns over table cells match claim anchors,"{""nli_anchor_bit_cells"": true}",1190,1193,0,3,0.25,0/1,0/2,2,0,75,71/84,71/84,5,17,2.1
+T12,offline replay,H7,table row windows and bit cells,"{""nli_table_row_windows"": true, ""nli_anchor_bit_cells"": true}",1191,1193,1,3,0.625,0/1,1/2,2,0,75,72/84,71/84,8,17,2.3

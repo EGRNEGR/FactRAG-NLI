@@ -1,0 +1,314 @@
+{
+ "experiment": "T1",
+ "hypothesis": "H7",
+ "text": "one NLI window per table row with its column headers",
+ "overrides": {
+  "nli_table_row_windows": true
+ },
+ "baseline": "run 20261104T1222Z_rtx3090_main, judge, logged",
+ "seconds": 17.2,
+ "missing": [
+  {
+   "id": "V3-XQFEN-031",
+   "role": "recovery"
+  },
+  {
+   "id": "V3-XQFEN-266",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFEN-267",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFEN-405",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFEN-448",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFEN-449",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-018",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-030",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-076",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-086",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-090",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-092",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-094",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-098",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-116",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-118",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-124",
+   "role": "think"
+  }
+ ],
+ "all": {
+  "correct": "91.1% (1191/1307)",
+  "correct_k": 1191,
+  "hallucination": "0.7% (2/269)",
+  "hallucination_k": 2,
+  "false_refusal": "7.2% (75/1038)",
+  "false_refusal_k": 75,
+  "selective_accuracy": "96.0% (924/963)",
+  "paired": {
+   "n": 1307,
+   "gained": 1,
+   "lost": 3,
+   "delta_pp": -0.1530221882172915,
+   "ci95_pp": [
+    -0.45906656465187456,
+    0.1530221882172915
+   ],
+   "mcnemar_p": 0.625
+  }
+ },
+ "v3": {
+  "correct": "91.4% (201/220)",
+  "correct_k": 201,
+  "hallucination": "2.2% (2/93)",
+  "hallucination_k": 2,
+  "false_refusal": "3.9% (5/127)",
+  "false_refusal_k": 5,
+  "selective_accuracy": "90.2% (110/122)",
+  "paired": {
+   "n": 220,
+   "gained": 1,
+   "lost": 0,
+   "delta_pp": 0.45454545454545453,
+   "ci95_pp": [
+    0.0,
+    1.3636363636363635
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "xquad-full": {
+  "correct": "91.1% (990/1087)",
+  "correct_k": 990,
+  "hallucination": "0.0% (0/176)",
+  "hallucination_k": 0,
+  "false_refusal": "7.7% (70/911)",
+  "false_refusal_k": 70,
+  "selective_accuracy": "96.8% (814/841)",
+  "paired": {
+   "n": 1087,
+   "gained": 0,
+   "lost": 3,
+   "delta_pp": -0.27598896044158233,
+   "ci95_pp": [
+    -0.6439742410303588,
+    0.0
+   ],
+   "mcnemar_p": 0.25
+  }
+ },
+ "dev": {
+  "correct": "92.5% (602/651)",
+  "correct_k": 602,
+  "hallucination": "0.7% (1/136)",
+  "hallucination_k": 1,
+  "false_refusal": "5.6% (29/515)",
+  "false_refusal_k": 29,
+  "selective_accuracy": "96.1% (467/486)",
+  "paired": {
+   "n": 651,
+   "gained": 0,
+   "lost": 1,
+   "delta_pp": -0.15360983102918588,
+   "ci95_pp": [
+    -0.4608294930875576,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "test": {
+  "correct": "89.8% (589/656)",
+  "correct_k": 589,
+  "hallucination": "0.8% (1/133)",
+  "hallucination_k": 1,
+  "false_refusal": "8.8% (46/523)",
+  "false_refusal_k": 46,
+  "selective_accuracy": "95.8% (457/477)",
+  "paired": {
+   "n": 656,
+   "gained": 1,
+   "lost": 2,
+   "delta_pp": -0.1524390243902439,
+   "ci95_pp": [
+    -0.6097560975609756,
+    0.3048780487804878
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "completeness": {
+  "variant": {
+   "compound_questions": 84,
+   "complete": 72,
+   "mean_fact_share": 0.9127
+  },
+  "baseline": {
+   "compound_questions": 84,
+   "complete": 71,
+   "mean_fact_share": 0.9167
+  }
+ },
+ "regressions": {
+  "lost": [
+   "V3-XQFEN-031",
+   "V3-XQFEN-065",
+   "V3-XQFEN-245"
+  ],
+  "new_hallucinations": []
+ },
+ "changed": [
+  {
+   "id": "V3-ADV-025",
+   "split": "test",
+   "baseline": {
+    "correct": true,
+    "published": "Нет, в SP 800-53 Rev. 5 идентификатор PT обозначает семейство PII Processing and Transparency [S3][S8].\nСемейство Physical and Environmental Protection обозначено идентификатором PE [S3][S8]."
+   },
+   "variant": {
+    "correct": true,
+    "path": "draft",
+    "missing": null,
+    "published": "Нет, в SP 800-53 Rev. 5 идентификатор PT обозначает семейство PII Processing and Transparency [S3].\nСемейство Physical and Environmental Protection обозначается идентификатором PE [S3]."
+   }
+  },
+  {
+   "id": "V3-TC-016",
+   "split": "test",
+   "baseline": {
+    "correct": false,
+    "published": "SP 800-63B рекомендует принимать в паролях символы Unicode [ISO/ISC 10646] [S4]."
+   },
+   "variant": {
+    "correct": false,
+    "path": "draft+think",
+    "missing": null,
+    "published": null
+   }
+  },
+  {
+   "id": "V3-MH-009",
+   "split": "dev",
+   "baseline": {
+    "correct": true,
+    "published": "Потоки, инициированные клиентом, имеют чётные идентификаторы (бит 0x01 установлен в 0), а потоки, инициированные сервером, имеют нечётные идентификаторы (бит 0x01 установлен в 1) [S1]."
+   },
+   "variant": {
+    "correct": true,
+    "path": "draft+think",
+    "missing": null,
+    "published": "Младшим битам 0x01 соответствует тип потока Server-Initiated, Bidirectional [S2].\nЭто отражает правило, что потоки, инициированные клиентом, имеют чётные идентификаторы, а потоки, инициированные сервером, имеют нечётные идентификаторы [S1]."
+   }
+  },
+  {
+   "id": "V3-TC-009",
+   "split": "test",
+   "baseline": {
+    "correct": false,
+    "published": "Диапазон значений для такого префикса составляет 0-4611686018427387903 [S3]."
+   },
+   "variant": {
+    "correct": false,
+    "path": "draft+think+recovery+recovery",
+    "missing": null,
+    "published": null
+   }
+  },
+  {
+   "id": "V3-TC-021",
+   "split": "test",
+   "baseline": {
+    "correct": false,
+    "published": "Для версии 7 битовый паттерн в битах 48–51 установлен как 0b0111 (7) [S2]."
+   },
+   "variant": {
+    "correct": true,
+    "path": "draft",
+    "missing": null,
+    "published": "Для версии 7 битовый паттерн в битах 48–51 установлен как 0b0111 (7) [S2].\nОписанием версии 7 в таблице IANA UUID Subtypes является \"Unix Time-based\" [S9]."
+   }
+  },
+  {
+   "id": "V3-XQFEN-031",
+   "split": "test",
+   "baseline": {
+    "correct": true,
+    "published": "Миллер забрал мяч у Ньютона [S1]."
+   },
+   "variant": {
+    "correct": false,
+    "path": "draft+repair+think+think_repair",
+    "missing": "recovery",
+    "published": null
+   }
+  },
+  {
+   "id": "V3-XQFEN-065",
+   "split": "test",
+   "baseline": {
+    "correct": true,
+    "published": "Гуру управляют своими послушниками [S1]."
+   },
+   "variant": {
+    "correct": false,
+    "path": "draft+think",
+    "missing": null,
+    "published": null
+   }
+  },
+  {
+   "id": "V3-XQFEN-245",
+   "split": "dev",
+   "baseline": {
+    "correct": true,
+    "published": "Примитивными челюстноротыми являются миноги и миксины [S1]."
+   },
+   "variant": {
+    "correct": false,
+    "path": "draft+think",
+    "missing": null,
+    "published": null
+   }
+  }
+ ]
+}

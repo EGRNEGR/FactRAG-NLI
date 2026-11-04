@@ -35,6 +35,8 @@ from grounding import (
     premise_header,
     premise_windows,
     strip_verdict_prefix,
+    table_bit_runs,
+    table_row_windows,
     verbatim_code_span,
 )
 from grounding import segment_claims as segment_claims  # re-export for existing importers
@@ -1096,10 +1098,14 @@ class NLIFactVerifier:
         return [model.predict(premise, hypothesis) for premise, hypothesis in pairs]
 
     def _variants(self, context: SourceContext) -> tuple[str, list[tuple[str, str]]]:
-        """The cleaned chunk and its scored (text, source text) variants, as in _evidence."""
+        """The cleaned chunk and its scored (text, source text) variants: sentence windows,
+        table row windows (nli_table_row_windows), and with a document title every window and
+        the chunk framed by "Title. Section." as well."""
         s = self.settings
         premise = self._premise(context)
         windows = premise_windows(premise, s.nli_window_sentences) if s.nli_window_scoring else []
+        if s.nli_table_row_windows:
+            windows = list(dict.fromkeys([*windows, *table_row_windows(context.text)]))
         header = (
             premise_header(context.document_title, context.section_path)
             if s.nli_premise_title
@@ -1257,20 +1263,11 @@ class NLIFactVerifier:
         supports the claim; otherwise the whole-chunk probabilities decide.
         """
         s = self.settings
-        premise = self._premise(context)
-        windows = premise_windows(premise, s.nli_window_sentences) if s.nli_window_scoring else []
         # With a document title, every window (and the chunk) is scored a second time framed by
         # "Title. Section." as an additional route: a claim naming its document can then be
         # entailed, while support found on the bare text is never lost. Anchors and verbatim
         # spans are always searched in the source text itself.
-        header = (
-            premise_header(context.document_title, context.section_path)
-            if s.nli_premise_title
-            else ""
-        )
-        variants = [(w, w) for w in windows]
-        if header:
-            variants += [(f"{header} {w}", w) for w in (*windows, premise)]
+        premise, variants = self._variants(context)
         if scores is None:
             raw_scores = (
                 self._predict_many(
@@ -1545,13 +1542,16 @@ class NLIFactVerifier:
         return bool(same) and anchors_present(missing, self._anchor_text(contexts, same))
 
     def _anchor_text(self, contexts: Mapping[str, SourceContext], keys: Sequence[str]) -> str:
-        """Text the anchors of a claim must occur in: the cited sources, with headings if set."""
+        """Text the anchors of a claim must occur in: the cited sources, with headings and
+        the bit patterns of their table rows (nli_anchor_bit_cells) if set."""
         parts: list[str] = []
         for key in keys:
             context = contexts[key]
             if self.settings.nli_anchor_headings:
                 parts.extend(context.section_path)
             parts.append(clean_premise(context.text))
+            if self.settings.nli_anchor_bit_cells:
+                parts.extend(table_bit_runs(context.text))
         return " ".join(parts)
 
     def _co_verify(

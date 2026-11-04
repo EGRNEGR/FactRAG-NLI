@@ -1,0 +1,270 @@
+{
+ "experiment": "B00",
+ "hypothesis": "-",
+ "text": "replay of run 1222Z, current code, no override",
+ "overrides": {},
+ "baseline": "run 20261104T1222Z_rtx3090_main, judge, logged",
+ "seconds": 2.1,
+ "missing": [
+  {
+   "id": "V3-XQFEN-031",
+   "role": "recovery"
+  },
+  {
+   "id": "V3-XQFEN-266",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFEN-267",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFEN-405",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFEN-448",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFEN-449",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-018",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-030",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-076",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-086",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-090",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-092",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-094",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-098",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-116",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-118",
+   "role": "think"
+  },
+  {
+   "id": "V3-XQFNA-124",
+   "role": "think"
+  }
+ ],
+ "all": {
+  "correct": "91.0% (1190/1307)",
+  "correct_k": 1190,
+  "hallucination": "0.7% (2/269)",
+  "hallucination_k": 2,
+  "false_refusal": "7.2% (75/1038)",
+  "false_refusal_k": 75,
+  "selective_accuracy": "95.8% (923/963)",
+  "paired": {
+   "n": 1307,
+   "gained": 0,
+   "lost": 3,
+   "delta_pp": -0.22953328232593725,
+   "ci95_pp": [
+    -0.5355776587605203,
+    0.0
+   ],
+   "mcnemar_p": 0.25
+  }
+ },
+ "v3": {
+  "correct": "90.9% (200/220)",
+  "correct_k": 200,
+  "hallucination": "2.2% (2/93)",
+  "hallucination_k": 2,
+  "false_refusal": "3.9% (5/127)",
+  "false_refusal_k": 5,
+  "selective_accuracy": "89.3% (109/122)",
+  "paired": {
+   "n": 220,
+   "gained": 0,
+   "lost": 0,
+   "delta_pp": 0.0,
+   "ci95_pp": [
+    0.0,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "xquad-full": {
+  "correct": "91.1% (990/1087)",
+  "correct_k": 990,
+  "hallucination": "0.0% (0/176)",
+  "hallucination_k": 0,
+  "false_refusal": "7.7% (70/911)",
+  "false_refusal_k": 70,
+  "selective_accuracy": "96.8% (814/841)",
+  "paired": {
+   "n": 1087,
+   "gained": 0,
+   "lost": 3,
+   "delta_pp": -0.27598896044158233,
+   "ci95_pp": [
+    -0.6439742410303588,
+    0.0
+   ],
+   "mcnemar_p": 0.25
+  }
+ },
+ "dev": {
+  "correct": "92.5% (602/651)",
+  "correct_k": 602,
+  "hallucination": "0.7% (1/136)",
+  "hallucination_k": 1,
+  "false_refusal": "5.6% (29/515)",
+  "false_refusal_k": 29,
+  "selective_accuracy": "96.1% (467/486)",
+  "paired": {
+   "n": 651,
+   "gained": 0,
+   "lost": 1,
+   "delta_pp": -0.15360983102918588,
+   "ci95_pp": [
+    -0.4608294930875576,
+    0.0
+   ],
+   "mcnemar_p": 1.0
+  }
+ },
+ "test": {
+  "correct": "89.6% (588/656)",
+  "correct_k": 588,
+  "hallucination": "0.8% (1/133)",
+  "hallucination_k": 1,
+  "false_refusal": "8.8% (46/523)",
+  "false_refusal_k": 46,
+  "selective_accuracy": "95.6% (456/477)",
+  "paired": {
+   "n": 656,
+   "gained": 0,
+   "lost": 2,
+   "delta_pp": -0.3048780487804878,
+   "ci95_pp": [
+    -0.7621951219512195,
+    0.0
+   ],
+   "mcnemar_p": 0.5
+  }
+ },
+ "completeness": {
+  "variant": {
+   "compound_questions": 84,
+   "complete": 71,
+   "mean_fact_share": 0.9067
+  },
+  "baseline": {
+   "compound_questions": 84,
+   "complete": 71,
+   "mean_fact_share": 0.9167
+  }
+ },
+ "regressions": {
+  "lost": [
+   "V3-XQFEN-031",
+   "V3-XQFEN-065",
+   "V3-XQFEN-245"
+  ],
+  "new_hallucinations": []
+ },
+ "changed": [
+  {
+   "id": "V3-TC-016",
+   "split": "test",
+   "baseline": {
+    "correct": false,
+    "published": "SP 800-63B рекомендует принимать в паролях символы Unicode [ISO/ISC 10646] [S4]."
+   },
+   "variant": {
+    "correct": false,
+    "path": "draft+think",
+    "missing": null,
+    "published": null
+   }
+  },
+  {
+   "id": "V3-TC-009",
+   "split": "test",
+   "baseline": {
+    "correct": false,
+    "published": "Диапазон значений для такого префикса составляет 0-4611686018427387903 [S3]."
+   },
+   "variant": {
+    "correct": false,
+    "path": "draft+think+recovery+recovery",
+    "missing": null,
+    "published": null
+   }
+  },
+  {
+   "id": "V3-XQFEN-031",
+   "split": "test",
+   "baseline": {
+    "correct": true,
+    "published": "Миллер забрал мяч у Ньютона [S1]."
+   },
+   "variant": {
+    "correct": false,
+    "path": "draft+repair+think+think_repair",
+    "missing": "recovery",
+    "published": null
+   }
+  },
+  {
+   "id": "V3-XQFEN-065",
+   "split": "test",
+   "baseline": {
+    "correct": true,
+    "published": "Гуру управляют своими послушниками [S1]."
+   },
+   "variant": {
+    "correct": false,
+    "path": "draft+think",
+    "missing": null,
+    "published": null
+   }
+  },
+  {
+   "id": "V3-XQFEN-245",
+   "split": "dev",
+   "baseline": {
+    "correct": true,
+    "published": "Примитивными челюстноротыми являются миноги и миксины [S1]."
+   },
+   "variant": {
+    "correct": false,
+    "path": "draft+think",
+    "missing": null,
+    "published": null
+   }
+  }
+ ]
+}
