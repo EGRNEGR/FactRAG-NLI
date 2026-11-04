@@ -26,7 +26,12 @@ def explicit_development_mode(
     monkeypatch.setenv("RAG_LLM_RECOVERY", "off")
     monkeypatch.setenv("RAG_LLM_THINK_ON_TRIM", "false")
     monkeypatch.setenv("RAG_MODEL_DEVICE", "auto")
-    for name in ("RAG_NLI_SECONDARY_MODEL_PATH", "RAG_NLI_JUDGE_PATH", "RAG_EMBEDDING_DEVICE"):
+    for name in (
+        "RAG_NLI_SECONDARY_MODEL_PATH",
+        "RAG_NLI_JUDGE_PATH",
+        "RAG_EMBEDDING_DEVICE",
+        "RAG_PARSER_VERSION",  # env.rtx3090.sh defaults to v2; tests choose their parser
+    ):
         monkeypatch.delenv(name, raising=False)
     for name in ("EMBEDDING", "RERANKER", "NLI", "LLM"):
         monkeypatch.setenv(f"RAG_{name}_MODEL_PATH", str(tmp_path / f"missing-{name}"))

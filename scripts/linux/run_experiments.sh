@@ -56,12 +56,14 @@ BASE_FLAGS="QUERY_TRANSLATION=off"
 STAGE_DIR=reports/optimization_4/live
 TAG=opt4
 COMBINED=""
+# The parser of the baseline: 1310Z (optimization_4) was indexed with v1.
+BASE_PARSER=v1
 case "$PLAN" in
   opt5)
     [[ -n "${BASELINE:-}" ]] ||
       { echo "PLAN=opt5 needs BASELINE=<run id of a PARSER=v2 PLAN=main run>" >&2; exit 2; }
     export OPT4_RUN="$PROJECT_ROOT/reports/runs/$BASELINE"
-    export PARSER=v2 RAG_PARSER_VERSION=v2
+    BASE_PARSER=v2
     EXPERIMENTS="${EXPERIMENTS:-D0,G2}"; POPULATIONS="E1 controls"
     FLAGS="RAG_NLI_ANCHOR_SCOPE=document"; BASE_FLAGS=""; COMBINED="nli_anchor_scope=document"
     STAGE_DIR=reports/optimization_5/live; TAG=opt5 ;;
@@ -77,6 +79,7 @@ case "$PLAN" in
     EXPERIMENTS=""; POPULATIONS="ids"; FLAGS="${FLAGS:-}" ;;
   *) echo "Unknown PLAN=$PLAN (quick | all | g3 | e2e | opt5)" >&2; exit 2 ;;
 esac
+export PARSER="$BASE_PARSER" RAG_PARSER_VERSION="$BASE_PARSER"
 export OPT4_RUN="${OPT4_RUN:-$PROJECT_ROOT/reports/runs/20261103T1310Z_rtx3090_main}"
 BASE_CONFIG="$OPT4_RUN/qwen38-27b-hybrid+bge-reranker-v2-m3+judge"
 [[ -d "$BASE_CONFIG/v3" && -d "$BASE_CONFIG/xquad-full" ]] ||

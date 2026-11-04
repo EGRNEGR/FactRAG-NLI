@@ -1,0 +1,107 @@
+{
+ "G2": {
+  "population": 58,
+  "replaced": 2,
+  "all": {
+   "correct": "75.9% (44/58)",
+   "correct_k": 44,
+   "hallucination": "0.0% (0/42)",
+   "hallucination_k": 0,
+   "false_refusal": "81.2% (13/16)",
+   "false_refusal_k": 13,
+   "selective_accuracy": "66.7% (2/3)",
+   "paired": {
+    "n": 58,
+    "gained": 2,
+    "lost": 0,
+    "delta_pp": 3.4482758620689653,
+    "ci95_pp": [
+     0.0,
+     8.620689655172415
+    ],
+    "mcnemar_p": 0.5
+   }
+  },
+  "dev": {
+   "correct": "84.0% (21/25)",
+   "correct_k": 21,
+   "hallucination": "0.0% (0/21)",
+   "hallucination_k": 0,
+   "false_refusal": "75.0% (3/4)",
+   "false_refusal_k": 3,
+   "selective_accuracy": "0.0% (0/1)",
+   "paired": {
+    "n": 25,
+    "gained": 0,
+    "lost": 0,
+    "delta_pp": 0.0,
+    "ci95_pp": [
+     0.0,
+     0.0
+    ],
+    "mcnemar_p": 1.0
+   }
+  },
+  "test": {
+   "correct": "69.7% (23/33)",
+   "correct_k": 23,
+   "hallucination": "0.0% (0/21)",
+   "hallucination_k": 0,
+   "false_refusal": "83.3% (10/12)",
+   "false_refusal_k": 10,
+   "selective_accuracy": "100.0% (2/2)",
+   "paired": {
+    "n": 33,
+    "gained": 2,
+    "lost": 0,
+    "delta_pp": 6.0606060606060606,
+    "ci95_pp": [
+     0.0,
+     15.151515151515152
+    ],
+    "mcnemar_p": 0.5
+   }
+  },
+  "completeness": {
+   "variant": {
+    "compound_questions": 4,
+    "complete": 2,
+    "mean_fact_share": 0.625
+   },
+   "baseline": {
+    "compound_questions": 4,
+    "complete": 0,
+    "mean_fact_share": 0.375
+   }
+  },
+  "regressions": {
+   "lost": [],
+   "new_hallucinations": []
+  },
+  "projected_all": {
+   "correct": "91.4% (1195/1307)",
+   "correct_k": 1195,
+   "hallucination": "0.7% (2/269)",
+   "hallucination_k": 2,
+   "false_refusal": "6.7% (70/1038)",
+   "false_refusal_k": 70,
+   "selective_accuracy": "95.9% (928/968)",
+   "paired": {
+    "n": 1307,
+    "gained": 2,
+    "lost": 0,
+    "delta_pp": 0.1530221882172915,
+    "ci95_pp": [
+     0.0,
+     0.3825554705432288
+    ],
+    "mcnemar_p": 0.5
+   }
+  },
+  "experiment": "G2",
+  "hypothesis": "H5",
+  "text": "neighbour chunk after a chunk cut mid-sentence (partial answer or LLM refusal)",
+  "minutes": 4.4,
+  "errors": 0
+ }
+}

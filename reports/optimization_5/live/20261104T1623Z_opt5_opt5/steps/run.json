@@ -1,0 +1,10 @@
+{
+ "baseline": "/home/artem/Downloads/FactRAG-NLI-3090/FactRAG-NLI-rtx3090-linux/reports/runs/20261104T1222Z_rtx3090_main",
+ "experiments": [
+  "D0",
+  "G2"
+ ],
+ "ids": null,
+ "settings": {},
+ "started_utc": "20261104T1631Z"
+}

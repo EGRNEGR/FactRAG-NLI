@@ -1,0 +1,475 @@
+{
+ "cases": 2,
+ "errors": 0,
+ "vanilla": {
+  "correct": {
+   "k": 0,
+   "n": 2,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.6576280471103807
+   ]
+  },
+  "hallucination": {
+   "k": 0,
+   "n": 0,
+   "rate": null,
+   "wilson95": null
+  },
+  "false_refusal_on_answerable": {
+   "k": 0,
+   "n": 2,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.6576280471103807
+   ]
+  },
+  "key_fact_accuracy_on_answerable": {
+   "k": 0,
+   "n": 2,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.6576280471103807
+   ]
+  },
+  "by_category": {
+   "single_hop": {
+    "correct": {
+     "k": 0,
+     "n": 2,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.6576280471103807
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 0,
+     "n": 2,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.6576280471103807
+     ]
+    }
+   }
+  },
+  "by_language": {
+   "en": {
+    "k": 0,
+    "n": 1,
+    "rate": 0.0,
+    "wilson95": [
+     0.0,
+     0.7934567085261071
+    ]
+   },
+   "ru": {
+    "k": 0,
+    "n": 1,
+    "rate": 0.0,
+    "wilson95": [
+     0.0,
+     0.7934567085261071
+    ]
+   }
+  }
+ },
+ "factrag": {
+  "correct": {
+   "k": 0,
+   "n": 2,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.6576280471103807
+   ]
+  },
+  "hallucination": {
+   "k": 0,
+   "n": 0,
+   "rate": null,
+   "wilson95": null
+  },
+  "false_refusal_on_answerable": {
+   "k": 1,
+   "n": 2,
+   "rate": 0.5,
+   "wilson95": [
+    0.09452865480086614,
+    0.9054713451991339
+   ]
+  },
+  "key_fact_accuracy_on_answerable": {
+   "k": 0,
+   "n": 2,
+   "rate": 0.0,
+   "wilson95": [
+    0.0,
+    0.6576280471103807
+   ]
+  },
+  "by_category": {
+   "single_hop": {
+    "correct": {
+     "k": 0,
+     "n": 2,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.6576280471103807
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    },
+    "refused": {
+     "k": 1,
+     "n": 2,
+     "rate": 0.5,
+     "wilson95": [
+      0.09452865480086614,
+      0.9054713451991339
+     ]
+    }
+   }
+  },
+  "by_language": {
+   "en": {
+    "k": 0,
+    "n": 1,
+    "rate": 0.0,
+    "wilson95": [
+     0.0,
+     0.7934567085261071
+    ]
+   },
+   "ru": {
+    "k": 0,
+    "n": 1,
+    "rate": 0.0,
+    "wilson95": [
+     0.0,
+     0.7934567085261071
+    ]
+   }
+  }
+ },
+ "paired_correctness": {
+  "vanilla_only_correct": 0,
+  "factrag_only_correct": 0,
+  "mcnemar_exact_p": 1.0,
+  "vanilla_only_correct_by_cause": {}
+ },
+ "hallucination_relative_reduction": null,
+ "by_split": {
+  "dev": {
+   "vanilla": {
+    "correct": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    }
+   },
+   "factrag": {
+    "correct": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 1,
+     "n": 1,
+     "rate": 1.0,
+     "wilson95": [
+      0.20654329147389294,
+      1.0
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    }
+   }
+  },
+  "test": {
+   "vanilla": {
+    "correct": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    }
+   },
+   "factrag": {
+    "correct": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    },
+    "false_refusal_on_answerable": {
+     "k": 0,
+     "n": 1,
+     "rate": 0.0,
+     "wilson95": [
+      0.0,
+      0.7934567085261071
+     ]
+    },
+    "hallucination": {
+     "k": 0,
+     "n": 0,
+     "rate": null,
+     "wilson95": null
+    }
+   }
+  }
+ },
+ "hallucination_ids": {
+  "vanilla_only": [],
+  "factrag_only": [],
+  "both": []
+ },
+ "claims": {
+  "total": 2,
+  "by_status": {
+   "verified": 1,
+   "unverified": 1
+  },
+  "by_status_reason": {
+   "verified:none": 1,
+   "unverified:anchor_not_in_source": 1
+  },
+  "by_grade": {
+   "supported": 1,
+   "partially_supported": 1
+  },
+  "pairs_exceeding_nli_context": 0,
+  "facts": 2,
+  "faithfulness_micro": 0.5,
+  "inherited_citations": 0,
+  "verified_by_support": {
+   "judge": 1
+  }
+ },
+ "refusal_reasons": {
+  "nli_verification_failed": 1
+ },
+ "repair": {
+  "attempted": 2,
+  "published": 1,
+  "factrag_correct": 0,
+  "factrag_hallucinations": 0
+ },
+ "thinking_pass": {
+  "attempted": 2,
+  "published": 1,
+  "factrag_correct": 0,
+  "factrag_hallucinations": 0
+ },
+ "recovery_pass": {
+  "attempted": 0,
+  "answerable": 0,
+  "answerable_correct": 0,
+  "published": 0,
+  "factrag_correct": 0,
+  "factrag_hallucinations": 0
+ },
+ "translation_pass": {
+  "attempted": 0,
+  "answerable": 0,
+  "answerable_correct": 0,
+  "published": 0,
+  "factrag_hallucinations": 0
+ },
+ "latency_ms": {
+  "all_queries": {
+   "search_ms": {
+    "n": 1,
+    "mean": 36.373759154230356,
+    "p50": 36.373759154230356,
+    "p95": 36.373759154230356,
+    "min": 36.373759154230356,
+    "max": 36.373759154230356
+   },
+   "rerank_ms": {
+    "n": 1,
+    "mean": 206.32218779064715,
+    "p50": 206.32218779064715,
+    "p95": 206.32218779064715,
+    "min": 206.32218779064715,
+    "max": 206.32218779064715
+   },
+   "generation_ms": {
+    "n": 1,
+    "mean": 39770.22755728103,
+    "p50": 39770.22755728103,
+    "p95": 39770.22755728103,
+    "min": 39770.22755728103,
+    "max": 39770.22755728103
+   },
+   "nli_ms": {
+    "n": 1,
+    "mean": 705.1406549289823,
+    "p50": 705.1406549289823,
+    "p95": 705.1406549289823,
+    "min": 705.1406549289823,
+    "max": 705.1406549289823
+   },
+   "total_ms": {
+    "n": 1,
+    "mean": 40718.475049128756,
+    "p50": 40718.475049128756,
+    "p95": 40718.475049128756,
+    "min": 40718.475049128756,
+    "max": 40718.475049128756
+   },
+   "llm_ttft_ms": {
+    "n": 0,
+    "mean": null,
+    "p50": null,
+    "p95": null,
+    "min": null,
+    "max": null
+   }
+  },
+  "generated_queries": {
+   "search_ms": {
+    "n": 1,
+    "mean": 36.373759154230356,
+    "p50": 36.373759154230356,
+    "p95": 36.373759154230356,
+    "min": 36.373759154230356,
+    "max": 36.373759154230356
+   },
+   "rerank_ms": {
+    "n": 1,
+    "mean": 206.32218779064715,
+    "p50": 206.32218779064715,
+    "p95": 206.32218779064715,
+    "min": 206.32218779064715,
+    "max": 206.32218779064715
+   },
+   "generation_ms": {
+    "n": 1,
+    "mean": 39770.22755728103,
+    "p50": 39770.22755728103,
+    "p95": 39770.22755728103,
+    "min": 39770.22755728103,
+    "max": 39770.22755728103
+   },
+   "nli_ms": {
+    "n": 1,
+    "mean": 705.1406549289823,
+    "p50": 705.1406549289823,
+    "p95": 705.1406549289823,
+    "min": 705.1406549289823,
+    "max": 705.1406549289823
+   },
+   "total_ms": {
+    "n": 1,
+    "mean": 40718.475049128756,
+    "p50": 40718.475049128756,
+    "p95": 40718.475049128756,
+    "min": 40718.475049128756,
+    "max": 40718.475049128756
+   },
+   "llm_ttft_ms": {
+    "n": 0,
+    "mean": null,
+    "p50": null,
+    "p95": null,
+    "min": null,
+    "max": null
+   }
+  },
+  "model_init_ms": [
+   2125.057206954807
+  ]
+ },
+ "gold_in_sources": {
+  "k": 2,
+  "n": 2,
+  "rate": 1.0,
+  "wilson95": [
+   0.34237195288961925,
+   1.0
+  ]
+ },
+ "resources": {
+  "samples": 74,
+  "gpu_used_mib": {
+   "peak": 20772.0,
+   "mean": 20565.932432432433
+  },
+  "process_rss_mib": {
+   "peak": 4283.48046875,
+   "mean": 4065.8256440033783
+  },
+  "llama_server_rss_mib": {
+   "peak": 1819.05078125,
+   "mean": 1739.4399809966217
+  },
+  "torch_max_allocated_mib": 2937.3935546875,
+  "torch_max_reserved_mib": 2948.0
+ }
+}
