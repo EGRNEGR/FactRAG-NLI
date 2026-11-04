@@ -7,7 +7,12 @@ Checks (all errors are collected and reported in one pass):
 * absence_terms of refusal cases match nowhere in the indexed corpus;
 * no near-duplicates within v3 or against earlier datasets (token Jaccard >= 0.8).
 
-Usage:  python scripts/build_eval_dataset_v3.py [--check]
+Parser v2 (optimization_5, --parser v2) writes its own derived HTML (derived_v2/), parse
+cache and dataset (data/eval_dataset_v3_parser_v2.json) and binds quotes ignoring table
+markup: the drafts quote the v1 rendering of a table ("**CA**|||Assessment ..."), v2 renders
+the same cells as "| CA | Assessment ... |". Questions, answers and quotes stay as drafted.
+
+Usage:  python scripts/build_eval_dataset_v3.py [--check] [--parser v1|v2]
 """
 
 from __future__ import annotations
@@ -36,14 +41,19 @@ from eval_dataset import (  # noqa: E402
     load_drafts,
     normalize,
 )
-from scripts.download_quality_corpus import TextExtractor  # noqa: E402
+from scripts.download_quality_corpus import MarkdownExtractor, TextExtractor  # noqa: E402
 from settings import RAGSettings  # noqa: E402
 
 CORPUS = ROOT / "data" / "test_docs"
 DERIVED = CORPUS / "derived"
+DERIVED_V2 = CORPUS / "derived_v2"
 DRAFTS = ROOT / "data" / "eval_v3" / "drafts"
 OUTPUT = ROOT / "data" / "eval_dataset_v3.json"
 CACHE = ROOT / ".artifacts" / "eval_v3_parse_cache"
+OUTPUT_V2 = ROOT / "data" / "eval_dataset_v3_parser_v2.json"
+CACHE_V2 = ROOT / ".artifacts" / "eval_v3_parse_cache_parser_v2"
+_TABLE_MARKUP = re.compile(r"[|*]+")
+_CHUNK_HEADER = re.compile(r"^Документ:[^\n]*\nРаздел:[^\n]*\n")
 CHUNKING = {"chunk_target_tokens": 320, "chunk_max_tokens": 384, "chunk_overlap_tokens": 50}
 PRIOR = (
     ("data/golden_dataset.json", "examples"),
@@ -59,14 +69,15 @@ def sha256(path: Path) -> str:
         return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
-def derive_html() -> dict[str, str]:
-    """Deterministic HTML -> Markdown conversion (same extractor as the golden corpus)."""
-    DERIVED.mkdir(exist_ok=True)
+def derive_html(version: str = "v1") -> dict[str, str]:
+    """Deterministic HTML -> Markdown conversion (v1: the extractor of the golden corpus)."""
+    folder = DERIVED_V2 if version == "v2" else DERIVED
+    folder.mkdir(exist_ok=True)
     mapping: dict[str, str] = {}
     for html in sorted(CORPUS.glob("*.html")):
-        extractor = TextExtractor()
+        extractor = MarkdownExtractor() if version == "v2" else TextExtractor()
         extractor.feed(html.read_bytes().decode("utf-8-sig"))
-        target = DERIVED / f"{html.stem}.md"
+        target = folder / f"{html.stem}.md"
         text = extractor.text()
         if not target.exists() or target.read_text(encoding="utf-8") != text:
             target.write_text(text, encoding="utf-8", newline="\n")
@@ -82,9 +93,9 @@ def corpus_files(mapping: dict[str, str]) -> list[str]:
 
 
 def parse_all(
-    files: Sequence[str], corpus: Path = CORPUS, cache: Path = CACHE
+    files: Sequence[str], corpus: Path = CORPUS, cache: Path = CACHE, parser_version: str = "v1"
 ) -> dict[str, dict[str, Any]]:
-    settings = RAGSettings().model_copy(update=CHUNKING)
+    settings = RAGSettings().model_copy(update={**CHUNKING, "parser_version": parser_version})
     parser: DocumentParser | None = None
     cache.mkdir(parents=True, exist_ok=True)
     tokenizer = settings.embedding_model_path.name
@@ -92,9 +103,10 @@ def parse_all(
     for name in files:
         path = corpus / name
         digest = sha256(path)
-        key = hashlib.sha256(
-            json.dumps([digest, CHUNKING, tokenizer], sort_keys=True).encode()
-        ).hexdigest()[:20]
+        identity: list[Any] = [digest, CHUNKING, tokenizer]
+        if parser_version != "v1":  # v1 keeps the cache keys of every earlier run
+            identity.append(parser_version)
+        key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:20]
         cached = cache / f"{key}.json"
         if cached.exists():
             parsed[name] = json.loads(cached.read_text(encoding="utf-8"))
@@ -130,19 +142,69 @@ def prior_questions() -> list[str]:
     return questions
 
 
+def v2_documents(drafts: list[DraftCase]) -> list[DraftCase]:
+    """Parser v2 reads HTML through derived_v2/: the same question, the v2 rendering."""
+    prefix = DERIVED.relative_to(CORPUS).as_posix() + "/"
+    target = DERIVED_V2.relative_to(CORPUS).as_posix() + "/"
+    return [
+        d.model_copy(update={"document": target + d.document[len(prefix) :]})
+        if d.document.startswith(prefix)
+        else d
+        for d in drafts
+    ]
+
+
+def without_table_markup(text: str) -> str:
+    """Normalized text without cell separators and bold markers (parser v2 binding)."""
+    return " ".join(_TABLE_MARKUP.sub(" ", normalize(text)).split())
+
+
+def merge_overlap(left: str, right: str) -> str:
+    """Two consecutive chunk bodies as one text, the repeated overlap dropped."""
+    for size in range(min(len(left), len(right)), 0, -1):
+        if left.endswith(right[:size]):
+            return left + right[size:]
+    return f"{left} {right}"
+
+
 def bind(
-    drafts: list[DraftCase], parsed: dict[str, dict[str, Any]]
+    drafts: list[DraftCase],
+    parsed: dict[str, dict[str, Any]],
+    *,
+    ignore_table_markup: bool = False,
+    chunk_runs: bool = False,
+    warnings: list[str] | None = None,
 ) -> tuple[list[EvalCase], list[str]]:
+    """chunk_runs (parser v2): a quote across a chunk boundary binds to the run of consecutive
+    chunks that contains it, and multi_hop evidence in one chunk is a warning, not an error -
+    the chunking changed, the question did not."""
     errors: list[str] = []
+    norm = without_table_markup if ignore_table_markup else normalize
     norm_chunks = {
-        name: [(c["chunk_id"], normalize(c["text"])) for c in rec["chunks"]]
+        name: [(c["chunk_id"], norm(c["text"])) for c in rec["chunks"]]
         for name, rec in parsed.items()
     }
     corpus_text = "\n".join(text for chunks in norm_chunks.values() for _, text in chunks)
+    bodies = {
+        name: [(c["chunk_id"], norm(_CHUNK_HEADER.sub("", c["text"], count=1))) for c in rec["chunks"]]
+        for name, rec in parsed.items()
+    }
 
     def find(name: str, quote: str) -> list[str]:
-        needle = normalize(quote)
-        return [cid for cid, text in norm_chunks[name] if needle in text]
+        needle = norm(quote)
+        ids = [cid for cid, text in norm_chunks[name] if needle in text]
+        if ids or not chunk_runs:
+            return ids
+        chunks = bodies[name]
+        for width in (2, 3):
+            for start in range(len(chunks) - width + 1):
+                run = chunks[start : start + width]
+                text = run[0][1]
+                for _, following in run[1:]:
+                    text = merge_overlap(text, following)
+                if needle in text:
+                    return [cid for cid, _ in run]
+        return []
 
     cases: list[EvalCase] = []
     for draft in drafts:
@@ -162,7 +224,11 @@ def bind(
         if draft.category == "multi_hop" and len(evidence) == len(draft.quotes):
             sets = [set(e.chunk_ids) for e in evidence]
             if all(a & b for i, a in enumerate(sets) for b in sets[i + 1 :]):
-                errors.append(f"{draft.id}: multi_hop evidence lies in one chunk")
+                message = f"{draft.id}: multi_hop evidence lies in one chunk"
+                if chunk_runs and warnings is not None:
+                    warnings.append(message)
+                else:
+                    errors.append(message)
         for term in draft.absence_terms:
             if re.search(term, corpus_text, flags=re.I):
                 errors.append(f"{draft.id}: absence term occurs in corpus: {term!r}")
@@ -229,25 +295,21 @@ def statistics(cases: list[EvalCase]) -> dict[str, Any]:
     }
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    cli = argparse.ArgumentParser(description=__doc__)
-    cli.add_argument("--check", action="store_true", help="Validate only, do not write output")
-    args = cli.parse_args(argv)
-    mapping = derive_html()
-    files = corpus_files(mapping)
+def build(
+    parser_version: str, parsed: dict[str, dict[str, Any]], files: Sequence[str], mapping: dict[str, str]
+) -> tuple[EvalDatasetV3 | None, list[str], list[str]]:
+    """Bind the drafts to parsed chunks: (dataset or None on errors, errors, warnings)."""
+    v2 = parser_version == "v2"
     drafts = load_drafts(DRAFTS)
-    parsed = parse_all(files)
-    cases, errors = bind(drafts, parsed)
+    if v2:
+        drafts = v2_documents(drafts)
+    warnings: list[str] = []
+    cases, errors = bind(
+        drafts, parsed, ignore_table_markup=v2, chunk_runs=v2, warnings=warnings
+    )
     errors += duplicates(drafts)
     if errors:
-        print(f"{len(errors)} problem(s):", file=sys.stderr)
-        for error in errors:
-            print(f"  - {error}", file=sys.stderr)
-        return 1
-    stats = statistics(cases)
-    print(json.dumps(stats, ensure_ascii=False, indent=1))
-    if args.check:
-        return 0
+        return None, errors, warnings
     dataset = EvalDatasetV3(
         description=(
             "Stratified FactRAG-NLI evaluation set v3: single/multi-hop, tabular & code, "
@@ -255,7 +317,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             "AI-authored drafts bound to production chunks; human review pending."
         ),
         corpus_root="data/test_docs",
-        chunking={**CHUNKING, "tokenizer": "models/bge-m3 (BAAI/bge-m3)"},
+        chunking={
+            **CHUNKING,
+            "tokenizer": "models/bge-m3 (BAAI/bge-m3)",
+            **({"parser_version": "v2"} if v2 else {}),
+        },
         documents=[
             CorpusEntry(
                 path=name,
@@ -267,10 +333,34 @@ def main(argv: Sequence[str] | None = None) -> int:
             for name in files
         ],
         cases=cases,
-        stats=stats,
+        stats=statistics(cases),
     )
-    OUTPUT.write_text(dataset.model_dump_json(indent=1) + "\n", encoding="utf-8", newline="\n")
-    print(f"Wrote {OUTPUT.relative_to(ROOT)} ({len(cases)} cases)", file=sys.stderr)
+    return dataset, errors, warnings
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    cli = argparse.ArgumentParser(description=__doc__)
+    cli.add_argument("--check", action="store_true", help="Validate only, do not write output")
+    cli.add_argument("--parser", choices=("v1", "v2"), default="v1", help="Document parser")
+    args = cli.parse_args(argv)
+    v2 = args.parser == "v2"
+    mapping = derive_html(args.parser)
+    files = corpus_files(mapping)
+    parsed = parse_all(files, cache=CACHE_V2 if v2 else CACHE, parser_version=args.parser)
+    dataset, errors, warnings = build(args.parser, parsed, files, mapping)
+    for warning in warnings:
+        print(f"  warning: {warning}", file=sys.stderr)
+    if dataset is None:
+        print(f"{len(errors)} problem(s):", file=sys.stderr)
+        for error in errors:
+            print(f"  - {error}", file=sys.stderr)
+        return 1
+    print(json.dumps(dataset.stats, ensure_ascii=False, indent=1))
+    if args.check:
+        return 0
+    output = OUTPUT_V2 if v2 else OUTPUT
+    output.write_text(dataset.model_dump_json(indent=1) + "\n", encoding="utf-8", newline="\n")
+    print(f"Wrote {output.relative_to(ROOT)} ({len(dataset.cases)} cases)", file=sys.stderr)
     return 0
 
 
