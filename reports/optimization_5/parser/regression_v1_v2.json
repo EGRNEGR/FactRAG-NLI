@@ -1,0 +1,276 @@
+{
+ "xquad-full": {
+  "documents": 40,
+  "identical": 40,
+  "chunks_v1": 194,
+  "chunks_v2": 194,
+  "files": {
+   "super_bowl_50.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "normans.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "nikola_tesla.md": {
+    "v1_chunks": 3,
+    "v2_chunks": 3,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "computational_complexity_theory.md": {
+    "v1_chunks": 4,
+    "v2_chunks": 4,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "teacher.md": {
+    "v1_chunks": 2,
+    "v2_chunks": 2,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "victoria_australia.md": {
+    "v1_chunks": 4,
+    "v2_chunks": 4,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "huguenot.md": {
+    "v1_chunks": 6,
+    "v2_chunks": 6,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "steam_engine.md": {
+    "v1_chunks": 4,
+    "v2_chunks": 4,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "oxygen.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "1973_oil_crisis.md": {
+    "v1_chunks": 4,
+    "v2_chunks": 4,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "amazon_rainforest.md": {
+    "v1_chunks": 4,
+    "v2_chunks": 4,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "fresno_california.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "packet_switching.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "black_death.md": {
+    "v1_chunks": 7,
+    "v2_chunks": 7,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "geology.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "newcastle_upon_tyne.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "victoria_and_albert_museum.md": {
+    "v1_chunks": 6,
+    "v2_chunks": 6,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "american_broadcasting_company.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "genghis_khan.md": {
+    "v1_chunks": 6,
+    "v2_chunks": 6,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "pharmacy.md": {
+    "v1_chunks": 6,
+    "v2_chunks": 6,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "immune_system.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "civil_disobedience.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "construction.md": {
+    "v1_chunks": 4,
+    "v2_chunks": 4,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "private_school.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "harvard_university.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "jacksonville_florida.md": {
+    "v1_chunks": 6,
+    "v2_chunks": 6,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "economic_inequality.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "doctor_who.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "university_of_chicago.md": {
+    "v1_chunks": 6,
+    "v2_chunks": 6,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "yuan_dynasty.md": {
+    "v1_chunks": 7,
+    "v2_chunks": 7,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "kenya.md": {
+    "v1_chunks": 3,
+    "v2_chunks": 3,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "intergovernmental_panel_on_climate_change.md": {
+    "v1_chunks": 6,
+    "v2_chunks": 6,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "chloroplast.md": {
+    "v1_chunks": 4,
+    "v2_chunks": 4,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "rhine.md": {
+    "v1_chunks": 4,
+    "v2_chunks": 4,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "scottish_parliament.md": {
+    "v1_chunks": 3,
+    "v2_chunks": 3,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "islamism.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "imperialism.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "united_methodist_church.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "french_and_indian_war.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   },
+   "force.md": {
+    "v1_chunks": 5,
+    "v2_chunks": 5,
+    "identical": true,
+    "same_text_different_sections": false
+   }
+  }
+ },
+ "golden": {
+  "documents": 3,
+  "identical": 0,
+  "chunks_v1": 1674,
+  "chunks_v2": 985,
+  "files": {
+   "nist-800-63b.md": {
+    "v1_chunks": 338,
+    "v2_chunks": 337,
+    "identical": false,
+    "same_text_different_sections": false
+   },
+   "postgresql16-ha.md": {
+    "v1_chunks": 26,
+    "v2_chunks": 9,
+    "identical": false,
+    "same_text_different_sections": false
+   },
+   "rfc9110.txt": {
+    "v1_chunks": 1310,
+    "v2_chunks": 639,
+    "identical": false,
+    "same_text_different_sections": false
+   }
+  }
+ }
+}

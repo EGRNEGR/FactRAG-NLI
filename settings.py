@@ -304,6 +304,11 @@ class RAGSettings(BaseSettings):
     chunk_target_tokens: int = Field(default=420, ge=300, le=600)
     chunk_max_tokens: int = Field(default=600, ge=300, le=600)
     chunk_overlap_tokens: int = Field(default=50, ge=0)
+    # Document parser (document_parser.ParserVersion): v1 = every run up to optimization_4;
+    # v2 (optimization_5) = English table captions, RFC grid tables, PDF tables without empty
+    # layout columns, caption in every table chunk, no headings from wrapped sentences.
+    # Another version means another index: chunk ids change.
+    parser_version: Literal["v1", "v2"] = "v1"
     ingestion_target_tokens: int = Field(default=650, ge=500, le=800)
     ingestion_max_tokens: int = Field(default=800, ge=500, le=800)
     ingestion_overlap_tokens: int = Field(default=75, ge=50, le=100)

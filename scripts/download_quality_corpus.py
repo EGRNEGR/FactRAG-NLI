@@ -52,6 +52,197 @@ class TextExtractor(HTMLParser):
         return re.sub(r"\n\s*\n", "\n\n", value).strip() + "\n"
 
 
+_HIDDEN = {"script", "style", "nav", "header", "footer"}
+_HEADINGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
+
+
+def _flat(parts: list[str]) -> str:
+    return " ".join("".join(parts).split())
+
+
+class MarkdownExtractor(HTMLParser):
+    """HTML -> Markdown for parser v2 (optimization_5): one-line headings and pipe tables.
+
+    TextExtractor (v1) writes the heading text on the line after "#" and every table cell on
+    a line of its own, so the parser sees neither the heading nor a table row. Here a heading
+    is "## Title" and a table is a Markdown table, one line per row: colspan repeats a cell
+    to the right, rowspan down; leading header rows (thead or th only) merge into one
+    ("Group / Column"); a nested table becomes text of its outer cell.
+    """
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.parts: list[str] = []
+        self.hidden = 0
+        self.heading: tuple[int, list[str]] | None = None
+        self.depth = 0
+        self.rows: list[dict[str, object]] = []
+        self.row: dict[str, object] | None = None
+        self.cell: dict[str, object] | None = None
+        self.caption: list[str] | None = None
+        self.in_head = False
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag in _HIDDEN:
+            self.hidden += 1
+        if self.hidden:
+            return
+        if tag == "table":
+            self.depth += 1
+            if self.depth == 1:
+                self.rows, self.row, self.cell, self.caption = [], None, None, []
+                self.in_head = False
+                return
+        if self.depth > 1 or (self.depth == 1 and self.cell is not None):
+            if tag in {"p", "div", "li", "br", "tr", "td", "th"} and self.cell is not None:
+                self._cell_text().append(" ")
+            if self.depth > 1 or tag not in {"td", "th", "tr"}:
+                return
+        if self.depth == 1:
+            if tag == "thead":
+                self.in_head = True
+            elif tag in {"tbody", "tfoot"}:
+                self.in_head = False
+            elif tag == "tr":
+                self._end_row()
+                self.row = {"cells": [], "head": self.in_head}
+            elif tag in {"td", "th"}:
+                if self.row is None:
+                    self.row = {"cells": [], "head": self.in_head}
+                values = dict(attrs)
+                self.cell = {
+                    "text": [],
+                    "th": tag == "th",
+                    "colspan": _span(values.get("colspan")),
+                    "rowspan": _span(values.get("rowspan")),
+                }
+                self._row_cells().append(self.cell)
+            return
+        if tag in _HEADINGS:
+            self.heading = (int(tag[1]), [])
+        elif tag in {"p", "div", "li", "tr", "br", "section"}:
+            self.parts.append("\n\n")
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in _HIDDEN:
+            self.hidden = max(0, self.hidden - 1)
+            return
+        if self.hidden:
+            return
+        if tag == "table" and self.depth:
+            self.depth -= 1
+            if self.depth == 0:
+                self._end_row()
+                caption = _flat(self.caption or [])
+                table = _render_table(self.rows)
+                if table:
+                    self.parts.append("\n\n" + (caption + "\n\n" if caption else "") + table + "\n\n")
+                self.rows, self.row, self.cell, self.caption = [], None, None, None
+            return
+        if self.depth == 1:
+            if tag in {"td", "th"}:
+                self.cell = None
+            elif tag == "tr":
+                self._end_row()
+            return
+        if self.depth:
+            return
+        if tag in _HEADINGS and self.heading is not None:
+            level, buffer = self.heading
+            self.heading = None
+            text = _flat(buffer)
+            if text:
+                self.parts.append("\n\n" + "#" * level + " " + text + "\n\n")
+        elif tag in {"p", "div", "li", "tr"}:
+            self.parts.append("\n\n")
+
+    def handle_data(self, data: str) -> None:
+        if self.hidden:
+            return
+        if self.depth:
+            if self.cell is not None:
+                self._cell_text().append(data)
+            elif self.caption is not None and self.depth == 1:
+                self.caption.append(data)
+        elif self.heading is not None:
+            self.heading[1].append(data)
+        else:
+            self.parts.append(data)
+
+    def _cell_text(self) -> list[str]:
+        assert self.cell is not None
+        text = self.cell["text"]
+        assert isinstance(text, list)
+        return text
+
+    def _row_cells(self) -> list[dict[str, object]]:
+        assert self.row is not None
+        cells = self.row["cells"]
+        assert isinstance(cells, list)
+        return cells
+
+    def _end_row(self) -> None:
+        if self.row is not None and self._row_cells():
+            self.rows.append(self.row)
+        self.row, self.cell = None, None
+
+    def text(self) -> str:
+        value = re.sub(r"[ \t]+", " ", "".join(self.parts))
+        return re.sub(r"\n\s*\n", "\n\n", value).strip() + "\n"
+
+
+def _span(value: str | None) -> int:
+    return max(1, min(int(value), 50)) if value and value.strip().isdigit() else 1
+
+
+def _render_table(rows: list[dict[str, object]]) -> str:
+    grid: list[list[str]] = []
+    heads: list[bool] = []
+    pending: dict[int, tuple[str, int]] = {}  # column -> (text, rows still covered)
+
+    def carry(column: int, out: list[str]) -> None:
+        text, left = pending.pop(column)
+        out.append(text)
+        if left > 1:
+            pending[column] = (text, left - 1)
+
+    for row in rows:
+        cells = row["cells"]
+        assert isinstance(cells, list)
+        out: list[str] = []
+        column = 0
+        for cell in cells:
+            while column in pending:
+                carry(column, out)
+                column += 1
+            text = _flat(cell["text"]).replace("|", "&#124;")
+            for _ in range(cell["colspan"]):
+                out.append(text)
+                if cell["rowspan"] > 1:
+                    pending[column] = (text, cell["rowspan"] - 1)
+                column += 1
+        while pending and column <= max(pending):
+            if column in pending:
+                carry(column, out)
+            else:
+                out.append("")
+            column += 1
+        if any(out):
+            grid.append(out)
+            heads.append(bool(row["head"]) or all(cell["th"] for cell in cells))
+    if not grid:
+        return ""
+    header_rows = next((i for i, head in enumerate(heads) if not head), len(heads)) or 1
+    width = max(len(r) for r in grid)
+    grid = [r + [""] * (width - len(r)) for r in grid]
+    header = [
+        " / ".join(dict.fromkeys(r[c] for r in grid[:header_rows] if r[c])) for c in range(width)
+    ]
+    lines = ["| " + " | ".join(header) + " |", "| " + " | ".join(["---"] * width) + " |"]
+    lines.extend("| " + " | ".join(r) + " |" for r in grid[header_rows:])
+    return "\n".join(lines)
+
+
 def download(output: Path) -> None:
     raw = output / "raw"
     corpus = output / "documents"

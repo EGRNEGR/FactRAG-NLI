@@ -1,0 +1,39 @@
+{
+ "reference_cases": 220,
+ "v1": {
+  "cases": 220,
+  "errors": [],
+  "identical_to_dataset": 220
+ },
+ "v1_table_insensitive": {
+  "cases": 220,
+  "errors": [],
+  "same_gold_as_v1": 220,
+  "changed": []
+ },
+ "v2": {
+  "cases": 212,
+  "errors": [
+   "V3-MH-023: quote not found: 'Due to the potential for denial of service, automatic lockouts initiated by systems are us'",
+   "V3-MH-024: quote not found: 'that are different from the primary authentication factors after the number of organizatio'",
+   "V3-MH-024: premise not found: 'that are different from the primary authentication factors after the number of organizatio'",
+   "V3-TC-020: quote not found: 'Conduct penetration testing [Assignment: organization-defined frequency] on [Assignment: o'",
+   "V3-TC-020: premise not found: 'Conduct penetration testing [Assignment: organization-defined frequency] on [Assignment: o'",
+   "V3-UNA-022: premise not found: 'Conduct penetration testing [Assignment: organization-defined frequency] on [Assignment: o'",
+   "V3-MH-015: multi_hop evidence lies in one chunk",
+   "V3-MH-027: multi_hop evidence lies in one chunk",
+   "V3-MH-029: multi_hop evidence lies in one chunk",
+   "V3-TC-022: quote not found: 'Occupies bits 66 through 79 (octets 8-9). node: 48-bit spatially unique identifier. Occupi'"
+  ],
+  "missing": [
+   "V3-MH-015",
+   "V3-MH-023",
+   "V3-MH-024",
+   "V3-MH-027",
+   "V3-MH-029",
+   "V3-TC-020",
+   "V3-TC-022",
+   "V3-UNA-022"
+  ]
+ }
+}

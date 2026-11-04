@@ -12,10 +12,16 @@ import re
 from collections import Counter
 from dataclasses import dataclass, field, replace
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Iterable, Iterator, Mapping, Sequence, Protocol
+from typing import TYPE_CHECKING, Any, Iterable, Iterator, Literal, Mapping, Sequence, Protocol
 
 if TYPE_CHECKING:
     from settings import RAGSettings
+
+# v1 is the parser of every run up to optimization_4 (byte-identical output); v2
+# (optimization_5) reads English table captions, RFC grid tables and PDF tables without
+# empty layout columns, repeats the caption in every table chunk and rejects numbered
+# lines that continue a sentence as section headings.
+ParserVersion = Literal["v1", "v2"]
 
 
 class DocumentParseError(RuntimeError):
@@ -146,6 +152,152 @@ _FOOTNOTE = re.compile(
 _TOKEN = re.compile(r"\w+|[^\w\s]", re.UNICODE)
 _CAPTION = re.compile(r"^(?:(Продолжение|Окончание)\s+)?[Тт]аблиц[аы]\s+([\w.\-]+)(.*)$")
 _MARKER = re.compile(r"^\s*(?:\[\^?(\d+)\][:]?|(\d+)\)|(\*+))\s*(.*)$")
+# v2: "Table 4: Summary ...", "TABLE 1: ...", "Table 2. Summary ..."; the separator keeps
+# prose such as "Table 2 lists ..." out.
+_CAPTION_EN = re.compile(r"^(?:Table|TABLE)\s+([A-Z]?\d+(?:[.\-]\d+)*)\s*[:.]\s+(\S.*)$")
+# v2: RFC grid table border (+=====+-----+); bit diagrams (+-+-+) have one-dash segments.
+_GRID_BORDER = re.compile(r"^\+(?:[-=]{2,}\+)+$")
+_TITLE_END = re.compile(r"[.,;:]$")
+_TOC_LEADER = re.compile(r"(?:\.\s?){4,}\s*\d*\s*$")  # "3.20 SUPPLY CHAIN ........ 363"
+# v2: identifier headings of control catalogues (SP 800-53): "AC-7" over an upper-case title
+# is a control, "(4) UNSUCCESSFUL LOGON ATTEMPTS | USE OF ..." its enhancement. They nest
+# under any numbered section (deep levels) and replace each other.
+_CONTROL_ID = re.compile(r"^[A-Z]{2,4}-\d{1,3}$")
+_ENHANCEMENT = re.compile(r"^\(\d{1,2}\)\s+(\S.*\|.*)$")
+_CONTROL_LEVEL, _ENHANCEMENT_LEVEL = 8, 9
+
+
+def _upper_title(text: str) -> bool:
+    letters = [c for c in text if c.isalpha()]
+    return bool(letters) and all(c.isupper() for c in letters) and len(text.split()) <= 16
+_BARE_NUMBER_MAX_WORDS = 12
+_BARE_NUMBER_MAX = 99
+
+
+def _heading_title(
+    number: str, title: str, *, indented: bool = False, next_line: str = ""
+) -> bool:
+    """v2: a numbered line is a heading only if it reads as a title, not a wrapped sentence.
+
+    Rejected: "15 minutes inactivity", "48 through 51 of the UUID).", "3 Include a
+    description ... system." (a list item), a footnote "24 The system characteristics ...",
+    an indented RFC list item "   3.  A limited on-path attacker ...", a PDF list item whose
+    text goes on in lowercase on the next line, an address "100 Bureau Drive ...".
+    Kept: "1 Область применения", "16.  Variable-Length Integer Encoding", "15.4.3.  302 Found".
+    """
+    if indented or _TOC_LEADER.search(title):
+        return False
+    # "4.2" and "15.4.3." are section numbers; "2", "2." and "J." also number list items
+    # and references ("9 Is reviewed ... [Assignment: ...]", "J. Saltzer and M. Schroeder, ...").
+    multilevel = bool(re.search(r"\d\.\d", number))
+    if not (title[:1].isupper() or (multilevel and title[:1].isdigit())):
+        return False
+    if _TITLE_END.search(title) or ";" in title:
+        return False
+    if multilevel:
+        return True
+    if "[" in title or title.count("(") != title.count(")"):
+        return False
+    if number[:1].isalpha():
+        return "," not in title and len(title.split()) <= _BARE_NUMBER_MAX_WORDS
+    digits = number.rstrip(".")
+    return (
+        digits.isdigit()
+        and int(digits) <= _BARE_NUMBER_MAX
+        and len(title.split()) <= _BARE_NUMBER_MAX_WORDS
+        and not next_line[:1].islower()
+    )
+
+
+def _join_fragments(parts: Iterable[str]) -> str:
+    """Join the physical lines of a wrapped table cell ("time-" + "based" -> "time-based")."""
+    text = ""
+    for part in parts:
+        if not part:
+            continue
+        if text.endswith("-") and text[-2:-1].isalpha():
+            text += part
+        else:
+            text = f"{text} {part}" if text else part
+    return text
+
+
+def _markdown_rows(rows: Sequence[Sequence[str]]) -> str:
+    """Markdown table with rows[0] as the header (the format of _table_to_markdown)."""
+    if not rows:
+        return ""
+    width = max(len(row) for row in rows)
+    rows = [list(row) + [""] * (width - len(row)) for row in rows]
+    lines = ["| " + " | ".join(rows[0]) + " |", "| " + " | ".join(["---"] * width) + " |"]
+    lines.extend("| " + " | ".join(row) + " |" for row in rows[1:])
+    return "\n".join(lines)
+
+
+def _merge_header(rows: Sequence[Sequence[str]]) -> list[str]:
+    """One header row from several (multi-level headers): "Group / Column" per column."""
+    width = max(len(row) for row in rows)
+    return [
+        " / ".join(dict.fromkeys(row[c] for row in rows if c < len(row) and row[c]))
+        for c in range(width)
+    ]
+
+
+def _grid_to_markdown(lines: Sequence[str]) -> str:
+    """RFC grid table: logical rows between borders, a "=" border closes the header."""
+    rows: list[list[str]] = []
+    header_rows = 0
+    physical: list[list[str]] = []
+
+    def flush() -> None:
+        if physical:
+            width = max(len(cells) for cells in physical)
+            rows.append(
+                [
+                    _join_fragments(cells[c] if c < len(cells) else "" for cells in physical)
+                    for c in range(width)
+                ]
+            )
+            physical.clear()
+
+    for line in lines:
+        if _GRID_BORDER.match(line):
+            flush()
+            if "=" in line and rows and not header_rows:
+                header_rows = len(rows)
+            continue
+        physical.append([cell.strip() for cell in line.strip("|").split("|")])
+    flush()
+    if not rows:
+        return ""
+    header_rows = header_rows or 1
+    return _markdown_rows([_merge_header(rows[:header_rows]), *rows[header_rows:]])
+
+
+def _pdf_table_markdown(
+    rows: Sequence[Sequence[Any]], header: Sequence[Any], external: bool
+) -> str:
+    """v2 PDF table: drop layout columns empty in every row, fill spanned header cells.
+
+    PyMuPDF marks a cell covered by a span as None; in the header it takes the text of
+    the spanning cell on its left, in the body it stays empty.
+    """
+    body = [list(row) for row in rows]
+    head = list(header) if external else (body.pop(0) if body else [])
+    grid = [head, *body]
+    width = max(len(row) for row in grid)
+    grid = [
+        [" ".join(str(cell).split()) if cell is not None else None for cell in row]
+        + [None] * (width - len(row))
+        for row in grid
+    ]
+    keep = [c for c in range(width) if any(row[c] for row in grid)]
+    if not keep:
+        return ""
+    header_cells: list[str] = []
+    for c in keep:
+        value = grid[0][c]
+        header_cells.append(value if value is not None else (header_cells[-1] if header_cells else ""))
+    return _markdown_rows([header_cells, *[[row[c] or "" for c in keep] for row in grid[1:]]])
 
 
 def _tokens(text: str) -> list[str]:
@@ -197,7 +349,11 @@ class DocumentParser:
         tokenizer: TokenCounter | None = None,
         max_pages: int = 500,
         max_file_bytes: int = 100 * 1024 * 1024,
+        version: ParserVersion = "v1",
     ) -> None:
+        if version not in ("v1", "v2"):
+            raise ValueError(f"Unknown parser version: {version}")
+        self.version = version
         self.chunking = chunking or ChunkingConfig()
         if tokenizer is None:
             from settings import RAGSettings
@@ -233,6 +389,7 @@ class DocumentParser:
             tokenizer=tokenizer,
             max_pages=settings.max_document_pages,
             max_file_bytes=settings.max_upload_file_size_mb * 1024 * 1024,
+            version=settings.parser_version,
         )
 
     def parse(self, path: str | Path, *, backend: str = "auto") -> ParsedDocument:
@@ -284,7 +441,7 @@ class DocumentParser:
         normalized = list(self._with_hierarchy(elements, source))
         if not normalized:
             raise DocumentParseError("No extractable text or tables")
-        normalized = self._link_context(normalized)
+        normalized = self._link_context(normalized, trailing_captions=self.version == "v2")
         chunks = tuple(self.chunk(normalized, document_id=document_id, source=source))
         return ParsedDocument(
             document_id,
@@ -310,9 +467,67 @@ class DocumentParser:
             if not line:
                 continue
             kind, level, number, metadata = "paragraph", 0, None, {}
+            v2 = self.version == "v2"
+            if v2 and _GRID_BORDER.match(line):
+                end = i
+                while end < len(raw) and (
+                    _GRID_BORDER.match(raw[end].strip()) or raw[end].strip().startswith("|")
+                ):
+                    end += 1
+                grid = _grid_to_markdown([line, *(r.strip() for r in raw[i:end])])
+                if grid:
+                    i = end
+                    output.append(
+                        DocumentElement(
+                            _stable_id(source, str(page), str(i), grid),
+                            "table",
+                            grid,
+                            page=page,
+                            source=source,
+                            metadata={"grid": True},
+                        )
+                    )
+                    continue
+            if v2 and _CONTROL_ID.match(line) and i < len(raw) and _upper_title(raw[i].strip()):
+                title = raw[i].strip()
+                i += 1
+                output.append(
+                    DocumentElement(
+                        _stable_id(source, str(page), str(i), line, title),
+                        "heading",
+                        f"{line} {title}",
+                        _CONTROL_LEVEL,
+                        page=page,
+                        source=source,
+                    )
+                )
+                continue
+            enhancement = _ENHANCEMENT.match(line) if v2 else None
+            if enhancement and _upper_title(enhancement[1]):
+                output.append(
+                    DocumentElement(
+                        _stable_id(source, str(page), str(i), line),
+                        "heading",
+                        line,
+                        _ENHANCEMENT_LEVEL,
+                        page=page,
+                        source=source,
+                    )
+                )
+                continue
             md = _MARKDOWN_HEADING.match(line)
+            if v2 and md and raw[i - 1][:1].isspace():
+                md = None  # an indented "# ..." is a code comment (RFC figures)
             numbered = _NUMBERED_HEADING.match(line)
+            if v2 and numbered and not _heading_title(
+                numbered[1],
+                numbered[2],
+                indented=raw[i - 1][:1].isspace(),
+                next_line=raw[i].strip() if i < len(raw) else "",
+            ):
+                numbered = None
             caption = _CAPTION.match(line)
+            english = _CAPTION_EN.match(line) if v2 and not caption else None
             if md:
                 kind, level, line = "heading", len(md[1]), md[2]
             elif _FOOTNOTE.match(line) or _MARKER.match(line):
@@ -320,6 +535,12 @@ class DocumentParser:
             elif caption:
                 kind = "caption"
                 metadata = {"table_number": caption[2], "is_continuation": bool(caption[1])}
+            elif english:
+                kind = "caption"
+                metadata = {
+                    "table_number": english[1],
+                    "is_continuation": "(continued)" in english[2].lower(),
+                }
             elif numbered and len(line) < 180:
                 number = numbered[1].rstrip(".")
                 kind, level, line = "heading", number.count(".") + 1, numbered[2]
@@ -360,17 +581,32 @@ class DocumentParser:
             yield replace(element, section_path=tuple(title for _, title in stack), source=source)
 
     @staticmethod
-    def _link_context(elements: list[DocumentElement]) -> list[DocumentElement]:
+    def _link_context(
+        elements: list[DocumentElement], *, trailing_captions: bool = False
+    ) -> list[DocumentElement]:
         output: list[DocumentElement] = []
         caption: DocumentElement | None = None
         tables: dict[str, DocumentElement] = {}
         notes = [e for e in elements if e.kind == "footnote"]
-        for element in elements:
+        # v2: an RFC caption follows its table ("Table 4: ..." right after the grid); it
+        # belongs to that table unless the table already has a caption right before it.
+        trailing = {
+            i - 1: elements[i]
+            for i in range(1, len(elements))
+            if trailing_captions
+            and elements[i].kind == "caption"
+            and elements[i - 1].kind == "table"
+            and (i < 2 or elements[i - 2].kind != "caption")
+        }
+        consumed = {id(c) for c in trailing.values()}
+        for index, element in enumerate(elements):
             meta = dict(element.metadata)
             if element.kind == "heading":
                 caption = None
-            if element.kind == "caption":
+            if element.kind == "caption" and id(element) not in consumed:
                 caption = element
+            if element.kind == "table" and caption is None and index in trailing:
+                caption = trailing[index]
             if element.kind == "table":
                 columns = tuple(
                     cell.strip() for cell in element.text.splitlines()[0].strip("|").split("|")
@@ -493,6 +729,13 @@ class DocumentParser:
             if element.kind == "table":
                 lines = element.text.splitlines()
                 header, rows = lines[:2], lines[2:]
+                if self.version == "v2":
+                    # The caption names the table in every chunk, like the repeated header.
+                    title = element.metadata.get("caption") or element.metadata.get(
+                        "original_caption"
+                    )
+                    if title:
+                        header = [str(title), *header]
                 batch: list[str] = []
                 for row in rows:
                     candidate = replace(element, text="\n".join(header + batch + [row]))
@@ -571,7 +814,14 @@ class DocumentParser:
                     rects.append(rect)
                     # Native extractor resolves geometric spans; retain raw cells for auditing.
                     rows = table.extract()
-                    text = str(table.to_markdown(fill_empty=True))
+                    if self.version == "v2":
+                        text = _pdf_table_markdown(
+                            rows, list(table.header.names), bool(table.header.external)
+                        )
+                        if not text:
+                            continue
+                    else:
+                        text = str(table.to_markdown(fill_empty=True))
                     element = DocumentElement(
                         _stable_id(str(page_index), str(index), text),
                         "table",

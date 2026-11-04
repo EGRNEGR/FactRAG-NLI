@@ -1,0 +1,200 @@
+{
+ "nist_sp800_53r5.pdf": {
+  "v1": {
+   "chunks": 1896,
+   "table_chunks": 441,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 6,
+   "sections": 260,
+   "chunks_in_junk_section": 1039,
+   "median_chars": 1200
+  },
+  "v2": {
+   "chunks": 1451,
+   "table_chunks": 259,
+   "table_chunks_captioned": 1,
+   "table_chunks_header_only": 5,
+   "sections": 32,
+   "chunks_in_junk_section": 0,
+   "median_chars": 1292
+  }
+ },
+ "pep703_gil.txt": {
+  "v1": {
+   "chunks": 172,
+   "table_chunks": 2,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 2,
+   "sections": 1,
+   "chunks_in_junk_section": 0,
+   "median_chars": 1035
+  },
+  "v2": {
+   "chunks": 172,
+   "table_chunks": 2,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 2,
+   "sections": 1,
+   "chunks_in_junk_section": 0,
+   "median_chars": 1035
+  }
+ },
+ "rfc9000_quic.txt": {
+  "v1": {
+   "chunks": 910,
+   "table_chunks": 102,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 58,
+   "sections": 285,
+   "chunks_in_junk_section": 199,
+   "median_chars": 416
+  },
+  "v2": {
+   "chunks": 534,
+   "table_chunks": 32,
+   "table_chunks_captioned": 12,
+   "table_chunks_header_only": 2,
+   "sections": 207,
+   "chunks_in_junk_section": 0,
+   "median_chars": 1032
+  }
+ },
+ "rfc9110_http_semantics.txt": {
+  "v1": {
+   "chunks": 1306,
+   "table_chunks": 186,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 137,
+   "sections": 501,
+   "chunks_in_junk_section": 155,
+   "median_chars": 236
+  },
+  "v2": {
+   "chunks": 634,
+   "table_chunks": 48,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 0,
+   "sections": 285,
+   "chunks_in_junk_section": 0,
+   "median_chars": 933
+  }
+ },
+ "rfc9457_problem_details.txt": {
+  "v1": {
+   "chunks": 65,
+   "table_chunks": 1,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 0,
+   "sections": 29,
+   "chunks_in_junk_section": 12,
+   "median_chars": 531
+  },
+  "v2": {
+   "chunks": 39,
+   "table_chunks": 1,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 0,
+   "sections": 14,
+   "chunks_in_junk_section": 0,
+   "median_chars": 1005
+  }
+ },
+ "rfc9562_uuid.txt": {
+  "v1": {
+   "chunks": 347,
+   "table_chunks": 64,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 32,
+   "sections": 131,
+   "chunks_in_junk_section": 123,
+   "median_chars": 232
+  },
+  "v2": {
+   "chunks": 177,
+   "table_chunks": 33,
+   "table_chunks_captioned": 5,
+   "table_chunks_header_only": 28,
+   "sections": 42,
+   "chunks_in_junk_section": 0,
+   "median_chars": 805
+  }
+ },
+ "derived/nist_sp800_63b.md": {
+  "v1": {
+   "chunks": 520,
+   "table_chunks": 98,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 0,
+   "sections": 7,
+   "chunks_in_junk_section": 496,
+   "median_chars": 1371
+  },
+  "v2": {
+   "chunks": 296,
+   "table_chunks": 16,
+   "table_chunks_captioned": 16,
+   "table_chunks_header_only": 0,
+   "sections": 146,
+   "chunks_in_junk_section": 0,
+   "median_chars": 1167
+  }
+ },
+ "derived/postgresql_create_table.md": {
+  "v1": {
+   "chunks": 118,
+   "table_chunks": 22,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 10,
+   "sections": 28,
+   "chunks_in_junk_section": 0,
+   "median_chars": 534
+  },
+  "v2": {
+   "chunks": 118,
+   "table_chunks": 21,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 10,
+   "sections": 28,
+   "chunks_in_junk_section": 0,
+   "median_chars": 534
+  }
+ },
+ "derived/postgresql_indexes.md": {
+  "v1": {
+   "chunks": 24,
+   "table_chunks": 3,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 0,
+   "sections": 21,
+   "chunks_in_junk_section": 0,
+   "median_chars": 131
+  },
+  "v2": {
+   "chunks": 5,
+   "table_chunks": 2,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 0,
+   "sections": 3,
+   "chunks_in_junk_section": 0,
+   "median_chars": 328
+  }
+ },
+ "total": {
+  "v1": {
+   "chunks": 5358,
+   "table_chunks": 919,
+   "table_chunks_captioned": 0,
+   "table_chunks_header_only": 245,
+   "sections": 1263,
+   "chunks_in_junk_section": 2024
+  },
+  "v2": {
+   "chunks": 3426,
+   "table_chunks": 414,
+   "table_chunks_captioned": 34,
+   "table_chunks_header_only": 47,
+   "sections": 758,
+   "chunks_in_junk_section": 0
+  }
+ }
+}

@@ -255,6 +255,7 @@ class DocumentProcessor:
                 tokenizer=tokenizer,
                 max_pages=self.settings.max_document_pages,
                 max_file_bytes=self.settings.max_upload_file_size_mb * 1024 * 1024,
+                version=self.settings.parser_version,
             )
             self._parser.chunk_limit = self.settings.ingestion_max_chunks
         return self._parser
