@@ -273,3 +273,15 @@ def test_text_extractor_v1_unchanged() -> None:
     text = extractor.text()
     assert "## \n" in text and "## Authentication Assurance Levels" not in text
     assert "| Secret / Type" not in text
+
+
+def test_each_dataset_names_the_parser_of_its_chunks() -> None:
+    from pathlib import Path
+
+    from eval_dataset import load_dataset
+    from evaluate_suite import parser_version_of
+
+    data = Path(__file__).resolve().parents[1] / "data"
+    assert parser_version_of(load_dataset(data / "eval_dataset_v3.json")) == "v1"
+    assert parser_version_of(load_dataset(data / "xquad_dataset_full.json")) == "v1"
+    assert parser_version_of(load_dataset(data / "eval_dataset_v3_parser_v2.json")) == "v2"

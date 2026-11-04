@@ -10,6 +10,12 @@
 #   IDS=V3-MH-024,V3-XQFEN-130 bash scripts/linux/run_experiments.sh   # steps on these only
 #   bash scripts/linux/run_experiments.sh --foreground # stay attached to the terminal
 #
+# optimization_5 (parser v2): the same loop against a PARSER=v2 PLAN=main run,
+#   PLAN=opt5 BASELINE=<run id> bash scripts/linux/run_experiments.sh   # E1, G2, G2 + E1
+#   E1 e2e on its population of that run + 20 controls, steps D0 and G2, then G2 again with
+#   the verifier of E1 (--set nli_anchor_scope=document). The baseline keeps its own settings
+#   (question translation on); results go to reports/optimization_5/live/<RUN_ID>/.
+#
 # Nothing of the baseline is written: reports/runs/20261103T1310Z_rtx3090_main is read only,
 # the results go to reports/optimization_4/live/<RUN_ID>/ (run.log, every intermediate result,
 # SUMMARY.md). Stages:
@@ -44,7 +50,21 @@ for arg in "$@"; do
 done
 
 PLAN="${PLAN:-quick}"
+# The baseline 1310Z of optimization_4 ran without question translation, so its e2e stages
+# run with QUERY_TRANSLATION=off unless FLAGS set it; an optimization_5 baseline keeps its own.
+BASE_FLAGS="QUERY_TRANSLATION=off"
+STAGE_DIR=reports/optimization_4/live
+TAG=opt4
+COMBINED=""
 case "$PLAN" in
+  opt5)
+    [[ -n "${BASELINE:-}" ]] ||
+      { echo "PLAN=opt5 needs BASELINE=<run id of a PARSER=v2 PLAN=main run>" >&2; exit 2; }
+    export OPT4_RUN="$PROJECT_ROOT/reports/runs/$BASELINE"
+    export PARSER=v2 RAG_PARSER_VERSION=v2
+    EXPERIMENTS="${EXPERIMENTS:-D0,G2}"; POPULATIONS="E1 controls"
+    FLAGS="RAG_NLI_ANCHOR_SCOPE=document"; BASE_FLAGS=""; COMBINED="nli_anchor_scope=document"
+    STAGE_DIR=reports/optimization_5/live; TAG=opt5 ;;
   quick)
     EXPERIMENTS="${EXPERIMENTS:-D0,G3,G4}"; POPULATIONS=""; FLAGS="" ;;
   all)
@@ -55,25 +75,32 @@ case "$PLAN" in
   e2e)
     [[ -n "${IDS:-}" ]] || { echo "PLAN=e2e needs IDS=..." >&2; exit 2; }
     EXPERIMENTS=""; POPULATIONS="ids"; FLAGS="${FLAGS:-}" ;;
-  *) echo "Unknown PLAN=$PLAN (quick | all | g3 | e2e)" >&2; exit 2 ;;
+  *) echo "Unknown PLAN=$PLAN (quick | all | g3 | e2e | opt5)" >&2; exit 2 ;;
 esac
 export OPT4_RUN="${OPT4_RUN:-$PROJECT_ROOT/reports/runs/20261103T1310Z_rtx3090_main}"
 BASE_CONFIG="$OPT4_RUN/qwen38-27b-hybrid+bge-reranker-v2-m3+judge"
 [[ -d "$BASE_CONFIG/v3" && -d "$BASE_CONFIG/xquad-full" ]] ||
   { echo "Baseline run not found: $BASE_CONFIG" >&2; exit 1; }
+# The v3 questions of a parser v2 baseline live in its own index and dataset binding.
+V3=()
+V3_DATA=()
+if [[ "$RAG_PARSER_VERSION" == "v2" ]]; then
+  V3=(FACTRAG_INDEX=.artifacts/eval-v3-index-parser-v2 FACTRAG_PARSE_CACHE=.artifacts/eval_v3_parse_cache_parser_v2)
+  V3_DATA=(--dataset data/eval_dataset_v3_parser_v2.json)
+fi
 if [[ -f .artifacts/benchmark/pid ]] && kill -0 "$(cat .artifacts/benchmark/pid)" 2>/dev/null; then
   echo "A benchmark is running (PID $(cat .artifacts/benchmark/pid)); wait for it or stop it." >&2
   exit 1
 fi
 
-RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%MZ)_opt4_$PLAN}"
-OUT="reports/optimization_4/live/$RUN_ID"
+RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%MZ)_${TAG}_$PLAN}"
+OUT="$STAGE_DIR/$RUN_ID"
 LOG="$OUT/run.log"
 mkdir -p "$OUT"
 
 if [[ "$FOREGROUND" == "0" && -z "${FACTRAG_DETACHED:-}" ]]; then
   FACTRAG_DETACHED=1 RUN_ID="$RUN_ID" PLAN="$PLAN" EXPERIMENTS="$EXPERIMENTS" \
-    IDS="${IDS:-}" FLAGS="$FLAGS" setsid nohup bash "$0" --foreground >>"$LOG" 2>&1 </dev/null &
+    IDS="${IDS:-}" FLAGS="$FLAGS" BASELINE="${BASELINE:-}" setsid nohup bash "$0" --foreground >>"$LOG" 2>&1 </dev/null &
   pid=$!
   echo "Experiments $RUN_ID started in the background (PID $pid)."
   echo "Log: $PROJECT_ROOT/$LOG   (Ctrl+C stops watching, not the run)"
@@ -117,12 +144,13 @@ if [[ -n "$POPULATIONS" ]]; then
   echo "$FLAGS" >"$OUT/e2e/flags.txt"
   echo "$(wc -l <"$OUT/e2e/ids.txt") questions"
   # FLAGS are the settings of the variant (empty: the baseline configuration itself);
-  # the last assignment wins, so FLAGS override the baseline's QUERY_TRANSLATION=off.
+  # the last assignment wins, so FLAGS override BASE_FLAGS (opt4: QUERY_TRANSLATION=off).
+  read -r -a base <<<"$BASE_FLAGS"
   read -r -a flags <<<"$FLAGS"
-  E2E=(env QUERY_TRANSLATION=off "${flags[@]}" FACTRAG_LLM_RECOVER_CMD="bash scripts/linux/llama_server.sh ensure")
+  E2E=(env "${base[@]}" "${flags[@]}" FACTRAG_LLM_RECOVER_CMD="bash scripts/linux/llama_server.sh ensure")
   if grep -qv '^V3-XQF' "$OUT/e2e/ids.txt"; then
-    "${E2E[@]}" "${WITH[@]}" "$PYTHON" -X utf8 evaluate_suite.py --run-dir "$OUT/e2e/v3" \
-      --ids "@$OUT/e2e/ids.txt" e2e --profile guard_on || failed=1
+    "${E2E[@]}" "${V3[@]}" "${WITH[@]}" "$PYTHON" -X utf8 evaluate_suite.py "${V3_DATA[@]}" \
+      --run-dir "$OUT/e2e/v3" --ids "@$OUT/e2e/ids.txt" e2e --profile guard_on || failed=1
   fi
   if grep -q '^V3-XQF' "$OUT/e2e/ids.txt"; then
     "${E2E[@]}" FACTRAG_INDEX=.artifacts/xquad-index FACTRAG_PARSE_CACHE=.artifacts/xquad_parse_cache \
@@ -139,6 +167,13 @@ if [[ -n "$EXPERIMENTS" ]]; then
   "${WITH[@]}" "$PYTHON" -X utf8 -m research.opt4.steps run --experiments "$EXPERIMENTS" \
     --out "$OUT/steps" "${STEPS_IDS[@]}" || failed=1
   elapsed "$t"
+  if [[ -n "$COMBINED" && "$EXPERIMENTS" == *G2* ]]; then
+    # G2 + E1: the G2 steps once more with the verifier of E1 (opt5).
+    t=$(date +%s); stage "steps: G2 with $COMBINED"
+    "${WITH[@]}" "$PYTHON" -X utf8 -m research.opt4.steps run --experiments G2 \
+      --set "$COMBINED" --out "$OUT/steps_g2_e1" "${STEPS_IDS[@]}" || failed=1
+    elapsed "$t"
+  fi
 fi
 
 if [[ "${KEEP_SERVER:-0}" != "1" ]]; then

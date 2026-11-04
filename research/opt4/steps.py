@@ -65,6 +65,9 @@ CONFIG = "judge"
 LIVE = OUT / "live"
 _SENTENCE_END = re.compile(r"[.!?:;»\")\]|]\s*$")
 MAX_NEIGHBOURS = 3  # ~1000 tokens: the context stays inside the 8192-token window
+# --set key=value: settings of a variant on top of the run's, for every step (optimization_5:
+# G2 with the verifier of E1, nli_anchor_scope=document). Filled by main before any call.
+OVERRIDES: dict[str, Any] = {}
 
 NORMALIZE = (
     "Перепиши вопрос пользователя грамотно на том же языке, чтобы он читался однозначно. "
@@ -128,6 +131,7 @@ def run_settings(dataset: str, api_base: str | None) -> RAGSettings:
     # Development mode only waives the API token of production; no fallback is allowed:
     # an unavailable LLM or model is an error, never a silent refusal.
     logged.update(mode="development", allow_fallback=False)
+    logged.update(OVERRIDES)
     if api_base:
         logged["llm_api_base"] = api_base
     if os.environ.get("OPT4_INDEX_ROOT"):  # the analysis laptop keeps the indexes elsewhere
@@ -543,7 +547,14 @@ def main(argv: list[str] | None = None) -> int:
     cli.add_argument("--ids", default=None, help="comma list or @file of case ids")
     cli.add_argument("--api-base", default=None, help="llama-server URL (default: the run's)")
     cli.add_argument("--out", type=Path, default=None)
+    cli.add_argument("--set", action="append", default=[], metavar="KEY=VALUE",
+                     help="a setting of the variant on top of the run's (repeatable)")
     args = cli.parse_args(argv)
+    for item in args.set:
+        key, sep, value = item.partition("=")
+        if not sep or key not in RAGSettings.model_fields:
+            raise SystemExit(f"--set {item}: expected a RAGSettings field as KEY=VALUE")
+        OVERRIDES[key] = {"true": True, "false": False}.get(value.lower(), value)
     ids: set[str] | None = None
     if args.ids:
         raw = Path(args.ids[1:]).read_text("utf-8") if args.ids.startswith("@") else args.ids
@@ -559,7 +570,7 @@ def main(argv: list[str] | None = None) -> int:
     out = args.out or LIVE / stamp
     out.mkdir(parents=True, exist_ok=True)
     meta = {"baseline": str(data.RUN), "experiments": names, "ids": sorted(ids) if ids else None,
-            "started_utc": stamp}
+            "settings": OVERRIDES, "started_utc": stamp}
     (out / "run.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), "utf-8")
     report: dict[str, Any] = {}
     failed = False

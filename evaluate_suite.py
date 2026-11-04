@@ -604,6 +604,12 @@ class ResourceMonitor:
 # --------------------------------------------------------------------------- runtime
 
 
+def parser_version_of(dataset: EvalDatasetV3) -> str:
+    """A dataset is bound to the chunks of one parser (scripts/build_eval_dataset_v3.py
+    --parser): its index is built with that parser, whatever RAG_PARSER_VERSION says."""
+    return str(dataset.chunking.get("parser_version", "v1"))
+
+
 def build_settings(dataset: EvalDatasetV3, overrides: dict[str, Any]) -> Any:
     from settings import RAGSettings
 
@@ -618,6 +624,7 @@ def build_settings(dataset: EvalDatasetV3, overrides: dict[str, Any]) -> Any:
             "chunk_target_tokens": int(dataset.chunking["chunk_target_tokens"]),
             "chunk_max_tokens": int(dataset.chunking["chunk_max_tokens"]),
             "chunk_overlap_tokens": int(dataset.chunking["chunk_overlap_tokens"]),
+            "parser_version": parser_version_of(dataset),
         }
     )
     values.update(RUNTIME)

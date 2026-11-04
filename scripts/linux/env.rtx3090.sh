@@ -109,6 +109,11 @@ export RAG_LLM_RECOVERY_TEMPERATURE=0.7
 # Derived values are always recomputed: with_profile.sh re-sources this file under another
 # profile inside an environment that already holds the parent's exports.
 export LLM_PATH="models/llm/$LLM_FILE"
+# Document parser (optimization_5): PARSER=v2 reads English table captions, RFC grid tables
+# and control headings; the v3 stages then use their own index and dataset binding
+# (run_benchmark.sh). v1 = the parser of every run up to optimization_4.
+export PARSER="${PARSER:-v1}"
+export RAG_PARSER_VERSION="$PARSER"
 
 # ---------------------------------------------------------------- llama.cpp
 # CUDA 12.8 build: driver 595 (CUDA 13.2) runs it natively; the 13.4 build would rely on

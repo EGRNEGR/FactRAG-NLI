@@ -10,13 +10,13 @@
    "median_chars": 1200
   },
   "v2": {
-   "chunks": 1451,
-   "table_chunks": 259,
+   "chunks": 2147,
+   "table_chunks": 283,
    "table_chunks_captioned": 1,
    "table_chunks_header_only": 5,
-   "sections": 32,
+   "sections": 1083,
    "chunks_in_junk_section": 0,
-   "median_chars": 1292
+   "median_chars": 910
   }
  },
  "pep703_gil.txt": {
@@ -189,11 +189,11 @@
    "chunks_in_junk_section": 2024
   },
   "v2": {
-   "chunks": 3426,
-   "table_chunks": 414,
+   "chunks": 4122,
+   "table_chunks": 438,
    "table_chunks_captioned": 34,
    "table_chunks_header_only": 47,
-   "sections": 758,
+   "sections": 1809,
    "chunks_in_junk_section": 0
   }
  }
