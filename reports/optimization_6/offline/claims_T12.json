@@ -1,0 +1,178 @@
+{
+ "variant": "T12",
+ "overrides": {
+  "nli_table_row_windows": true,
+  "nli_anchor_bit_cells": true
+ },
+ "totals": {
+  "attempts": 1622,
+  "claims": 1357,
+  "table_claims": 42
+ },
+ "flips": {
+  "unverified -> verified": 7,
+  "unverified -> contradiction": 1
+ },
+ "changed": [
+  {
+   "id": "V3-ADV-025",
+   "split": "test",
+   "dataset": "v3",
+   "role": "draft",
+   "claim": "Нет, в SP 800-53 Rev. 5 идентификатор PT обозначает семейство PII Processing and Transparency [S3].",
+   "table": true,
+   "base": {
+    "status": "unverified",
+    "reason": "cited_support_not_established",
+    "score": 0.21552530603047457,
+    "premise": "TABLE 1: SECURITY AND PRIVACY CONTROL FAMILIES | ID | FAMILY | ID | FAMILY | | --- | --- | --- | --- | | AC | Access Control | PE | Physical and Environmental Protection | | AT | Awareness and Training | PL | Planning | | AU | Audit and Accountability | PM | Program Management | | CA | Assessment, Authorization, and Monitoring | PS | Personnel Security | | CM | Configuration Management | PT | PII Processing and Transparency | | CP | Contingency Planning | RA | Risk Assessment | | IA | Identification and Authentication | SA | System and Services Acquisition | | IR | Incident Response | SC | System and Communications Protection | | MA | Maintenance | SI | System and Information Integrity | | MP | Media Protection | SR | Supply Chain Risk Management | | | | | |"
+   },
+   "variant": {
+    "status": "verified",
+    "reason": null,
+    "score": 0.3140412738076431,
+    "premise": "TABLE 1: SECURITY AND PRIVACY CONTROL FAMILIES | ID | FAMILY | ID | FAMILY | | --- | --- | --- | --- | | AC | Access Control | PE | Physical and Environmental Protection | | AT | Awareness and Training | PL | Planning | | AU | Audit and Accountability | PM | Program Management | | CA | Assessment, Authorization, and Monitoring | PS | Personnel Security | | CM | Configuration Management | PT | PII Processing and Transparency | | CP | Contingency Planning | RA | Risk Assessment | | IA | Identification and Authentication | SA | System and Services Acquisition | | IR | Incident Response | SC | System and Communications Protection | | MA | Maintenance | SI | System and Information Integrity | | MP | Media Protection | SR | Supply Chain Risk Management | | | | | |"
+   }
+  },
+  {
+   "id": "V3-ADV-025",
+   "split": "test",
+   "dataset": "v3",
+   "role": "think",
+   "claim": "Нет, в SP 800-53 Rev. 5 идентификатор PT обозначает семейство PII Processing and Transparency, а не Physical and Environmental Protection [S3].",
+   "table": true,
+   "base": {
+    "status": "unverified",
+    "reason": "cited_support_not_established",
+    "score": 0.012342285129542769,
+    "premise": "TABLE 1: SECURITY AND PRIVACY CONTROL FAMILIES | ID | FAMILY | ID | FAMILY | | --- | --- | --- | --- | | AC | Access Control | PE | Physical and Environmental Protection | | AT | Awareness and Training | PL | Planning | | AU | Audit and Accountability | PM | Program Management | | CA | Assessment, Authorization, and Monitoring | PS | Personnel Security | | CM | Configuration Management | PT | PII Processing and Transparency | | CP | Contingency Planning | RA | Risk Assessment | | IA | Identification and Authentication | SA | System and Services Acquisition | | IR | Incident Response | SC | System and Communications Protection | | MA | Maintenance | SI | System and Information Integrity | | MP | Media Protection | SR | Supply Chain Risk Management | | | | | |"
+   },
+   "variant": {
+    "status": "contradiction",
+    "reason": "cited_support_not_established",
+    "score": 0.09538737006168373,
+    "premise": "NIST Special Publication 800-53: Security and Privacy Controls for Information Systems and Organizations. 2.2 CONTROL STRUCTURE AND ORGANIZATION. TABLE 1: SECURITY AND PRIVACY CONTROL FAMILIES: ID: PT; FAMILY: PII Processing and Transparency."
+   }
+  },
+  {
+   "id": "V3-MH-009",
+   "split": "dev",
+   "dataset": "v3",
+   "role": "draft",
+   "claim": "Младшим битам 0x01 соответствует тип потока «Server-Initiated, Bidirectional» [S2].",
+   "table": true,
+   "base": {
+    "status": "unverified",
+    "reason": "cited_support_not_established",
+    "score": 0.23553090253270795,
+    "premise": "Table 1: Stream ID Types | Bits | Stream Type | | --- | --- | | 0x00 | Client-Initiated, Bidirectional | | 0x01 | Server-Initiated, Bidirectional | | 0x02 | Client-Initiated, Unidirectional | | 0x03 | Server-Initiated, Unidirectional |"
+   },
+   "variant": {
+    "status": "verified",
+    "reason": null,
+    "score": 0.529412484117688,
+    "premise": "Table 1: Stream ID Types: Bits: 0x01; Stream Type: Server-Initiated, Bidirectional."
+   }
+  },
+  {
+   "id": "V3-MH-009",
+   "split": "dev",
+   "dataset": "v3",
+   "role": "repair",
+   "claim": "Младшим битам 0x01 соответствует тип потока «Server-Initiated, Bidirectional» [S2].",
+   "table": true,
+   "base": {
+    "status": "unverified",
+    "reason": "cited_support_not_established",
+    "score": 0.23553090253270795,
+    "premise": "Table 1: Stream ID Types | Bits | Stream Type | | --- | --- | | 0x00 | Client-Initiated, Bidirectional | | 0x01 | Server-Initiated, Bidirectional | | 0x02 | Client-Initiated, Unidirectional | | 0x03 | Server-Initiated, Unidirectional |"
+   },
+   "variant": {
+    "status": "verified",
+    "reason": null,
+    "score": 0.529412484117688,
+    "premise": "Table 1: Stream ID Types: Bits: 0x01; Stream Type: Server-Initiated, Bidirectional."
+   }
+  },
+  {
+   "id": "V3-MH-009",
+   "split": "dev",
+   "dataset": "v3",
+   "role": "think",
+   "claim": "Младшим битам 0x01 соответствует тип потока Server-Initiated, Bidirectional [S2].",
+   "table": true,
+   "base": {
+    "status": "unverified",
+    "reason": "cited_support_not_established",
+    "score": 0.21933710622607405,
+    "premise": "Table 1: Stream ID Types | Bits | Stream Type | | --- | --- | | 0x00 | Client-Initiated, Bidirectional | | 0x01 | Server-Initiated, Bidirectional | | 0x02 | Client-Initiated, Unidirectional | | 0x03 | Server-Initiated, Unidirectional |"
+   },
+   "variant": {
+    "status": "verified",
+    "reason": null,
+    "score": 0.42406503551231617,
+    "premise": "Table 1: Stream ID Types: Bits: 0x01; Stream Type: Server-Initiated, Bidirectional."
+   }
+  },
+  {
+   "id": "V3-TC-009",
+   "split": "test",
+   "dataset": "v3",
+   "role": "draft",
+   "claim": "Перефикс 11 соответствует переменной целочисленной величине длиной 8 байт [S3].",
+   "table": true,
+   "base": {
+    "status": "unverified",
+    "reason": "cited_support_not_established",
+    "score": 0.29685788687422576,
+    "premise": "Table 4: Summary of Integer Encodings | 2MSB | Length | Usable Bits | Range | | --- | --- | --- | --- | | 00 | 1 | 6 | 0-63 | | 01 | 2 | 14 | 0-16383 | | 10 | 4 | 30 | 0-1073741823 | | 11 | 8 | 62 | 0-4611686018427387903 |"
+   },
+   "variant": {
+    "status": "verified",
+    "reason": null,
+    "score": 0.773310873830472,
+    "premise": "RFC 9000: QUIC: A UDP-Based Multiplexed and Secure Transport. 16 Variable-Length Integer Encoding. Table 4: Summary of Integer Encodings: 2MSB: 11; Length: 8; Usable Bits: 62; Range: 0-4611686018427387903."
+   }
+  },
+  {
+   "id": "V3-TC-021",
+   "split": "test",
+   "dataset": "v3",
+   "role": "draft",
+   "claim": "Описанием версии 7 в таблице IANA UUID Subtypes является \"Unix Time-based\" [S9].",
+   "table": true,
+   "base": {
+    "status": "unverified",
+    "reason": "cited_support_not_established",
+    "score": 0.1197439845055837,
+    "premise": "RFC 9562: Universally Unique IDentifiers (UUIDs). 7.1 IANA UUID Subtype Registry and Registration. Table 4: IANA UUID Subtypes | Name | ID | Subtype | Variant | Reference | | --- | --- | --- | --- | --- | | Gregorian Time-based | 1 | version | OSF DCE / IETF | [RFC4122], RFC 9562 | | DCE Security | 2 | version | OSF DCE / IETF | [C309], [C311] | | MD5 Name-based | 3 | version | OSF DCE / IETF | [RFC4122], RFC 9562 | | Random | 4 | version | OSF DCE / IETF | [RFC4122], RFC 9562 | | SHA-1 Name-based | 5 | version | OSF DCE / IETF | [RFC4122], RFC 9562 | | Reordered Gregorian Time-based | 6 | version | OSF DCE / IETF | RFC 9562 | | Unix Time-based | 7 | version | OSF DCE / IETF | RFC 9562 | | Custom | 8 | version | OSF DCE / IETF | RFC 9562 |"
+   },
+   "variant": {
+    "status": "verified",
+    "reason": null,
+    "score": 0.8586916805505331,
+    "premise": "Table 4: IANA UUID Subtypes: Name: Unix Time-based; ID: 7; Subtype: version; Variant: OSF DCE / IETF; Reference: RFC 9562."
+   }
+  },
+  {
+   "id": "V3-TC-021",
+   "split": "test",
+   "dataset": "v3",
+   "role": "think",
+   "claim": "Описание версии 7 — `Unix Time-based` [S9].",
+   "table": true,
+   "base": {
+    "status": "unverified",
+    "reason": "cited_support_not_established",
+    "score": 0.0922897254135855,
+    "premise": "RFC 9562: Universally Unique IDentifiers (UUIDs). 7.1 IANA UUID Subtype Registry and Registration. Table 4: IANA UUID Subtypes | Name | ID | Subtype | Variant | Reference | | --- | --- | --- | --- | --- | | Gregorian Time-based | 1 | version | OSF DCE / IETF | [RFC4122], RFC 9562 | | DCE Security | 2 | version | OSF DCE / IETF | [C309], [C311] | | MD5 Name-based | 3 | version | OSF DCE / IETF | [RFC4122], RFC 9562 | | Random | 4 | version | OSF DCE / IETF | [RFC4122], RFC 9562 | | SHA-1 Name-based | 5 | version | OSF DCE / IETF | [RFC4122], RFC 9562 | | Reordered Gregorian Time-based | 6 | version | OSF DCE / IETF | RFC 9562 | | Unix Time-based | 7 | version | OSF DCE / IETF | RFC 9562 | | Custom | 8 | version | OSF DCE / IETF | RFC 9562 |"
+   },
+   "variant": {
+    "status": "verified",
+    "reason": null,
+    "score": 0.5217226027876477,
+    "premise": "Table 4: IANA UUID Subtypes: Name: Unix Time-based; ID: 7; Subtype: version; Variant: OSF DCE / IETF; Reference: RFC 9562."
+   }
+  }
+ ]
+}

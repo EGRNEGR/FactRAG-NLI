@@ -287,6 +287,15 @@ class RAGSettings(BaseSettings):
     # (optimization_4, experiment E2): the parser renders boxed notes that way, and mDeBERTa
     # read the RFC 9110 302 note as a contradiction of a true claim (0.98).
     nli_premise_unwrap_tables: bool = False
+    # A Markdown table of a premise also yields one window per body row, "Caption: Header:
+    # value; Header: value." (optimization_6). Parser v2 keeps a table whole, so NLI otherwise
+    # sees the entire table as one premise (run 20261104T1222Z: 15 withheld claims cited a
+    # table, 6 under parser v1; V3-TC-021 "Unix Time-based", judge 0.12). The windows are
+    # scored like sentence windows: their contradictions count as well.
+    nli_table_row_windows: bool = False
+    # Anchors of a claim may match a bit pattern laid out over table cells: a run of
+    # consecutive one-bit cells of a row is joined ("| 1 | 0 | 0 | 0 |" -> "1000"; V3-TC-025).
+    nli_anchor_bit_cells: bool = False
     # Upper-case RFC 2119 keywords ("SHALL NOT", "MUST") are lower-cased in both NLI inputs:
     # mDeBERTa reads them as evidence of entailment even against an unrelated premise
     # (P(entailment) 0.73 vs 0.01 for the same sentence in lower case).

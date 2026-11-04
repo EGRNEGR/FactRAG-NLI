@@ -214,6 +214,111 @@ def premise_windows(premise: str, max_sentences: int = 2) -> list[str]:
     return [w for w in dict.fromkeys(windows) if w != premise]
 
 
+# ----------------------------------------------------------------------------- table rows
+
+_MD_ROW = re.compile(r"^\s*\|(.*)\|\s*$")
+_MD_RULE_CELL = re.compile(r"^\s*:?-{3,}:?\s*$")
+_TABLE_CAPTION = re.compile(
+    r"^(?:Table|TABLE|Таблица|ТАБЛИЦА)\s+[A-Z]?\d+(?:[.\-]\d+)*\s*[:.]?\s*\S"
+)
+
+
+@dataclass(frozen=True)
+class MarkdownTable:
+    caption: str | None
+    header: tuple[str, ...]
+    rows: tuple[tuple[str, ...], ...]
+
+
+def _cell(text: str) -> str:
+    text = html.unescape(_MARKUP.sub(" ", text))
+    return " ".join(_EMPHASIS.sub(r"\2", text).split())
+
+
+def markdown_tables(text: str) -> list[MarkdownTable]:
+    """Markdown tables of a chunk: a header row, a rule row, body rows of the same width.
+
+    The caption is the line right above the table when it reads "Table N: ..." (document
+    parser v2 repeats it, with the header, in every chunk of a split table).
+    """
+    lines = _HEADER.sub("", text).split("\n")
+    tables: list[MarkdownTable] = []
+    i = 0
+    while i + 1 < len(lines):
+        head, rule = _MD_ROW.match(lines[i]), _MD_ROW.match(lines[i + 1])
+        if not (head and rule and all(_MD_RULE_CELL.match(c) for c in rule[1].split("|"))):
+            i += 1
+            continue
+        header = tuple(_cell(c) for c in head[1].split("|"))
+        j, rows = i + 2, []
+        while j < len(lines) and (m := _MD_ROW.match(lines[j])):
+            cells = tuple(_cell(c) for c in m[1].split("|"))
+            if len(cells) == len(header):
+                rows.append(cells)
+            j += 1
+        above = lines[i - 1].strip() if i else ""
+        caption = _cell(above) if _TABLE_CAPTION.match(above) else None
+        tables.append(MarkdownTable(caption, header, tuple(rows)))
+        i = j
+    return tables
+
+
+def _groups(header: tuple[str, ...]) -> int:
+    """A header repeated side by side ("ID | FAMILY | ID | FAMILY"): the number of repeats."""
+    for k in range(len(header) // 2, 1, -1):
+        size = len(header) // k
+        if size * k == len(header) and all(
+            header[g * size : (g + 1) * size] == header[:size] for g in range(k)
+        ):
+            return k
+    return 1
+
+
+def table_row_windows(text: str) -> list[str]:
+    """One NLI window per body row of each Markdown table of a chunk with two columns or more:
+    "Caption: Header: value; Header: value." Each value is read with its column header and
+    the caption instead of the whole table as one premise. A header repeated side by side
+    splits every row into its groups. A table with an empty header cell gives no windows
+    (a value cannot be bound to its column; "|" inside a code synopsis also splits a line
+    into such cells), nor do rows with fewer than two filled cells (wrapped continuations,
+    separators).
+    """
+    windows: list[str] = []
+    for table in markdown_tables(text):
+        if len(table.header) < 2 or not all(table.header):
+            continue
+        k = _groups(table.header)
+        size = len(table.header) // k
+        prefix = f"{table.caption}: " if table.caption else ""
+        for row in table.rows:
+            for g in range(k):
+                cells = row[g * size : (g + 1) * size]
+                pairs = [
+                    f"{h}: {v}" for h, v in zip(table.header[:size], cells, strict=True) if v
+                ]
+                if len(pairs) >= 2:
+                    windows.append(f"{prefix}{'; '.join(pairs).rstrip('.')}.")
+    return list(dict.fromkeys(windows))
+
+
+def table_bit_runs(text: str) -> list[str]:
+    """Maximal runs of two or more consecutive one-bit cells ("0" or "1") of a table row,
+    joined: a bit pattern laid out over columns ("| 1 | 0 | 0 | 0 | 8 |") reads "1000".
+    Only whole runs count, so "100" does not match that row."""
+    runs: list[str] = []
+    for table in markdown_tables(text):
+        for row in table.rows:
+            run = ""
+            for cell in (*row, ""):
+                if cell in ("0", "1"):
+                    run += cell
+                    continue
+                if len(run) >= 2:
+                    runs.append(run)
+                run = ""
+    return list(dict.fromkeys(runs))
+
+
 # ----------------------------------------------------------------------------- titles
 
 _HTML_TITLE = re.compile(r"<title[^>]*>(.*?)</title>", re.I | re.S)
