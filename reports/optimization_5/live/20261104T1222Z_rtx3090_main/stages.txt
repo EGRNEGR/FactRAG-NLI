@@ -1,0 +1,14 @@
+60:[2026-11-04 15:22:18] STAGE xquad-dataset finished with exit code 0
+1176:[2026-11-04 15:26:48] STAGE xquad-nli finished with exit code 0
+1180:Building index for 9 documents ...
+1181:Indexed 4122 chunks in 138 s
+1421:[2026-11-04 15:30:13] STAGE v3-retrieval[bge-reranker-v2-m3] finished with exit code 0
+2528:[2026-11-04 15:34:20] STAGE xquad-retrieval[bge-reranker-v2-m3] finished with exit code 0
+2533:[2026-11-04 15:34:24] STAGE llama-server[qwen38-27b-hybrid] finished with exit code 0
+2779:[2026-11-04 16:26:40] STAGE v3-e2e[qwen38-27b-hybrid:bge-reranker-v2-m3:judge] finished with exit code 0
+3906:[2026-11-04 18:45:32] STAGE xquad-e2e[qwen38-27b-hybrid:bge-reranker-v2-m3:judge] finished with exit code 0
+3923:[2026-11-04 18:45:40] STAGE v3-retry[qwen38-27b-hybrid:bge-reranker-v2-m3:judge] finished with exit code 0
+3940:[2026-11-04 18:45:47] STAGE xquad-retry[qwen38-27b-hybrid:bge-reranker-v2-m3:judge] finished with exit code 0
+3943:[2026-11-04 18:45:48] STAGE llama-server-stop finished with exit code 0
+3979:[2026-11-04 18:45:48] STAGE comparison finished with exit code 0
+3980:[2026-11-04 18:45:48] Plan done: 3.05 h of work, 4 rest(s)
