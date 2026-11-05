@@ -145,7 +145,12 @@ def cite(text: str, order: dict[str, int]) -> str:
         nums = [order[k] for k in re.findall(r"@([\w]+)", m[1])]
         return "[" + "; ".join(str(n) for n in nums) + "]"
 
-    return re.sub(r"\[(@[^\]]+)\]", repl, text)
+    text = re.sub(r"\[(@[^\]]+)\]", repl, text)
+    # Case ids (V3-TC-022) never break at a line end: non-breaking hyphen U+2011.
+    return _CASE_ID.sub(lambda m: m[0].replace("-", "‑"), text)
+
+
+_CASE_ID = re.compile(r"\bV3-[A-Z]+-\d+\b")
 
 
 _TOKEN = re.compile(r"(\*\*[^*]+\*\*|\$[^$]+\$)")
@@ -423,6 +428,8 @@ def build_docx(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
 
 _TEX_ESC = {"&": r"\&", "%": r"\%", "#": r"\#", "_": r"\_", "{": r"\{", "}": r"\}",
             "~": r"\textasciitilde{}", "^": r"\textasciicircum{}"}
+# URLs go to \url (xurl breaks them anywhere); a trailing dot or bracket is not part of the URL.
+_URL = re.compile(r"(https?://[^\s()]+?)(?=[.,;)]?(?:\s|$))")
 
 
 def tex_inline(text: str) -> str:
@@ -435,7 +442,11 @@ def tex_inline(text: str) -> str:
         elif part.startswith("$") and part.endswith("$"):
             out.append(tex_math(part))
         else:
-            out.append("".join(_TEX_ESC.get(ch, ch) for ch in part))
+            for k, piece in enumerate(_URL.split(part)):
+                if k % 2:
+                    out.append(r"\url{" + piece + "}")
+                else:
+                    out.append("".join(_TEX_ESC.get(ch, ch) for ch in piece))
     return "".join(out)
 
 
@@ -447,8 +458,10 @@ def tex_math(tex: str) -> str:
 def build_tex(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
               bibliography: list[str]) -> None:
     t = tex_inline
+    # Same layout as the .docx: body 14 pt (\normalsize of extarticle), front matter, captions
+    # and the bibliography 12 pt (\small), tables 11/10 pt in a full grid, headings 14 pt bold.
     L = [
-        r"\documentclass[12pt,a4paper]{article}",
+        r"\documentclass[14pt,a4paper]{extarticle}",
         r"\usepackage[a4paper,margin=2cm]{geometry}",
         r"\usepackage{fontspec}",
         r"\setmainfont{Times New Roman}",
@@ -457,21 +470,42 @@ def build_tex(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
         r"\setotherlanguage{english}",
         r"\usepackage{amsmath}",
         r"\usepackage{unicode-math}",
-        r"\setmathfont{STIX Two Math}",
-        r"\usepackage{graphicx,booktabs,tabularx,array,caption,setspace,indentfirst}",
+        r"\setmathfont{STIXTwoMath-Regular.otf}",
+        r"\usepackage{graphicx,tabularx,array,caption,setspace,indentfirst,flafter}",
+        r"\usepackage{xurl}",
+        r"\usepackage[protrusion=true,expansion=false]{microtype}",  # XeTeX: protrusion only
         r"\usepackage[hidelinks]{hyperref}",
-        r"\captionsetup{labelformat=empty,font=small,justification=centering}",
+        r"\urlstyle{same}",
+        r"\Urlmuskip=0mu",  # no letter spacing inside URLs of a justified line
+        r"\captionsetup{labelformat=empty,font=small,justification=centering,skip=6pt}",
         r"\setlength{\parindent}{1.25cm}",
+        r"\setlength{\emergencystretch}{3em}",
         r"\onehalfspacing",
+        r"\tolerance=400",  # long Latin terms (mDeBERTa-v3) do not hyphenate in Russian text
+        # floats stay with the text: no page holding a single float, never before the reference
+        r"\renewcommand{\topfraction}{0.9}",
+        r"\renewcommand{\bottomfraction}{0.8}",
+        r"\renewcommand{\textfraction}{0.07}",
+        r"\renewcommand{\floatpagefraction}{0.85}",
+        r"\setcounter{topnumber}{3}",
+        r"\setcounter{totalnumber}{4}",
         r"\renewcommand{\arraystretch}{1.15}",
-        r"\newcolumntype{Y}{>{\raggedright\arraybackslash}X}",
+        # \hspace{0pt}: the first word of a cell may be hyphenated too
+        r"\newcolumntype{Y}{>{\raggedright\arraybackslash\hspace{0pt}}X}",
+        r"\makeatletter",
+        r"\renewcommand\section{\@startsection{section}{1}{\z@}{12pt plus 2pt}{6pt}"
+        r"{\normalfont\normalsize\bfseries\raggedright}}",
+        r"\renewcommand\subsection{\@startsection{subsection}{2}{\z@}{8pt plus 2pt}{4pt}"
+        r"{\normalfont\normalsize\bfseries\itshape\raggedright}}",
+        r"\makeatother",
         r"\begin{document}",
-        r"\begin{singlespace}\small",
+        r"\hyphenation{RAG-Response}",  # Russian patterns do not split Latin identifiers
+        r"\begin{singlespace*}\small",
         r"\noindent " + t(meta["type"]) + r"\\",
         r"\noindent " + t(meta["udk"]),
-        r"\begin{center}\large\textbf{" + t(meta["title"].upper()) + r"}\\[6pt]",
-        r"\normalsize\textbf{" + t(meta["author"]) + r"}\\",
-        r"\small " + t(meta["affil"]) + r"\\" + t(meta["email"]) + r"\end{center}",
+        r"\begin{center}\normalsize\textbf{" + t(meta["title"].upper()) + r"}\\[12pt]",
+        r"\small\textbf{" + t(meta["author"]) + r"}\\",
+        t(meta["affil"]) + r"\\" + t(meta["email"]) + r"\end{center}",
     ]
     for b in blocks:
         if b.kind == "abstract":
@@ -481,21 +515,21 @@ def build_tex(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
         elif b.kind == "meta" and b.text == "cite_ru":
             L += [r"\textbf{Для цитирования:} " + t(meta["cite_ru"]), ""]
         elif b.kind == "meta" and b.text == "en_type":
-            L += [r"\begin{otherlanguage}{english}", r"\noindent " + t(meta["en_type"]),
-                  r"\begin{center}\large\textbf{" + t(meta["en_title"]) + r"}\\[6pt]",
-                  r"\normalsize\textbf{" + t(meta["en_author"]) + r"}\\",
-                  r"\small " + t(meta["en_affil"]) + r"\\" + t(meta["en_email"]) + r"\end{center}"]
+            L += [r"\begin{otherlanguage}{english}", r"\vspace{6pt}\noindent " + t(meta["en_type"]),
+                  r"\begin{center}\normalsize\textbf{" + t(meta["en_title"]) + r"}\\[12pt]",
+                  r"\small\textbf{" + t(meta["en_author"]) + r"}\\",
+                  t(meta["en_affil"]) + r"\\" + t(meta["en_email"]) + r"\end{center}"]
         elif b.kind == "en_abstract":
             L += [t(b.text), ""]
         elif b.kind == "meta" and b.text == "keywords_en":
             L += [r"\textbf{Keywords:} " + t(meta["keywords_en"]), ""]
         elif b.kind == "meta" and b.text == "cite_en":
             L += [r"\textbf{For citation:} " + t(meta["cite_en"]), r"\end{otherlanguage}",
-                  r"\end{singlespace}", ""]
+                  r"\end{singlespace*}", ""]
         elif b.kind == "heading":
             L += [r"\section*{" + t(b.text) + "}"]
         elif b.kind == "sub":
-            L += [r"\subsection*{\textit{" + t(cite(b.text, order)) + "}}"]
+            L += [r"\subsection*{" + t(cite(b.text, order)) + "}"]
         elif b.kind == "para":
             L += [t(cite(b.text, order)), ""]
         elif b.kind == "where":
@@ -506,32 +540,40 @@ def build_tex(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
             L += [r"\begin{equation}", tex_math(b.text), r"\tag{" + b.number + "}",
                   r"\end{equation}"]
         elif b.kind == "fig":
-            L += [r"\begin{figure}[htbp]\centering",
+            L += [r"\begin{figure}[!htbp]\centering",
                   r"\includegraphics[width=\textwidth]{figures/" + b.number + ".pdf}",
                   r"\caption{" + t(b.text) + "}", r"\end{figure}", ""]
         elif b.kind == "table":
             cols = len(b.rows[0])
-            spec = "Y" * cols
-            L += [r"\begin{table}[htbp]", r"\begin{singlespace}\footnotesize",
-                  r"\noindent " + t(b.text) + r"\\[2pt]",
-                  r"\begin{tabularx}{\textwidth}{" + spec + "}", r"\toprule"]
+            spec = "|" + "Y|" * cols
+            size = r"\fontsize{11}{13}" if cols <= 4 else r"\fontsize{10}{12}"
+            L += [r"\begin{table}[!htbp]", r"\setstretch{1}",
+                  r"\noindent{\small " + t(b.text) + r"}\par\vspace{4pt}",
+                  size + r"\selectfont",
+                  r"\noindent\begin{tabularx}{\textwidth}{" + spec + "}", r"\hline"]
             for r, row in enumerate(b.rows):
                 cells = [t(cite(c, order)) for c in row]
                 if r == 0:
                     cells = [r"\textbf{" + c + "}" for c in cells]
-                L.append(" & ".join(cells) + r" \\")
-                if r == 0:
-                    L.append(r"\midrule")
-            L += [r"\bottomrule", r"\end{tabularx}", r"\end{singlespace}", r"\end{table}", ""]
+                L += [" & ".join(cells) + r" \\", r"\hline"]
+            L += [r"\end{tabularx}", r"\end{table}", ""]
         elif b.kind == "refs":
-            L += [r"\begin{singlespace}\small", r"\begin{enumerate}"]
-            L += [r"\item " + t(text) for text in bibliography]
-            L += [r"\end{enumerate}", r"\end{singlespace}"]
+            L += [r"\begin{singlespace*}\small\setlength{\topsep}{0pt}\setlength{\partopsep}{0pt}",
+                  r"\begin{enumerate}\setlength{\itemsep}{3pt}\setlength{\parsep}{0pt}"]
+            # an entry without Cyrillic is hyphenated by English patterns
+            L += [r"\item " + (t(text) if re.search("[А-яЁё]", text)
+                               else r"\foreignlanguage{english}{" + t(text) + "}")
+                  for text in bibliography]
+            L += [r"\end{enumerate}", r"\end{singlespace*}"]
         elif b.kind == "author_info":
-            L += [r"\begin{singlespace}\small"]
+            # as in the .docx: bold heading lines flush left, text lines with the paragraph indent
+            L += [r"\par\begingroup\setstretch{1}\small"]
             for line in b.text.split("\n"):
-                L += [t(line), ""]
-            L += [r"\end{singlespace}"]
+                if line.startswith("**"):
+                    L += [r"\vspace{6pt}\noindent " + t(line), ""]
+                else:
+                    L += [t(line), ""]
+            L += [r"\par\endgroup"]
     L.append(r"\end{document}")
     TEX.write_text("\n".join(L) + "\n", encoding="utf-8")
 
