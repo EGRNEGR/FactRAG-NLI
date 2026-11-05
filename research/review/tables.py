@@ -16,7 +16,7 @@ from research.review import OUT
 
 NAMES = {
     "vanilla": ("черновик без проверки (Vanilla)", "–"),
-    "nli_single": ("одиночный NLI-фильтр (mDeBERTa-v3, весь фрагмент)", "0,40 / 0,20"),
+    "nli_single": ("одиночный NLI-фильтр (весь фрагмент)", "0,40 / 0,20"),
     "bge_zs": ("BGE-M3-zeroshot без якорей", None),
     "bge_zs_dev": ("BGE-M3-zeroshot без якорей", None),
     "minicheck": ("MiniCheck-Flan-T5-Large", None),

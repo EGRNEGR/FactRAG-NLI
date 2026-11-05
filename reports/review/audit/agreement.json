@@ -1,0 +1,35 @@
+{
+ "sheet": "C:\\Hakatons\\FactRAG-NLI-3090\\.claude\\worktrees\\article\\reports\\review\\audit\\v3_audit_sheet.csv",
+ "questions": 220,
+ "reviewed": 220,
+ "complete": true,
+ "agreement": 0.9863636363636363,
+ "cohen_kappa": 0.9115281501340481,
+ "confusion": {
+  "scorer correct / expert correct": 200,
+  "scorer wrong / expert correct": 3,
+  "scorer wrong / expert wrong": 17
+ },
+ "disagreements": [
+  {
+   "id": "V3-UNA-028",
+   "scorer": "wrong",
+   "expert": "correct",
+   "comment": "не галлюцинация: опубликована дословно подтверждённая фраза источника о поддерживаемых методах сжатия"
+  },
+  {
+   "id": "V3-ADV-013",
+   "scorer": "wrong",
+   "expert": "correct",
+   "comment": "ответ верен: шаблон оценщика не содержит формы «три» («не менее чем в три раза»)"
+  },
+  {
+   "id": "V3-MH-028",
+   "scorer": "wrong",
+   "expert": "correct",
+   "comment": "ответ верен: шаблон оценщика не принимает слово «ноль»"
+  }
+ ],
+ "labels_reviewed": 220,
+ "labels_confirmed": 220
+}
