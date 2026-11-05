@@ -324,6 +324,32 @@ def final_run() -> dict[str, Any]:
     }
 
 
+REVIEW = ROOT / "reports" / "review"
+FALSE_KINDS = ("number_swap", "negation", "answer_swap", "transplant")
+
+
+def review() -> dict[str, Any]:
+    """Figure 8: acceptance of correct and distorted claims per verifier on the test split of
+    the stress set built from the first drafts of 1222Z (research.review.compare)."""
+    stress = json.loads((REVIEW / "stress.json").read_text("utf-8"))
+    baselines = json.loads((REVIEW / "baselines.json").read_text("utf-8"))["rows"]
+    result = {}
+    for label, rates in stress.items():
+        if not isinstance(rates, dict) or "positive/test" not in rates:
+            continue
+        false_k = sum(rates[f"{k}/test"]["k"] for k in FALSE_KINDS)
+        false_n = sum(rates[f"{k}/test"]["n"] for k in FALSE_KINDS)
+        result[label] = {
+            "threshold": baselines[label]["threshold"],
+            "true_accepted": rates["positive/test"]["rate"],
+            "true_n": rates["positive/test"]["n"],
+            "false_accepted": false_k / false_n,
+            "false_n": false_n,
+            "by_kind": {k: rates[f"{k}/test"]["rate"] for k in FALSE_KINDS},
+        }
+    return result
+
+
 def main() -> None:
     result = {
         "runs": {k: comparison(v) for k, v in RUNS.items()},
@@ -333,6 +359,7 @@ def main() -> None:
         **claims_and_latency(),
         "g3_cost": g3_cost(),
         "final": final_run(),
+        "review": review(),
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8")

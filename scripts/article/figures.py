@@ -1,4 +1,4 @@
-"""Figures 1-7 of the article (Russian captions are in the manuscript, not in the images).
+"""Figures 1-8 of the article (Russian captions are in the manuscript, not in the images).
 
 Data: reports/article/figure_data.json (scripts/article/figure_data.py). Output:
 reports/article/figures/fig<N>.{png,pdf,svg}, 300 dpi, 170 mm wide (journal text width).
@@ -672,7 +672,73 @@ def figure7() -> None:
     save(fig, 7)
 
 
-FIGURES = {1: figure1, 2: figure2, 3: figure3, 4: figure4, 5: figure5, 6: figure6, 7: figure7}
+def figure8() -> None:
+    """Verifiers on the claim-level stress set (test split): correct claims kept against
+    distorted claims let through; then the distorted claims by kind."""
+    rev = DATA["review"]
+    # label, legend name, colour, fill, marker
+    series = [
+        ("nli_single", "одиночный NLI", GREY, True, "s"),
+        ("bge_zs", "BGE-M3-zeroshot", ORANGE, True, "o"),
+        ("bge_zs_dev", "BGE-M3-zeroshot (dev)", ORANGE, False, "o"),
+        ("minicheck", "MiniCheck", AQUA, True, "^"),
+        ("minicheck_dev", "MiniCheck (dev)", AQUA, False, "^"),
+        ("judge_free", "судья без якорей", BLUE, False, "D"),
+        ("judge", "судья + якоря (FactRAG-NLI)", BLUE, True, "D"),
+    ]
+    series = [s for s in series if s[0] in rev]
+    fig, (a, b) = plt.subplots(1, 2, figsize=(WIDTH * MM, 82 * MM),
+                               gridspec_kw=dict(width_ratios=[1, 1.15], wspace=0.34))
+    offsets = {"nli_single": (6, -3), "bge_zs": (-6, 6), "bge_zs_dev": (-6, 6),
+               "minicheck": (6, 4), "minicheck_dev": (6, -9), "judge_free": (-8, 7),
+               "judge": (-8, -11)}
+    for label, name, color, filled, marker in series:
+        r = rev[label]
+        x, y = 100 * r["true_accepted"], 100 * r["false_accepted"]
+        a.scatter(x, y, s=46, marker=marker, color=color if filled else "white",
+                  edgecolor=color, lw=1.2, zorder=3)
+        dx, dy = offsets.get(label, (6, 4))
+        thr = f", порог {ru(r['threshold'], 2)}" if r["threshold"] is not None else ""
+        a.annotate(f"{name}{thr}", (x, y), xytext=(dx, dy), textcoords="offset points",
+                   ha="right" if dx < 0 else "left", va="center", fontsize=6.3, color=INK)
+    a.set_xlim(60, 102)
+    a.set_ylim(0, 70)
+    comma_axis(a.xaxis, 0)
+    comma_axis(a.yaxis, 0)
+    a.set_xlabel("Приняты верные утверждения, %")
+    a.set_ylabel("Приняты искажённые утверждения, %")
+    a.annotate("лучше", xy=(100, 3), xytext=(88, 15), fontsize=6.6, color=INK2,
+               arrowprops=dict(arrowstyle="->", color=INK2, lw=0.7))
+    a.grid(color="#e6e5e1", lw=0.5, zorder=0)
+    a.set_title("а) Компромисс: верные против искажённых", loc="left")
+
+    kinds = [("number_swap", "подмена числа"), ("negation", "отрицание"),
+             ("answer_swap", "подмена ответа\n(XQuAD)"), ("transplant", "утверждение из\nдругого документа")]
+    shown = [s for s in series if s[0] in ("nli_single", "bge_zs", "minicheck", "judge")]
+    hatches = {"nli_single": "xxxx", "bge_zs": "////", "minicheck": "....", "judge": ""}
+    tints = {GREY: GREY_T, ORANGE: ORANGE_T, AQUA: AQUA_T, BLUE: BLUE_T}
+    y = np.arange(len(kinds))[::-1]
+    h = 0.8 / len(shown)
+    for j, (label, name, color, _, _) in enumerate(shown):
+        vals = [100 * rev[label]["by_kind"][k] for k, _ in kinds]
+        pos = y + 0.4 - h / 2 - j * h
+        b.barh(pos, vals, height=h - 0.03, color=tints[color], edgecolor=color, lw=0.7,
+               hatch=hatches[label], label=name, zorder=2)
+        for v, p in zip(vals, pos, strict=True):
+            b.text(v + 1, p, ru(v), va="center", fontsize=5.9)
+    b.set_yticks(y, [n for _, n in kinds], fontsize=7)
+    b.set_xlim(0, 100)
+    comma_axis(b.xaxis, 0)
+    b.set_xlabel("Приняты искажённые утверждения, %")
+    b.legend(loc="lower right", frameon=False, fontsize=6.4)
+    b.grid(axis="x", color="#e6e5e1", lw=0.5, zorder=0)
+    b.set_title("б) Искажения по видам", loc="left")
+    fig.subplots_adjust(left=0.08, right=0.985, top=0.9, bottom=0.15)
+    save(fig, 8)
+
+
+FIGURES = {1: figure1, 2: figure2, 3: figure3, 4: figure4, 5: figure5, 6: figure6, 7: figure7,
+           8: figure8}
 
 if __name__ == "__main__":
     for n in [int(a) for a in sys.argv[1:]] or list(FIGURES):
