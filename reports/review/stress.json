@@ -23,6 +23,16 @@
    "n": 289,
    "rate": 0.25259515570934254
   },
+  "answer_swap/test en-ru": {
+   "k": 41,
+   "n": 155,
+   "rate": 0.2645161290322581
+  },
+  "answer_swap/test ru-ru": {
+   "k": 32,
+   "n": 134,
+   "rate": 0.23880597014925373
+  },
   "negation/all": {
    "k": 29,
    "n": 461,
@@ -37,6 +47,26 @@
    "k": 23,
    "n": 248,
    "rate": 0.09274193548387097
+  },
+  "negation/test en-en": {
+   "k": 8,
+   "n": 43,
+   "rate": 0.18604651162790697
+  },
+  "negation/test en-ru": {
+   "k": 4,
+   "n": 80,
+   "rate": 0.05
+  },
+  "negation/test ru-en": {
+   "k": 2,
+   "n": 30,
+   "rate": 0.06666666666666667
+  },
+  "negation/test ru-ru": {
+   "k": 9,
+   "n": 95,
+   "rate": 0.09473684210526316
   },
   "number_swap/all": {
    "k": 22,
@@ -53,6 +83,26 @@
    "n": 181,
    "rate": 0.055248618784530384
   },
+  "number_swap/test en-en": {
+   "k": 6,
+   "n": 30,
+   "rate": 0.2
+  },
+  "number_swap/test en-ru": {
+   "k": 0,
+   "n": 68,
+   "rate": 0.0
+  },
+  "number_swap/test ru-en": {
+   "k": 4,
+   "n": 25,
+   "rate": 0.16
+  },
+  "number_swap/test ru-ru": {
+   "k": 0,
+   "n": 58,
+   "rate": 0.0
+  },
   "positive/all": {
    "k": 753,
    "n": 1027,
@@ -68,6 +118,26 @@
    "n": 505,
    "rate": 0.7366336633663366
   },
+  "positive/test en-en": {
+   "k": 39,
+   "n": 59,
+   "rate": 0.6610169491525424
+  },
+  "positive/test en-ru": {
+   "k": 148,
+   "n": 200,
+   "rate": 0.74
+  },
+  "positive/test ru-en": {
+   "k": 35,
+   "n": 44,
+   "rate": 0.7954545454545454
+  },
+  "positive/test ru-ru": {
+   "k": 150,
+   "n": 202,
+   "rate": 0.7425742574257426
+  },
   "transplant/all": {
    "k": 178,
    "n": 895,
@@ -82,6 +152,26 @@
    "k": 81,
    "n": 446,
    "rate": 0.18161434977578475
+  },
+  "transplant/test en-en": {
+   "k": 9,
+   "n": 39,
+   "rate": 0.23076923076923078
+  },
+  "transplant/test en-ru": {
+   "k": 37,
+   "n": 192,
+   "rate": 0.19270833333333334
+  },
+  "transplant/test ru-en": {
+   "k": 5,
+   "n": 31,
+   "rate": 0.16129032258064516
+  },
+  "transplant/test ru-ru": {
+   "k": 30,
+   "n": 184,
+   "rate": 0.16304347826086957
   }
  },
  "bge_zs": {
@@ -100,6 +190,16 @@
    "n": 289,
    "rate": 0.6193771626297578
   },
+  "answer_swap/test en-ru": {
+   "k": 94,
+   "n": 155,
+   "rate": 0.6064516129032258
+  },
+  "answer_swap/test ru-ru": {
+   "k": 85,
+   "n": 134,
+   "rate": 0.6343283582089553
+  },
   "negation/all": {
    "k": 307,
    "n": 461,
@@ -114,6 +214,26 @@
    "k": 165,
    "n": 248,
    "rate": 0.6653225806451613
+  },
+  "negation/test en-en": {
+   "k": 37,
+   "n": 43,
+   "rate": 0.8604651162790697
+  },
+  "negation/test en-ru": {
+   "k": 50,
+   "n": 80,
+   "rate": 0.625
+  },
+  "negation/test ru-en": {
+   "k": 21,
+   "n": 30,
+   "rate": 0.7
+  },
+  "negation/test ru-ru": {
+   "k": 57,
+   "n": 95,
+   "rate": 0.6
   },
   "number_swap/all": {
    "k": 204,
@@ -130,6 +250,26 @@
    "n": 181,
    "rate": 0.4585635359116022
   },
+  "number_swap/test en-en": {
+   "k": 22,
+   "n": 30,
+   "rate": 0.7333333333333333
+  },
+  "number_swap/test en-ru": {
+   "k": 24,
+   "n": 68,
+   "rate": 0.35294117647058826
+  },
+  "number_swap/test ru-en": {
+   "k": 17,
+   "n": 25,
+   "rate": 0.68
+  },
+  "number_swap/test ru-ru": {
+   "k": 20,
+   "n": 58,
+   "rate": 0.3448275862068966
+  },
   "positive/all": {
    "k": 1012,
    "n": 1027,
@@ -145,6 +285,26 @@
    "n": 505,
    "rate": 0.9861386138613861
   },
+  "positive/test en-en": {
+   "k": 58,
+   "n": 59,
+   "rate": 0.9830508474576272
+  },
+  "positive/test en-ru": {
+   "k": 196,
+   "n": 200,
+   "rate": 0.98
+  },
+  "positive/test ru-en": {
+   "k": 43,
+   "n": 44,
+   "rate": 0.9772727272727273
+  },
+  "positive/test ru-ru": {
+   "k": 201,
+   "n": 202,
+   "rate": 0.995049504950495
+  },
   "transplant/all": {
    "k": 274,
    "n": 895,
@@ -159,6 +319,26 @@
    "k": 119,
    "n": 446,
    "rate": 0.26681614349775784
+  },
+  "transplant/test en-en": {
+   "k": 9,
+   "n": 39,
+   "rate": 0.23076923076923078
+  },
+  "transplant/test en-ru": {
+   "k": 44,
+   "n": 192,
+   "rate": 0.22916666666666666
+  },
+  "transplant/test ru-en": {
+   "k": 11,
+   "n": 31,
+   "rate": 0.3548387096774194
+  },
+  "transplant/test ru-ru": {
+   "k": 55,
+   "n": 184,
+   "rate": 0.29891304347826086
   }
  },
  "bge_zs_dev": {
@@ -177,6 +357,16 @@
    "n": 289,
    "rate": 0.754325259515571
   },
+  "answer_swap/test en-ru": {
+   "k": 120,
+   "n": 155,
+   "rate": 0.7741935483870968
+  },
+  "answer_swap/test ru-ru": {
+   "k": 98,
+   "n": 134,
+   "rate": 0.7313432835820896
+  },
   "negation/all": {
    "k": 337,
    "n": 461,
@@ -191,6 +381,26 @@
    "k": 179,
    "n": 248,
    "rate": 0.7217741935483871
+  },
+  "negation/test en-en": {
+   "k": 40,
+   "n": 43,
+   "rate": 0.9302325581395349
+  },
+  "negation/test en-ru": {
+   "k": 54,
+   "n": 80,
+   "rate": 0.675
+  },
+  "negation/test ru-en": {
+   "k": 21,
+   "n": 30,
+   "rate": 0.7
+  },
+  "negation/test ru-ru": {
+   "k": 64,
+   "n": 95,
+   "rate": 0.6736842105263158
   },
   "number_swap/all": {
    "k": 247,
@@ -207,6 +417,26 @@
    "n": 181,
    "rate": 0.580110497237569
   },
+  "number_swap/test en-en": {
+   "k": 25,
+   "n": 30,
+   "rate": 0.8333333333333334
+  },
+  "number_swap/test en-ru": {
+   "k": 32,
+   "n": 68,
+   "rate": 0.47058823529411764
+  },
+  "number_swap/test ru-en": {
+   "k": 18,
+   "n": 25,
+   "rate": 0.72
+  },
+  "number_swap/test ru-ru": {
+   "k": 30,
+   "n": 58,
+   "rate": 0.5172413793103449
+  },
   "positive/all": {
    "k": 1016,
    "n": 1027,
@@ -222,6 +452,26 @@
    "n": 505,
    "rate": 0.9920792079207921
   },
+  "positive/test en-en": {
+   "k": 59,
+   "n": 59,
+   "rate": 1.0
+  },
+  "positive/test en-ru": {
+   "k": 197,
+   "n": 200,
+   "rate": 0.985
+  },
+  "positive/test ru-en": {
+   "k": 44,
+   "n": 44,
+   "rate": 1.0
+  },
+  "positive/test ru-ru": {
+   "k": 201,
+   "n": 202,
+   "rate": 0.995049504950495
+  },
   "transplant/all": {
    "k": 395,
    "n": 895,
@@ -236,6 +486,360 @@
    "k": 172,
    "n": 446,
    "rate": 0.38565022421524664
+  },
+  "transplant/test en-en": {
+   "k": 12,
+   "n": 39,
+   "rate": 0.3076923076923077
+  },
+  "transplant/test en-ru": {
+   "k": 60,
+   "n": 192,
+   "rate": 0.3125
+  },
+  "transplant/test ru-en": {
+   "k": 15,
+   "n": 31,
+   "rate": 0.4838709677419355
+  },
+  "transplant/test ru-ru": {
+   "k": 85,
+   "n": 184,
+   "rate": 0.46195652173913043
+  }
+ },
+ "minicheck": {
+  "answer_swap/all": {
+   "k": 250,
+   "n": 569,
+   "rate": 0.43936731107205623
+  },
+  "answer_swap/dev": {
+   "k": 117,
+   "n": 280,
+   "rate": 0.41785714285714287
+  },
+  "answer_swap/test": {
+   "k": 133,
+   "n": 289,
+   "rate": 0.4602076124567474
+  },
+  "answer_swap/test en-ru": {
+   "k": 74,
+   "n": 155,
+   "rate": 0.4774193548387097
+  },
+  "answer_swap/test ru-ru": {
+   "k": 59,
+   "n": 134,
+   "rate": 0.44029850746268656
+  },
+  "negation/all": {
+   "k": 10,
+   "n": 461,
+   "rate": 0.021691973969631236
+  },
+  "negation/dev": {
+   "k": 6,
+   "n": 213,
+   "rate": 0.028169014084507043
+  },
+  "negation/test": {
+   "k": 4,
+   "n": 248,
+   "rate": 0.016129032258064516
+  },
+  "negation/test en-en": {
+   "k": 3,
+   "n": 43,
+   "rate": 0.06976744186046512
+  },
+  "negation/test en-ru": {
+   "k": 0,
+   "n": 80,
+   "rate": 0.0
+  },
+  "negation/test ru-en": {
+   "k": 1,
+   "n": 30,
+   "rate": 0.03333333333333333
+  },
+  "negation/test ru-ru": {
+   "k": 0,
+   "n": 95,
+   "rate": 0.0
+  },
+  "number_swap/all": {
+   "k": 49,
+   "n": 399,
+   "rate": 0.12280701754385964
+  },
+  "number_swap/dev": {
+   "k": 32,
+   "n": 218,
+   "rate": 0.14678899082568808
+  },
+  "number_swap/test": {
+   "k": 17,
+   "n": 181,
+   "rate": 0.09392265193370165
+  },
+  "number_swap/test en-en": {
+   "k": 5,
+   "n": 30,
+   "rate": 0.16666666666666666
+  },
+  "number_swap/test en-ru": {
+   "k": 5,
+   "n": 68,
+   "rate": 0.07352941176470588
+  },
+  "number_swap/test ru-en": {
+   "k": 2,
+   "n": 25,
+   "rate": 0.08
+  },
+  "number_swap/test ru-ru": {
+   "k": 5,
+   "n": 58,
+   "rate": 0.08620689655172414
+  },
+  "positive/all": {
+   "k": 802,
+   "n": 1027,
+   "rate": 0.7809152872444012
+  },
+  "positive/dev": {
+   "k": 405,
+   "n": 522,
+   "rate": 0.7758620689655172
+  },
+  "positive/test": {
+   "k": 397,
+   "n": 505,
+   "rate": 0.7861386138613862
+  },
+  "positive/test en-en": {
+   "k": 30,
+   "n": 59,
+   "rate": 0.5084745762711864
+  },
+  "positive/test en-ru": {
+   "k": 175,
+   "n": 200,
+   "rate": 0.875
+  },
+  "positive/test ru-en": {
+   "k": 25,
+   "n": 44,
+   "rate": 0.5681818181818182
+  },
+  "positive/test ru-ru": {
+   "k": 167,
+   "n": 202,
+   "rate": 0.8267326732673267
+  },
+  "transplant/all": {
+   "k": 7,
+   "n": 895,
+   "rate": 0.00782122905027933
+  },
+  "transplant/dev": {
+   "k": 7,
+   "n": 449,
+   "rate": 0.015590200445434299
+  },
+  "transplant/test": {
+   "k": 0,
+   "n": 446,
+   "rate": 0.0
+  },
+  "transplant/test en-en": {
+   "k": 0,
+   "n": 39,
+   "rate": 0.0
+  },
+  "transplant/test en-ru": {
+   "k": 0,
+   "n": 192,
+   "rate": 0.0
+  },
+  "transplant/test ru-en": {
+   "k": 0,
+   "n": 31,
+   "rate": 0.0
+  },
+  "transplant/test ru-ru": {
+   "k": 0,
+   "n": 184,
+   "rate": 0.0
+  }
+ },
+ "minicheck_dev": {
+  "answer_swap/all": {
+   "k": 544,
+   "n": 569,
+   "rate": 0.9560632688927944
+  },
+  "answer_swap/dev": {
+   "k": 269,
+   "n": 280,
+   "rate": 0.9607142857142857
+  },
+  "answer_swap/test": {
+   "k": 275,
+   "n": 289,
+   "rate": 0.9515570934256056
+  },
+  "answer_swap/test en-ru": {
+   "k": 147,
+   "n": 155,
+   "rate": 0.9483870967741935
+  },
+  "answer_swap/test ru-ru": {
+   "k": 128,
+   "n": 134,
+   "rate": 0.9552238805970149
+  },
+  "negation/all": {
+   "k": 323,
+   "n": 461,
+   "rate": 0.7006507592190889
+  },
+  "negation/dev": {
+   "k": 149,
+   "n": 213,
+   "rate": 0.6995305164319249
+  },
+  "negation/test": {
+   "k": 174,
+   "n": 248,
+   "rate": 0.7016129032258065
+  },
+  "negation/test en-en": {
+   "k": 34,
+   "n": 43,
+   "rate": 0.7906976744186046
+  },
+  "negation/test en-ru": {
+   "k": 50,
+   "n": 80,
+   "rate": 0.625
+  },
+  "negation/test ru-en": {
+   "k": 16,
+   "n": 30,
+   "rate": 0.5333333333333333
+  },
+  "negation/test ru-ru": {
+   "k": 74,
+   "n": 95,
+   "rate": 0.7789473684210526
+  },
+  "number_swap/all": {
+   "k": 307,
+   "n": 399,
+   "rate": 0.7694235588972431
+  },
+  "number_swap/dev": {
+   "k": 182,
+   "n": 218,
+   "rate": 0.8348623853211009
+  },
+  "number_swap/test": {
+   "k": 125,
+   "n": 181,
+   "rate": 0.6906077348066298
+  },
+  "number_swap/test en-en": {
+   "k": 22,
+   "n": 30,
+   "rate": 0.7333333333333333
+  },
+  "number_swap/test en-ru": {
+   "k": 47,
+   "n": 68,
+   "rate": 0.6911764705882353
+  },
+  "number_swap/test ru-en": {
+   "k": 12,
+   "n": 25,
+   "rate": 0.48
+  },
+  "number_swap/test ru-ru": {
+   "k": 44,
+   "n": 58,
+   "rate": 0.7586206896551724
+  },
+  "positive/all": {
+   "k": 981,
+   "n": 1027,
+   "rate": 0.9552093476144109
+  },
+  "positive/dev": {
+   "k": 502,
+   "n": 522,
+   "rate": 0.9616858237547893
+  },
+  "positive/test": {
+   "k": 479,
+   "n": 505,
+   "rate": 0.9485148514851485
+  },
+  "positive/test en-en": {
+   "k": 53,
+   "n": 59,
+   "rate": 0.8983050847457628
+  },
+  "positive/test en-ru": {
+   "k": 196,
+   "n": 200,
+   "rate": 0.98
+  },
+  "positive/test ru-en": {
+   "k": 36,
+   "n": 44,
+   "rate": 0.8181818181818182
+  },
+  "positive/test ru-ru": {
+   "k": 194,
+   "n": 202,
+   "rate": 0.9603960396039604
+  },
+  "transplant/all": {
+   "k": 229,
+   "n": 895,
+   "rate": 0.2558659217877095
+  },
+  "transplant/dev": {
+   "k": 113,
+   "n": 449,
+   "rate": 0.2516703786191537
+  },
+  "transplant/test": {
+   "k": 116,
+   "n": 446,
+   "rate": 0.2600896860986547
+  },
+  "transplant/test en-en": {
+   "k": 7,
+   "n": 39,
+   "rate": 0.1794871794871795
+  },
+  "transplant/test en-ru": {
+   "k": 55,
+   "n": 192,
+   "rate": 0.2864583333333333
+  },
+  "transplant/test ru-en": {
+   "k": 4,
+   "n": 31,
+   "rate": 0.12903225806451613
+  },
+  "transplant/test ru-ru": {
+   "k": 50,
+   "n": 184,
+   "rate": 0.2717391304347826
   }
  },
  "judge_free": {
@@ -254,6 +858,16 @@
    "n": 289,
    "rate": 0.2664359861591695
   },
+  "answer_swap/test en-ru": {
+   "k": 46,
+   "n": 155,
+   "rate": 0.2967741935483871
+  },
+  "answer_swap/test ru-ru": {
+   "k": 31,
+   "n": 134,
+   "rate": 0.23134328358208955
+  },
   "negation/all": {
    "k": 67,
    "n": 461,
@@ -268,6 +882,26 @@
    "k": 33,
    "n": 248,
    "rate": 0.13306451612903225
+  },
+  "negation/test en-en": {
+   "k": 12,
+   "n": 43,
+   "rate": 0.27906976744186046
+  },
+  "negation/test en-ru": {
+   "k": 2,
+   "n": 80,
+   "rate": 0.025
+  },
+  "negation/test ru-en": {
+   "k": 6,
+   "n": 30,
+   "rate": 0.2
+  },
+  "negation/test ru-ru": {
+   "k": 13,
+   "n": 95,
+   "rate": 0.1368421052631579
   },
   "number_swap/all": {
    "k": 37,
@@ -284,6 +918,26 @@
    "n": 181,
    "rate": 0.07734806629834254
   },
+  "number_swap/test en-en": {
+   "k": 8,
+   "n": 30,
+   "rate": 0.26666666666666666
+  },
+  "number_swap/test en-ru": {
+   "k": 0,
+   "n": 68,
+   "rate": 0.0
+  },
+  "number_swap/test ru-en": {
+   "k": 5,
+   "n": 25,
+   "rate": 0.2
+  },
+  "number_swap/test ru-ru": {
+   "k": 1,
+   "n": 58,
+   "rate": 0.017241379310344827
+  },
   "positive/all": {
    "k": 990,
    "n": 1027,
@@ -299,6 +953,26 @@
    "n": 505,
    "rate": 0.9643564356435643
   },
+  "positive/test en-en": {
+   "k": 56,
+   "n": 59,
+   "rate": 0.9491525423728814
+  },
+  "positive/test en-ru": {
+   "k": 193,
+   "n": 200,
+   "rate": 0.965
+  },
+  "positive/test ru-en": {
+   "k": 41,
+   "n": 44,
+   "rate": 0.9318181818181818
+  },
+  "positive/test ru-ru": {
+   "k": 197,
+   "n": 202,
+   "rate": 0.9752475247524752
+  },
   "transplant/all": {
    "k": 13,
    "n": 895,
@@ -313,6 +987,26 @@
    "k": 6,
    "n": 446,
    "rate": 0.013452914798206279
+  },
+  "transplant/test en-en": {
+   "k": 0,
+   "n": 39,
+   "rate": 0.0
+  },
+  "transplant/test en-ru": {
+   "k": 3,
+   "n": 192,
+   "rate": 0.015625
+  },
+  "transplant/test ru-en": {
+   "k": 0,
+   "n": 31,
+   "rate": 0.0
+  },
+  "transplant/test ru-ru": {
+   "k": 3,
+   "n": 184,
+   "rate": 0.016304347826086956
   }
  },
  "judge": {
@@ -331,6 +1025,16 @@
    "n": 289,
    "rate": 0.2664359861591695
   },
+  "answer_swap/test en-ru": {
+   "k": 46,
+   "n": 155,
+   "rate": 0.2967741935483871
+  },
+  "answer_swap/test ru-ru": {
+   "k": 31,
+   "n": 134,
+   "rate": 0.23134328358208955
+  },
   "negation/all": {
    "k": 66,
    "n": 461,
@@ -345,6 +1049,26 @@
    "k": 32,
    "n": 248,
    "rate": 0.12903225806451613
+  },
+  "negation/test en-en": {
+   "k": 11,
+   "n": 43,
+   "rate": 0.2558139534883721
+  },
+  "negation/test en-ru": {
+   "k": 2,
+   "n": 80,
+   "rate": 0.025
+  },
+  "negation/test ru-en": {
+   "k": 6,
+   "n": 30,
+   "rate": 0.2
+  },
+  "negation/test ru-ru": {
+   "k": 13,
+   "n": 95,
+   "rate": 0.1368421052631579
   },
   "number_swap/all": {
    "k": 26,
@@ -361,6 +1085,26 @@
    "n": 181,
    "rate": 0.049723756906077346
   },
+  "number_swap/test en-en": {
+   "k": 5,
+   "n": 30,
+   "rate": 0.16666666666666666
+  },
+  "number_swap/test en-ru": {
+   "k": 0,
+   "n": 68,
+   "rate": 0.0
+  },
+  "number_swap/test ru-en": {
+   "k": 4,
+   "n": 25,
+   "rate": 0.16
+  },
+  "number_swap/test ru-ru": {
+   "k": 0,
+   "n": 58,
+   "rate": 0.0
+  },
   "positive/all": {
    "k": 988,
    "n": 1027,
@@ -376,6 +1120,26 @@
    "n": 505,
    "rate": 0.9623762376237623
   },
+  "positive/test en-en": {
+   "k": 56,
+   "n": 59,
+   "rate": 0.9491525423728814
+  },
+  "positive/test en-ru": {
+   "k": 193,
+   "n": 200,
+   "rate": 0.965
+  },
+  "positive/test ru-en": {
+   "k": 40,
+   "n": 44,
+   "rate": 0.9090909090909091
+  },
+  "positive/test ru-ru": {
+   "k": 197,
+   "n": 202,
+   "rate": 0.9752475247524752
+  },
   "transplant/all": {
    "k": 13,
    "n": 895,
@@ -390,6 +1154,26 @@
    "k": 6,
    "n": 446,
    "rate": 0.013452914798206279
+  },
+  "transplant/test en-en": {
+   "k": 0,
+   "n": 39,
+   "rate": 0.0
+  },
+  "transplant/test en-ru": {
+   "k": 3,
+   "n": 192,
+   "rate": 0.015625
+  },
+  "transplant/test ru-en": {
+   "k": 0,
+   "n": 31,
+   "rate": 0.0
+  },
+  "transplant/test ru-ru": {
+   "k": 3,
+   "n": 184,
+   "rate": 0.016304347826086956
   }
  }
 }

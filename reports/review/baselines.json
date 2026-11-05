@@ -67,6 +67,58 @@
      "lost": 0,
      "mcnemar_p": 1.0
     }
+   },
+   "pair en-en": {
+    "n": 111,
+    "correct": 104,
+    "hallucination": 1,
+    "hallucination_n": 43,
+    "false_refusal": 3,
+    "false_refusal_n": 68,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 0,
+     "mcnemar_p": 1.0
+    }
+   },
+   "pair ru-en": {
+    "n": 109,
+    "correct": 100,
+    "hallucination": 0,
+    "hallucination_n": 50,
+    "false_refusal": 3,
+    "false_refusal_n": 59,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 0,
+     "mcnemar_p": 1.0
+    }
+   },
+   "pair ru-ru": {
+    "n": 552,
+    "correct": 478,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 58,
+    "false_refusal_n": 464,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 0,
+     "mcnemar_p": 1.0
+    }
+   },
+   "pair en-ru": {
+    "n": 535,
+    "correct": 451,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 77,
+    "false_refusal_n": 447,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 0,
+     "mcnemar_p": 1.0
+    }
    }
   },
   "nli_single": {
@@ -134,6 +186,58 @@
      "gained": 0,
      "lost": 110,
      "mcnemar_p": 1.5407439555097887e-33
+    }
+   },
+   "pair en-en": {
+    "n": 111,
+    "correct": 78,
+    "hallucination": 2,
+    "hallucination_n": 43,
+    "false_refusal": 24,
+    "false_refusal_n": 68,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 26,
+     "mcnemar_p": 2.9802322387695312e-08
+    }
+   },
+   "pair ru-en": {
+    "n": 109,
+    "correct": 79,
+    "hallucination": 0,
+    "hallucination_n": 50,
+    "false_refusal": 14,
+    "false_refusal_n": 59,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 21,
+     "mcnemar_p": 9.5367431640625e-07
+    }
+   },
+   "pair ru-ru": {
+    "n": 552,
+    "correct": 387,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 150,
+    "false_refusal_n": 464,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 91,
+     "mcnemar_p": 8.077935669463161e-28
+    }
+   },
+   "pair en-ru": {
+    "n": 535,
+    "correct": 359,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 163,
+    "false_refusal_n": 447,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 92,
+     "mcnemar_p": 4.0389678347315804e-28
     }
    }
   },
@@ -203,6 +307,58 @@
      "lost": 5,
      "mcnemar_p": 0.0625
     }
+   },
+   "pair en-en": {
+    "n": 111,
+    "correct": 102,
+    "hallucination": 1,
+    "hallucination_n": 43,
+    "false_refusal": 3,
+    "false_refusal_n": 68,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 2,
+     "mcnemar_p": 0.5
+    }
+   },
+   "pair ru-en": {
+    "n": 109,
+    "correct": 99,
+    "hallucination": 0,
+    "hallucination_n": 50,
+    "false_refusal": 3,
+    "false_refusal_n": 59,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 1,
+     "mcnemar_p": 1.0
+    }
+   },
+   "pair ru-ru": {
+    "n": 552,
+    "correct": 476,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 61,
+    "false_refusal_n": 464,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 2,
+     "mcnemar_p": 0.5
+    }
+   },
+   "pair en-ru": {
+    "n": 535,
+    "correct": 450,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 78,
+    "false_refusal_n": 447,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 1,
+     "mcnemar_p": 1.0
+    }
    }
   },
   "bge_zs_dev": {
@@ -270,6 +426,298 @@
      "gained": 0,
      "lost": 1,
      "mcnemar_p": 1.0
+    }
+   },
+   "pair en-en": {
+    "n": 111,
+    "correct": 104,
+    "hallucination": 1,
+    "hallucination_n": 43,
+    "false_refusal": 3,
+    "false_refusal_n": 68,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 0,
+     "mcnemar_p": 1.0
+    }
+   },
+   "pair ru-en": {
+    "n": 109,
+    "correct": 100,
+    "hallucination": 0,
+    "hallucination_n": 50,
+    "false_refusal": 3,
+    "false_refusal_n": 59,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 0,
+     "mcnemar_p": 1.0
+    }
+   },
+   "pair ru-ru": {
+    "n": 552,
+    "correct": 477,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 59,
+    "false_refusal_n": 464,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 1,
+     "mcnemar_p": 1.0
+    }
+   },
+   "pair en-ru": {
+    "n": 535,
+    "correct": 451,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 77,
+    "false_refusal_n": 447,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 0,
+     "mcnemar_p": 1.0
+    }
+   }
+  },
+  "minicheck": {
+   "threshold": 0.5,
+   "all": {
+    "n": 1307,
+    "correct": 959,
+    "hallucination": 0,
+    "hallucination_n": 269,
+    "false_refusal": 291,
+    "false_refusal_n": 1038,
+    "paired_vs_vanilla": {
+     "gained": 1,
+     "lost": 175,
+     "mcnemar_p": 3.695932450674364e-51
+    }
+   },
+   "v3": {
+    "n": 220,
+    "correct": 134,
+    "hallucination": 0,
+    "hallucination_n": 93,
+    "false_refusal": 52,
+    "false_refusal_n": 127,
+    "paired_vs_vanilla": {
+     "gained": 1,
+     "lost": 71,
+     "mcnemar_p": 3.091670257478196e-20
+    }
+   },
+   "xquad-full": {
+    "n": 1087,
+    "correct": 825,
+    "hallucination": 0,
+    "hallucination_n": 176,
+    "false_refusal": 239,
+    "false_refusal_n": 911,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 104,
+     "mcnemar_p": 9.860761315262648e-32
+    }
+   },
+   "dev": {
+    "n": 651,
+    "correct": 481,
+    "hallucination": 0,
+    "hallucination_n": 136,
+    "false_refusal": 143,
+    "false_refusal_n": 515,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 88,
+     "mcnemar_p": 6.462348535570529e-27
+    }
+   },
+   "test": {
+    "n": 656,
+    "correct": 478,
+    "hallucination": 0,
+    "hallucination_n": 133,
+    "false_refusal": 148,
+    "false_refusal_n": 523,
+    "paired_vs_vanilla": {
+     "gained": 1,
+     "lost": 87,
+     "mcnemar_p": 5.751490196657771e-25
+    }
+   },
+   "pair en-en": {
+    "n": 111,
+    "correct": 65,
+    "hallucination": 0,
+    "hallucination_n": 43,
+    "false_refusal": 31,
+    "false_refusal_n": 68,
+    "paired_vs_vanilla": {
+     "gained": 1,
+     "lost": 40,
+     "mcnemar_p": 3.8198777474462986e-11
+    }
+   },
+   "pair ru-en": {
+    "n": 109,
+    "correct": 69,
+    "hallucination": 0,
+    "hallucination_n": 50,
+    "false_refusal": 21,
+    "false_refusal_n": 59,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 31,
+     "mcnemar_p": 9.313225746154785e-10
+    }
+   },
+   "pair ru-ru": {
+    "n": 552,
+    "correct": 418,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 119,
+    "false_refusal_n": 464,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 60,
+     "mcnemar_p": 1.734723475976807e-18
+    }
+   },
+   "pair en-ru": {
+    "n": 535,
+    "correct": 407,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 120,
+    "false_refusal_n": 447,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 44,
+     "mcnemar_p": 1.1368683772161603e-13
+    }
+   }
+  },
+  "minicheck_dev": {
+   "threshold": 0.05,
+   "all": {
+    "n": 1307,
+    "correct": 1104,
+    "hallucination": 2,
+    "hallucination_n": 269,
+    "false_refusal": 157,
+    "false_refusal_n": 1038,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 29,
+     "mcnemar_p": 3.725290298461914e-09
+    }
+   },
+   "v3": {
+    "n": 220,
+    "correct": 182,
+    "hallucination": 2,
+    "hallucination_n": 93,
+    "false_refusal": 16,
+    "false_refusal_n": 127,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 22,
+     "mcnemar_p": 4.76837158203125e-07
+    }
+   },
+   "xquad-full": {
+    "n": 1087,
+    "correct": 922,
+    "hallucination": 0,
+    "hallucination_n": 176,
+    "false_refusal": 141,
+    "false_refusal_n": 911,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 7,
+     "mcnemar_p": 0.015625
+    }
+   },
+   "dev": {
+    "n": 651,
+    "correct": 556,
+    "hallucination": 1,
+    "hallucination_n": 136,
+    "false_refusal": 71,
+    "false_refusal_n": 515,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 13,
+     "mcnemar_p": 0.000244140625
+    }
+   },
+   "test": {
+    "n": 656,
+    "correct": 548,
+    "hallucination": 1,
+    "hallucination_n": 133,
+    "false_refusal": 86,
+    "false_refusal_n": 523,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 16,
+     "mcnemar_p": 3.0517578125e-05
+    }
+   },
+   "pair en-en": {
+    "n": 111,
+    "correct": 92,
+    "hallucination": 1,
+    "hallucination_n": 43,
+    "false_refusal": 8,
+    "false_refusal_n": 68,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 12,
+     "mcnemar_p": 0.00048828125
+    }
+   },
+   "pair ru-en": {
+    "n": 109,
+    "correct": 90,
+    "hallucination": 1,
+    "hallucination_n": 50,
+    "false_refusal": 8,
+    "false_refusal_n": 59,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 10,
+     "mcnemar_p": 0.001953125
+    }
+   },
+   "pair ru-ru": {
+    "n": 552,
+    "correct": 475,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 61,
+    "false_refusal_n": 464,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 3,
+     "mcnemar_p": 0.25
+    }
+   },
+   "pair en-ru": {
+    "n": 535,
+    "correct": 447,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 80,
+    "false_refusal_n": 447,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 4,
+     "mcnemar_p": 0.125
     }
    }
   },
@@ -339,6 +787,58 @@
      "lost": 15,
      "mcnemar_p": 6.103515625e-05
     }
+   },
+   "pair en-en": {
+    "n": 111,
+    "correct": 99,
+    "hallucination": 1,
+    "hallucination_n": 43,
+    "false_refusal": 6,
+    "false_refusal_n": 68,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 5,
+     "mcnemar_p": 0.0625
+    }
+   },
+   "pair ru-en": {
+    "n": 109,
+    "correct": 95,
+    "hallucination": 0,
+    "hallucination_n": 50,
+    "false_refusal": 6,
+    "false_refusal_n": 59,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 5,
+     "mcnemar_p": 0.0625
+    }
+   },
+   "pair ru-ru": {
+    "n": 552,
+    "correct": 469,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 69,
+    "false_refusal_n": 464,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 9,
+     "mcnemar_p": 0.00390625
+    }
+   },
+   "pair en-ru": {
+    "n": 535,
+    "correct": 445,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 84,
+    "false_refusal_n": 447,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 6,
+     "mcnemar_p": 0.03125
+    }
    }
   },
   "judge": {
@@ -407,6 +907,58 @@
      "lost": 16,
      "mcnemar_p": 3.0517578125e-05
     }
+   },
+   "pair en-en": {
+    "n": 111,
+    "correct": 98,
+    "hallucination": 1,
+    "hallucination_n": 43,
+    "false_refusal": 7,
+    "false_refusal_n": 68,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 6,
+     "mcnemar_p": 0.03125
+    }
+   },
+   "pair ru-en": {
+    "n": 109,
+    "correct": 94,
+    "hallucination": 0,
+    "hallucination_n": 50,
+    "false_refusal": 6,
+    "false_refusal_n": 59,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 6,
+     "mcnemar_p": 0.03125
+    }
+   },
+   "pair ru-ru": {
+    "n": 552,
+    "correct": 469,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 69,
+    "false_refusal_n": 464,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 9,
+     "mcnemar_p": 0.00390625
+    }
+   },
+   "pair en-ru": {
+    "n": 535,
+    "correct": 445,
+    "hallucination": 0,
+    "hallucination_n": 88,
+    "false_refusal": 84,
+    "false_refusal_n": 447,
+    "paired_vs_vanilla": {
+     "gained": 0,
+     "lost": 6,
+     "mcnemar_p": 0.03125
+    }
    }
   }
  },
@@ -430,6 +982,16 @@
    "judge_gained": 0,
    "judge_lost": 26,
    "mcnemar_p": 2.9802322387695312e-08
+  },
+  "minicheck": {
+   "judge_gained": 156,
+   "judge_lost": 9,
+   "mcnemar_p": 9.071961245880261e-36
+  },
+  "minicheck_dev": {
+   "judge_gained": 24,
+   "judge_lost": 22,
+   "mcnemar_p": 0.8829959121223965
   },
   "judge_free": {
    "judge_gained": 0,

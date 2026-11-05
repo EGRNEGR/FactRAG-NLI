@@ -21,6 +21,13 @@
 | Параметры профиля (таблица 1) | `config.json` прогона 1222Z (фактические настройки), `data/nli_judge/bge-m3-zeroshot.json`, код `hybrid_retriever.py`, `generator_verifier.py`, `pipeline.py`, `query_translation.py` |
 | Состав набора (таблица 2), разбиение dev 651 / test 656 | `data/eval_dataset_v3*.json`, `data/xquad_dataset_full.json`, `research.opt3.data` |
 | Библиография документов корпуса | заголовки самих файлов `data/test_docs` (RFC, метаданные PDF NIST, страницы NIST, PostgreSQL 18, PEP 703) |
+| Строка «Попарно к черновику Vanilla» таблицы 3 (+67/−12 … +68/−8) и разложение черновик → проверка → полный контур (+0/−27, +88/−1) | `logged()` по `cases.jsonl` каждого прогона; `reports/review/significance.json` (`python -m research.review.significance`) |
+| Таблица 5 (исходы первых черновиков 1222Z при разных методах проверки) | `reports/review/baselines.json` (`python -m research.review.compare draft`), таблица собрана `research.review.tables` |
+| Таблица 6 и рисунок 8 (стресс-набор, выборка test: 505 верных, 1164 искажённых утверждения) | `reports/review/stress.json` (`compare stress`), `figure_data.json` → `review` |
+| MiniCheck-Flan-T5-Large (ревизия 96eafd0) | оценки посчитаны на RTX 3090 (`research.review.minicheck_pairs score`, 3094 пары) и импортированы в кэш ноутбука; остальные строки пересчитаны с тем же кэшем без изменений |
+| Таблица 7 (Qwen2.5-14B-Instruct и Qwen3.8-27B на v3) | первые черновики прототипа `20261026T2139Z_v3` и прогона 1222Z, `reports/review/second_generator.json` |
+| Каппа Коэна 0,912, согласие 217 / 220 | `reports/review/audit/agreement.json` по листу `v3_audit_sheet.csv` |
+| MiniCheck и AlignScore в списке источников | официальные BibTeX ACL Anthology (2024.emnlp-main.499, с. 8818–8847; 2023.acl-long.634, с. 11328–11348) |
 
 ## Уточнения относительно задания на статью
 
@@ -41,4 +48,4 @@
 
 - Значимость отдельных шагов не утверждается: p = 0,0625, 0,125, 0,33; значим только суммарный эффект (p = 0,0043).
 - Разметка v3 подготовлена языковой моделью (`review_status: ai_draft` у всех 220 вопросов в файлах набора, поле не менялось ради неизменного SHA-256). Сплошная ручная проверка 220 вопросов выполнена автором; вердикты внесены 05.11.2026 по его сводному заключению в `reports/review/audit/v3_audit_sheet.csv` (см. README.md там же). Согласие оценщика с экспертом 217 / 220 = 98,6 %, каппа Коэна 0,912 (`agreement.json`); в «Ограничениях» указано, что эксперт один.
-- LaTeX-исходник компилируется tectonic 0.17.0 (XeTeX) без ошибок, переполненных строк и пропущенных глифов (одна строка с висячим дефисом, 0,6 pt); PDF - `FactRAG-NLI_article.pdf`, 29 страниц; рисунки и таблицы стоят между абзацами, как в .docx.
+- LaTeX-исходник компилируется tectonic 0.17.0 (XeTeX) без ошибок, переполненных строк и пропущенных глифов (одна строка с висячим дефисом, 0,6 pt); PDF - `FactRAG-NLI_article.pdf`, 36 страниц (.docx - 39); рисунки и таблицы стоят между абзацами, как в .docx.
