@@ -68,6 +68,12 @@ def dataset(name: str) -> EvalDatasetV3:
     if current.exists() and hashlib.sha256(current.read_bytes()).hexdigest() == logged["sha256"]:
         return load_dataset(current)
     path = CACHE / "datasets" / Path(logged["path"]).name
+    if current.exists() and not path.exists():
+        # A Windows checkout may hold the run's version with CRLF line endings.
+        lf = current.read_bytes().replace(b"\r\n", b"\n")
+        if hashlib.sha256(lf).hexdigest() == logged["sha256"]:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(lf)
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
         blob = subprocess.run(
