@@ -530,7 +530,7 @@ def build_tex(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
         r"\usepackage{unicode-math}",
         r"\setmathfont{STIXTwoMath-Regular.otf}",
         r"\usepackage{graphicx,tabularx,array,caption,setspace,indentfirst,float}",
-        r"\usepackage{xurl}",
+        r"\usepackage{xurl,needspace}",
         r"\usepackage[protrusion=true,expansion=false]{microtype}",  # XeTeX: protrusion only
         r"\usepackage[hidelinks]{hyperref}",
         r"\urlstyle{same}",
@@ -626,7 +626,9 @@ def build_tex(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
             L += [r"\par\begingroup\setstretch{1}\small"]
             for line in b.text.split("\n"):
                 if line.startswith("**"):
-                    L += [r"\vspace{6pt}\noindent " + t(line), ""]
+                    # the heading never stays alone at the bottom of a page
+                    L += [r"\needspace{4\baselineskip}\vspace{6pt}\noindent " + t(line)
+                          + r"\par\nopagebreak", ""]
                 else:
                     L += [t(line), ""]
             L += [r"\par\endgroup"]
