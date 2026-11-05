@@ -689,16 +689,17 @@ def figure8() -> None:
     series = [s for s in series if s[0] in rev]
     fig, (a, b) = plt.subplots(1, 2, figsize=(WIDTH * MM, 82 * MM),
                                gridspec_kw=dict(width_ratios=[1, 1.15], wspace=0.34))
-    offsets = {"nli_single": (6, -3), "bge_zs": (-6, 6), "bge_zs_dev": (-6, 6),
-               "minicheck": (6, 4), "minicheck_dev": (6, -9), "judge_free": (-8, 7),
-               "judge": (-8, -11)}
+    offsets = {"nli_single": (-8, 0), "bge_zs": (-8, 0), "bge_zs_dev": (-8, 0),
+               "minicheck": (-8, 0), "minicheck_dev": (-8, 0), "judge_free": (-8, 9),
+               "judge": (-8, -9)}
     for label, name, color, filled, marker in series:
         r = rev[label]
         x, y = 100 * r["true_accepted"], 100 * r["false_accepted"]
         a.scatter(x, y, s=46, marker=marker, color=color if filled else "white",
                   edgecolor=color, lw=1.2, zorder=3)
         dx, dy = offsets.get(label, (6, 4))
-        thr = f", порог {ru(r['threshold'], 2)}" if r["threshold"] is not None else ""
+        thr = (f", порог {ru(r['threshold'], 2).rstrip('0')}"
+               if r["threshold"] is not None else "")
         a.annotate(f"{name}{thr}", (x, y), xytext=(dx, dy), textcoords="offset points",
                    ha="right" if dx < 0 else "left", va="center", fontsize=6.3, color=INK)
     a.set_xlim(60, 102)
@@ -707,8 +708,9 @@ def figure8() -> None:
     comma_axis(a.yaxis, 0)
     a.set_xlabel("Приняты верные утверждения, %")
     a.set_ylabel("Приняты искажённые утверждения, %")
-    a.annotate("лучше", xy=(100, 3), xytext=(88, 15), fontsize=6.6, color=INK2,
-               arrowprops=dict(arrowstyle="->", color=INK2, lw=0.7))
+    a.scatter(100, 0, s=60, marker="*", color=INK2, zorder=3, clip_on=False)
+    a.annotate("идеал", (100, 0), xytext=(-6, 5), textcoords="offset points", ha="right",
+               fontsize=6.3, color=INK2)
     a.grid(color="#e6e5e1", lw=0.5, zorder=0)
     a.set_title("а) Компромисс: верные против искажённых", loc="left")
 
