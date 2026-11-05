@@ -1,0 +1,1248 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="481.889764pt" height="476.220472pt" viewBox="0 0 481.889764 476.220472" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-05T09:37:00.173872</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.1, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 476.220472 
+L 481.889764 476.220472 
+L 481.889764 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="line2d_1">
+    <path d="M 119.055118 62.362205 
+L 119.055118 80.787402 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 175.748031 99.212598 
+L 192.755906 99.212598 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 119.055118 117.637795 
+L 119.055118 126.141732 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 181.417323 147.401575 
+L 192.755906 147.401575 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_5">
+    <path d="M 119.055118 168.661417 
+L 119.055118 175.748031 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_6">
+    <path d="M 119.055118 218.267717 
+L 119.055118 236.692913 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_7">
+    <path d="M 184.251969 257.952756 
+L 192.755906 257.952756 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_8">
+    <path d="M 119.055118 279.212598 
+L 119.055118 287.716535 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_9">
+    <path d="M 184.251969 308.976378 
+L 192.755906 308.976378 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_10">
+    <path d="M 119.055118 330.23622 
+L 119.055118 337.322835 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_11">
+    <path d="M 119.055118 368.503937 
+L 119.055118 391.181102 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_12">
+    <path d="M 215.433071 413.858268 
+L 239.527559 413.858268 
+L 239.527559 34.015748 
+L 374.173228 34.015748 
+L 374.173228 48.188976 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_13">
+    <path d="M 300.472441 76.535433 
+L 286.299213 76.535433 
+L 286.299213 136.062992 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_14">
+    <path d="M 374.173228 104.88189 
+L 374.173228 113.385827 
+L 425.19685 113.385827 
+L 425.19685 121.889764 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_15">
+    <path d="M 425.19685 161.574803 
+L 425.19685 175.748031 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_16">
+    <path d="M 413.858268 215.433071 
+L 413.858268 235.275591 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_17">
+    <path d="M 362.834646 257.952756 
+L 351.496063 257.952756 
+L 351.496063 297.637795 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_18">
+    <path d="M 464.88189 257.952756 
+L 453.543307 257.952756 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #000000; stroke-opacity: 0; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_19">
+    <path d="M 464.88189 257.952756 
+L 459.212598 257.952756 
+L 459.212598 297.637795 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_20">
+    <path d="M 286.299213 181.417323 
+L 286.299213 328.818898 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke-dasharray: 2.7,1.35; stroke-dashoffset: 0; stroke: #1baf7a; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_21">
+    <path d="M 371.338583 334.488189 
+L 371.338583 419.527559 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_22">
+    <path d="M 442.204724 334.488189 
+L 442.204724 419.527559 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_23">
+    <path d="M 467.716535 141.732283 
+L 477.637795 141.732283 
+L 477.637795 442.204724 
+L 470.551181 442.204724 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_24">
+    <path d="M 328.818898 365.669291 
+L 334.488189 365.669291 
+L 334.488189 442.204724 
+L 340.15748 442.204724 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_25">
+    <path d="M 243.779528 464.88189 
+L 243.779528 19.84252 
+" clip-path="url(#p9e838593d1)" style="fill: none; stroke-dasharray: 1.2,1.2; stroke-dashoffset: 0; stroke: #8a8984; stroke-width: 0.6"/>
+   </g>
+   <g id="patch_2">
+    <path d="M 54.425197 62.362205 
+L 183.685039 62.362205 
+Q 187.086614 62.362205 187.086614 58.96063 
+L 187.086614 34.582677 
+Q 187.086614 31.181102 183.685039 31.181102 
+L 54.425197 31.181102 
+Q 51.023622 31.181102 51.023622 34.582677 
+L 51.023622 58.96063 
+Q 51.023622 62.362205 54.425197 62.362205 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #52514e; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 62.362205 99.212598 
+L 119.055118 80.787402 
+L 175.748031 99.212598 
+L 119.055118 117.637795 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #52514e; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 196.15748 113.385827 
+L 229.03937 113.385827 
+Q 232.440945 113.385827 232.440945 109.984252 
+L 232.440945 88.440945 
+Q 232.440945 85.03937 229.03937 85.03937 
+L 196.15748 85.03937 
+Q 192.755906 85.03937 192.755906 88.440945 
+L 192.755906 109.984252 
+Q 192.755906 113.385827 196.15748 113.385827 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #6b6a66; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 56.692913 147.401575 
+L 119.055118 126.141732 
+L 181.417323 147.401575 
+L 119.055118 168.661417 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #52514e; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 196.15748 161.574803 
+L 229.03937 161.574803 
+Q 232.440945 161.574803 232.440945 158.173228 
+L 232.440945 136.629921 
+Q 232.440945 133.228346 229.03937 133.228346 
+L 196.15748 133.228346 
+Q 192.755906 133.228346 192.755906 136.629921 
+L 192.755906 158.173228 
+Q 192.755906 161.574803 196.15748 161.574803 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #6b6a66; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 37.417323 218.267717 
+L 200.692913 218.267717 
+Q 204.094488 218.267717 204.094488 214.866142 
+L 204.094488 179.149606 
+Q 204.094488 175.748031 200.692913 175.748031 
+L 37.417323 175.748031 
+Q 34.015748 175.748031 34.015748 179.149606 
+L 34.015748 214.866142 
+Q 34.015748 218.267717 37.417323 218.267717 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #fde8de; stroke: #eb6834; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 53.858268 257.952756 
+L 119.055118 236.692913 
+L 184.251969 257.952756 
+L 119.055118 279.212598 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #52514e; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 196.15748 277.795276 
+L 229.03937 277.795276 
+Q 232.440945 277.795276 232.440945 274.393701 
+L 232.440945 244.346457 
+Q 232.440945 240.944882 229.03937 240.944882 
+L 196.15748 240.944882 
+Q 192.755906 240.944882 192.755906 244.346457 
+L 192.755906 274.393701 
+Q 192.755906 277.795276 196.15748 277.795276 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #6b6a66; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 53.858268 308.976378 
+L 119.055118 287.716535 
+L 184.251969 308.976378 
+L 119.055118 330.23622 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #52514e; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 196.15748 323.149606 
+L 229.03937 323.149606 
+Q 232.440945 323.149606 232.440945 319.748031 
+L 232.440945 298.204724 
+Q 232.440945 294.80315 229.03937 294.80315 
+L 196.15748 294.80315 
+Q 192.755906 294.80315 192.755906 298.204724 
+L 192.755906 319.748031 
+Q 192.755906 323.149606 196.15748 323.149606 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #6b6a66; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 65.76378 368.503937 
+L 172.346457 368.503937 
+Q 175.748031 368.503937 175.748031 365.102362 
+L 175.748031 340.724409 
+Q 175.748031 337.322835 172.346457 337.322835 
+L 65.76378 337.322835 
+Q 62.362205 337.322835 62.362205 340.724409 
+L 62.362205 365.102362 
+Q 62.362205 368.503937 65.76378 368.503937 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #fde8de; stroke: #eb6834; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 26.07874 436.535433 
+L 212.031496 436.535433 
+Q 215.433071 436.535433 215.433071 433.133858 
+L 215.433071 394.582677 
+Q 215.433071 391.181102 212.031496 391.181102 
+L 26.07874 391.181102 
+Q 22.677165 391.181102 22.677165 394.582677 
+L 22.677165 433.133858 
+Q 22.677165 436.535433 26.07874 436.535433 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke-dasharray: 2.4,1.2; stroke-dashoffset: 0; stroke: #eb6834; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 300.472441 76.535433 
+L 374.173228 48.188976 
+L 447.874016 76.535433 
+L 374.173228 104.88189 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #52514e; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 252.850394 181.417323 
+L 319.748031 181.417323 
+Q 323.149606 181.417323 323.149606 178.015748 
+L 323.149606 139.464567 
+Q 323.149606 136.062992 319.748031 136.062992 
+L 252.850394 136.062992 
+Q 249.448819 136.062992 249.448819 139.464567 
+L 249.448819 178.015748 
+Q 249.448819 181.417323 252.850394 181.417323 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #dff4ec; stroke-dasharray: 2.4,1.2; stroke-dashoffset: 0; stroke: #1baf7a; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 382.677165 141.732283 
+L 425.19685 121.889764 
+L 467.716535 141.732283 
+L 425.19685 161.574803 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #52514e; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 366.23622 215.433071 
+L 461.480315 215.433071 
+Q 464.88189 215.433071 464.88189 212.031496 
+L 464.88189 179.149606 
+Q 464.88189 175.748031 461.480315 175.748031 
+L 366.23622 175.748031 
+Q 362.834646 175.748031 362.834646 179.149606 
+L 362.834646 212.031496 
+Q 362.834646 215.433071 366.23622 215.433071 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #dff4ec; stroke-dasharray: 2.4,1.2; stroke-dashoffset: 0; stroke: #1baf7a; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 362.834646 257.952756 
+L 413.858268 235.275591 
+L 464.88189 257.952756 
+L 413.858268 280.629921 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #52514e; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 343.559055 334.488189 
+L 399.11811 334.488189 
+Q 402.519685 334.488189 402.519685 331.086614 
+L 402.519685 301.03937 
+Q 402.519685 297.637795 399.11811 297.637795 
+L 343.559055 297.637795 
+Q 340.15748 297.637795 340.15748 301.03937 
+L 340.15748 331.086614 
+Q 340.15748 334.488189 343.559055 334.488189 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #6b6a66; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 417.259843 334.488189 
+L 467.149606 334.488189 
+Q 470.551181 334.488189 470.551181 331.086614 
+L 470.551181 301.03937 
+Q 470.551181 297.637795 467.149606 297.637795 
+L 417.259843 297.637795 
+Q 413.858268 297.637795 413.858268 301.03937 
+L 413.858268 331.086614 
+Q 413.858268 334.488189 417.259843 334.488189 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #dff4ec; stroke: #1baf7a; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_21">
+    <path d="M 252.850394 402.519685 
+L 325.417323 402.519685 
+Q 328.818898 402.519685 328.818898 399.11811 
+L 328.818898 332.220472 
+Q 328.818898 328.818898 325.417323 328.818898 
+L 252.850394 328.818898 
+Q 249.448819 328.818898 249.448819 332.220472 
+L 249.448819 399.11811 
+Q 249.448819 402.519685 252.850394 402.519685 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #dff4ec; stroke-dasharray: 2.4,1.2; stroke-dashoffset: 0; stroke: #1baf7a; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_22">
+    <path d="M 343.559055 464.88189 
+L 467.149606 464.88189 
+Q 470.551181 464.88189 470.551181 461.480315 
+L 470.551181 422.929134 
+Q 470.551181 419.527559 467.149606 419.527559 
+L 343.559055 419.527559 
+Q 340.15748 419.527559 340.15748 422.929134 
+L 340.15748 461.480315 
+Q 340.15748 464.88189 343.559055 464.88189 
+z
+" clip-path="url(#p9e838593d1)" style="fill: #ffffff; stroke: #0b0b0b; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 7.6px; font-family: 'Arial'; text-anchor: middle; fill: #eb6834" x="119.055118" y="8.503937" transform="rotate(-0 119.055118 8.503937)">Уровень утверждения</text>
+   </g>
+   <g id="text_2">
+    <text style="font-weight: 700; font-size: 7.6px; font-family: 'Arial'; text-anchor: middle; fill: #1baf7a" x="362.834646" y="8.503937" transform="rotate(-0 362.834646 8.503937)">Уровень ответа и адаптивное восстановление</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(80.447657 44.640968)">Черновик ответа (Vanilla):</text>
+    <!-- сегментация на утверждения c$_j$ -->
+    <g style="fill: #0b0b0b" transform="translate(71.540118 51.364215)">
+     <text>
+      <tspan x="0" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">с</tspan>
+      <tspan x="3.25" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">е</tspan>
+      <tspan x="6.86499" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">г</tspan>
+      <tspan x="9.23584" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">м</tspan>
+      <tspan x="13.70459" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">е</tspan>
+      <tspan x="17.31958" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">н</tspan>
+      <tspan x="20.90918" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">т</tspan>
+      <tspan x="23.88623" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">а</tspan>
+      <tspan x="27.501221" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">ц</tspan>
+      <tspan x="31.224121" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="34.85498" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">я</tspan>
+      <tspan x="38.374756" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="40.180664" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">н</tspan>
+      <tspan x="43.770264" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">а</tspan>
+      <tspan x="47.385254" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="49.191162" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">у</tspan>
+      <tspan x="52.441162" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">т</tspan>
+      <tspan x="55.418213" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">в</tspan>
+      <tspan x="58.871338" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">е</tspan>
+      <tspan x="62.486328" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">р</tspan>
+      <tspan x="66.101318" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">ж</tspan>
+      <tspan x="70.449463" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">д</tspan>
+      <tspan x="74.242188" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">е</tspan>
+      <tspan x="77.857178" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">н</tspan>
+      <tspan x="81.446777" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="85.077637" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">я</tspan>
+      <tspan x="88.597412" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="90.40332" y="-0.546875" style="font-size: 6.5px; font-family: 'Arial'; fill: #0b0b0b">c</tspan>
+      <tspan x="93.715527" y="0.428122" style="font-style: oblique; font-size: 4.55px; font-family: 'DejaVu Sans'; fill: #0b0b0b">j</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_4">
+    <!-- Есть ссылка [S$_i$]? -->
+    <g style="fill: #0b0b0b" transform="translate(92.589118 100.961598)">
+     <text>
+      <tspan x="0" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">Е</tspan>
+      <tspan x="4.39798" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">с</tspan>
+      <tspan x="7.694855" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">т</tspan>
+      <tspan x="10.714844" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">ь</tspan>
+      <tspan x="14.150162" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="15.982117" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">с</tspan>
+      <tspan x="19.278992" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">с</tspan>
+      <tspan x="22.575867" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">ы</tspan>
+      <tspan x="27.315125" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">л</tspan>
+      <tspan x="31.162552" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">к</tspan>
+      <tspan x="34.047318" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">а</tspan>
+      <tspan x="37.714447" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="39.546402" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">[</tspan>
+      <tspan x="41.378357" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">S</tspan>
+      <tspan x="47.302338" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">]</tspan>
+      <tspan x="49.134293" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">?</tspan>
+      <tspan x="45.839501" y="0.786872" style="font-style: oblique; font-size: 4.62px; font-family: 'DejaVu Sans'; fill: #0b0b0b">i</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 5.8px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(194.229644 97.851043)">UNVERIFIED:</text>
+    <text style="font-size: 5.8px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(197.781691 104.118498)">нет ссылки</text>
+   </g>
+   <g id="text_6">
+    <!-- Все якоря c$_j$ есть -->
+    <g style="fill: #0b0b0b" transform="translate(92.787118 145.071208)">
+     <text>
+      <tspan x="0" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">В</tspan>
+      <tspan x="4.39798" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">с</tspan>
+      <tspan x="7.694855" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">е</tspan>
+      <tspan x="11.361984" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="13.193939" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">я</tspan>
+      <tspan x="16.764481" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">к</tspan>
+      <tspan x="19.649246" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="23.316376" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">р</tspan>
+      <tspan x="26.983505" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">я</tspan>
+      <tspan x="30.554047" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="32.386002" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">c</tspan>
+      <tspan x="37.208878" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="39.040833" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">е</tspan>
+      <tspan x="42.707962" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">с</tspan>
+      <tspan x="46.004837" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">т</tspan>
+      <tspan x="49.024826" y="-0.28125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">ь</tspan>
+      <tspan x="35.746041" y="0.708747" style="font-style: oblique; font-size: 4.62px; font-family: 'DejaVu Sans'; fill: #0b0b0b">j</tspan>
+     </text>
+    </g>
+    <!-- в Src(c$_j$) и заголовках? -->
+    <g style="fill: #0b0b0b" transform="translate(84.504118 152.536942)">
+     <text>
+      <tspan x="0" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">в</tspan>
+      <tspan x="3.50293" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="5.334885" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">S</tspan>
+      <tspan x="9.732864" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">r</tspan>
+      <tspan x="11.928635" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">c</tspan>
+      <tspan x="15.22551" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">(</tspan>
+      <tspan x="17.42128" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">c</tspan>
+      <tspan x="22.244156" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">)</tspan>
+      <tspan x="24.439926" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="26.271881" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="29.955109" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="31.787064" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">з</tspan>
+      <tspan x="34.810273" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">а</tspan>
+      <tspan x="38.477402" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">г</tspan>
+      <tspan x="40.882447" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="44.549576" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">л</tspan>
+      <tspan x="48.397003" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="52.064133" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">в</tspan>
+      <tspan x="55.567063" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">к</tspan>
+      <tspan x="58.451828" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">а</tspan>
+      <tspan x="62.118958" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">х</tspan>
+      <tspan x="65.415833" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">?</tspan>
+      <tspan x="20.781319" y="0.786872" style="font-style: oblique; font-size: 4.62px; font-family: 'DejaVu Sans'; fill: #0b0b0b">j</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 5.6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(194.86305 142.802301)">UNVERIFIED:</text>
+    <text style="font-size: 5.6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(197.031738 148.849262)">anchor_not_</text>
+    <text style="font-size: 5.6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(200.458675 155.418598)">in_source</text>
+   </g>
+   <g id="text_8">
+    <!-- Признаки φ по каждому источнику: P$_e$, P$_c$ mDeBERTa-v3 -->
+    <g style="fill: #0b0b0b" transform="translate(40.725118 191.4693)">
+     <text>
+      <tspan x="0" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">П</tspan>
+      <tspan x="4.3125" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">р</tspan>
+      <tspan x="7.649414" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="11.000977" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">з</tspan>
+      <tspan x="13.751953" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">н</tspan>
+      <tspan x="17.06543" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">а</tspan>
+      <tspan x="20.402344" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">к</tspan>
+      <tspan x="23.027344" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="26.378906" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="28.045898" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">φ</tspan>
+      <tspan x="31.936523" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="33.603516" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">п</tspan>
+      <tspan x="36.852539" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="40.189453" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="41.856445" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">к</tspan>
+      <tspan x="44.481445" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">а</tspan>
+      <tspan x="47.818359" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">ж</tspan>
+      <tspan x="51.832031" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">д</tspan>
+      <tspan x="55.333008" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="58.669922" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">м</tspan>
+      <tspan x="62.794922" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">у</tspan>
+      <tspan x="65.794922" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="67.461914" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="70.813477" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">с</tspan>
+      <tspan x="73.813477" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">т</tspan>
+      <tspan x="76.561523" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="79.898438" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">ч</tspan>
+      <tspan x="83.024414" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">н</tspan>
+      <tspan x="86.337891" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="89.689453" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">к</tspan>
+      <tspan x="92.314453" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">у</tspan>
+      <tspan x="95.314453" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">:</tspan>
+      <tspan x="96.981445" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="98.648438" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">P</tspan>
+      <tspan x="105.455859" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">,</tspan>
+      <tspan x="107.122852" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="108.789844" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">P</tspan>
+      <tspan x="115.322461" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="116.989453" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">m</tspan>
+      <tspan x="121.9875" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">D</tspan>
+      <tspan x="126.320508" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">e</tspan>
+      <tspan x="129.657422" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">B</tspan>
+      <tspan x="133.659375" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">E</tspan>
+      <tspan x="137.661328" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">R</tspan>
+      <tspan x="141.994336" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">T</tspan>
+      <tspan x="145.659375" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">a</tspan>
+      <tspan x="148.996289" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">-</tspan>
+      <tspan x="150.994336" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">v</tspan>
+      <tspan x="153.994336" y="-0.6875" style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b">3</tspan>
+      <tspan x="102.707813" y="0.212497" style="font-style: oblique; font-size: 4.2px; font-family: 'DejaVu Sans'; fill: #0b0b0b">e</tspan>
+      <tspan x="112.849219" y="0.212497" style="font-style: oblique; font-size: 4.2px; font-family: 'DejaVu Sans'; fill: #0b0b0b">c</tspan>
+     </text>
+    </g>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(51.621681 198.560374)">и BGE-M3-zeroshot по фрагменту и окнам из 1-2</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(42.489024 205.597542)">предложений; перекрытие, якоря, кодовые фрагменты</text>
+   </g>
+   <g id="text_9">
+    <!-- p = σ(β$_0$ + β$^T$φ) ≥ θ = 0,3 -->
+    <g style="fill: #0b0b0b" transform="translate(82.557118 256.579389)">
+     <text>
+      <tspan x="0" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">p</tspan>
+      <tspan x="3.66713" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="5.499084" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">=</tspan>
+      <tspan x="9.349731" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="11.181686" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">σ</tspan>
+      <tspan x="15.251266" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">(</tspan>
+      <tspan x="17.447037" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">β</tspan>
+      <tspan x="24.419965" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="26.25192" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">+</tspan>
+      <tspan x="30.102567" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="31.934522" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">β</tspan>
+      <tspan x="38.790256" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">φ</tspan>
+      <tspan x="43.065891" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">)</tspan>
+      <tspan x="45.261661" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="47.093616" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">≥</tspan>
+      <tspan x="50.712452" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="52.544407" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">θ</tspan>
+      <tspan x="56.211536" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="58.043491" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">=</tspan>
+      <tspan x="61.894138" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="63.726093" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">0</tspan>
+      <tspan x="67.393223" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">,</tspan>
+      <tspan x="69.225178" y="-0.90545" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">3</tspan>
+      <tspan x="21.302895" y="0.084547" style="font-size: 4.62px; font-family: 'DejaVu Sans'; fill: #0b0b0b">0</tspan>
+      <tspan x="35.79038" y="-3.63125" style="font-style: oblique; font-size: 4.62px; font-family: 'DejaVu Sans'; fill: #0b0b0b">T</tspan>
+     </text>
+    </g>
+    <!-- для процитированного S$_i$? -->
+    <g style="fill: #0b0b0b" transform="translate(78.531118 263.418123)">
+     <text>
+      <tspan x="0" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">д</tspan>
+      <tspan x="3.847427" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">л</tspan>
+      <tspan x="7.694855" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">я</tspan>
+      <tspan x="11.265396" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="13.097351" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">п</tspan>
+      <tspan x="16.667892" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">р</tspan>
+      <tspan x="20.335022" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="24.002151" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">ц</tspan>
+      <tspan x="27.778748" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="31.461975" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">т</tspan>
+      <tspan x="34.481964" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="38.165192" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">р</tspan>
+      <tspan x="41.832321" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="45.499451" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">в</tspan>
+      <tspan x="49.00238" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">а</tspan>
+      <tspan x="52.66951" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">н</tspan>
+      <tspan x="56.310883" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">н</tspan>
+      <tspan x="59.952255" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="63.619385" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">г</tspan>
+      <tspan x="66.024429" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="69.691559" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="71.523514" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">S</tspan>
+      <tspan x="77.447495" y="-0.203125" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">?</tspan>
+      <tspan x="75.984658" y="0.786872" style="font-style: oblique; font-size: 4.62px; font-family: 'DejaVu Sans'; fill: #0b0b0b">i</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 5.6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(194.86305 254.770805)">UNVERIFIED:</text>
+    <text style="font-size: 5.6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(195.234925 260.822141)">частично или</text>
+    <text style="font-size: 5.6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(194.91205 267.012602)">недостаточно</text>
+   </g>
+   <g id="text_11">
+    <!-- Другой источник: P$_c$ ≥ 0,9 -->
+    <g style="fill: #0b0b0b" transform="translate(80.379118 306.910011)">
+     <text>
+      <tspan x="0" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">Д</tspan>
+      <tspan x="4.465591" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">р</tspan>
+      <tspan x="8.132721" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">у</tspan>
+      <tspan x="11.429596" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">г</tspan>
+      <tspan x="13.834641" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="17.50177" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">й</tspan>
+      <tspan x="21.184998" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="23.016953" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="26.70018" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">с</tspan>
+      <tspan x="29.997055" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">т</tspan>
+      <tspan x="33.017044" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="36.684174" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">ч</tspan>
+      <tspan x="40.119492" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">н</tspan>
+      <tspan x="43.760864" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="47.444092" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">к</tspan>
+      <tspan x="50.328857" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">:</tspan>
+      <tspan x="52.160812" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="53.992767" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">P</tspan>
+      <tspan x="61.172072" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="63.004027" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">≥</tspan>
+      <tspan x="66.622863" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="68.454818" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">0</tspan>
+      <tspan x="72.121947" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">,</tspan>
+      <tspan x="73.953902" y="-0.265625" style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b">9</tspan>
+      <tspan x="58.453911" y="0.724372" style="font-style: oblique; font-size: 4.62px; font-family: 'DejaVu Sans'; fill: #0b0b0b">c</tspan>
+     </text>
+    </g>
+    <text style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(74.739727 314.439167)">и BGE-M3 не подтверждает?</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 5.8px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(199.388472 307.651979)">CONTRA-</text>
+    <text style="font-size: 5.8px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(200.67716 314.455934)">DICTION</text>
+   </g>
+   <g id="text_13">
+    <!-- VERIFIED: c$_j \in$ A -->
+    <g style="fill: #0b0b0b" transform="translate(91.685118 354.341386)">
+     <text>
+      <tspan x="0" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b">V</tspan>
+      <tspan x="4.533463" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b">E</tspan>
+      <tspan x="9.066925" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b">R</tspan>
+      <tspan x="13.975418" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b">I</tspan>
+      <tspan x="15.863815" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b">F</tspan>
+      <tspan x="20.015625" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b">I</tspan>
+      <tspan x="21.904022" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b">E</tspan>
+      <tspan x="26.437485" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b">D</tspan>
+      <tspan x="31.345978" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b">:</tspan>
+      <tspan x="33.234375" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="35.122772" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b">c</tspan>
+      <tspan x="48.663214" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="50.551611" y="-0.140625" style="font-size: 6.8px; font-family: 'Arial'; fill: #0b0b0b">A</tspan>
+      <tspan x="38.586288" y="0.879372" style="font-style: oblique; font-size: 4.76px; font-family: 'DejaVu Sans'; fill: #0b0b0b">j</tspan>
+      <tspan x="41.418301" y="-0.140625" style="font-size: 6.8px; font-family: 'DejaVu Sans'; fill: #0b0b0b">∈</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(35.459649 408.42235)">Совместная поддержка: UNVERIFIED по слабой поддержке</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(52.297618 414.817799)">принимается, если источник подтвердил другое</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(45.189962 422.421686)">утверждение, все якоря на месте и перекрытие ≥ 0,5</text>
+   </g>
+   <g id="text_15">
+    <!-- A = $\varnothing$ или |C \ A| / |C| &gt; 0,5 -->
+    <g style="fill: #0b0b0b" transform="translate(335.837728 74.594492)">
+     <text>
+      <tspan x="0" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">A</tspan>
+      <tspan x="4.199966" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="5.949448" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">=</tspan>
+      <tspan x="9.626724" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="16.861374" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="18.610855" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="22.12825" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">л</tspan>
+      <tspan x="25.80246" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="29.319855" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="31.069336" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">|</tspan>
+      <tspan x="32.705048" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">C</tspan>
+      <tspan x="37.252457" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="39.001938" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">\</tspan>
+      <tspan x="40.751419" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="42.5009" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">A</tspan>
+      <tspan x="46.700867" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">|</tspan>
+      <tspan x="48.336578" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="50.08606" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">/</tspan>
+      <tspan x="51.835541" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="53.585022" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">|</tspan>
+      <tspan x="55.220734" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">C</tspan>
+      <tspan x="59.768143" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">|</tspan>
+      <tspan x="61.403854" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="63.153336" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">&gt;</tspan>
+      <tspan x="66.830612" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="68.580093" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">0</tspan>
+      <tspan x="72.082123" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">,</tspan>
+      <tspan x="73.831604" y="-0.421875" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">5</tspan>
+      <tspan x="11.376205" y="-0.421875" style="font-size: 6.3px; font-family: 'DejaVu Sans'; fill: #0b0b0b">∅</tspan>
+     </text>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(338.573306 81.712999)">или генерация усечена?</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(277.369994 150.331515)">Отказ:</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(266.183744 156.736808)">llm_think_retry,</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(262.263119 163.815226)">затем восстанов-</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(277.879994 170.8538)">ление</text>
+   </g>
+   <g id="text_17">
+    <text style="font-size: 6.2px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(411.310788 140.460073)">Снято ≥ 1</text>
+    <text style="font-size: 6.2px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(404.715054 146.827666)">утверждения?</text>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(389.517018 190.103071)">llm_think_on_trim:</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(378.767643 197.178207)">проход think / think_repair</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(385.515299 204.184907)">с тем же контекстом</text>
+   </g>
+   <g id="text_19">
+    <text style="font-size: 6.1px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(389.300049 252.624311)">Все утверждения</text>
+    <text style="font-size: 6.1px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(394.34208 259.534467)">нового ответа</text>
+    <text style="font-size: 6.1px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(398.095963 267.042709)">VERIFIED?</text>
+   </g>
+   <g id="text_20">
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(359.396239 310.572699)">прежний</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(354.492645 317.665648)">обрезанный</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(363.859676 324.657348)">ответ</text>
+   </g>
+   <g id="text_21">
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(432.105506 310.580199)">замена</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(433.091287 317.618773)">ответа</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(433.067381 324.657348)">новым</text>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(266.22089 346.699506)">G3 после отказа</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(268.315733 353.70433)">гейта или LLM:</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(262.587608 360.181811)">алфавиты вопроса</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(271.003077 367.225073)">и источников</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(271.854327 373.702553)">различны →</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(267.310265 380.741127)">перевод, поиск,</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(268.809327 387.779701)">один черновик</text>
+   </g>
+   <g id="text_23">
+    <!-- Опубликованный ответ с цитатами [S$_i$] -->
+    <g style="fill: #0b0b0b" transform="translate(348.969331 440.147473)">
+     <text>
+      <tspan x="0" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">О</tspan>
+      <tspan x="4.897919" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">п</tspan>
+      <tspan x="8.307709" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">у</tspan>
+      <tspan x="11.456146" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">б</tspan>
+      <tspan x="15.062714" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">л</tspan>
+      <tspan x="18.736923" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="22.254318" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">к</tspan>
+      <tspan x="25.009201" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="28.51123" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">в</tspan>
+      <tspan x="31.856445" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">а</tspan>
+      <tspan x="35.358475" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">н</tspan>
+      <tspan x="38.835907" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">н</tspan>
+      <tspan x="42.313339" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">ы</tspan>
+      <tspan x="46.839218" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">й</tspan>
+      <tspan x="50.356613" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="52.106094" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">о</tspan>
+      <tspan x="55.608124" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">т</tspan>
+      <tspan x="58.492142" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">в</tspan>
+      <tspan x="61.837357" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">е</tspan>
+      <tspan x="65.339386" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">т</tspan>
+      <tspan x="68.223404" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="69.972885" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">с</tspan>
+      <tspan x="73.121323" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="74.870804" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">ц</tspan>
+      <tspan x="78.477371" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="81.994766" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">т</tspan>
+      <tspan x="84.878784" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">а</tspan>
+      <tspan x="88.380814" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">т</tspan>
+      <tspan x="91.264832" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">а</tspan>
+      <tspan x="94.766861" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">м</tspan>
+      <tspan x="99.095963" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">и</tspan>
+      <tspan x="102.613358" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b"> </tspan>
+      <tspan x="104.362839" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">[</tspan>
+      <tspan x="106.11232" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">S</tspan>
+      <tspan x="111.769482" y="-0.390625" style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b">]</tspan>
+      <tspan x="110.372579" y="0.554372" style="font-style: oblique; font-size: 4.41px; font-family: 'DejaVu Sans'; fill: #0b0b0b">i</tspan>
+     </text>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(370.460206 448.11482)">или канонический отказ</text>
+   </g>
+   <g id="text_24">
+    <g id="patch_23">
+     <path d="M 477.649998 252.406654 
+L 477.649998 201.136654 
+L 471.389373 201.136654 
+L 471.389373 252.406654 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #52514e" transform="translate(476.087185 252.106654) rotate(-90)">нет: публикация A</text>
+   </g>
+   <g id="patch_24">
+    <path d="M 119.055118 62.362205 
+Q 119.055118 71.574803 119.055118 79.762835 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 120.815118 76.162835 
+L 119.055118 79.762835 
+L 117.295118 76.162835 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_25">
+    <path d="M 175.748031 99.212598 
+Q 184.251969 99.212598 191.731339 99.212598 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 188.131339 97.452598 
+L 191.731339 99.212598 
+L 188.131339 100.972598 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_26">
+    <path d="M 119.055118 117.637795 
+Q 119.055118 121.889764 119.055118 125.117166 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 120.815118 121.517166 
+L 119.055118 125.117166 
+L 117.295118 121.517166 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_27">
+    <path d="M 181.417323 147.401575 
+Q 187.086614 147.401575 191.731339 147.401575 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 188.131339 145.641575 
+L 191.731339 147.401575 
+L 188.131339 149.161575 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_28">
+    <path d="M 119.055118 168.661417 
+Q 119.055118 172.204724 119.055118 174.723465 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 120.815118 171.123465 
+L 119.055118 174.723465 
+L 117.295118 171.123465 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_29">
+    <path d="M 119.055118 218.267717 
+Q 119.055118 227.480315 119.055118 235.668347 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 120.815118 232.068347 
+L 119.055118 235.668347 
+L 117.295118 232.068347 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_30">
+    <path d="M 184.251969 257.952756 
+Q 188.503937 257.952756 191.731339 257.952756 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 188.131339 256.192756 
+L 191.731339 257.952756 
+L 188.131339 259.712756 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_31">
+    <path d="M 119.055118 279.212598 
+Q 119.055118 283.464567 119.055118 286.691969 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 120.815118 283.091969 
+L 119.055118 286.691969 
+L 117.295118 283.091969 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_32">
+    <path d="M 184.251969 308.976378 
+Q 188.503937 308.976378 191.731339 308.976378 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 188.131339 307.216378 
+L 191.731339 308.976378 
+L 188.131339 310.736378 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_33">
+    <path d="M 119.055118 330.23622 
+Q 119.055118 333.779528 119.055118 336.298268 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 120.815118 332.698268 
+L 119.055118 336.298268 
+L 117.295118 332.698268 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_34">
+    <path d="M 119.055118 368.503937 
+Q 119.055118 379.84252 119.055118 390.156536 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 120.815118 386.556536 
+L 119.055118 390.156536 
+L 117.295118 386.556536 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_35">
+    <path d="M 374.173228 34.015748 
+Q 374.173228 41.102362 374.173228 47.16441 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 375.933228 43.56441 
+L 374.173228 47.16441 
+L 372.413228 43.56441 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_36">
+    <path d="M 286.299213 76.535433 
+Q 286.299213 106.299213 286.299213 135.038426 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 288.059213 131.438426 
+L 286.299213 135.038426 
+L 284.539213 131.438426 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_37">
+    <path d="M 425.19685 113.385827 
+Q 425.19685 117.637795 425.19685 120.865197 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 426.95685 117.265197 
+L 425.19685 120.865197 
+L 423.43685 117.265197 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_38">
+    <path d="M 425.19685 161.574803 
+Q 425.19685 168.661417 425.19685 174.723465 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 426.95685 171.123465 
+L 425.19685 174.723465 
+L 423.43685 171.123465 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_39">
+    <path d="M 413.858268 215.433071 
+Q 413.858268 225.354331 413.858268 234.251024 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 415.618268 230.651024 
+L 413.858268 234.251024 
+L 412.098268 230.651024 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_40">
+    <path d="M 351.496063 257.952756 
+Q 351.496063 277.795276 351.496063 296.613229 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 353.256063 293.013229 
+L 351.496063 296.613229 
+L 349.736063 293.013229 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_41">
+    <path d="M 459.212598 257.952756 
+Q 459.212598 277.795276 459.212598 296.613229 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 460.972598 293.013229 
+L 459.212598 296.613229 
+L 457.452598 293.013229 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_42">
+    <path d="M 286.299213 181.417323 
+Q 286.299213 255.11811 286.299213 327.794331 
+" style="fill: none; stroke: #1baf7a; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 288.059213 324.194331 
+L 286.299213 327.794331 
+L 284.539213 324.194331 
+z
+" style="fill: #1baf7a; stroke: #1baf7a; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_43">
+    <path d="M 371.338583 334.488189 
+Q 371.338583 377.007874 371.338583 418.502993 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 373.098583 414.902993 
+L 371.338583 418.502993 
+L 369.578583 414.902993 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_44">
+    <path d="M 442.204724 334.488189 
+Q 442.204724 377.007874 442.204724 418.502993 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 443.964724 414.902993 
+L 442.204724 418.502993 
+L 440.444724 414.902993 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_45">
+    <path d="M 477.637795 442.204724 
+Q 474.094488 442.204724 471.575748 442.204724 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 475.175748 443.964724 
+L 471.575748 442.204724 
+L 475.175748 440.444724 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_46">
+    <path d="M 334.488189 442.204724 
+Q 337.322835 442.204724 339.132914 442.204724 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 335.532914 440.444724 
+L 339.132914 442.204724 
+L 335.532914 443.964724 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="text_25">
+    <g id="patch_47">
+     <path d="M 179.044625 97.727902 
+L 189.459312 97.727902 
+L 189.459312 91.0595 
+L 179.044625 91.0595 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #52514e" x="184.251969" y="96.024072" transform="rotate(-0 184.251969 96.024072)">нет</text>
+   </g>
+   <g id="text_26">
+    <g id="patch_48">
+     <path d="M 125.763732 125.223965 
+L 133.698779 125.223965 
+L 133.698779 118.555563 
+L 125.763732 118.555563 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: start; fill: #52514e" x="126.141732" y="123.520135" transform="rotate(-0 126.141732 123.520135)">да</text>
+   </g>
+   <g id="text_27">
+    <g id="patch_49">
+     <path d="M 181.87927 145.916878 
+L 192.293958 145.916878 
+L 192.293958 139.248476 
+L 181.87927 139.248476 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #52514e" x="187.086614" y="144.213048" transform="rotate(-0 187.086614 144.213048)">нет</text>
+   </g>
+   <g id="text_28">
+    <g id="patch_50">
+     <path d="M 125.763732 174.971996 
+L 133.698779 174.971996 
+L 133.698779 168.303594 
+L 125.763732 168.303594 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: start; fill: #52514e" x="126.141732" y="173.268166" transform="rotate(-0 126.141732 173.268166)">да</text>
+   </g>
+   <g id="text_29">
+    <g id="patch_51">
+     <path d="M 183.296593 256.468059 
+L 193.711281 256.468059 
+L 193.711281 249.799657 
+L 183.296593 249.799657 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #52514e" x="188.503937" y="254.764229" transform="rotate(-0 188.503937 254.764229)">нет</text>
+   </g>
+   <g id="text_30">
+    <g id="patch_52">
+     <path d="M 125.763732 286.798768 
+L 133.698779 286.798768 
+L 133.698779 280.130366 
+L 125.763732 280.130366 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: start; fill: #52514e" x="126.141732" y="285.094938" transform="rotate(-0 126.141732 285.094938)">да</text>
+   </g>
+   <g id="text_31">
+    <g id="patch_53">
+     <path d="M 184.536414 307.491681 
+L 192.47146 307.491681 
+L 192.47146 300.823279 
+L 184.536414 300.823279 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #52514e" x="188.503937" y="305.787851" transform="rotate(-0 188.503937 305.787851)">да</text>
+   </g>
+   <g id="text_32">
+    <g id="patch_54">
+     <path d="M 125.763732 336.5468 
+L 136.17842 336.5468 
+L 136.17842 329.878397 
+L 125.763732 329.878397 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: start; fill: #52514e" x="126.141732" y="334.84297" transform="rotate(-0 126.141732 334.84297)">нет</text>
+   </g>
+   <g id="text_33">
+    <g id="patch_55">
+     <path d="M 289.418303 75.334201 
+L 297.35335 75.334201 
+L 297.35335 68.665799 
+L 289.418303 68.665799 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #52514e" x="293.385827" y="73.630371" transform="rotate(-0 293.385827 73.630371)">да</text>
+   </g>
+   <g id="text_34">
+    <g id="patch_56">
+     <path d="M 381.165307 112.468059 
+L 391.579995 112.468059 
+L 391.579995 105.799657 
+L 381.165307 105.799657 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: start; fill: #52514e" x="381.543307" y="110.764229" transform="rotate(-0 381.543307 110.764229)">нет</text>
+   </g>
+   <g id="text_35">
+    <g id="patch_57">
+     <path d="M 432.188929 171.995618 
+L 440.123976 171.995618 
+L 440.123976 165.327216 
+L 432.188929 165.327216 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: start; fill: #52514e" x="432.566929" y="170.291788" transform="rotate(-0 432.566929 170.291788)">да</text>
+   </g>
+   <g id="text_36">
+    <g id="patch_58">
+     <path d="M 351.958011 256.751524 
+L 362.372698 256.751524 
+L 362.372698 250.083122 
+L 351.958011 250.083122 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #52514e" x="357.165354" y="255.047694" transform="rotate(-0 357.165354 255.047694)">нет</text>
+   </g>
+   <g id="text_37">
+    <g id="patch_59">
+     <path d="M 459.497043 256.751524 
+L 467.43209 256.751524 
+L 467.43209 250.083122 
+L 459.497043 250.083122 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #52514e" x="463.464567" y="255.047694" transform="rotate(-0 463.464567 255.047694)">да</text>
+   </g>
+   <g id="text_38">
+    <g id="patch_60">
+     <path d="M 277.826088 250.729801 
+L 294.772338 250.729801 
+L 294.772338 236.829254 
+L 277.826088 236.829254 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #1baf7a" transform="translate(278.246088 242.067125)">снова</text>
+    <text style="font-size: 6px; font-family: 'Arial'; fill: #1baf7a" transform="translate(278.934681 248.597399)">отказ</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p9e838593d1">
+   <rect x="0" y="0" width="481.889764" height="476.220472"/>
+  </clipPath>
+ </defs>
+</svg>

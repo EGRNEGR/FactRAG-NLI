@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="481.889764pt" height="260.787402pt" viewBox="0 0 481.889764 260.787402" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-05T09:34:44.832217</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.1, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 260.787402 
+L 481.889764 260.787402 
+L 481.889764 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="line2d_1">
+    <path d="M 96.377953 53.858268 
+L 113.385827 53.858268 
+" clip-path="url(#pb936124632)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 198.425197 53.858268 
+L 215.433071 53.858268 
+" clip-path="url(#pb936124632)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 300.472441 53.858268 
+L 337.322835 53.858268 
+" clip-path="url(#pb936124632)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 433.700787 53.858268 
+L 453.543307 53.858268 
+L 453.543307 110.551181 
+" clip-path="url(#pb936124632)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_5">
+    <path d="M 385.511811 85.03937 
+L 385.511811 89.291339 
+L 325.984252 89.291339 
+L 325.984252 96.377953 
+" clip-path="url(#pb936124632)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_6">
+    <path d="M 277.795276 138.897638 
+L 255.11811 138.897638 
+" clip-path="url(#pb936124632)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_7">
+    <path d="M 147.401575 138.897638 
+L 124.724409 138.897638 
+" clip-path="url(#pb936124632)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="line2d_8">
+    <path d="M 68.031496 181.417323 
+L 68.031496 209.76378 
+" clip-path="url(#pb936124632)" style="fill: none; stroke: #52514e; stroke-width: 0.9"/>
+   </g>
+   <g id="patch_2">
+    <path d="M 14.740157 85.03937 
+L 92.976378 85.03937 
+Q 96.377953 85.03937 96.377953 81.637795 
+L 96.377953 26.07874 
+Q 96.377953 22.677165 92.976378 22.677165 
+L 14.740157 22.677165 
+Q 11.338583 22.677165 11.338583 26.07874 
+L 11.338583 81.637795 
+Q 11.338583 85.03937 14.740157 85.03937 
+z
+" clip-path="url(#pb936124632)" style="fill: #ffffff; stroke: #52514e; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 116.787402 85.03937 
+L 195.023622 85.03937 
+Q 198.425197 85.03937 198.425197 81.637795 
+L 198.425197 26.07874 
+Q 198.425197 22.677165 195.023622 22.677165 
+L 116.787402 22.677165 
+Q 113.385827 22.677165 113.385827 26.07874 
+L 113.385827 81.637795 
+Q 113.385827 85.03937 116.787402 85.03937 
+z
+" clip-path="url(#pb936124632)" style="fill: #f0efec; stroke: #6b6a66; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 218.834646 85.03937 
+L 297.070866 85.03937 
+Q 300.472441 85.03937 300.472441 81.637795 
+L 300.472441 26.07874 
+Q 300.472441 22.677165 297.070866 22.677165 
+L 218.834646 22.677165 
+Q 215.433071 22.677165 215.433071 26.07874 
+L 215.433071 81.637795 
+Q 215.433071 85.03937 218.834646 85.03937 
+z
+" clip-path="url(#pb936124632)" style="fill: #f0efec; stroke: #6b6a66; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 337.322835 53.858268 
+L 385.511811 22.677165 
+L 433.700787 53.858268 
+L 385.511811 85.03937 
+z
+" clip-path="url(#pb936124632)" style="fill: #ffffff; stroke: #52514e; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 400.251969 147.401575 
+L 467.149606 147.401575 
+Q 470.551181 147.401575 470.551181 144 
+L 470.551181 113.952756 
+Q 470.551181 110.551181 467.149606 110.551181 
+L 400.251969 110.551181 
+Q 396.850394 110.551181 396.850394 113.952756 
+L 396.850394 144 
+Q 396.850394 147.401575 400.251969 147.401575 
+z
+" clip-path="url(#pb936124632)" style="fill: #ffffff; stroke-dasharray: 2.4,1.2; stroke-dashoffset: 0; stroke: #6b6a66; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 281.19685 181.417323 
+L 370.771654 181.417323 
+Q 374.173228 181.417323 374.173228 178.015748 
+L 374.173228 99.779528 
+Q 374.173228 96.377953 370.771654 96.377953 
+L 281.19685 96.377953 
+Q 277.795276 96.377953 277.795276 99.779528 
+L 277.795276 178.015748 
+Q 277.795276 181.417323 281.19685 181.417323 
+z
+" clip-path="url(#pb936124632)" style="fill: #e3eefb; stroke: #2a78d6; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 150.80315 181.417323 
+L 251.716535 181.417323 
+Q 255.11811 181.417323 255.11811 178.015748 
+L 255.11811 99.779528 
+Q 255.11811 96.377953 251.716535 96.377953 
+L 150.80315 96.377953 
+Q 147.401575 96.377953 147.401575 99.779528 
+L 147.401575 178.015748 
+Q 147.401575 181.417323 150.80315 181.417323 
+z
+" clip-path="url(#pb936124632)" style="fill: #e3eefb; stroke: #2a78d6; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 14.740157 181.417323 
+L 121.322835 181.417323 
+Q 124.724409 181.417323 124.724409 178.015748 
+L 124.724409 99.779528 
+Q 124.724409 96.377953 121.322835 96.377953 
+L 14.740157 96.377953 
+Q 11.338583 96.377953 11.338583 99.779528 
+L 11.338583 178.015748 
+Q 11.338583 181.417323 14.740157 181.417323 
+z
+" clip-path="url(#pb936124632)" style="fill: #e3eefb; stroke: #2a78d6; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 14.740157 249.448819 
+L 206.362205 249.448819 
+Q 209.76378 249.448819 209.76378 246.047244 
+L 209.76378 213.165354 
+Q 209.76378 209.76378 206.362205 209.76378 
+L 14.740157 209.76378 
+Q 11.338583 209.76378 11.338583 213.165354 
+L 11.338583 246.047244 
+Q 11.338583 249.448819 14.740157 249.448819 
+z
+" clip-path="url(#pb936124632)" style="fill: #ffffff; stroke: #0b0b0b; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 241.511811 249.448819 
+L 467.149606 249.448819 
+Q 470.551181 249.448819 470.551181 246.047244 
+L 470.551181 213.165354 
+Q 470.551181 209.76378 467.149606 209.76378 
+L 241.511811 209.76378 
+Q 238.110236 209.76378 238.110236 213.165354 
+L 238.110236 246.047244 
+Q 238.110236 249.448819 241.511811 249.448819 
+z
+" clip-path="url(#pb936124632)" style="fill: #ffffff; stroke-dasharray: 0.8,0.96; stroke-dashoffset: 0; stroke: #6b6a66; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 6.6px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="53.858268" y="42.698365" transform="rotate(-0 53.858268 42.698365)">Файл</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 6.6px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="53.858268" y="51.276005" transform="rotate(-0 53.858268 51.276005)">TXT, MD, PDF</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 6.6px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="53.858268" y="59.856546" transform="rotate(-0 53.858268 59.856546)">с текстовым</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 6.6px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="53.858268" y="68.438955" transform="rotate(-0 53.858268 68.438955)">слоем, DOCX</text>
+   </g>
+   <g id="text_5">
+    <text style="font-weight: 700; font-size: 6.6px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="155.905512" y="42.695465" transform="rotate(-0 155.905512 42.695465)">Проверка</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 6.6px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="155.905512" y="51.276005" transform="rotate(-0 155.905512 51.276005)">формат, размер,</text>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 6.6px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="155.905512" y="59.856546" transform="rotate(-0 155.905512 59.856546)">≤ 500 страниц;</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 6.6px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="155.905512" y="68.437086" transform="rotate(-0 155.905512 68.437086)">снимок файла</text>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 6.6px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="257.952756" y="46.985735" transform="rotate(-0 257.952756 46.985735)">SHA-256</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 6.6px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="257.952756" y="55.566276" transform="rotate(-0 257.952756 55.566276)">идентификатор</text>
+   </g>
+   <g id="text_11">
+    <text style="font-size: 6.6px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="257.952756" y="64.146752" transform="rotate(-0 257.952756 64.146752)">документа</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(372.181874 51.809432)">Хеш уже</text>
+    <text style="font-size: 6.6px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(368.61478 59.491729)">в индексе?</text>
+   </g>
+   <g id="text_13">
+    <text style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(408.564772 126.288634)">пропуск: векторы</text>
+    <text style="font-size: 6.3px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(403.355951 133.716051)">не пересчитываются</text>
+   </g>
+   <g id="text_14">
+    <text style="font-weight: 700; font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="325.984252" y="120.054426" transform="rotate(-0 325.984252 120.054426)">Структурный парсинг</text>
+   </g>
+   <g id="text_15">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="325.984252" y="128.242174" transform="rotate(-0 325.984252 128.242174)">(parser v2)</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="325.984252" y="136.432751" transform="rotate(-0 325.984252 136.432751)">section_path, страницы;</text>
+   </g>
+   <g id="text_17">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="325.984252" y="144.638832" transform="rotate(-0 325.984252 144.638832)">таблицы с подписью</text>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="325.984252" y="152.813783" transform="rotate(-0 325.984252 152.813783)">и шапкой; защита от</text>
+   </g>
+   <g id="text_19">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="325.984252" y="161.004299" transform="rotate(-0 325.984252 161.004299)">ложных заголовков</text>
+   </g>
+   <g id="text_20">
+    <text style="font-weight: 700; font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="201.259843" y="120.051719" transform="rotate(-0 201.259843 120.051719)">Сегментация</text>
+   </g>
+   <g id="text_21">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="201.259843" y="128.242235" transform="rotate(-0 201.259843 128.242235)">окна 320/384 токена</text>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="201.259843" y="136.432751" transform="rotate(-0 201.259843 136.432751)">BGE, перекрытие 50</text>
+   </g>
+   <g id="text_23">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="201.259843" y="144.623267" transform="rotate(-0 201.259843 144.623267)">целыми предложениями;</text>
+   </g>
+   <g id="text_24">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="201.259843" y="152.829348" transform="rotate(-0 201.259843 152.829348)">шапка таблицы</text>
+   </g>
+   <g id="text_25">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="201.259843" y="161.004299" transform="rotate(-0 201.259843 161.004299)">в каждом фрагменте</text>
+   </g>
+   <g id="text_26">
+    <text style="font-weight: 700; font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="68.031496" y="120.051719" transform="rotate(-0 68.031496 120.051719)">Индексация</text>
+   </g>
+   <g id="text_27">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="68.031496" y="128.2578" transform="rotate(-0 68.031496 128.2578)">эмбеддинги BGE-M3</text>
+   </g>
+   <g id="text_28">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="68.031496" y="136.448316" transform="rotate(-0 68.031496 136.448316)">→ Qdrant; пересборка</text>
+   </g>
+   <g id="text_29">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="68.031496" y="144.623267" transform="rotate(-0 68.031496 144.623267)">BM25; число</text>
+   </g>
+   <g id="text_30">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="68.031496" y="152.813783" transform="rotate(-0 68.031496 152.813783)">фрагментов</text>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #0b0b0b" x="68.031496" y="161.004299" transform="rotate(-0 68.031496 161.004299)">в метаданных</text>
+   </g>
+   <g id="text_32">
+    <text style="font-size: 6.4px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(19.855681 227.469393)">Документ доступен поиску только после полной индексации;</text>
+    <text style="font-size: 6.4px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(18.502181 234.974205)">прерванная индексация исключает его до повторной загрузки</text>
+   </g>
+   <g id="text_33">
+    <text style="font-size: 6.4px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(256.719709 227.483393)">Изменённое содержимое - новый хеш и новая версия документа;</text>
+    <text style="font-size: 6.4px; font-family: 'Arial'; fill: #0b0b0b" transform="translate(272.226209 234.991205)">тот же файл под другим именем распознаётся по хешу</text>
+   </g>
+   <g id="patch_12">
+    <path d="M 96.377953 53.858268 
+Q 104.88189 53.858268 112.36126 53.858268 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 108.76126 52.098268 
+L 112.36126 53.858268 
+L 108.76126 55.618268 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 198.425197 53.858268 
+Q 206.929134 53.858268 214.408504 53.858268 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 210.808504 52.098268 
+L 214.408504 53.858268 
+L 210.808504 55.618268 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 300.472441 53.858268 
+Q 318.897638 53.858268 336.298268 53.858268 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 332.698268 52.098268 
+L 336.298268 53.858268 
+L 332.698268 55.618268 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 453.543307 53.858268 
+Q 453.543307 82.204724 453.543307 109.526615 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 455.303307 105.926615 
+L 453.543307 109.526615 
+L 451.783307 105.926615 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 325.984252 89.291339 
+Q 325.984252 92.834646 325.984252 95.353386 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 327.744252 91.753386 
+L 325.984252 95.353386 
+L 324.224252 91.753386 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 277.795276 138.897638 
+Q 266.456693 138.897638 256.142677 138.897638 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 259.742677 140.657638 
+L 256.142677 138.897638 
+L 259.742677 137.137638 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 147.401575 138.897638 
+Q 136.062992 138.897638 125.748976 138.897638 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 129.348976 140.657638 
+L 125.748976 138.897638 
+L 129.348976 137.137638 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 68.031496 181.417323 
+Q 68.031496 195.590551 68.031496 208.739213 
+" style="fill: none; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 69.791496 205.139213 
+L 68.031496 208.739213 
+L 66.271496 205.139213 
+z
+" style="fill: #52514e; stroke: #52514e; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="text_34">
+    <g id="patch_20">
+     <path d="M 439.654524 52.657036 
+L 447.589571 52.657036 
+L 447.589571 45.988633 
+L 439.654524 45.988633 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #52514e" x="443.622047" y="50.953206" transform="rotate(-0 443.622047 50.953206)">да</text>
+   </g>
+   <g id="text_35">
+    <g id="patch_21">
+     <path d="M 350.540688 88.090107 
+L 360.955375 88.090107 
+L 360.955375 81.421704 
+L 350.540688 81.421704 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'Arial'; text-anchor: middle; fill: #52514e" x="355.748031" y="86.386277" transform="rotate(-0 355.748031 86.386277)">нет</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pb936124632">
+   <rect x="0" y="0" width="481.889764" height="260.787402"/>
+  </clipPath>
+ </defs>
+</svg>
