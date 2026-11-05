@@ -11,8 +11,11 @@
 | Медианы оценки реранкера для упорных отказов (0,802/0,089, 0,988/0,588) | пересчитаны по логам 1310Z (`gold_scores`), совпадают с DIAGNOSTIC_REPORT.md |
 | E3 (0,781 → 0,976; гейт 437 → 445 из 447; эталон первым 418 → 433) | `reports/optimization_4/experiments/E3_translation_retrieval.json` |
 | Таксономия 52 упорных отказов | первый код аннотаций `research/opt4/annotations.json`, совпадает с DIAGNOSTIC_REPORT.md |
-| 1343 утверждения рисунка 6 (1242 допущены, 63 / 20 / 18 сняты) | все попытки прогона 1310Z (`points`) |
-| Стоимость llm_think_on_trim (16 вопросов, медиана 21,0 с, среднее 24,1 с) | сумма времени проходов think и think_repair в логах 1310Z |
+| Рисунок 6: 1357 утверждений итогового прогона (1252 допущены, 74 / 13 / 18 сняты), случаи MH-002, TC-021, TC-022, TC-025 | все попытки прогона 1222Z (`final.points`) |
+| Рисунок 7а: медианы стадий итогового прогона (v3 5,46 / 6,15 с, XQuAD 4,00 / 4,39 с) | логи 1222Z (`final.stage_median_s`); совпадают с COMPARISON.md (5,5 / 6,1 и 4,0 / 4,4) |
+| Рисунок 7б: llm_think_on_trim в итоговом прогоне (13 вопросов, медиана 20,6 с, среднее 23,6 с) | время проходов think и think_repair в логах 1222Z (`final.think_on_trim`) |
+| Рисунок 4а: те же медианы в 1222Z (0,803 / 0,089 / 0,988 / 0,588) | `final.gold_medians`; поиск XQuAD в 1310Z и 1222Z одинаков |
+| Исторические значения 1310Z (1343 утверждения, think_on_trim 16 вопросов, медиана 21,0 с) | `points`, `think_on_trim` |
 | Стоимость G3 (медиана 4,1 с, среднее 2,9 с, максимум 8,4 с, всего 7,2 мин) | 1839Z против 1310Z по каждому из 151 переведённого вопроса |
 | Гипотезы E1-E5, G2-G4, X00, порог судьи, T1 | `reports/optimization_3/FINAL_REPORT.md`, `optimization_4/FINAL_REPORT.md`, `optimization_5/FINAL_REPORT.md`, `optimization_6/FINAL_REPORT.md` |
 | Параметры профиля (таблица 1) | `config.json` прогона 1222Z (фактические настройки), `data/nli_judge/bge-m3-zeroshot.json`, код `hybrid_retriever.py`, `generator_verifier.py`, `pipeline.py`, `query_translation.py` |

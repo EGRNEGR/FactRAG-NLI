@@ -235,6 +235,95 @@ def g3_cost() -> dict[str, Any]:
     }
 
 
+def final_run() -> dict[str, Any]:
+    """The final configuration (run 1222Z) read straight from its logs: every fact claim of
+    every attempt, stage medians over the questions that reached generation, the thinking
+    pass after a trimmed draft, the translation pass, and the reranker score of the gold
+    chunk for the 52 persistent refusals of 1310Z (XQuAD retrieval is the same in both)."""
+    from research.opt3 import data
+
+    run = RUNS["1222Z"]
+    responses, rows = {}, {}
+    for ds in ("v3", "xquad-full"):
+        for line in (run / JUDGE / ds / "full" / "e2e_guard_on.jsonl").open(encoding="utf-8"):
+            x = json.loads(line)
+            responses[x["id"]] = x["response"]
+        for line in (run / JUDGE / ds / "e2e_guard_on" / "cases.jsonl").open(encoding="utf-8"):
+            x = json.loads(line)
+            rows[x["id"]] = x
+    marked = {"V3-MH-002", "V3-TC-021", "V3-TC-022", "V3-TC-025"}
+    points, trim, stage = [], [], {}
+    for cid, r in responses.items():
+        dataset = data.dataset_of(cid)
+        stats = r.get("execution_stats") or {}
+        if stats.get("generation_ms", 0) > 0:
+            for key in ("search_ms", "rerank_ms", "generation_ms", "nli_ms", "total_ms"):
+                if key in stats:
+                    stage.setdefault(dataset, {}).setdefault(key, []).append(stats[key])
+        attempts = r.get("verification_attempts") or []
+        roles = data.roles(attempts)
+        first = attempts[0] if attempts else None
+        if (
+            first is not None and roles[0] == "draft" and not first["refused"]
+            and any(c["status"] != "verified" and c.get("kind", "fact") == "fact"
+                    for c in first["claims"])
+            and "think" in roles
+        ):
+            trim.append(sum(a["generation_metadata"]["generation_ms"]
+                            for a, role in zip(attempts, roles, strict=True)
+                            if role in ("think", "think_repair")))
+        for attempt, role in zip(attempts, roles, strict=True):
+            for claim in attempt["claims"]:
+                if claim.get("kind", "fact") != "fact" or not claim.get("evidence"):
+                    continue
+                best = max(claim["evidence"], key=lambda e: e.get("judge_score") or 0.0)
+                if not best.get("probabilities") or not best.get("secondary"):
+                    continue
+                points.append({
+                    "id": cid, "role": role,
+                    "mdeberta_e": round(best["probabilities"]["p_entailment"], 4),
+                    "mdeberta_c": round(best["probabilities"]["p_contradiction"], 4),
+                    "bge_e": round(best["secondary"]["p_entailment"], 4),
+                    "judge": round(best.get("judge_score") or 0.0, 4),
+                    "status": claim["status"], "reason": claim.get("reason"),
+                    "marked": cid in marked and claim["status"] != "verified",
+                })
+    refusals = {
+        json.loads(line)["id"]
+        for line in (OPT4 / "diagnostics" / "xquad_refusals.jsonl").open(encoding="utf-8")
+    }
+    gold: dict[str, list[float]] = {}
+    for cid, case in data.cases().items():
+        if data.dataset_of(cid) != "xquad-full" or not case.answerable:
+            continue
+        ids = set(case.gold_chunk_ids)
+        scores = [d.get("rerank_score") or 0.0
+                  for d in responses[cid].get("retrieval_diagnostics") or [] if d["chunk_id"] in ids]
+        key = f"{case.language}_{'refused' if cid in refusals else 'other'}"
+        gold.setdefault(key, []).append(max(scores, default=0.0))
+    translated = [r for r in rows.values() if r.get("translation_pass")]
+    return {
+        "points": points,
+        "stage_median_s": {
+            ds: {k: round(statistics.median(v) / 1000, 2) for k, v in keys.items()}
+            for ds, keys in stage.items()
+        },
+        "think_on_trim": {
+            "calls": len(trim),
+            "median_s": round(statistics.median(trim) / 1000, 1),
+            "mean_s": round(statistics.mean(trim) / 1000, 1),
+            "values_s": [round(x / 1000, 2) for x in trim],
+        },
+        "translation": {
+            "translated": len(translated),
+            "published": sum(not r["refused"] for r in translated),
+            "translation_call_median_s": round(
+                statistics.median(r["execution_stats"]["translation_ms"] for r in translated) / 1000, 2),
+        },
+        "gold_medians": {k: round(statistics.median(v), 3) for k, v in sorted(gold.items())},
+    }
+
+
 def main() -> None:
     result = {
         "runs": {k: comparison(v) for k, v in RUNS.items()},
@@ -243,10 +332,17 @@ def main() -> None:
         "taxonomy": taxonomy(),
         **claims_and_latency(),
         "g3_cost": g3_cost(),
+        "final": final_run(),
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8")
-    short = {k: v for k, v in result.items() if k not in ("points",)}
+    short = {k: v for k, v in result.items() if k not in ("points", "final")}
+    final = result["final"]
+    short["final"] = {k: v for k, v in final.items() if k != "points"}
+    short["final"]["think_on_trim"] = {k: v for k, v in final["think_on_trim"].items()
+                                       if k != "values_s"}
+    print("final claims:", len(final["points"]),
+          Counter((p["status"], p["reason"]) for p in final["points"]))
     for k in ("gold_scores",):
         short[k] = {g: {"n": x["n"], "median": x["median"]} for g, x in result[k].items()}
     short["translation_e3"] = {k: v for k, v in result["translation_e3"].items() if k not in ("before", "after")}
