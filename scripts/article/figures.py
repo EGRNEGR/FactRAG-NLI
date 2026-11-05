@@ -523,7 +523,7 @@ def figure5() -> None:
 
 
 def figure6() -> None:
-    pts = DATA["points"]
+    pts = DATA["final"]["points"]  # the final configuration, run 1222Z
 
     def kind(p):
         if p["status"] == "verified":
@@ -554,22 +554,28 @@ def figure6() -> None:
         comma_axis(axis, 1)
     a.set_xlim(-0.02, 1.02)
     a.set_ylim(-0.02, 1.02)
-    a.set_title(f"а) {len(pts)} утверждений прогона 1310Z", loc="left")
+    a.set_title(f"а) {len(pts)} утверждений итогового прогона 1222Z", loc="left")
     a.legend(loc="upper left", bbox_to_anchor=(-0.12, -0.2), ncol=2, frameon=False,
              fontsize=6.6, handletextpad=0.3, columnspacing=1)
     a.grid(color="#efeeea", lw=0.5, zorder=0)
 
-    # The three cases of the discussion, first draft of each: a numbered ring, keyed below.
-    def first(cid, k=None):
-        return next(p for p in pts if p["id"] == cid and p["marked"] and p["role"] == "draft"
-                    and (k is None or kind(p) == k))
+    # The residual cases of the discussion: a numbered ring, keyed below. Each is the withheld
+    # claim of that question with the highest judge score (the one closest to publication).
+    def case(cid, k=None):
+        return max((p for p in pts if p["id"] == cid and p["marked"]
+                    and (k is None or kind(p) == k)), key=lambda p: p["judge"])
 
-    marks = [first("V3-MH-002"), first("V3-MH-018"), first("V3-MH-024", "anchor")]
+    marks = [case("V3-MH-002"), case("V3-TC-021"), case("V3-TC-022", "anchor"),
+             case("V3-TC-025", "anchor")]
 
-    def ring(axis, x, y, n):
+    def ring(axis, x, y, n, dy=0.045):
         axis.scatter([x], [y], s=70, facecolors="none", edgecolors=INK, lw=0.9, zorder=6)
-        axis.text(x + 0.03, y + 0.045, str(n), fontsize=7.2, fontweight="bold", zorder=7,
-                  ha="left", va="bottom", bbox=dict(fc="white", ec="none", pad=0.1))
+        # Near the right edge the number goes to the left (the title and counts are there).
+        right = x > 0.9
+        axis.text(x - 0.035 if right else x + 0.03, y - 3 * dy if right and dy < 0.1 else y + dy,
+                  str(n), fontsize=7.2, fontweight="bold", zorder=7,
+                  ha="right" if right else "left", va="bottom",
+                  bbox=dict(fc="white", ec="none", pad=0.1))
 
     for n, p in enumerate(marks, start=1):
         ring(a, p["mdeberta_e"], p["bge_e"], n)
@@ -602,12 +608,13 @@ def figure6() -> None:
     key = (
         f"1 - V3-MH-002: разрешающее «MAY», P$_c$ mDeBERTa = {ru(marks[0]['mdeberta_c'], 2)}, "
         f"судья {ru(marks[0]['judge'], 3)}\n"
-        f"2 - V3-MH-018: перевод «SHALL NOT impose», судья {ru(marks[1]['judge'], 3)}\n"
-        f"3 - V3-MH-024: судья {ru(marks[2]['judge'], 3)} ≥ θ, но метки AC-7(4)\n"
-        "      нет в процитированном фрагменте"
+        f"2 - V3-TC-021: вся таблица как одна посылка, судья {ru(marks[1]['judge'], 3)}\n"
+        f"3 - V3-TC-022: судья {ru(marks[2]['judge'], 3)} ≥ θ, но идентификатор\n"
+        "      в соседнем фрагменте документа\n"
+        f"4 - V3-TC-025: якорь «1000» против ячеек «1 | 0 | 0 | 0»"
     )
-    fig.text(0.53, 0.035, key, fontsize=6.6, ha="left", va="bottom", linespacing=1.35)
-    fig.subplots_adjust(left=0.075, right=0.92, top=0.9, bottom=0.33)
+    fig.text(0.53, 0.02, key, fontsize=6.6, ha="left", va="bottom", linespacing=1.35)
+    fig.subplots_adjust(left=0.075, right=0.92, top=0.9, bottom=0.36)
     save(fig, 6)
 
 
@@ -615,8 +622,7 @@ def figure6() -> None:
 
 
 def figure7() -> None:
-    stage = DATA["stage_median_s"]
-    runs = DATA["runs"]["1310Z"]
+    stage = DATA["final"]["stage_median_s"]  # the final configuration, run 1222Z
     fig, (a, b) = plt.subplots(1, 2, figsize=(WIDTH * MM, 80 * MM),
                                gridspec_kw=dict(width_ratios=[1.2, 1], wspace=0.42))
     names = [("search_ms", "гибридный\nпоиск"), ("rerank_ms", "переранжи-\nрование"),
@@ -639,12 +645,14 @@ def figure7() -> None:
     a.set_xlabel("Медиана, с (вопросы, дошедшие до генерации)")
     a.legend(loc="lower right", frameon=False)
     a.grid(axis="x", color="#e6e5e1", lw=0.5, zorder=0)
-    a.set_title("а) Базовый проход на RTX 3090 (прогон 1310Z)", loc="left")
+    a.set_title("а) Итоговый прогон 1222Z на RTX 3090", loc="left")
 
-    g3, trim = DATA["g3_cost"], DATA["think_on_trim"]
+    # G3 is measured pairwise (1839Z against 1310Z, same questions); a single run cannot
+    # separate the translated pass from the first one. The thinking pass is in the run's log.
+    g3, trim = DATA["g3_cost"], DATA["final"]["think_on_trim"]
     strip_box(b, [g3["values_s"], trim["values_s"]], [0, 1], [AQUA, ORANGE], marker_size=7)
-    b.set_xticks([0, 1], [f"G3: перевод\nи повторный поиск\n({g3['translated']} вопрос)",
-                          f"llm_think_on_trim\n({trim['calls']} вопросов)"], fontsize=7)
+    b.set_xticks([0, 1], [f"G3: перевод и\nповторный поиск\n({g3['translated']} вопрос,\n1839Z к 1310Z)",
+                          f"llm_think_on_trim\n({trim['calls']} вопросов,\n1222Z)"], fontsize=7)
     b.set_ylabel("Дополнительное время на вопрос, с")
     b.set_ylim(0, 46)
     comma_axis(b.yaxis, 0)
