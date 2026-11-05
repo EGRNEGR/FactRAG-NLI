@@ -471,7 +471,7 @@ def build_tex(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
         r"\usepackage{amsmath}",
         r"\usepackage{unicode-math}",
         r"\setmathfont{STIXTwoMath-Regular.otf}",
-        r"\usepackage{graphicx,tabularx,array,caption,setspace,indentfirst,flafter}",
+        r"\usepackage{graphicx,tabularx,array,caption,setspace,indentfirst,float}",
         r"\usepackage{xurl}",
         r"\usepackage[protrusion=true,expansion=false]{microtype}",  # XeTeX: protrusion only
         r"\usepackage[hidelinks]{hyperref}",
@@ -482,13 +482,9 @@ def build_tex(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
         r"\setlength{\emergencystretch}{3em}",
         r"\onehalfspacing",
         r"\tolerance=400",  # long Latin terms (mDeBERTa-v3) do not hyphenate in Russian text
-        # floats stay with the text: no page holding a single float, never before the reference
-        r"\renewcommand{\topfraction}{0.9}",
-        r"\renewcommand{\bottomfraction}{0.8}",
-        r"\renewcommand{\textfraction}{0.07}",
-        r"\renewcommand{\floatpagefraction}{0.85}",
-        r"\setcounter{topnumber}{3}",
-        r"\setcounter{totalnumber}{4}",
+        # Figures and tables stand where the source puts them, between paragraphs (as in the
+        # .docx): [H] never lets a float cut a paragraph; a page before a large float may end short.
+        r"\raggedbottom",
         r"\renewcommand{\arraystretch}{1.15}",
         # \hspace{0pt}: the first word of a cell may be hyphenated too
         r"\newcolumntype{Y}{>{\raggedright\arraybackslash\hspace{0pt}}X}",
@@ -540,14 +536,14 @@ def build_tex(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
             L += [r"\begin{equation}", tex_math(b.text), r"\tag{" + b.number + "}",
                   r"\end{equation}"]
         elif b.kind == "fig":
-            L += [r"\begin{figure}[!htbp]\centering",
+            L += [r"\begin{figure}[H]\centering",
                   r"\includegraphics[width=\textwidth]{figures/" + b.number + ".pdf}",
                   r"\caption{" + t(b.text) + "}", r"\end{figure}", ""]
         elif b.kind == "table":
             cols = len(b.rows[0])
             spec = "|" + "Y|" * cols
             size = r"\fontsize{11}{13}" if cols <= 4 else r"\fontsize{10}{12}"
-            L += [r"\begin{table}[!htbp]", r"\setstretch{1}",
+            L += [r"\begin{table}[H]", r"\setstretch{1}",
                   r"\noindent{\small " + t(b.text) + r"}\par\vspace{4pt}",
                   size + r"\selectfont",
                   r"\noindent\begin{tabularx}{\textwidth}{" + spec + "}", r"\hline"]

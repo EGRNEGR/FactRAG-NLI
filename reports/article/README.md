@@ -6,7 +6,7 @@
 | `references.md` | список источников по ГОСТ Р 7.0.5-2008; нумерация по первому упоминанию |
 | `FactRAG-NLI_article.docx` | рукопись: A4, Times New Roman 14 пт, 1,5 интервала; формулы - объекты Word |
 | `FactRAG-NLI_article.tex` | LaTeX-исходник (XeLaTeX: extarticle 14 пт, fontspec, polyglossia, unicode-math, STIX Two Math); оформление как в .docx |
-| `FactRAG-NLI_article.pdf` | PDF из LaTeX (tectonic 0.17.0), 28 страниц |
+| `FactRAG-NLI_article.pdf` | PDF из LaTeX (tectonic 0.17.0), 29 страниц |
 | `figures/fig1-7.{png,pdf,svg}` | рисунки, 300 dpi, ширина 170 мм |
 | `figure_data.json` | все данные рисунков, пересчитанные из логов |
 | `FACT_CHECK.md` | источник каждой цифры и уточнения относительно задания |
