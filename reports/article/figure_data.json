@@ -33414,5 +33414,72 @@
    "ru_other": 0.988,
    "ru_refused": 0.588
   }
+ },
+ "review": {
+  "nli_single": {
+   "threshold": null,
+   "true_accepted": 0.7366336633663366,
+   "true_n": 505,
+   "false_accepted": 0.16065292096219932,
+   "false_n": 1164,
+   "by_kind": {
+    "number_swap": 0.055248618784530384,
+    "negation": 0.09274193548387097,
+    "answer_swap": 0.25259515570934254,
+    "transplant": 0.18161434977578475
+   }
+  },
+  "bge_zs": {
+   "threshold": 0.5,
+   "true_accepted": 0.9861386138613861,
+   "true_n": 505,
+   "false_accepted": 0.4690721649484536,
+   "false_n": 1164,
+   "by_kind": {
+    "number_swap": 0.4585635359116022,
+    "negation": 0.6653225806451613,
+    "answer_swap": 0.6193771626297578,
+    "transplant": 0.26681614349775784
+   }
+  },
+  "bge_zs_dev": {
+   "threshold": 0.4,
+   "true_accepted": 0.9920792079207921,
+   "true_n": 505,
+   "false_accepted": 0.5790378006872853,
+   "false_n": 1164,
+   "by_kind": {
+    "number_swap": 0.580110497237569,
+    "negation": 0.7217741935483871,
+    "answer_swap": 0.754325259515571,
+    "transplant": 0.38565022421524664
+   }
+  },
+  "judge_free": {
+   "threshold": null,
+   "true_accepted": 0.9643564356435643,
+   "true_n": 505,
+   "false_accepted": 0.11168384879725086,
+   "false_n": 1164,
+   "by_kind": {
+    "number_swap": 0.07734806629834254,
+    "negation": 0.13306451612903225,
+    "answer_swap": 0.2664359861591695,
+    "transplant": 0.013452914798206279
+   }
+  },
+  "judge": {
+   "threshold": null,
+   "true_accepted": 0.9623762376237623,
+   "true_n": 505,
+   "false_accepted": 0.10652920962199312,
+   "false_n": 1164,
+   "by_kind": {
+    "number_swap": 0.049723756906077346,
+    "negation": 0.12903225806451613,
+    "answer_swap": 0.2664359861591695,
+    "transplant": 0.013452914798206279
+   }
+  }
  }
 }

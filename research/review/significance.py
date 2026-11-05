@@ -97,6 +97,10 @@ def main() -> None:
             "draft_vs_verified": paired(sel, "draft", "verified"),
             "verified_vs_full": paired(sel, "verified", "full"),
             "hallucination": {k: hallucinations(sel, k) for k in ("draft", "verified", "full")},
+            "false_refusal": {
+                k: sum(r[k]["refused"] for r in sel if r["expected"] == "answer")
+                for k in ("draft", "verified", "full")
+            },
         }
     result["min_p_one_sided_discordance"] = {k: mcnemar_exact(k, 0) for k in range(1, 11)}
     OUT.mkdir(parents=True, exist_ok=True)

@@ -37,6 +37,11 @@
      "k": 2,
      "n": 269
     }
+   },
+   "false_refusal": {
+    "draft": 141,
+    "verified": 166,
+    "full": 70
    }
   },
   "v3": {
@@ -75,6 +80,11 @@
      "k": 2,
      "n": 93
     }
+   },
+   "false_refusal": {
+    "draft": 6,
+    "verified": 13,
+    "full": 3
    }
   },
   "xquad-full": {
@@ -113,6 +123,11 @@
      "k": 0,
      "n": 176
     }
+   },
+   "false_refusal": {
+    "draft": 135,
+    "verified": 153,
+    "full": 67
    }
   },
   "dev": {
@@ -151,6 +166,11 @@
      "k": 1,
      "n": 136
     }
+   },
+   "false_refusal": {
+    "draft": 65,
+    "verified": 78,
+    "full": 28
    }
   },
   "test": {
@@ -189,6 +209,11 @@
      "k": 1,
      "n": 133
     }
+   },
+   "false_refusal": {
+    "draft": 76,
+    "verified": 88,
+    "full": 42
    }
   }
  },
