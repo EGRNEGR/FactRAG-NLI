@@ -1,0 +1,151 @@
+{
+ "questions": 220,
+ "Qwen2.5-14B-Instruct (prototype 20261026T2139Z_v3)": {
+  "vanilla": {
+   "n": 220,
+   "correct": 183,
+   "hallucination": 10,
+   "hallucination_n": 93,
+   "false_refusal": 10,
+   "false_refusal_n": 127,
+   "vs_vanilla": {
+    "gained": 0,
+    "lost": 0,
+    "mcnemar_p": 1.0
+   },
+   "hallucination_vs_vanilla": {
+    "removed": 0,
+    "added": 0,
+    "mcnemar_p": 1.0
+   }
+  },
+  "nli_single": {
+   "n": 220,
+   "correct": 130,
+   "hallucination": 5,
+   "hallucination_n": 93,
+   "false_refusal": 51,
+   "false_refusal_n": 127,
+   "vs_vanilla": {
+    "gained": 5,
+    "lost": 58,
+    "mcnemar_p": 1.6623508125590547e-12
+   },
+   "hallucination_vs_vanilla": {
+    "removed": 5,
+    "added": 0,
+    "mcnemar_p": 0.0625
+   }
+  },
+  "judge": {
+   "n": 220,
+   "correct": 170,
+   "hallucination": 5,
+   "hallucination_n": 93,
+   "false_refusal": 24,
+   "false_refusal_n": 127,
+   "vs_vanilla": {
+    "gained": 5,
+    "lost": 18,
+    "mcnemar_p": 0.010622024536132812
+   },
+   "hallucination_vs_vanilla": {
+    "removed": 5,
+    "added": 0,
+    "mcnemar_p": 0.0625
+   }
+  },
+  "live": {
+   "n": 220,
+   "correct": 166,
+   "hallucination": 4,
+   "hallucination_n": 93,
+   "false_refusal": 24,
+   "false_refusal_n": 127,
+   "vs_vanilla": {
+    "gained": 6,
+    "lost": 23,
+    "mcnemar_p": 0.002315700054168701
+   },
+   "hallucination_vs_vanilla": {
+    "removed": 6,
+    "added": 0,
+    "mcnemar_p": 0.03125
+   }
+  }
+ },
+ "Qwen3.8-27B (final run 20261104T1222Z)": {
+  "vanilla": {
+   "n": 220,
+   "correct": 204,
+   "hallucination": 1,
+   "hallucination_n": 93,
+   "false_refusal": 6,
+   "false_refusal_n": 127,
+   "vs_vanilla": {
+    "gained": 0,
+    "lost": 0,
+    "mcnemar_p": 1.0
+   },
+   "hallucination_vs_vanilla": {
+    "removed": 0,
+    "added": 0,
+    "mcnemar_p": 1.0
+   }
+  },
+  "nli_single": {
+   "n": 220,
+   "correct": 157,
+   "hallucination": 2,
+   "hallucination_n": 93,
+   "false_refusal": 38,
+   "false_refusal_n": 127,
+   "vs_vanilla": {
+    "gained": 0,
+    "lost": 47,
+    "mcnemar_p": 1.4210854715202004e-14
+   },
+   "hallucination_vs_vanilla": {
+    "removed": 0,
+    "added": 1,
+    "mcnemar_p": 1.0
+   }
+  },
+  "judge": {
+   "n": 220,
+   "correct": 192,
+   "hallucination": 1,
+   "hallucination_n": 93,
+   "false_refusal": 13,
+   "false_refusal_n": 127,
+   "vs_vanilla": {
+    "gained": 0,
+    "lost": 12,
+    "mcnemar_p": 0.00048828125
+   },
+   "hallucination_vs_vanilla": {
+    "removed": 0,
+    "added": 0,
+    "mcnemar_p": 1.0
+   }
+  },
+  "live": {
+   "n": 220,
+   "correct": 200,
+   "hallucination": 2,
+   "hallucination_n": 93,
+   "false_refusal": 3,
+   "false_refusal_n": 127,
+   "vs_vanilla": {
+    "gained": 1,
+    "lost": 5,
+    "mcnemar_p": 0.21875
+   },
+   "hallucination_vs_vanilla": {
+    "removed": 0,
+    "added": 1,
+    "mcnemar_p": 1.0
+   }
+  }
+ }
+}
