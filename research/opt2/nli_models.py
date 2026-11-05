@@ -13,6 +13,7 @@ not-entailment mass as neutral; their contradiction probability is 0.
 from __future__ import annotations
 
 import hashlib
+import os
 import re
 import sqlite3
 import threading
@@ -133,7 +134,7 @@ class CachedNLI:
 
     def _classifier(self) -> HFClassifier:
         if self._model is None:
-            if not self._load:
+            if not self._load or os.environ.get("REVIEW_CACHE_ONLY"):
                 raise KeyError(f"{self.name}: pair missing from the cache and loading is off")
             self._model = HFClassifier(self.spec)
         return self._model

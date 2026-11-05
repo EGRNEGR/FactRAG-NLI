@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sqlite3
 import threading
 from collections.abc import Callable, Sequence
@@ -72,6 +73,8 @@ class MiniCheck:
         import torch
         from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
+        if os.environ.get("REVIEW_CACHE_ONLY"):
+            raise RuntimeError("REVIEW_CACHE_ONLY: a MiniCheck score is missing from the cache")
         if not torch.cuda.is_available():
             raise RuntimeError("MiniCheck scoring requires CUDA; refusing a silent CPU run")
         self.tokenizer = AutoTokenizer.from_pretrained(str(self.path), local_files_only=True)
