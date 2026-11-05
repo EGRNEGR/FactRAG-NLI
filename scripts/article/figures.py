@@ -689,9 +689,9 @@ def figure8() -> None:
     series = [s for s in series if s[0] in rev]
     fig, (a, b) = plt.subplots(1, 2, figsize=(WIDTH * MM, 82 * MM),
                                gridspec_kw=dict(width_ratios=[1, 1.15], wspace=0.34))
-    offsets = {"nli_single": (-8, 0), "bge_zs": (-8, 0), "bge_zs_dev": (-8, 0),
-               "minicheck": (-8, 0), "minicheck_dev": (-8, 0), "judge_free": (-8, 9),
-               "judge": (-8, -9)}
+    offsets = {"nli_single": (-8, 0), "bge_zs": (-8, 0), "bge_zs_dev": (-8, -9),
+               "minicheck": (8, 0), "minicheck_dev": (-8, 9), "judge_free": (-8, 18),
+               "judge": (-8, -12)}
     for label, name, color, filled, marker in series:
         r = rev[label]
         x, y = 100 * r["true_accepted"], 100 * r["false_accepted"]
@@ -701,7 +701,8 @@ def figure8() -> None:
         thr = (f", порог {ru(r['threshold'], 2).rstrip('0')}"
                if r["threshold"] is not None else "")
         a.annotate(f"{name}{thr}", (x, y), xytext=(dx, dy), textcoords="offset points",
-                   ha="right" if dx < 0 else "left", va="center", fontsize=6.3, color=INK)
+                   ha="right" if dx < 0 else "left" if dx > 0 else "center", va="center",
+                   fontsize=6.3, color=INK)
     a.set_xlim(60, 102)
     a.set_ylim(0, 70)
     comma_axis(a.xaxis, 0)

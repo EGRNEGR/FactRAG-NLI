@@ -389,6 +389,16 @@ def build_docx(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
             table = doc.add_table(rows=len(rows), cols=len(rows[0]))
             table.alignment = WD_TABLE_ALIGNMENT.CENTER
             cell_borders(table)
+            # Column widths by content, as in the LaTeX output (17 cm text width).
+            table.autofit = False
+            weights = column_weights(rows)
+            widths = [Cm(TABLE_WIDTH_CM * w / len(weights)) for w in weights]
+            # A fixed-layout table takes its widths from the grid (gridCol), cells follow.
+            for c, column in enumerate(table.columns):
+                column.width = widths[c]
+            for tr in table.rows:
+                for c, cell in enumerate(tr.cells):
+                    cell.width = widths[c]
             size = 11 if len(rows[0]) <= 4 else 10
             for r, row in enumerate(rows):
                 for c, text in enumerate(row):
@@ -453,6 +463,54 @@ def tex_inline(text: str) -> str:
 def tex_math(tex: str) -> str:
     """unicode-math: bold symbols by \\symbf."""
     return tex.replace(r"\boldsymbol", r"\symbf")
+
+
+TABLE_WIDTH_CM = 17.0
+CELL_PAD_CM = 0.5  # left and right cell margins (2 x 0.19 cm in Word) and the rules
+FONT_FILES = {False: r"C:\Windows\Fonts\times.ttf", True: r"C:\Windows\Fonts\timesbd.ttf"}
+
+
+def text_cm(text: str, size: float, bold: bool) -> float:
+    """Printed width of `text` in Times New Roman (a 0.55 em per letter estimate without it)."""
+    try:
+        from PIL import ImageFont
+
+        font = ImageFont.truetype(FONT_FILES[bold], 100)
+        return font.getlength(text) / 100 * size / 72 * 2.54
+    except (ImportError, OSError):
+        return len(text) * 0.55 * size / 72 * 2.54
+
+
+def table_font(rows: list[list[str]]) -> float:
+    return 11 if len(rows[0]) <= 4 else 10
+
+
+def column_weights(rows: list[list[str]]) -> list[float]:
+    """Column widths by content, relative to an equal share (sum = column count, the \\hsize
+    rule of tabularx; the .docx multiplies them back into centimetres). Every column first gets
+    the printed width of its longest word (bold in the header row: Word does not hyphenate
+    inside a cell), the rest of the text width is shared by the square root of the mean cell
+    length."""
+    plain = [[re.sub(r"\$[^$]*\$", "x" * 8, cell) for cell in row] for row in rows]
+    size = table_font(rows)
+    n = len(plain[0])
+    floor, share = [], []
+    for j in range(n):
+        cells = [row[j] for row in plain]
+        widest = max(
+            # a line may break at a space and after a hyphen or a slash
+            (text_cm(w, size, bold=(i == 0)) for i, c in enumerate(cells)
+             for w in re.split(r"\s+|(?<=[-/])", c) if w),
+            default=0.5,
+        )
+        floor.append(widest + CELL_PAD_CM)
+        share.append((sum(len(c) for c in cells) / len(cells)) ** 0.5)
+    spare = TABLE_WIDTH_CM - sum(floor)
+    if spare > 0:
+        widths = [f + spare * s / sum(share) for f, s in zip(floor, share, strict=True)]
+    else:
+        widths = [TABLE_WIDTH_CM * f / sum(floor) for f in floor]
+    return [n * w / TABLE_WIDTH_CM for w in widths]
 
 
 def build_tex(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
@@ -541,7 +599,9 @@ def build_tex(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
                   r"\caption{" + t(b.text) + "}", r"\end{figure}", ""]
         elif b.kind == "table":
             cols = len(b.rows[0])
-            spec = "|" + "Y|" * cols
+            spec = "|" + "|".join(
+                rf">{{\hsize={w:.2f}\hsize}}Y" for w in column_weights(b.rows)
+            ) + "|"
             size = r"\fontsize{11}{13}" if cols <= 4 else r"\fontsize{10}{12}"
             L += [r"\begin{table}[H]", r"\setstretch{1}",
                   r"\noindent{\small " + t(b.text) + r"}\par\vspace{4pt}",

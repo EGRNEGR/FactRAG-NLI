@@ -33455,6 +33455,32 @@
     "transplant": 0.38565022421524664
    }
   },
+  "minicheck": {
+   "threshold": 0.5,
+   "true_accepted": 0.7861386138613862,
+   "true_n": 505,
+   "false_accepted": 0.1323024054982818,
+   "false_n": 1164,
+   "by_kind": {
+    "number_swap": 0.09392265193370165,
+    "negation": 0.016129032258064516,
+    "answer_swap": 0.4602076124567474,
+    "transplant": 0.0
+   }
+  },
+  "minicheck_dev": {
+   "threshold": 0.05,
+   "true_accepted": 0.9485148514851485,
+   "true_n": 505,
+   "false_accepted": 0.5927835051546392,
+   "false_n": 1164,
+   "by_kind": {
+    "number_swap": 0.6906077348066298,
+    "negation": 0.7016129032258065,
+    "answer_swap": 0.9515570934256056,
+    "transplant": 0.2600896860986547
+   }
+  },
   "judge_free": {
    "threshold": null,
    "true_accepted": 0.9643564356435643,
