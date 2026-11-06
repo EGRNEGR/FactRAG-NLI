@@ -20,8 +20,6 @@
 > 4,4–6,1 с. Установка и запуск: `bash scripts/linux/setup.sh`, затем
 > `bash scripts/linux/run_benchmark.sh` ([docs/RTX3090_LINUX.md](docs/RTX3090_LINUX.md)).
 >
-> - Статья: [reports/article](reports/article) (`.md`, `.docx`, `.tex`, PDF, рисунки 1–8,
->   [FACT_CHECK.md](reports/article/FACT_CHECK.md) - источник каждой цифры).
 > - Ход оптимизации: [reports/optimization_3](reports/optimization_3) …
 >   [reports/optimization_6](reports/optimization_6) (`FINAL_REPORT.md` в каждой).
 > - Ответы рецензенту (внешние верификаторы MiniCheck / BGE-M3-zeroshot, стресс-набор,
