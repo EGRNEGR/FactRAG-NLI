@@ -28,9 +28,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from docx import Document
-from docx.enum.section import WD_SECTION
 from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING, WD_TAB_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
@@ -95,8 +94,8 @@ def parse(source: str) -> tuple[dict[str, str], list[Block]]:
             blocks.append(Block("eq", m[1], m[2]))
         elif m := re.match(r"^!\[(.+)\]\((fig\d+)\)$", line):
             blocks.append(Block("fig", m[1], m[2]))
-        elif line.startswith("Таблица ") and (
-            nxt := next((x for x in lines[i + 1 :] if x.strip()), "")
+        elif line.startswith("Таблица ") and next(
+            (x for x in lines[i + 1 :] if x.strip()), ""
         ).startswith("|"):
             rows = []
             i += 1
