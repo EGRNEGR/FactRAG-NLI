@@ -634,9 +634,9 @@ def figure7() -> None:
         [("v3", "v3", ORANGE, "////"), ("xquad-full", "XQuAD", BLUE, "")]
     ):
         vals = [stage[ds][k] for k, _ in names]
-        bars = a.barh(y + (h / 2 if j == 0 else -h / 2), vals, height=h - 0.04,
-                      color=ORANGE_T if j == 0 else BLUE_T, edgecolor=color, lw=0.8,
-                      hatch=hatch, label=label, zorder=2)
+        a.barh(y + (h / 2 if j == 0 else -h / 2), vals, height=h - 0.04,
+               color=ORANGE_T if j == 0 else BLUE_T, edgecolor=color, lw=0.8,
+               hatch=hatch, label=label, zorder=2)
         for v, yy in zip(vals, y + (h / 2 if j == 0 else -h / 2), strict=True):
             a.text(v + 0.08, yy, f"{ru(v, 2)} с", va="center", fontsize=6.6)
     a.set_yticks(y, [n for _, n in names], fontsize=7)
