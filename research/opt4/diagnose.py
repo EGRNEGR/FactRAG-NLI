@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Any
 
 import research.opt4  # noqa: F401 - selects the baseline run
-from evaluate_suite import contains_fact
+from eval_dataset import contains_fact
 from grounding import anchors_present, claim_anchors, clean_premise
 
 from research.opt3 import cases, data

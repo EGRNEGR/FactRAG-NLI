@@ -33,7 +33,7 @@ from research.opt2 import data
 from research.opt2.repairs import question_of
 
 STORE = data.CACHE / "recovery.jsonl"
-MODES = {
+MODES: dict[str, list[dict[str, Any]]] = {
     "evidence_prompt": [{"note": True}],
     "sampling": [{"temperature": 0.7, "seed": 1000}, {"temperature": 0.7, "seed": 1001}],
 }

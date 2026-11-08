@@ -16,9 +16,9 @@ import os
 import sys
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
-from document_parser import ChunkingConfig, DocumentParser, LocalTokenizer
+from document_parser import ChunkingConfig, DocumentParser, LocalTokenizer, ParserVersion
 from scripts import build_eval_dataset_v3 as builder
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -36,7 +36,7 @@ def parser(version: str) -> DocumentParser:
             overlap_tokens=chunking["chunk_overlap_tokens"],
         ),
         tokenizer=LocalTokenizer(TOKENIZER),
-        version=version,
+        version=cast(ParserVersion, version),
     )
 
 
@@ -74,7 +74,10 @@ def parse(version: str, cache: Path) -> dict[str, dict[str, Any]]:
 
 
 def load(cache: Path) -> dict[str, dict[str, Any]]:
-    return json.loads((cache / "corpus.json").read_text(encoding="utf-8"))
+    corpus: dict[str, dict[str, Any]] = json.loads(
+        (cache / "corpus.json").read_text(encoding="utf-8")
+    )
+    return corpus
 
 
 if __name__ == "__main__":

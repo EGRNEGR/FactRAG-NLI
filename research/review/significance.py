@@ -19,6 +19,7 @@ Usage:  python -m research.review.significance      Results: reports/review/sign
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from typing import Any
 
 from evaluate_suite import mcnemar_exact
@@ -30,7 +31,7 @@ from research.opt3.replay import logged
 from research.review import verifiers as V
 from research.review.compare import first_draft, verify
 
-PARTS = {
+PARTS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "all": lambda o: True,
     "v3": lambda o: o["dataset"] == "v3",
     "xquad-full": lambda o: o["dataset"] == "xquad-full",

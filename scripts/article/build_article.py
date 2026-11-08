@@ -26,6 +26,7 @@ import re
 import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 from docx import Document
 from docx.enum.table import WD_TABLE_ALIGNMENT
@@ -136,7 +137,7 @@ def references(blocks: list[Block], meta: dict[str, str]) -> tuple[dict[str, int
     unused = set(entries) - set(order)
     if unused:
         raise ValueError(f"references never cited: {sorted(unused)}")
-    return order, [entries[k] for k in sorted(order, key=order.get)]
+    return order, [entries[k] for k in sorted(order, key=lambda k: order[k])]
 
 
 def cite(text: str, order: dict[str, int]) -> str:
@@ -159,7 +160,7 @@ _TOKEN = re.compile(r"(\*\*[^*]+\*\*|\$[^$]+\$)")
 XSL = etree.XSLT(etree.parse(str(MML2OMML)))
 
 
-def omml(tex: str, size: float | None = None):
+def omml(tex: str, size: float | None = None) -> Any:
     # \text{a\_b} keeps the escaped underscore in MathML; LaTeX needs it, Word does not.
     tex = re.sub(r"\\text\{([^}]*)\}", lambda t: r"\text{" + t[1].replace(r"\_", "_") + "}", tex)
     mml = latex_to_mathml(tex)
@@ -192,7 +193,8 @@ def omml(tex: str, size: float | None = None):
     return element
 
 
-def set_font(run, size: float, *, bold=None, italic=None, name: str = FONT) -> None:
+def set_font(run: Any, size: float, *, bold: bool | None = None, italic: bool | None = None,
+             name: str = FONT) -> None:
     run.font.name = name
     run.font.size = Pt(size)
     if bold is not None:
@@ -208,8 +210,9 @@ def set_font(run, size: float, *, bold=None, italic=None, name: str = FONT) -> N
         fonts.set(qn(attr), name)
 
 
-def fmt(p, *, align=WD_ALIGN_PARAGRAPH.JUSTIFY, indent: float | None = 1.25, spacing=1.5,
-        before=0.0, after=0.0, keep_next=False) -> None:
+def fmt(p: Any, *, align: Any = WD_ALIGN_PARAGRAPH.JUSTIFY, indent: float | None = 1.25,
+        spacing: float = 1.5, before: float = 0.0, after: float = 0.0,
+        keep_next: bool = False) -> None:
     pf = p.paragraph_format
     p.alignment = align
     pf.first_line_indent = Cm(indent) if indent else None
@@ -220,7 +223,7 @@ def fmt(p, *, align=WD_ALIGN_PARAGRAPH.JUSTIFY, indent: float | None = 1.25, spa
     pf.widow_control = True
 
 
-def inline(p, text: str, size: float, *, bold=False, italic=False) -> None:
+def inline(p: Any, text: str, size: float, *, bold: bool = False, italic: bool = False) -> None:
     """Runs of a paragraph: **bold**, $math$ (native equations; a lone sub/superscript is a
     formatted run), plain text."""
     for part in _TOKEN.split(text):
@@ -245,7 +248,7 @@ def inline(p, text: str, size: float, *, bold=False, italic=False) -> None:
             set_font(run, size, bold=bold, italic=italic)
 
 
-def page_number(section) -> None:
+def page_number(section: Any) -> None:
     p = section.footer.paragraphs[0]
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run()
@@ -262,7 +265,7 @@ def page_number(section) -> None:
     set_font(run, 12)
 
 
-def cell_borders(table) -> None:
+def cell_borders(table: Any) -> None:
     tbl = table._tbl
     pr = tbl.tblPr
     borders = OxmlElement("w:tblBorders")
@@ -276,7 +279,7 @@ def cell_borders(table) -> None:
     pr.append(borders)
 
 
-def repeat_header(row) -> None:
+def repeat_header(row: Any) -> None:
     trpr = row._tr.get_or_add_trPr()
     el = OxmlElement("w:tblHeader")
     el.set(qn("w:val"), "true")
@@ -299,14 +302,15 @@ def build_docx(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
     normal.element.rPr.rFonts.set(qn("w:eastAsia"), FONT)
     page_number(sec)
 
-    def para(text, size=14, **kw):
+    def para(text: str, size: float = 14, **kw: Any) -> Any:
         p = doc.add_paragraph()
         style = {k: kw.pop(k) for k in ("bold", "italic") if k in kw}
         fmt(p, **kw)
         inline(p, cite(text, order), size, **style)
         return p
 
-    def front(text, *, bold=False, align=WD_ALIGN_PARAGRAPH.CENTER, after=0, before=0, size=12):
+    def front(text: str, *, bold: bool = False, align: Any = WD_ALIGN_PARAGRAPH.CENTER,
+              after: float = 0, before: float = 0, size: float = 12) -> Any:
         p = doc.add_paragraph()
         fmt(p, align=align, indent=None, spacing=1.0, after=after, before=before)
         inline(p, text, size, bold=bold)
@@ -430,7 +434,7 @@ def build_docx(meta: dict[str, str], blocks: list[Block], order: dict[str, int],
                 inline(p, line, 12)
     doc.core_properties.title = meta["title"]
     doc.core_properties.author = "Мясников Е. Д."
-    doc.save(DOCX)
+    doc.save(str(DOCX))
 
 
 # ------------------------------------------------------------------ LaTeX

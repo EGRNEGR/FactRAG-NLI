@@ -15,7 +15,9 @@ from __future__ import annotations
 
 import json
 import sys
+from collections.abc import Sequence
 from pathlib import Path
+from typing import Any
 
 import matplotlib
 
@@ -67,11 +69,11 @@ def ru(x: float, digits: int = 1) -> str:
     return f"{x:.{digits}f}".replace(".", ",").replace("-", "−")
 
 
-def comma_axis(axis, digits: int = 1) -> None:
+def comma_axis(axis: Any, digits: int = 1) -> None:
     axis.set_major_formatter(FuncFormatter(lambda v, _: ru(v, digits)))
 
 
-def save(fig, n: int) -> None:
+def save(fig: Any, n: int) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for ext in ("png", "pdf", "svg"):
         fig.savefig(OUT / f"fig{n}.{ext}", dpi=300, facecolor="white")
@@ -82,7 +84,7 @@ def save(fig, n: int) -> None:
 # ------------------------------------------------------------------ diagram primitives
 
 
-def canvas(height: float):
+def canvas(height: float) -> tuple[Any, Any]:
     fig = plt.figure(figsize=(WIDTH * MM, height * MM))
     ax = fig.add_axes([0, 0, 1, 1])
     ax.set_xlim(0, WIDTH)
@@ -92,8 +94,9 @@ def canvas(height: float):
     return fig, ax
 
 
-def box(ax, x, y, w, h, text, *, fc=GREY_T, ec=GREY, ls="-", fs=6.8, bold_first=False,
-        lw=0.8, radius=1.2, align="center"):
+def box(ax: Any, x: float, y: float, w: float, h: float, text: str, *, fc: str = GREY_T,
+        ec: str = GREY, ls: Any = "-", fs: float = 6.8, bold_first: bool = False,
+        lw: float = 0.8, radius: float = 1.2, align: str = "center") -> None:
     ax.add_patch(
         FancyBboxPatch(
             (x, y), w, h,
@@ -114,7 +117,8 @@ def box(ax, x, y, w, h, text, *, fc=GREY_T, ec=GREY, ls="-", fs=6.8, bold_first=
                 linespacing=1.25)
 
 
-def diamond(ax, cx, cy, w, h, text, *, fc="white", ec=INK2, fs=6.6):
+def diamond(ax: Any, cx: float, cy: float, w: float, h: float, text: str, *,
+            fc: str = "white", ec: str = INK2, fs: float = 6.6) -> None:
     ax.add_patch(
         Polygon([(cx - w / 2, cy), (cx, cy + h / 2), (cx + w / 2, cy), (cx, cy - h / 2)],
                 closed=True, fc=fc, ec=ec, lw=0.8, zorder=2)
@@ -122,8 +126,10 @@ def diamond(ax, cx, cy, w, h, text, *, fc="white", ec=INK2, fs=6.6):
     ax.text(cx, cy, text, ha="center", va="center", fontsize=fs, zorder=3, linespacing=1.2)
 
 
-def path(ax, points, *, color=INK2, ls="-", lw=0.9, head=True, label=None, label_at=None,
-         label_offset=(0, 1.2), fs=6.3, label_ha="center"):
+def path(ax: Any, points: Sequence[tuple[float, float]], *, color: str = INK2, ls: Any = "-",
+         lw: float = 0.9, head: bool = True, label: str | None = None,
+         label_at: Any = None, label_offset: tuple[float, float] = (0, 1.2),
+         fs: float = 6.3, label_ha: str = "center") -> None:
     xs, ys = zip(*points)
     ax.plot(xs, ys, color=color, lw=lw, ls=ls, zorder=1, solid_capstyle="butt")
     if head:
@@ -139,7 +145,8 @@ def path(ax, points, *, color=INK2, ls="-", lw=0.9, head=True, label=None, label
                 bbox=dict(fc="white", ec="none", pad=0.4))
 
 
-def region(ax, x, y, w, h, title, *, ec, fc="none", ls=(0, (4, 2)), fs=7.2):
+def region(ax: Any, x: float, y: float, w: float, h: float, title: str, *, ec: str,
+           fc: str = "none", ls: Any = (0, (4, 2)), fs: float = 7.2) -> None:
     ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0,rounding_size=2",
                                 fc=fc, ec=ec, lw=0.8, ls=ls, zorder=0))
     ax.text(x + 2, y + h - 2.2, title, ha="left", va="center", fontsize=fs,
@@ -375,8 +382,9 @@ def figure3() -> None:
 # ------------------------------------------------------------------ figure 4
 
 
-def strip_box(ax, data_list, positions, colors, *, width=0.55, jitter=0.17, seed=7,
-              marker_size=5):
+def strip_box(ax: Any, data_list: Sequence[Any], positions: Sequence[float],
+              colors: Sequence[str], *, width: float = 0.55, jitter: float = 0.17,
+              seed: int = 7, marker_size: float = 5) -> None:
     rng = np.random.default_rng(seed)
     for values, pos, color in zip(data_list, positions, colors, strict=True):
         values = np.asarray(values)
@@ -525,7 +533,7 @@ def figure5() -> None:
 def figure6() -> None:
     pts = DATA["final"]["points"]  # the final configuration, run 1222Z
 
-    def kind(p):
+    def kind(p: dict[str, Any]) -> str:
         if p["status"] == "verified":
             return "verified"
         if p["reason"] == "anchor_not_in_source":
@@ -561,14 +569,14 @@ def figure6() -> None:
 
     # The residual cases of the discussion: a numbered ring, keyed below. Each is the withheld
     # claim of that question with the highest judge score (the one closest to publication).
-    def case(cid, k=None):
+    def case(cid: str, k: str | None = None) -> Any:
         return max((p for p in pts if p["id"] == cid and p["marked"]
                     and (k is None or kind(p) == k)), key=lambda p: p["judge"])
 
     marks = [case("V3-MH-002"), case("V3-TC-021"), case("V3-TC-022", "anchor"),
              case("V3-TC-025", "anchor")]
 
-    def ring(axis, x, y, n, dy=0.045):
+    def ring(axis: Any, x: float, y: float, n: int, dy: float = 0.045) -> None:
         axis.scatter([x], [y], s=70, facecolors="none", edgecolors=INK, lw=0.9, zorder=6)
         # Near the right edge the number goes to the left (the title and counts are there).
         right = x > 0.9

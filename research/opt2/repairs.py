@@ -153,7 +153,7 @@ def generate(api_base: str, judge: str) -> None:
 
 def question_of(record: data.CaseRecord, config: str) -> str:
     """The query string the run sent (logged in the full response)."""
-    return data.responses(config)[record.case.id]["query"]
+    return str(data.responses(config)[record.case.id]["query"])
 
 
 if __name__ == "__main__":

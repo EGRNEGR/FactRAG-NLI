@@ -77,11 +77,12 @@ def rank_fusion(pool: dict[str, Any]) -> dict[str, float]:
     return fused
 
 
-STRATEGIES: dict[str, Callable[[dict[str, Any]], list[tuple[str, float]]]] = {}
+Strategy = Callable[[dict[str, Any]], list[tuple[str, float]]]
+STRATEGIES: dict[str, Strategy] = {}
 
 
-def strategy(name: str):
-    def wrap(fn):
+def strategy(name: str) -> Callable[[Strategy], Strategy]:
+    def wrap(fn: Strategy) -> Strategy:
         STRATEGIES[name] = fn
         return fn
 
@@ -97,43 +98,43 @@ def ordered(
 
 
 @strategy("S0 bge-reranker-v2-m3 (production)")
-def s0(pool):
+def s0(pool: dict[str, Any]) -> list[tuple[str, float]]:
     return ordered(pool, mixer(lambda r: r["v2"]), "v2")
 
 
 @strategy("S1 bge-reranker-large")
-def s1(pool):
+def s1(pool: dict[str, Any]) -> list[tuple[str, float]]:
     return ordered(pool, mixer(lambda r: r["large"]), "large")
 
 
 @strategy("S2 mean of both rerankers")
-def s2(pool):
+def s2(pool: dict[str, Any]) -> list[tuple[str, float]]:
     for r in pool["rows"]:
         r["mean"] = (r["v2"] + r["large"]) / 2
     return ordered(pool, mixer(lambda r: r["mean"]), "mean")
 
 
 @strategy("S3 max of both rerankers")
-def s3(pool):
+def s3(pool: dict[str, Any]) -> list[tuple[str, float]]:
     for r in pool["rows"]:
         r["max"] = max(r["v2"], r["large"])
     return ordered(pool, mixer(lambda r: r["max"]), "max")
 
 
 @strategy("S4 reciprocal-rank fusion of both rerankers")
-def s4(pool):
+def s4(pool: dict[str, Any]) -> list[tuple[str, float]]:
     fused = rank_fusion(pool)
     rows = sorted(pool["rows"], key=lambda r: (-fused[r["chunk_id"]], r["chunk_id"]))
     return [(r["chunk_id"], r["v2"]) for r in rows]
 
 
 @strategy("S5 route by question script: Latin -> mean, Cyrillic -> v2-m3")
-def s5(pool):
+def s5(pool: dict[str, Any]) -> list[tuple[str, float]]:
     return s0(pool) if _CYRILLIC.search(pool["question"]) else s2(pool)
 
 
 @strategy("S6 hybrid RRF only (no reranker)")
-def s6(pool):
+def s6(pool: dict[str, Any]) -> list[tuple[str, float]]:
     rows = sorted(pool["rows"], key=lambda r: (-r["rrf"], r["chunk_id"]))
     return [(r["chunk_id"], r["v2"]) for r in rows]
 

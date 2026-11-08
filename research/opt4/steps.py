@@ -54,7 +54,13 @@ from typing import Any
 import research.opt4  # noqa: F401 - selects the baseline run
 from evaluate_suite import score_answer
 from grounding import is_absence_statement
-from query_translation import GATE_CANDIDATES, parse_rewrite, text_script, translation_prompt
+from query_translation import (
+    GATE_CANDIDATES,
+    Script,
+    parse_rewrite,
+    text_script,
+    translation_prompt,
+)
 from settings import RAGSettings
 
 from research.opt3 import data
@@ -98,7 +104,8 @@ def partial(record: data.CaseRecord) -> bool:
 
 
 def reason(record: data.CaseRecord) -> str | None:
-    return record.rows[CONFIG]["refusal_reason"]
+    value: str | None = record.rows[CONFIG]["refusal_reason"]
+    return value
 
 
 def baseline_text(record: data.CaseRecord) -> str | None:
@@ -139,7 +146,9 @@ def run_settings(dataset: str, api_base: str | None) -> RAGSettings:
     if not (Path(logged["qdrant_path"]) / "meta.json").exists():
         # An empty path would be created as an empty index; the run's index must exist.
         raise SystemExit(f"index {logged['qdrant_path']} not found (run the benchmark first)")
-    return RAGSettings(_env_file=None, **logged)
+    # _env_file is a pydantic-settings init option mypy does not see among the fields.
+    no_env_file: dict[str, Any] = {"_env_file": None}
+    return RAGSettings(**no_env_file, **logged)
 
 
 @cache
@@ -301,7 +310,7 @@ def g2_act(record: data.CaseRecord, api_base: str | None) -> dict[str, Any]:
     }
 
 
-def sources_script(record: data.CaseRecord, api_base: str | None) -> str | None:
+def sources_script(record: data.CaseRecord, api_base: str | None) -> Script | None:
     retriever = index(data.dataset_of(record.id))
     texts = [s["text"] for s in record.retrieval[CONFIG]["sources"]]
     if not texts:  # gate refusal: the best candidates of the logged retrieval
@@ -472,7 +481,7 @@ def evaluate(rows: list[dict[str, Any]]) -> dict[str, Any]:
     return result
 
 
-def run_experiment(e: Experiment, ids: set[str] | None, api_base: str | None, out: Path) -> dict:
+def run_experiment(e: Experiment, ids: set[str] | None, api_base: str | None, out: Path) -> dict[str, Any]:
     records = data.records()
     population = [
         r for r in records.values() if (ids is None or r.id in ids) and e.trigger(r, api_base)

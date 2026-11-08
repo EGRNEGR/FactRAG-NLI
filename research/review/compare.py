@@ -26,6 +26,7 @@ import re
 import sys
 import time
 from collections import Counter
+from collections.abc import Callable
 from typing import Any
 
 from eval_dataset import normalize
@@ -33,6 +34,7 @@ from evaluate_suite import mcnemar_exact
 from generator_verifier import NLIFactVerifier, RawGenerationResult, SourceContext
 
 from research.review import OUT  # noqa: I001 - selects the run first
+from research.opt2 import data as opt2
 from research.opt2.metrics import outcome
 from research.opt2.stress import _CITE, _answer_swap, _negate, _number_swap
 from research.opt3 import data
@@ -58,7 +60,7 @@ def verify(v: NLIFactVerifier, attempt: data.Attempt, text: str | None = None) -
     return v.verify(raw)
 
 
-def outcomes(v: NLIFactVerifier | None, records: dict[str, data.CaseRecord]) -> list[dict]:
+def outcomes(v: NLIFactVerifier | None, records: dict[str, data.CaseRecord]) -> list[dict[str, Any]]:
     """Draft-level outcome of every case; v None = the unverified draft (Vanilla)."""
     result = []
     for record in records.values():
@@ -83,7 +85,7 @@ def pair(record: data.CaseRecord) -> str:
     return f"{record.case.language}-{corpus}"
 
 
-def block(items: list[dict], base: list[dict] | None = None) -> dict[str, Any]:
+def block(items: list[dict[str, Any]], base: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     answerable = [o for o in items if o["expected"] == "answer"]
     defined = [o for o in items if o["factrag"]["hallucination"] is not None]
     out: dict[str, Any] = {
@@ -101,14 +103,17 @@ def block(items: list[dict], base: list[dict] | None = None) -> dict[str, Any]:
     return out
 
 
-def table(items: list[dict], base: list[dict]) -> dict[str, Any]:
-    parts = {
+def table(items: list[dict[str, Any]], base: list[dict[str, Any]]) -> dict[str, Any]:
+    def pair_is(lp: str) -> Callable[[dict[str, Any]], bool]:
+        return lambda o: bool(o["pair"] == lp)
+
+    parts: dict[str, Callable[[dict[str, Any]], bool]] = {
         "all": lambda o: True,
         "v3": lambda o: o["dataset"] == "v3",
         "xquad-full": lambda o: o["dataset"] == "xquad-full",
         "dev": lambda o: o["split"] == "dev",
         "test": lambda o: o["split"] == "test",
-        **{f"pair {lp}": (lambda o, lp=lp: o["pair"] == lp) for lp in ("en-en", "ru-en", "ru-ru", "en-ru")},
+        **{f"pair {lp}": pair_is(lp) for lp in ("en-en", "ru-en", "ru-ru", "en-ru")},
     }
     result = {}
     for name, keep in parts.items():
@@ -137,7 +142,7 @@ def _collect_pairs(records: dict[str, data.CaseRecord], texts: list[tuple[str, s
           f"{time.perf_counter() - started:.0f} s", flush=True)
 
 
-def tune(name: str, records: dict[str, data.CaseRecord]) -> tuple[float, list[dict]]:
+def tune(name: str, records: dict[str, data.CaseRecord]) -> tuple[float, list[dict[str, Any]]]:
     """The threshold with the best dev accuracy (ties: fewer hallucinations, higher t)."""
     dev = {cid: r for cid, r in records.items() if r.split == "dev"}
     best: tuple[tuple[int, int, float], float] | None = None
@@ -163,12 +168,14 @@ def draft_level(names: tuple[str, ...] = V.NAMES) -> dict[str, Any]:
                                            for o in vanilla}
     for name in names:
         started = time.perf_counter()
-        variants = [(name, None, outcomes(V.build(name), records))]
+        variants: list[tuple[str, float | None, list[dict[str, Any]]]] = [
+            (name, None, outcomes(V.build(name), records))
+        ]
         if name in V.DEFAULT_THRESHOLDS:
             t, items = tune(name, records)
             variants.append((f"{name}_dev", t, items))
-        for label, t, items in variants:
-            threshold = t if t is not None else V.DEFAULT_THRESHOLDS.get(name)
+        for label, tuned, items in variants:
+            threshold = tuned if tuned is not None else V.DEFAULT_THRESHOLDS.get(name)
             rows[label] = {"threshold": threshold, **table(items, vanilla)}
             for o in items:
                 per_case[o["id"]][label] = o["factrag"]["correct"]
@@ -197,7 +204,7 @@ def stress_items(records: dict[str, data.CaseRecord]) -> list[dict[str, Any]]:
     """research.opt2.stress rules on the first drafts of the run (deterministic)."""
     by_group: dict[str, list[data.CaseRecord]] = {}
     for record in records.values():
-        by_group.setdefault(data.opt2.split_group(record.case), []).append(record)
+        by_group.setdefault(opt2.split_group(record.case), []).append(record)
     positives = []
     for cid in sorted(records):
         record = records[cid]
@@ -229,7 +236,7 @@ def stress_items(records: dict[str, data.CaseRecord]) -> list[dict[str, Any]]:
             others = sorted(
                 {
                     r.case.ground_truth_answer.strip(' "«»')
-                    for r in by_group[data.opt2.split_group(record.case)]
+                    for r in by_group[opt2.split_group(record.case)]
                     if r.id != record.id and r.case.expected_behavior == "answer"
                 }
             )
@@ -279,7 +286,9 @@ def stress() -> dict[str, Any]:
         counts: Counter[tuple[str, str]] = Counter()
         hits: Counter[tuple[str, str]] = Counter()
         for item in items:
-            ok = not verify(v, first_draft(records[item["id"]]), item["text"]).refused
+            draft = first_draft(records[item["id"]])
+            assert draft is not None  # stress items come from first drafts only
+            ok = not verify(v, draft, item["text"]).refused
             lp = pair(records[item["id"]])
             for split in ("all", item["split"]) + ((f"test {lp}",) if item["split"] == "test" else ()):
                 counts[(item["kind"], split)] += 1
@@ -297,7 +306,7 @@ def stress() -> dict[str, Any]:
 
 def main(args: list[str]) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    names = V.NAMES
+    names: tuple[str, ...] = V.NAMES
     if "--only" in args:
         i = args.index("--only")
         names = tuple(args[i + 1].split(","))

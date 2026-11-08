@@ -28,7 +28,7 @@ import json
 import os
 import sqlite3
 import threading
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -151,9 +151,9 @@ class MiniCheck:
             self.misses += len(index)
             # Committed in parts: an interrupted run resumes from the cache.
             for start in range(0, len(index), 256):
-                part = index[start : start + 256]
-                scores = self._predict([flat[i] for i in part])
-                rows = [(keys[i], s) for i, s in zip(part, scores, strict=True)]
+                batch = index[start : start + 256]
+                scores = self._predict([flat[i] for i in batch])
+                rows = [(keys[i], s) for i, s in zip(batch, scores, strict=True)]
                 self._db.executemany("INSERT OR REPLACE INTO p VALUES (?, ?)", rows)
                 self._db.commit()
                 found.update(rows)
@@ -173,6 +173,7 @@ class ClaimFilter(NLIFactVerifier):
 
     def __init__(self, name: str, decide: Decision, *, anchors: bool = False) -> None:
         base = data.settings("judge")
+        assert base.nli_judge_path is not None
         spec = json.loads(Path(base.nli_judge_path).read_text("utf-8"))
         super().__init__(
             base.model_copy(update={"nli_co_verification": False}),
@@ -189,7 +190,7 @@ class ClaimFilter(NLIFactVerifier):
         text: str,
         hypothesis: str,
         source_ids: tuple[str, ...],
-        contexts: dict[str, SourceContext],
+        contexts: Mapping[str, SourceContext],
         is_inherited: bool,
     ) -> VerifiedClaim:
         results = [self.decide(self, hypothesis, contexts[key]) for key in source_ids]

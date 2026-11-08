@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from evaluate_suite import contains_fact
+from eval_dataset import contains_fact
 
 from research.opt2.metrics import paired, pct, summarize
 from research.opt3 import data
@@ -60,7 +60,7 @@ def block(outcomes: list[dict[str, Any]], base: list[dict[str, Any]]) -> dict[st
     }
 
 
-def regressions(outcomes: list[dict[str, Any]], base: list[dict[str, Any]]) -> dict[str, list]:
+def regressions(outcomes: list[dict[str, Any]], base: list[dict[str, Any]]) -> dict[str, list[str]]:
     """Cases that got worse: correct before and not now; a new hallucination."""
     lost, new_hallucinations = [], []
     for o, b in zip(outcomes, base, strict=True):

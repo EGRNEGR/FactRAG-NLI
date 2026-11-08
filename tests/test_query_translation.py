@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Literal
 
 import pytest
 
@@ -51,7 +52,9 @@ class TranslatingChat:
         pass
 
 
-def pipeline(tmp_path: Path, chat: TranslatingChat, mode: str) -> RAGPipeline:
+def pipeline(
+    tmp_path: Path, chat: TranslatingChat, mode: Literal["off", "refusal"]
+) -> RAGPipeline:
     root = tmp_path / "documents"
     root.mkdir()
     (root / "standard.md").write_text(
