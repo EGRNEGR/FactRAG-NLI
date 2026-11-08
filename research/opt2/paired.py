@@ -39,7 +39,9 @@ def supports(item: dict[str, Any]) -> bool:
     p = item.get("probabilities")
     if item.get("support"):
         return True
-    return bool(p) and p["p_entailment"] > ENTAILMENT and p["p_contradiction"] < CONTRADICTION
+    if not p:
+        return False
+    return bool(p["p_entailment"] > ENTAILMENT and p["p_contradiction"] < CONTRADICTION)
 
 
 def claim_cause(claim: dict[str, Any], gold: set[str]) -> str:

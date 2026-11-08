@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import httpx
 import pytest
@@ -65,7 +66,7 @@ class TableNLI:
         return [self.predict(p, h) for p, h in pairs]
 
 
-def judge_settings(tmp_path: Path, **update: object) -> RAGSettings:
+def judge_settings(tmp_path: Path, **update: Any) -> RAGSettings:
     path = tmp_path / "judge.json"
     path.write_text(json.dumps(JUDGE), encoding="utf-8")
     return RAGSettings(
@@ -214,7 +215,7 @@ class RecoveringChat:
         pass
 
 
-def recovery_pipeline(tmp_path: Path, chat: RecoveringChat, **update: object) -> RAGPipeline:
+def recovery_pipeline(tmp_path: Path, chat: RecoveringChat, **update: Any) -> RAGPipeline:
     root = tmp_path / "documents"
     root.mkdir(exist_ok=True)
     (root / "standard.md").write_text(

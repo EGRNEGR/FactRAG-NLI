@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import json
 import time
+from collections.abc import Callable
 from typing import Any
 
 from generator_verifier import _HTTPBackend, generation_system_prompt
@@ -120,7 +121,7 @@ def generate(api_base: str, modes: list[str]) -> None:
 
 def drafts_of(
     mode: str, store: dict[tuple[str, str, int], dict[str, Any]], source: str, keep_logged: bool
-):
+) -> Callable[[data.CaseRecord], list[data.Attempt] | None]:
     """recovery_drafts callback of research.opt3.replay.replay for one variant.
 
     The generated drafts (contexts of the judge column) are used only where the source

@@ -23,6 +23,7 @@ import re
 import sys
 from functools import cache
 from pathlib import Path
+from collections.abc import Callable
 from typing import Any
 
 import research.opt4  # noqa: F401 - selects the baseline run
@@ -53,7 +54,9 @@ def settings_for(dataset: str) -> RAGSettings:
         qdrant_path=str(INDEX_ROOT / INDEX[dataset]),
         embedding_device="cpu",
     )
-    return RAGSettings(_env_file=None, **logged)
+    # _env_file is a pydantic-settings init option mypy does not see among the fields.
+    no_env_file: dict[str, Any] = {"_env_file": None}
+    return RAGSettings(**no_env_file, **logged)
 
 
 @cache
@@ -92,7 +95,7 @@ def dump(name: str, result: dict[str, Any]) -> None:
 
 def reproduce(sample: int = 40) -> dict[str, Any]:
     """Original questions against the logged top-10 (same order), per dataset."""
-    rows = []
+    rows: list[dict[str, Any]] = []
     for dataset in data.DATASETS:
         records = [r for r in data.records().values() if data.dataset_of(r.id) == dataset]
         for record in records[:sample]:
@@ -132,7 +135,7 @@ def gold_rank(record: data.CaseRecord, ids: list[str]) -> int | None:
 
 def e3() -> dict[str, Any]:
     threshold = settings_for("xquad-full").rerank_score_threshold
-    rows = []
+    rows: list[dict[str, Any]] = []
     for record in data.records().values():
         if data.dataset_of(record.id) != "xquad-full" or record.case.language != "en":
             continue
@@ -204,7 +207,7 @@ def parts(question: str) -> list[str]:
 
 
 def e4(per_part: int = 3) -> dict[str, Any]:
-    rows = []
+    rows: list[dict[str, Any]] = []
     for record in data.records().values():
         if data.dataset_of(record.id) != "v3" or record.case.expected_behavior != "answer":
             continue
@@ -263,7 +266,7 @@ def by_ordinal(dataset: str) -> dict[tuple[str, int], str]:
 
 
 def e5() -> dict[str, Any]:
-    rows = []
+    rows: list[dict[str, Any]] = []
     for record in data.records().values():
         dataset = data.dataset_of(record.id)
         if record.case.expected_behavior != "answer" or not record.retrieval[CONFIG]["sources"]:
@@ -303,4 +306,7 @@ def e5() -> dict[str, Any]:
 
 
 if __name__ == "__main__":
-    {"reproduce": reproduce, "E3": e3, "E4": e4, "E5": e5}[sys.argv[1]]()
+    commands: dict[str, Callable[[], dict[str, Any]]] = {
+        "reproduce": reproduce, "E3": e3, "E4": e4, "E5": e5
+    }
+    commands[sys.argv[1]]()

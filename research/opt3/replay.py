@@ -45,8 +45,9 @@ def verifier(
     s = data.settings(config, **overrides)
     if s.nli_decision != "judge":
         return NLIFactVerifier(s, backend=CachedNLI("mdeberta"))
+    assert s.nli_judge_path is not None  # required by settings when nli_decision == "judge"
     spec = {**json.loads(Path(s.nli_judge_path).read_text("utf-8")), **(judge or {})}
-    judge = ClaimJudge(spec)
+    claim_judge = ClaimJudge(spec)
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as handle:
         json.dump(spec, handle)
     try:
@@ -54,7 +55,7 @@ def verifier(
             s.model_copy(update={"nli_judge_path": handle.name}),
             backend=CachedNLI("mdeberta"),
             secondary=CachedNLI("bge-m3-zeroshot"),
-            judge=judge,
+            judge=claim_judge,
         )
     finally:
         Path(handle.name).unlink()

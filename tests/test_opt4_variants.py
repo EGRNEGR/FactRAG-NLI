@@ -7,7 +7,7 @@ import pytest
 from evaluate_suite import select_cases
 from generator_verifier import ClaimStatus, NLIFactVerifier, SourceContext
 from grounding import claim_anchors, clean_premise, is_identifier_anchor, unwrap_single_column
-from tests.test_verifier_grounding import ENTAILMENT, Table, raw, settings
+from test_verifier_grounding import ENTAILMENT, Table, raw, settings
 
 NOTE = (
     "Документ: rfc\nРаздел: 15.4.3 302 Found\n"

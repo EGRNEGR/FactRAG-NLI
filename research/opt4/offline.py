@@ -26,6 +26,7 @@ import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
+from collections.abc import Callable
 from typing import Any
 
 import research.opt4  # noqa: F401 - selects the baseline run
@@ -100,7 +101,7 @@ def run(e: Experiment) -> dict[str, Any]:
         "seconds": round(time.perf_counter() - started, 1),
         "missing": missing,
     }
-    parts = {
+    parts: dict[str, Callable[[dict[str, Any]], bool]] = {
         "all": lambda o: True,
         "v3": lambda o: o["dataset"] == "v3",
         "xquad-full": lambda o: o["dataset"] == "xquad-full",

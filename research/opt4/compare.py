@@ -23,6 +23,7 @@ import hashlib
 import json
 import sys
 from pathlib import Path
+from collections.abc import Callable
 from typing import Any
 
 import research.opt4  # noqa: F401 - selects the baseline run
@@ -68,7 +69,9 @@ def translation_population() -> list[str]:
     return [r.id for r in data.records().values() if steps.g3_trigger(r, None)]
 
 
-POPULATIONS = {"E1": anchor_population, "G3": translation_population, "controls": controls}
+POPULATIONS: dict[str, Callable[[], list[str]]] = {
+    "E1": anchor_population, "G3": translation_population, "controls": controls
+}
 
 
 def outcome(record: data.CaseRecord, text: str | None, first: str | None) -> dict[str, Any]:

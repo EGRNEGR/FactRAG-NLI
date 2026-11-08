@@ -56,7 +56,10 @@ dataset_of = opt2.dataset_of
 
 @cache
 def run_config(config: str, dataset: str = "v3") -> dict[str, Any]:
-    return json.loads((RUN / CONFIGS[config] / dataset / "config.json").read_text("utf-8"))
+    config_json: dict[str, Any] = json.loads(
+        (RUN / CONFIGS[config] / dataset / "config.json").read_text("utf-8")
+    )
+    return config_json
 
 
 @cache
@@ -127,7 +130,9 @@ def settings(config: str, **overrides: Any) -> RAGSettings:
             logged[key] = str(ROOT / value[len(RUN_ROOT) + 1 :])
     logged.update(mode="development", allow_fallback=True)
     logged.update(overrides)
-    return RAGSettings(_env_file=None, **logged)
+    # _env_file is a pydantic-settings init option mypy does not see among the fields.
+    no_env_file: dict[str, Any] = {"_env_file": None}
+    return RAGSettings(**no_env_file, **logged)
 
 
 def _jsonl(path: Path) -> list[dict[str, Any]]:

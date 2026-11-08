@@ -132,11 +132,11 @@ def main() -> None:
             facts = [x for x in c.final.verified.claims if x.kind == "fact"]
             conf = min((x.confidence for x in facts), default=0.0)
             points.append((c.outcome["split"], conf, int(c.outcome["factrag"]["correct"])))
-        dev = [(p, y) for s, p, y in points if s == "dev"]
-        test = [(p, y) for s, p, y in points if s == "test"]
-        calibrators = fit_calibrators([p for p, _ in dev], [y for _, y in dev])
+        dev_points = [(p, y) for s, p, y in points if s == "dev"]
+        test_points = [(p, y) for s, p, y in points if s == "test"]
+        calibrators = fit_calibrators([p for p, _ in dev_points], [y for _, y in dev_points])
         report["answer_level"][name] = {
-            method: scores([fn(p) for p, _ in test], [y for _, y in test])
+            method: scores([fn(p) for p, _ in test_points], [y for _, y in test_points])
             for method, fn in calibrators.items()
             if method in ("none", "isotonic")
         }

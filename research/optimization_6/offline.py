@@ -46,12 +46,15 @@ def versus(result: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
     rows = []
     for cid in sorted(set(changed) | set(base_changed)):
         v, b = changed.get(cid), base_changed.get(cid)
-        # A question absent from a "changed" list kept the logged outcome there.
-        v_ok = v["variant"]["correct"] if v else (b or v)["baseline"]["correct"]
-        b_ok = b["variant"]["correct"] if b else (v or b)["baseline"]["correct"]
-        split = (v or b)["split"]
-        v_text = v["variant"]["published"] if v else (b or v)["baseline"]["published"]
-        b_text = b["variant"]["published"] if b else (v or b)["baseline"]["published"]
+        # The id comes from one of the lists, so at least one entry exists; a question
+        # absent from a "changed" list kept the logged outcome there.
+        either = v or b
+        assert either is not None
+        v_ok = v["variant"]["correct"] if v else either["baseline"]["correct"]
+        b_ok = b["variant"]["correct"] if b else either["baseline"]["correct"]
+        split = either["split"]
+        v_text = v["variant"]["published"] if v else either["baseline"]["published"]
+        b_text = b["variant"]["published"] if b else either["baseline"]["published"]
         if v_ok != b_ok or (v_text or "") != (b_text or ""):
             rows.append({"id": cid, "split": split, "b00": b_ok, "variant": v_ok,
                          "b00_published": b_text, "variant_published": v_text})

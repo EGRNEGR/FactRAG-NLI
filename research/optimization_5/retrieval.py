@@ -22,6 +22,7 @@ import re
 import sys
 from functools import cache
 from pathlib import Path
+from collections.abc import Callable
 from typing import Any
 
 import research.optimization_5  # noqa: F401 - selects the baseline run
@@ -54,7 +55,9 @@ def settings(version: str) -> RAGSettings:
         model_device="cuda",
         parser_version=version,
     )
-    return RAGSettings(_env_file=None, **logged)
+    # _env_file is a pydantic-settings init option mypy does not see among the fields.
+    no_env_file: dict[str, Any] = {"_env_file": None}
+    return RAGSettings(**no_env_file, **logged)
 
 
 @cache
@@ -171,7 +174,9 @@ def score(quotes: list[list[list[str]] | None], ids: list[str]) -> dict[str, Any
         hits = [rank is not None and rank <= k for rank in ranks]
         found[f"recall@{k}"] = sum(hits) / len(hits) if hits else None
         found[f"hit@{k}"] = all(hits) if hits else None
-    found["rank"] = None if None in ranks or not ranks else max(ranks)
+    found["rank"] = (
+        None if None in ranks or not ranks else max(r for r in ranks if r is not None)
+    )
     return found
 
 
@@ -213,7 +218,7 @@ def compare() -> dict[str, Any]:
 
 
 def summarize(questions: dict[str, dict[str, Any]]) -> dict[str, Any]:
-    groups = {
+    groups: dict[str, Callable[[dict[str, Any]], bool]] = {
         "answerable": lambda r: r["answerable"],
         "answerable, table gold": lambda r: r["answerable"] and r["table_gold"],
         "answerable, text gold": lambda r: r["answerable"] and not r["table_gold"],

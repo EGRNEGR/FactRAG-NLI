@@ -93,7 +93,8 @@ def withheld(c: Case) -> bool:
     return c.base.refused and c.base.reason not in EXEMPT
 
 
-ROUTERS: dict[str, tuple[str, Callable[[float], Router] | Router, list[float] | None]] = {
+# The second item is a router, or a factory of routers over the threshold grid (third item).
+ROUTERS: dict[str, tuple[str, Any, list[float] | None]] = {
     "A0_never": ("no thinking pass", lambda c: False, None),
     "A1_first_llm_refusal": (
         "first draft was an LLM refusal (0508Z baseline)",
@@ -198,7 +199,7 @@ def judge_verifier(name: str) -> NLIFactVerifier:
 
 def main(judge_name: str) -> dict[str, Any]:
     cases = prepare(judge_verifier(judge_name))
-    reference = evaluate(cases, ROUTERS["A1_first_llm_refusal"][1], "replace")  # type: ignore[arg-type]
+    reference = evaluate(cases, ROUTERS["A1_first_llm_refusal"][1], "replace")
     report: dict[str, Any] = {"verifier": judge_name, "routers": {}}
     for name, (text, factory, grid) in ROUTERS.items():
         for policy in ("replace", "confidence"):
@@ -208,13 +209,13 @@ def main(judge_name: str) -> dict[str, Any]:
                 # threshold with the most correct dev answers; ties: fewer thinking calls
                 best = None
                 for t in grid:
-                    res = evaluate(cases, factory(t), policy)  # type: ignore[operator]
+                    res = evaluate(cases, factory(t), policy)
                     key = (res["dev"]["factrag_correct"]["k"], -res["thinking_calls"])
                     if best is None or key > best[0]:
                         best = (key, t)
                 chosen = best[1] if best else None
-                router = factory(chosen)  # type: ignore[operator]
-            res = evaluate(cases, router, policy)  # type: ignore[arg-type]
+                router = factory(chosen)
+            res = evaluate(cases, router, policy)
             res["vs_A1"] = paired(reference["outcomes"], res["outcomes"])
             res["vs_A1_test"] = paired(
                 [o for o in reference["outcomes"] if o["split"] == "test"],

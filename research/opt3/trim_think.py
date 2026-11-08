@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import json
 import time
+from collections.abc import Callable
 from typing import Any
 
 from generator_verifier import (
@@ -53,7 +54,11 @@ def population() -> list[tuple[str, str]]:
         v = verifier(config)
         for record in data.records().values():
             r = replay(record, v, source=config)
-            if trimmed(r.verified) and not r.verified.generation_metadata.thinking:
+            if (
+                r.verified is not None
+                and trimmed(r.verified)
+                and not r.verified.generation_metadata.thinking
+            ):
                 ids.add((record.id, column(record, config)))
     return sorted(ids)
 
@@ -135,7 +140,9 @@ def attempt(record: data.CaseRecord, row: dict[str, Any], col: str = "judge") ->
     )
 
 
-def drafts_of(store: dict[tuple[str, str, int], dict[str, Any]], config: str):
+def drafts_of(
+    store: dict[tuple[str, str, int], dict[str, Any]], config: str
+) -> Callable[[data.CaseRecord], list[data.Attempt] | None]:
     """trim_drafts callback of research.opt3.replay.replay for the `config` column."""
 
     def callback(record: data.CaseRecord) -> list[data.Attempt] | None:

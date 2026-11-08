@@ -124,7 +124,7 @@ def taxonomy() -> dict[str, Any]:
         json.loads(line)["id"]
         for line in (OPT4 / "diagnostics" / "xquad_refusals.jsonl").open(encoding="utf-8")
     ]
-    primary = Counter()
+    primary: Counter[str] = Counter()
     for cid in ids:
         entry = annotations["cases"][cid]
         primary[entry["code"][0]] += 1
@@ -252,7 +252,8 @@ def final_run() -> dict[str, Any]:
             x = json.loads(line)
             rows[x["id"]] = x
     marked = {"V3-MH-002", "V3-TC-021", "V3-TC-022", "V3-TC-025"}
-    points, trim, stage = [], [], {}
+    points, trim = [], []
+    stage: dict[str, Any] = {}
     for cid, r in responses.items():
         dataset = data.dataset_of(cid)
         stats = r.get("execution_stats") or {}

@@ -28,8 +28,10 @@ Router = Callable[[data.CaseRecord, "Replayed"], bool]
 
 def settings(**overrides: Any) -> RAGSettings:
     """The run's verifier settings (.env of the RTX profile) with `overrides`."""
+    # _env_file is a pydantic-settings init option mypy does not see among the fields.
+    env_file: dict[str, Any] = {"_env_file": str(data.ROOT / ".env")}
     return RAGSettings(
-        _env_file=str(data.ROOT / ".env"),
+        **env_file,
         mode="development",
         allow_fallback=True,
         **overrides,

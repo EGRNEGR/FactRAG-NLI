@@ -1,5 +1,7 @@
 """Parser v2 (optimization_5): English tables and headings; v1 stays as it was."""
 
+from typing import Any
+
 from document_parser import ChunkingConfig, DocumentParser, _pdf_table_markdown
 from scripts.download_quality_corpus import MarkdownExtractor, TextExtractor
 
@@ -43,11 +45,11 @@ BIT_DIAGRAM = """ 0                   1
 """
 
 
-def v2(**chunking: int) -> DocumentParser:
+def v2(**chunking: Any) -> DocumentParser:
     return DocumentParser(ChunkingConfig(**chunking) if chunking else None, version="v2")
 
 
-def tables(parsed):  # type: ignore[no-untyped-def]
+def tables(parsed: Any) -> list[Any]:
     return [e for e in parsed.elements if e.kind == "table"]
 
 
@@ -206,7 +208,7 @@ def test_v1_output_is_unchanged_for_the_grid_table() -> None:
 
 
 def test_pdf_table_drops_layout_columns_and_fills_spanned_header() -> None:
-    rows = [
+    rows: list[list[str | None]] = [
         ["", "ID", "", "FAMILY", "", "ID", "FAMILY"],
         ["", "AC", "", "Access  Control", "", "PE", "Physical and\nEnvironmental Protection"],
         ["", "CA", None, "Assessment, Authorization, and Monitoring", "", "PS", "Personnel Security"],

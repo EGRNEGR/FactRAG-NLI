@@ -97,7 +97,12 @@ def run_candidate(
 
 
 def choose_threshold(
-    cases, router, v, mode, store, revise_store=None
+    cases: list[Case],
+    router: Callable[[Case], bool],
+    v: Any,
+    mode: str,
+    store: Any,
+    revise_store: Any = None,
 ) -> tuple[float | None, list[dict[str, Any]]]:
     plain = run_candidate(cases, router, v, None, None, store, revise_store)
     dev_h = sum(
@@ -163,7 +168,8 @@ def main() -> None:
     for name, vname, router_name, think_mode, mode in plan:
         router = ROUTERS[router_name][1]
         rstore = revise_store if think_mode == "revise" else None
-        threshold, sweep = (None, [])
+        threshold: float | None = None
+        sweep: list[dict[str, Any]] = []
         if mode:
             threshold, sweep = choose_threshold(
                 prepared[vname], router, verifiers[vname], mode, store, rstore
